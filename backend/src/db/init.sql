@@ -52,10 +52,28 @@ CREATE TABLE refresh_tokens (
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- OTP verification codes (for admin login 2FA)
+CREATE TABLE otp_codes (
+  id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id     UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  code        VARCHAR(6) NOT NULL,
+  email       VARCHAR(255) NOT NULL,
+  purpose     VARCHAR(50) NOT NULL DEFAULT 'admin_login',
+  attempts    INT NOT NULL DEFAULT 0,
+  max_attempts INT NOT NULL DEFAULT 3,
+  expires_at  TIMESTAMPTZ NOT NULL,
+  verified_at TIMESTAMPTZ,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_otp_user_purpose ON otp_codes(user_id, purpose, created_at DESC);
+CREATE INDEX idx_otp_expires ON otp_codes(expires_at);
+
 -- Seed superadmin (password: Admin@2026! — change immediately)
 -- Staff code: SA001 (can login with this ID instead of email)
+-- Admin email for OTP: doanhnhancaotuan@gmail.com
 INSERT INTO users (email, password, full_name, role, staff_code) VALUES
-('admin@animacare.global','$2b$12$wS/p1VXX5z0TnFcR.HoqoeInWmA7KrBvf7V.m00P/DpBZHqzrFwwy','Superadmin','superadmin','SA001');
+('doanhnhancaotuan@gmail.com','$2b$12$wS/p1VXX5z0TnFcR.HoqoeInWmA7KrBvf7V.m00P/DpBZHqzrFwwy','Superadmin','superadmin','SA001');
 
 -- ─────────────────────────────────────────────────────────
 -- MODULE 2: CENTERS (Cơ sở)

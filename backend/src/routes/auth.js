@@ -4,7 +4,9 @@ const bcrypt  = require('bcrypt');
 const jwt     = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const { body, validationResult } = require('express-validator');
+const crypto  = require('crypto');
 const db      = require('../db/pool');
+const mailer  = require('../utils/mailer');
 const { authenticate, logAudit } = require('../middleware/auth');
 
 const EXPIRES_IN         = process.env.JWT_EXPIRES_IN         || '15m';
@@ -169,6 +171,163 @@ router.get('/me', authenticate, async (req, res) => {
     [req.user.id]
   );
   res.json(rows[0]);
+});
+
+// ─── POST /auth/request-otp ──────────────────────────────
+// Step 1 of admin login: verify staff_code + password, then send OTP to registered email
+const OTP_EXPIRES_MINUTES = 5;
+const OTP_RATE_LIMIT = 5; // max OTP requests per hour
+
+router.post('/request-otp', async (req, res) => {
+  const { staff_code, password } = req.body;
+
+  if (!staff_code || !password) {
+    return res.status(400).json({ error: 'staff_code and password required' });
+  }
+
+  // Find user by staff_code
+  const { rows } = await db.query(
+    'SELECT * FROM users WHERE staff_code=$1 AND is_active=true',
+    [staff_code.trim().toUpperCase()]
+  );
+  const user = rows[0];
+
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+
+  // Check only admin+ roles can use admin portal
+  if (!['superadmin', 'admin', 'manager'].includes(user.role)) {
+    return res.status(403).json({ error: 'Insufficient permissions for admin portal' });
+  }
+
+  // Rate limit: max N OTP requests per hour
+  const { rows: recentOtps } = await db.query(
+    `SELECT COUNT(*) as cnt FROM otp_codes
+     WHERE user_id=$1 AND purpose='admin_login' AND created_at > NOW() - INTERVAL '1 hour'`,
+    [user.id]
+  );
+  if (parseInt(recentOtps[0].cnt) >= OTP_RATE_LIMIT) {
+    return res.status(429).json({ error: 'Too many OTP requests. Please wait before trying again.' });
+  }
+
+  // Invalidate previous OTPs
+  await db.query(
+    `DELETE FROM otp_codes WHERE user_id=$1 AND purpose='admin_login' AND verified_at IS NULL`,
+    [user.id]
+  );
+
+  // Generate 6-digit OTP
+  const code = crypto.randomInt(100000, 999999).toString();
+  const expiresAt = new Date(Date.now() + OTP_EXPIRES_MINUTES * 60 * 1000);
+
+  await db.query(
+    `INSERT INTO otp_codes(user_id, code, email, purpose, expires_at)
+     VALUES($1, $2, $3, 'admin_login', $4)`,
+    [user.id, code, user.email, expiresAt]
+  );
+
+  // Send OTP email
+  try {
+    await mailer.sendOtp(user, code, OTP_EXPIRES_MINUTES);
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to send OTP email. Please try again.' });
+  }
+
+  // Mask email for response
+  const emailParts = user.email.split('@');
+  const maskedEmail = emailParts[0].substring(0, 3) + '***@' + emailParts[1];
+
+  await logAudit(user.id, 'otp_requested', 'users', user.id, null, null, req);
+
+  res.json({
+    message: 'OTP sent successfully',
+    email: maskedEmail,
+    expires_in: OTP_EXPIRES_MINUTES * 60,
+    user_id: user.id
+  });
+});
+
+// ─── POST /auth/verify-otp ──────────────────────────────
+// Step 2 of admin login: verify OTP code, issue tokens
+router.post('/verify-otp', async (req, res) => {
+  const { user_id, code } = req.body;
+
+  if (!user_id || !code) {
+    return res.status(400).json({ error: 'user_id and code required' });
+  }
+
+  // Find the latest unexpired, unverified OTP
+  const { rows } = await db.query(
+    `SELECT * FROM otp_codes
+     WHERE user_id=$1 AND purpose='admin_login' AND verified_at IS NULL
+       AND expires_at > NOW()
+     ORDER BY created_at DESC LIMIT 1`,
+    [user_id]
+  );
+  const otpRecord = rows[0];
+
+  if (!otpRecord) {
+    return res.status(401).json({ error: 'OTP expired or not found. Please request a new code.' });
+  }
+
+  // Check max attempts
+  if (otpRecord.attempts >= otpRecord.max_attempts) {
+    await db.query('DELETE FROM otp_codes WHERE id=$1', [otpRecord.id]);
+    return res.status(401).json({ error: 'Too many incorrect attempts. Please request a new OTP.' });
+  }
+
+  // Verify code
+  if (otpRecord.code !== code.trim()) {
+    await db.query(
+      'UPDATE otp_codes SET attempts = attempts + 1 WHERE id=$1',
+      [otpRecord.id]
+    );
+    const remaining = otpRecord.max_attempts - otpRecord.attempts - 1;
+    return res.status(401).json({
+      error: `Invalid OTP code. ${remaining} attempt(s) remaining.`,
+      attempts_remaining: remaining
+    });
+  }
+
+  // Mark OTP as verified
+  await db.query(
+    'UPDATE otp_codes SET verified_at=NOW() WHERE id=$1',
+    [otpRecord.id]
+  );
+
+  // Get user and issue tokens
+  const userRes = await db.query(
+    'SELECT * FROM users WHERE id=$1 AND is_active=true',
+    [user_id]
+  );
+  const user = userRes.rows[0];
+  if (!user) return res.status(401).json({ error: 'User not found' });
+
+  const accessToken  = signAccess(user.id, user.role);
+  const refreshToken = signRefresh(user.id);
+
+  await db.query(
+    `INSERT INTO refresh_tokens(user_id,token,expires_at) VALUES($1,$2,$3)`,
+    [user.id, refreshToken, new Date(Date.now() + REFRESH_EXPIRES_MS)]
+  );
+  await db.query('UPDATE users SET last_login=NOW() WHERE id=$1', [user.id]);
+  await logAudit(user.id, 'admin_login_otp', 'users', user.id, null, null, req);
+
+  res.json({
+    access_token: accessToken,
+    refresh_token: refreshToken,
+    expires_in: EXPIRES_IN,
+    user: {
+      id:         user.id,
+      email:      user.email,
+      full_name:  user.full_name,
+      role:       user.role,
+      center_id:  user.center_id,
+      avatar_url: user.avatar_url,
+      staff_code: user.staff_code
+    }
+  });
 });
 
 module.exports = router;

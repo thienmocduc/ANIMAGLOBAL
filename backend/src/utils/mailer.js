@@ -179,6 +179,24 @@ const templates = {
     `)
   }),
 
+  // OTP verification → admin login
+  otpCode: ({ user, code, expiresMinutes }) => ({
+    subject: `🔐 Mã xác thực OTP · AnimaCare Admin`,
+    html: baseHtml('Mã xác thực đăng nhập Admin', `
+      <p>Xin chào <strong>${user.full_name}</strong>,</p>
+      <p>Bạn đang yêu cầu đăng nhập vào <strong>Cổng Quản Trị AnimaCare</strong>. Mã xác thực OTP của bạn:</p>
+      <div style="text-align:center;margin:28px 0">
+        <div style="display:inline-block;background:linear-gradient(135deg,#005A42,#00C896);padding:20px 40px;border-radius:12px;letter-spacing:12px;font-size:32px;font-weight:900;color:#fff;font-family:monospace">${code}</div>
+      </div>
+      <div class="info-box">
+        <div class="info-row"><span class="label">Hiệu lực</span><span class="value">${expiresMinutes} phút</span></div>
+        <div class="info-row"><span class="label">Thời gian yêu cầu</span><span class="value">${new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}</span></div>
+        <div class="info-row"><span class="label">Tài khoản</span><span class="value">${user.staff_code || user.email}</span></div>
+      </div>
+      <p style="color:#cc2244;font-size:13px;margin-top:16px">⚠️ <strong>Lưu ý bảo mật:</strong> Không chia sẻ mã này với bất kỳ ai. AnimaCare sẽ không bao giờ yêu cầu mã OTP qua điện thoại hay tin nhắn. Nếu bạn không yêu cầu đăng nhập, vui lòng đổi mật khẩu ngay.</p>
+    `)
+  }),
+
   // Royalty invoice → franchise partner
   royaltyInvoice: ({ partner, royalty }) => ({
     subject: `💼 Hóa đơn tiền bản quyền ${royalty.period} · AnimaCare`,
@@ -256,5 +274,10 @@ module.exports = {
   async royaltyInvoice(partner, royalty) {
     if (!partner.email) return;
     return send(partner.email, 'royaltyInvoice', { partner, royalty });
+  },
+
+  async sendOtp(user, code, expiresMinutes = 5) {
+    if (!user.email) return;
+    return send(user.email, 'otpCode', { user, code, expiresMinutes });
   },
 };
