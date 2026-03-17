@@ -31,13 +31,13 @@ async function seed() {
   console.log('👤 Seeding users...');
   const hashedPwd = await bcrypt.hash('Admin@2026!', 12);
   const users = [
-    { email:'manager.hcm@animacare.global',  full_name:'Trần Thị Mai Anh', role:'manager'  },
-    { email:'staff.c001@animacare.global',   full_name:'Nguyễn Văn Đức',   role:'staff'    },
-    { email:'franchise@animacare.global',    full_name:'Phạm Quốc Huy',    role:'franchise_owner' },
+    { email:'manager.hcm@animacare.global',  full_name:'Trần Thị Mai Anh', role:'manager',         staff_code:'MG001' },
+    { email:'staff.c001@animacare.global',   full_name:'Nguyễn Văn Đức',   role:'staff',            staff_code:'ST001' },
+    { email:'franchise@animacare.global',    full_name:'Phạm Quốc Huy',    role:'franchise_owner',  staff_code:'FO001' },
   ];
   for (const u of users) {
-    await q(`INSERT INTO users(email,password,full_name,role) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING`,
-      [u.email, hashedPwd, u.full_name, u.role]);
+    await q(`INSERT INTO users(email,password,full_name,role,staff_code) VALUES($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING`,
+      [u.email, hashedPwd, u.full_name, u.role, u.staff_code]);
   }
 
   // Get center IDs

@@ -113,6 +113,13 @@ class ApiClient {
     return data;
   }
 
+  async loginByCode(staff_code, password) {
+    const data = await this.request('POST', '/auth/login', { staff_code, password }, { skipAuth: true });
+    this._saveTokens(data.access_token, data.refresh_token);
+    localStorage.setItem('ac_user', JSON.stringify(data.user));
+    return data;
+  }
+
   async logout() {
     const { refresh } = this._getTokens();
     try { await this.post('/auth/logout', { refresh_token: refresh }); } catch {}

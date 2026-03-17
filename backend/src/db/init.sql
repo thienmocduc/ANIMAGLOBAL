@@ -32,6 +32,7 @@ CREATE TABLE users (
   email       VARCHAR(255) UNIQUE NOT NULL,
   password    VARCHAR(255) NOT NULL,
   full_name   VARCHAR(255) NOT NULL,
+  staff_code  VARCHAR(20) UNIQUE,
   role        user_role NOT NULL DEFAULT 'staff',
   center_id   UUID,
   avatar_url  TEXT,
@@ -40,6 +41,8 @@ CREATE TABLE users (
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+CREATE INDEX idx_users_staff_code ON users(staff_code);
 
 CREATE TABLE refresh_tokens (
   id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -50,8 +53,9 @@ CREATE TABLE refresh_tokens (
 );
 
 -- Seed superadmin (password: Admin@2026! — change immediately)
-INSERT INTO users (email, password, full_name, role) VALUES
-('admin@animacare.global','$2b$12$wS/p1VXX5z0TnFcR.HoqoeInWmA7KrBvf7V.m00P/DpBZHqzrFwwy','Superadmin','superadmin');
+-- Staff code: SA001 (can login with this ID instead of email)
+INSERT INTO users (email, password, full_name, role, staff_code) VALUES
+('admin@animacare.global','$2b$12$wS/p1VXX5z0TnFcR.HoqoeInWmA7KrBvf7V.m00P/DpBZHqzrFwwy','Superadmin','superadmin','SA001');
 
 -- ─────────────────────────────────────────────────────────
 -- MODULE 2: CENTERS (Cơ sở)

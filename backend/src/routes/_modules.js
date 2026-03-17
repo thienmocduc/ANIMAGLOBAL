@@ -293,7 +293,7 @@ const bcrypt = require('bcrypt');
 
 usersRouter.get('/', async (req, res) => {
   const { rows } = await db.query(`
-    SELECT u.id,u.email,u.full_name,u.role,u.is_active,u.last_login,u.created_at,
+    SELECT u.id,u.email,u.full_name,u.staff_code,u.role,u.is_active,u.last_login,u.created_at,
            c.name AS center_name
     FROM users u LEFT JOIN centers c ON c.id=u.center_id
     ORDER BY u.created_at DESC
@@ -302,24 +302,26 @@ usersRouter.get('/', async (req, res) => {
 });
 
 usersRouter.post('/', async (req, res) => {
-  const { email, password, full_name, role, center_id } = req.body;
+  const { email, password, full_name, role, center_id, staff_code } = req.body;
   if (!email||!password||!full_name) return res.status(400).json({ error: 'email/password/full_name required' });
   const hashed = await bcrypt.hash(password, Number(process.env.BCRYPT_ROUNDS)||12);
   const { rows } = await db.query(`
-    INSERT INTO users(email,password,full_name,role,center_id)
-    VALUES($1,$2,$3,$4,$5) RETURNING id,email,full_name,role,center_id
-  `,[email, hashed, full_name, role||'staff', center_id||null]);
+    INSERT INTO users(email,password,full_name,role,center_id,staff_code)
+    VALUES($1,$2,$3,$4,$5,$6) RETURNING id,email,full_name,staff_code,role,center_id
+  `,[email, hashed, full_name, role||'staff', center_id||null, staff_code ? staff_code.trim().toUpperCase() : null]);
   await logAudit(req.user.id,'create','users',rows[0].id,null,rows[0],req);
   res.status(201).json(rows[0]);
 });
 
 usersRouter.patch('/:id', async (req, res) => {
-  const { full_name, role, center_id, is_active } = req.body;
+  const { full_name, role, center_id, is_active, staff_code } = req.body;
   const { rows } = await db.query(`
     UPDATE users SET full_name=COALESCE($1,full_name), role=COALESCE($2,role),
-      center_id=COALESCE($3,center_id), is_active=COALESCE($4,is_active)
-    WHERE id=$5 RETURNING id,email,full_name,role,is_active
-  `,[full_name||null, role||null, center_id||null, is_active??null, req.params.id]);
+      center_id=COALESCE($3,center_id), is_active=COALESCE($4,is_active),
+      staff_code=COALESCE($5,staff_code)
+    WHERE id=$6 RETURNING id,email,full_name,staff_code,role,is_active
+  `,[full_name||null, role||null, center_id||null, is_active??null,
+     staff_code ? staff_code.trim().toUpperCase() : null, req.params.id]);
   if (!rows[0]) return res.status(404).json({ error: 'Not found' });
   res.json(rows[0]);
 });

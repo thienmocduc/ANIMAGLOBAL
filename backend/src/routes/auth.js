@@ -20,18 +20,33 @@ function signRefresh(userId) {
 }
 
 // ─── POST /auth/login ────────────────────────────────────
-router.post('/login', [
-  body('email').isEmail().normalizeEmail(),
-  body('password').isLength({ min: 6 })
-], async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+// Supports login by email+password OR staff_code+password
+router.post('/login', async (req, res) => {
+  const { email, password, staff_code } = req.body;
 
-  const { email, password } = req.body;
-  const { rows } = await db.query(
-    'SELECT * FROM users WHERE email=$1 AND is_active=true', [email]
-  );
-  const user = rows[0];
+  // Must provide password + either email or staff_code
+  if (!password || (!email && !staff_code)) {
+    return res.status(400).json({ error: 'Password and either email or staff_code required' });
+  }
+  if (password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters' });
+  }
+
+  let user;
+  if (staff_code) {
+    // Login by Admin ID / Staff Code
+    const { rows } = await db.query(
+      'SELECT * FROM users WHERE staff_code=$1 AND is_active=true', [staff_code.trim().toUpperCase()]
+    );
+    user = rows[0];
+  } else {
+    // Login by email
+    const normalizedEmail = email.trim().toLowerCase();
+    const { rows } = await db.query(
+      'SELECT * FROM users WHERE email=$1 AND is_active=true', [normalizedEmail]
+    );
+    user = rows[0];
+  }
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return res.status(401).json({ error: 'Invalid credentials' });
@@ -56,12 +71,13 @@ router.post('/login', [
     refresh_token: refreshToken,
     expires_in: EXPIRES_IN,
     user: {
-      id:        user.id,
-      email:     user.email,
-      full_name: user.full_name,
-      role:      user.role,
-      center_id: user.center_id,
-      avatar_url: user.avatar_url
+      id:         user.id,
+      email:      user.email,
+      full_name:  user.full_name,
+      role:       user.role,
+      center_id:  user.center_id,
+      avatar_url: user.avatar_url,
+      staff_code: user.staff_code
     }
   });
 });
