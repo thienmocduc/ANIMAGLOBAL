@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Anima Care · Admin Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --g1:#00C896;--g2:#00E5A8;--g3:#80F5D4;--gd:#005A42;--gdp:#002E22;
+  --pu1:#7B5FFF;--pu2:#9B82FF;--pu3:#B9A3FF;
+  --red:#FF4D6D;--amber:#F59E0B;--blue:#3B82F6;--sky:#60A5FA;
+  --bg:#030608;--bg2:#060C0F;--bg3:#0A1218;--bg4:#0E1820;--bg5:#121E28;
+  --t1:#F8F2E0;--t2:rgba(248,242,224,.72);--t3:rgba(248,242,224,.42);--t4:rgba(248,242,224,.22);
+  --bd:rgba(0,200,150,.12);--bd2:rgba(0,200,150,.06);
+  --sw:220px;
+  --fh:'Roboto',sans-serif;
+  --fb:'Roboto',sans-serif;
+  --fm:'Roboto Mono',monospace;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--t1);font-family:var(--fb);font-size:13px;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+input,select,textarea,button{font-family:var(--fb)}
+
+/* ── LAYOUT ── */
+.app{display:grid;grid-template-columns:var(--sw) 1fr;height:100vh;overflow:hidden}
+
+/* ════════════════════════ SIDEBAR ════════════════════════ */
+.sb{background:var(--bg2);border-right:0.5px solid var(--bd);display:flex;flex-direction:column;height:100vh;overflow:hidden;position:relative;z-index:20}
+.sb::before{content:'';position:absolute;top:0;left:0;right:0;height:160px;background:radial-gradient(ellipse 140% 100% at 20% 0%,rgba(0,200,150,.09),transparent);pointer-events:none}
+
+/* Logo */
+.sb-logo{padding:18px 18px 14px;border-bottom:0.5px solid var(--bd2);flex-shrink:0;display:flex;align-items:center;gap:10px}
+.sb-logo-gem{width:34px;height:34px;border-radius:9px;background:linear-gradient(145deg,var(--gd),var(--g1));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(0,200,150,.25)}
+.sb-logo-gem svg{width:18px;height:18px;fill:none;stroke:#000;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sb-logo-text .name{font-family:var(--fh);font-size:14px;font-weight:600;color:var(--t1);line-height:1}
+.sb-logo-text .ver{font-family:var(--fm);font-size:8.5px;color:var(--g1);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+
+/* User */
+.sb-user{padding:11px 14px;border-bottom:0.5px solid var(--bd2);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.sb-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--pu1),var(--pu2));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.sb-un{font-size:12.5px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.sb-ur{font-family:var(--fm);font-size:8.5px;color:var(--g1);letter-spacing:1px;text-transform:uppercase}
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--g1);flex-shrink:0;box-shadow:0 0 0 2px rgba(0,200,150,.18)}
+
+/* Nav */
+.sb-nav{flex:1;overflow-y:auto;padding:10px 8px;display:flex;flex-direction:column;gap:1px}
+.sb-grp{font-family:var(--fm);font-size:8px;font-weight:600;color:var(--t4);letter-spacing:2px;text-transform:uppercase;padding:10px 10px 4px;margin-top:2px}
+.sb-i{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;cursor:pointer;transition:all .16s;color:var(--t3);font-size:12.5px;font-weight:500;position:relative;white-space:nowrap}
+.sb-i:hover{background:rgba(0,200,150,.06);color:var(--t2)}
+.sb-i.on{background:rgba(0,200,150,.1);color:var(--g2)}
+.sb-i.on::before{content:'';position:absolute;left:0;top:5px;bottom:5px;width:2px;background:var(--g1);border-radius:0 2px 2px 0}
+.sb-i svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.sb-bx{margin-left:auto;background:var(--g1);color:#000;font-family:var(--fm);font-size:8.5px;font-weight:700;border-radius:20px;padding:1px 6px;line-height:1.6;flex-shrink:0}
+.sb-bx.r{background:var(--red);color:#fff}
+.sb-bx.a{background:var(--amber);color:#000}
+.sb-bx.p{background:var(--pu2);color:#fff}
+
+/* Sidebar footer */
+.sb-ft{padding:10px 8px;border-top:0.5px solid var(--bd2);flex-shrink:0;display:flex;gap:6px}
+.sb-ft-b{flex:1;padding:7px 6px;border-radius:7px;background:transparent;border:0.5px solid var(--bd);cursor:pointer;color:var(--t3);font-size:11px;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .16s}
+.sb-ft-b:hover{background:rgba(0,200,150,.06);color:var(--t2)}
+.sb-ft-b svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* ════════════════════════ MAIN ════════════════════════ */
+.main{display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* Topbar */
+.top{height:50px;border-bottom:0.5px solid var(--bd2);display:flex;align-items:center;padding:0 22px;gap:14px;background:var(--bg);flex-shrink:0}
+.top-bc{flex:1;display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--t3)}
+.top-bc span{color:var(--t1);font-weight:500}
+.top-bc .sep{color:var(--t4);font-size:10px}
+.top-search{position:relative;width:220px}
+.top-search input{width:100%;background:var(--bg3);border:0.5px solid var(--bd2);border-radius:7px;padding:6px 12px 6px 30px;font-size:12px;color:var(--t1);outline:none;transition:border-color .18s}
+.top-search input::placeholder{color:var(--t4)}
+.top-search input:focus{border-color:rgba(0,200,150,.3)}
+.top-search svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:12px;height:12px;fill:none;stroke:var(--t4);stroke-width:1.5;stroke-linecap:round}
+.top-act{display:flex;align-items:center;gap:6px}
+.top-btn{width:30px;height:30px;border-radius:7px;background:var(--bg3);border:0.5px solid var(--bd2);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:all .16s;color:var(--t3)}
+.top-btn:hover{background:var(--bg4);color:var(--t2)}
+.top-btn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.top-btn .ndot{position:absolute;top:4px;right:4px;width:6px;height:6px;border-radius:50%;background:var(--red);border:1.5px solid var(--bg)}
+.top-date{font-family:var(--fm);font-size:10.5px;color:var(--t4);white-space:nowrap}
+
+/* Page container */
+.pages{flex:1;overflow:hidden;position:relative}
+.pg{position:absolute;inset:0;overflow-y:auto;padding:22px 24px;opacity:0;visibility:hidden;transition:opacity .18s}
+.pg.on{opacity:1;visibility:visible}
+.pg-hd{margin-bottom:20px}
+.pg-title{font-family:var(--fh);font-size:22px;font-weight:600;color:var(--t1);line-height:1.15;margin-bottom:3px}
+.pg-title em{font-style:italic;color:var(--g2)}
+.pg-sub{font-size:12.5px;color:var(--t3)}
+
+/* ════════════ COMPONENTS ════════════ */
+
+/* Card */
+.c{background:var(--bg3);border:0.5px solid var(--bd);border-radius:13px;overflow:hidden}
+.ch{padding:14px 16px 12px;border-bottom:0.5px solid var(--bd2);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ct{font-size:12.5px;font-weight:600;color:var(--t2)}
+.cs{font-family:var(--fm);font-size:9px;color:var(--t4);letter-spacing:1px;text-transform:uppercase}
+.cb{padding:16px}
+
+/* KPI */
+.kpi-g{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.kpi{background:var(--bg3);border:0.5px solid var(--bd);border-radius:13px;padding:16px 14px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.kpi:hover{border-color:rgba(0,200,150,.3);transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.kpi-ic{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.kpi-ic svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.kpi-l{font-family:var(--fm);font-size:9px;color:var(--t4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}
+.kpi-v{font-family:var(--fh);font-size:24px;font-weight:700;color:var(--t1);line-height:1;margin-bottom:7px}
+.kpi-v sub{font-size:13px;font-family:var(--fb);font-weight:400;color:var(--t3)}
+.kpi-tr{display:flex;align-items:center;gap:4px;font-size:11px}
+.kpi-tr.up{color:#22c55e}.kpi-tr.dn{color:var(--red)}.kpi-tr.ne{color:var(--t4)}
+.kpi-tr svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Stat row */
+.srow{display:flex;gap:0;border:0.5px solid var(--bd);border-radius:11px;overflow:hidden;margin-bottom:18px}
+.sc{flex:1;padding:12px 14px;border-right:0.5px solid var(--bd2);text-align:center}
+.sc:last-child{border-right:none}
+.sc-v{font-family:var(--fh);font-size:18px;font-weight:700;color:var(--t1)}
+.sc-l{font-family:var(--fm);font-size:8.5px;color:var(--t4);letter-spacing:1px;text-transform:uppercase;margin-top:3px}
+
+/* Chart */
+.ch-area{width:100%;height:160px;position:relative;display:flex;align-items:flex-end;gap:4px;padding:0 2px}
+.ch-bar{flex:1;border-radius:3px 3px 0 0;transition:height .5s cubic-bezier(.4,0,.2,1),opacity .2s;cursor:pointer;min-height:4px}
+.ch-bar:hover{filter:brightness(1.35)}
+.ch-lbls{display:flex;justify-content:space-around;padding:5px 0 0;font-family:var(--fm);font-size:8.5px;color:var(--t4)}
+
+/* Table */
+.tw{overflow-x:auto}
+.dt{width:100%;border-collapse:collapse;font-size:12.5px}
+.dt th{padding:8px 12px;text-align:left;font-family:var(--fm);font-size:8.5px;font-weight:600;color:var(--t4);letter-spacing:1.5px;text-transform:uppercase;border-bottom:0.5px solid var(--bd);white-space:nowrap}
+.dt td{padding:9px 12px;border-bottom:0.5px solid var(--bd2);color:var(--t2);vertical-align:middle}
+.dt tr:hover td{background:rgba(0,200,150,.025)}
+.dt tr:last-child td{border-bottom:none}
+.td-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}
+.td-nm{display:flex;align-items:center;gap:8px}
+.td-mo{font-family:var(--fm);font-size:10.5px;color:var(--t3)}
+
+/* Badge */
+.bx{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:20px;font-family:var(--fm);font-size:9px;font-weight:600;letter-spacing:.5px;white-space:nowrap}
+.bx.g{background:rgba(0,200,150,.1);color:var(--g2);border:0.5px solid rgba(0,200,150,.2)}
+.bx.r{background:rgba(255,77,109,.1);color:#FF4D6D;border:0.5px solid rgba(255,77,109,.2)}
+.bx.a{background:rgba(245,158,11,.1);color:#F59E0B;border:0.5px solid rgba(245,158,11,.2)}
+.bx.b{background:rgba(59,130,246,.1);color:#60A5FA;border:0.5px solid rgba(59,130,246,.2)}
+.bx.p{background:rgba(123,95,255,.1);color:var(--pu2);border:0.5px solid rgba(123,95,255,.2)}
+.bx-dot{width:4px;height:4px;border-radius:50%;background:currentColor}
+
+/* Button */
+.btn{padding:7px 14px;border-radius:7px;font-size:12.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .16s;border:none;white-space:nowrap}
+.btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.btn-p{background:linear-gradient(135deg,var(--gd),var(--g1));color:#000}
+.btn-p:hover{opacity:.88;transform:translateY(-1px)}
+.btn-s{background:rgba(0,200,150,.08);border:0.5px solid rgba(0,200,150,.25);color:var(--g1)}
+.btn-s:hover{background:rgba(0,200,150,.15)}
+.btn-g{background:transparent;border:0.5px solid var(--bd);color:var(--t3)}
+.btn-g:hover{background:var(--bg4);color:var(--t2)}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn-row{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+
+/* Form */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.fl{font-family:var(--fm);font-size:8.5px;font-weight:600;color:var(--t4);letter-spacing:1.5px;text-transform:uppercase}
+.fi,.fs,.fta{background:var(--bg4);border:0.5px solid var(--bd);border-radius:7px;padding:8px 11px;font-size:12.5px;color:var(--t1);outline:none;width:100%;transition:border-color .18s}
+.fi::placeholder,.fta::placeholder{color:var(--t4)}
+.fi:focus,.fs:focus,.fta:focus{border-color:rgba(0,200,150,.35)}
+.fs{cursor:pointer;-webkit-appearance:none}
+.fta{resize:vertical;min-height:70px}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+/* Filter bar */
+.fbar{display:flex;gap:7px;margin-bottom:14px;align-items:center;flex-wrap:wrap}
+.fbar-in{flex:1;min-width:180px;position:relative}
+.fbar-in input{width:100%;background:var(--bg3);border:0.5px solid var(--bd);border-radius:7px;padding:7px 11px 7px 28px;font-size:12px;color:var(--t1);outline:none}
+.fbar-in input:focus{border-color:rgba(0,200,150,.3)}
+.fbar-in svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:12px;height:12px;fill:none;stroke:var(--t4);stroke-width:1.5;stroke-linecap:round}
+.fbar-sel{background:var(--bg3);border:0.5px solid var(--bd);border-radius:7px;padding:7px 11px;font-size:12px;color:var(--t2);outline:none;cursor:pointer}
+
+/* Tabs */
+.tabs{display:flex;border-bottom:0.5px solid var(--bd);margin-bottom:18px}
+.tab{padding:9px 14px;font-size:12.5px;font-weight:500;color:var(--t4);cursor:pointer;border-bottom:2px solid transparent;transition:all .16s;white-space:nowrap}
+.tab.on{color:var(--g2);border-bottom-color:var(--g1)}
+.tab:hover:not(.on){color:var(--t2)}
+
+/* Progress */
+.pb{height:4px;background:var(--bg5);border-radius:3px;overflow:hidden;margin-bottom:14px}
+.pbf{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+
+/* Toggle */
+.tgl{position:relative;width:34px;height:18px;flex-shrink:0}
+.tgl input{opacity:0;width:0;height:0;position:absolute}
+.tgl-sl{position:absolute;inset:0;background:var(--bg5);border-radius:20px;cursor:pointer;border:0.5px solid var(--bd);transition:background .18s}
+.tgl-sl::after{content:'';position:absolute;left:3px;top:50%;transform:translateY(-50%);width:12px;height:12px;border-radius:50%;background:var(--t4);transition:all .18s}
+.tgl input:checked+.tgl-sl{background:rgba(0,200,150,.18);border-color:var(--g1)}
+
+/* Language Toggle */
+.lang-sw{display:flex;align-items:center;background:var(--bg3);border:0.5px solid var(--bd);border-radius:7px;overflow:hidden;flex-shrink:0}
+.lang-btn{padding:5px 10px;font-family:'Roboto',sans-serif;font-size:11px;font-weight:600;cursor:pointer;color:var(--t4);background:transparent;border:none;transition:all .15s;letter-spacing:.5px}
+.lang-btn.on{background:rgba(0,200,150,.12);color:var(--g2)}
+
+.tgl input:checked+.tgl-sl::after{left:17px;background:var(--g1)}
+
+/* Activity */
+.act{display:flex;flex-direction:column;gap:0}
+.act-i{display:flex;gap:9px;padding:9px 0;border-bottom:0.5px solid var(--bd2)}
+.act-i:last-child{border-bottom:none}
+.act-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.act-txt{font-size:12.5px;color:var(--t2);line-height:1.5;flex:1}
+.act-txt strong{color:var(--t1);font-weight:600}
+.act-time{font-family:var(--fm);font-size:10px;color:var(--t4);margin-top:2px}
+
+/* Modal */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.mov.on{display:flex}
+.mo{background:var(--bg3);border:0.5px solid var(--bd);border-radius:17px;width:100%;max-width:540px;overflow:hidden;max-height:90vh;display:flex;flex-direction:column;animation:moIn .25s ease}
+@keyframes moIn{from{transform:translateY(20px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+.mo-h{padding:18px 22px;border-bottom:0.5px solid var(--bd2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.mo-t{font-family:var(--fh);font-size:17px;font-weight:600;color:var(--t1)}
+.mo-x{width:28px;height:28px;border-radius:50%;background:var(--bg4);border:0.5px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t3);font-size:13px;transition:all .16s}
+.mo-x:hover{background:var(--bg5);color:var(--t1)}
+.mo-b{padding:22px;overflow-y:auto;flex:1}
+.mo-f{padding:14px 22px;border-top:0.5px solid var(--bd2);display:flex;justify-content:flex-end;gap:7px;flex-shrink:0}
+
+/* Notification panel */
+.np{position:fixed;top:50px;right:0;width:300px;background:var(--bg3);border-left:0.5px solid var(--bd);height:calc(100vh - 50px);overflow-y:auto;z-index:100;transform:translateX(100%);transition:transform .22s;display:flex;flex-direction:column}
+.np.on{transform:translateX(0)}
+.np-h{padding:14px 16px;border-bottom:0.5px solid var(--bd2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.np-i{padding:11px 16px;border-bottom:0.5px solid var(--bd2);cursor:pointer;transition:background .16s}
+.np-i:hover{background:rgba(0,200,150,.03)}
+.np-i.unr{border-left:2px solid var(--g1)}
+.np-it{font-size:12.5px;font-weight:600;color:var(--t1);margin-bottom:3px}
+.np-ib{font-size:11.5px;color:var(--t3);line-height:1.5}
+.np-it2{font-family:var(--fm);font-size:9.5px;color:var(--t4);margin-top:3px}
+
+/* Donut */
+.dn-leg{display:flex;flex-direction:column;gap:7px;width:100%}
+.dn-li{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--t3)}
+.dn-ld{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dn-lv{margin-left:auto;font-family:var(--fm);font-size:10.5px;color:var(--t2);font-weight:500}
+
+/* Map placeholder */
+.mapp{width:100%;height:200px;background:var(--bg4);border-radius:9px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.mapp-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,200,150,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,150,.035) 1px,transparent 1px);background-size:28px 28px}
+.mapp-dot{position:absolute;width:9px;height:9px;border-radius:50%;transform:translate(-50%,-50%)}
+.mapp-ring{position:absolute;inset:-5px;border-radius:50%;border:1px solid;opacity:.35;animation:rng 1.8s infinite}
+@keyframes rng{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:.15;transform:scale(1.3)}}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .28s ease forwards;opacity:0}
+.d1{animation-delay:.04s}.d2{animation-delay:.08s}.d3{animation-delay:.12s}.d4{animation-delay:.16s}
+
+/* Utility */
+.flex{display:flex}.items-c{align-items:center}.just-b{justify-content:space-between}.gap2{gap:8px}.gap3{gap:12px}.mb3{margin-bottom:12px}.mb4{margin-bottom:16px}.mb5{margin-bottom:20px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g23{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+.g13{display:grid;grid-template-columns:1fr 3fr;gap:12px}
+
+/* Stock item */
+.sk-i{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:0.5px solid var(--bd2)}
+.sk-i:last-child{border-bottom:none}
+.sk-nm{flex:1}.sk-n{font-size:12.5px;font-weight:500;color:var(--t1)}.sk-sku{font-family:var(--fm);font-size:9.5px;color:var(--t4)}
+.sk-bar{width:70px}.sk-q{font-family:var(--fm);font-size:11px;color:var(--t3);min-width:36px;text-align:right}
+
+/* ── Live data additions ── */
+.pagination{display:flex;align-items:center;gap:10px;padding:12px 0;font-size:12px;opacity:.7}
+.pagination button{background:var(--bg3);border:1px solid var(--bd);border-radius:6px;padding:4px 10px;color:inherit;cursor:pointer}
+.pagination button:disabled{opacity:.3;cursor:not-allowed}
+.act-select{background:var(--bg3);border:1px solid var(--bd);border-radius:6px;color:inherit;padding:3px 8px;font-size:11px;cursor:pointer}
+.level-l1{color:#60A5FA}.level-l2{color:var(--g1)}.level-l3{color:var(--pu2)}.level-l4{color:var(--amber)}
+.af-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd2)}
+.af-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.af-txt{flex:1;font-size:12px;line-height:1.5}
+.af-ts{display:block;opacity:.4;font-size:11px;margin-top:2px}
+.af-badge{font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.08)}
+.sw-item{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px}
+.sw-sku{font-family:var(--fm);opacity:.5;flex-shrink:0;font-size:11px}
+.sw-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw-qty.low{color:var(--sky)}.sw-qty.critical{color:var(--amber)}.sw-qty.out{color:var(--red)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<aside class="sb">
+  <div class="sb-logo">
+    <div class="sb-logo-gem">
+      <svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 014 4v2a4 4 0 01-8 0V6a4 4 0 014-4z"/><path d="M6 12a6 6 0 0012 0"/><path d="M12 18v4"/></svg>
+    </div>
+    <div class="sb-logo-text">
+      <div class="name">Anima Care</div>
+      <div class="ver" data-vi="Admin v2.4 · Trực Tuyến" data-en="Admin v2.4 · Live">Admin v2.4 · Trực Tuyến</div>
+    </div>
+  </div>
+
+  <div class="sb-user">
+    <div class="sb-av">SA</div>
+    <div style="flex:1;min-width:0">
+      <div class="sb-un">Super Admin</div>
+      <div class="sb-ur" data-vi="HQ · Hà Nội" data-en="HQ · Hanoi">HQ · Hà Nội</div>
+    </div>
+    <div class="sb-dot"></div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-grp" data-vi="Tổng Quan" data-en="Overview">Tổng Quan</div>
+    <div class="sb-i on" onclick="go('dashboard',this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
+    <div class="sb-i" onclick="go('analytics',this)"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Analytics<span class="sb-bx p">Live</span></div>
+
+    <div class="sb-grp" data-vi="Vận Hành" data-en="Operations">Vận Hành</div>
+    <div class="sb-i" onclick="go('centers',this)"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Cơ Sở<span class="sb-bx">8</span></div>
+    <div class="sb-i" onclick="go('bookings',this)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Lịch Hẹn<span class="sb-bx a">12</span></div>
+    <div class="sb-i" onclick="go('members',this)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Khách Hàng</div>
+    <div class="sb-i" onclick="go('staff',this)"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Kỹ Thuật Viên</div>
+
+    <div class="sb-grp" data-vi="Thương Mại" data-en="Commerce">Thương Mại</div>
+    <div class="sb-i" onclick="go('orders',this)"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>Đơn Hàng<span class="sb-bx r">3</span></div>
+    <div class="sb-i" onclick="go('inventory',this)"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Kho Hàng</div>
+    <div class="sb-i" onclick="go('franchise',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Nhượng Quyền</div>
+
+    <div class="sb-grp" data-vi="Công Nghệ" data-en="Technology">Công Nghệ</div>
+    <div class="sb-i" onclick="go('ai',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>AI Engine</div>
+    <div class="sb-i" onclick="go('academy',this)"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Academy</div>
+
+    <div class="sb-grp" data-vi="Kinh Doanh" data-en="Business">Kinh Doanh</div>
+    <div class="sb-i" onclick="go('revenue',this)"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Doanh Thu</div>
+    <div class="sb-i" onclick="go('investors',this)"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Nhà Đầu Tư</div>
+    <div class="sb-i" onclick="go('content',this)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>CMS / Blog</div>
+
+    <div class="sb-grp" data-vi="Hệ Thống" data-en="System">Hệ Thống</div>
+    <div class="sb-i" onclick="go('settings',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>Cài Đặt</div>
+  </nav>
+
+  <div class="sb-ft">
+    <button class="sb-ft-b" onclick="toggleNP()"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg data-vi="Thông báo" data-en="Alerts">Thông báo</button>
+    <button class="sb-ft-b" onclick="alert('Logged out')"> <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg data-vi="Thoát" data-en="Logout">Thoát</button>
+  </div>
+</aside>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<div class="main">
+  <!-- TOPBAR -->
+  <div class="top">
+    <div class="top-bc" id="tbc">Anima Care Admin <span class="sep">›</span><span>Dashboard</span></div>
+    <div class="top-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="Tìm kiếm..."></div>
+    <div class="top-act">
+      <div class="top-btn" id="langToggle" onclick="toggleLang()" title="Switch Language" style="width:auto;padding:0 10px;gap:5px;font-family:'Roboto Mono',monospace;font-size:10px;font-weight:600;color:var(--g1);border-color:rgba(0,200,150,.25)">
+        <span id="langLabel">VI</span>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+      </div>
+      <div class="top-btn" onclick="openM('mo-book')" title="Tạo lịch hẹn"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+      <div class="top-btn" onclick="toggleNP()" title="Thông báo"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span class="ndot"></span></div>
+      <div class="top-btn" title="Màn hình đầy" onclick="document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen()"><svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg></div>
+    </div>
+    <div class="lang-sw">
+      <button class="lang-btn on" id="lb-vi" onclick="setAdminLang('vi')">VI</button>
+      <button class="lang-btn" id="lb-en" onclick="setAdminLang('en')">EN</button>
+    </div>
+    <div class="top-date" id="tdt"></div>
+  </div>
+
+  <!-- PAGES -->
+  <div class="pages">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="pg on" id="pg-dashboard">
+      <div class="pg-hd"><div class="pg-title" data-vi="Chào mừng, <em>Admin</em> 👋" data-en="Welcome, <em>Admin</em> 👋">Chào mừng, <em>Admin</em> 👋</div><div class="pg-sub" data-vi="Thứ Hai, 17/03/2026 · Tất cả cơ sở hoạt động bình thường" data-en="Monday, 03/17/2026 · All centers operating normally">Thứ Hai, 17/03/2026 · Tất cả cơ sở hoạt động bình thường</div></div>
+
+      <div class="kpi-g">
+        <div class="kpi fu d1" onclick="go('revenue',null)" style="cursor:pointer">
+          <div class="kpi-ic" style="background:rgba(0,200,150,.1);color:var(--g1)"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+          <div class="kpi-l" data-vi="ARR Tháng Này" data-en="This Month ARR">ARR Tháng Này</div>
+          <div class="kpi-v">142<sub>tr đ</sub></div>
+          <div class="kpi-tr up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg data-vi="+12.4% so với T2/2026" data-en="+12.4% vs Feb/2026">+12.4% so với T2/2026</div>
+        </div>
+        <div class="kpi fu d2" onclick="go('bookings',null)">
+          <div class="kpi-ic" style="background:rgba(123,95,255,.1);color:var(--pu2)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          <div class="kpi-l" data-vi="Lịch Hẹn Hôm Nay" data-en="Today's Appointments">Lịch Hẹn Hôm Nay</div>
+          <div class="kpi-v" style="color:var(--pu2)">87</div>
+          <div class="kpi-tr up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg data-vi="+8 so với hôm qua" data-en="+8 vs yesterday">+8 so với hôm qua</div>
+        </div>
+        <div class="kpi fu d3" onclick="go('members',null)">
+          <div class="kpi-ic" style="background:rgba(96,165,250,.1);color:var(--sky)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+          <div class="kpi-l" data-vi="Thành Viên Active" data-en="Active Members">Thành Viên Active</div>
+          <div class="kpi-v" style="color:var(--sky)">1,247</div>
+          <div class="kpi-tr up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg data-vi="+34 tuần này" data-en="+34 this week">+34 tuần này</div>
+        </div>
+        <div class="kpi fu d4" onclick="go('ai',null)">
+          <div class="kpi-ic" style="background:rgba(245,158,11,.1);color:var(--amber)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+          <div class="kpi-l" data-vi="AI Khai Vấn Hôm Nay" data-en="AI Assessments Today">AI Khai Vấn Hôm Nay</div>
+          <div class="kpi-v" style="color:var(--amber)">64</div>
+          <div class="kpi-tr up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg data-vi="96.4% độ chính xác" data-en="96.4% accuracy">96.4% độ chính xác</div>
+        </div>
+      </div>
+
+      <div class="g23 mb4 fu d2">
+        <div class="c">
+          <div class="ch"><div><div class="ct" data-vi="Doanh Thu 6 Tháng" data-en="6-Month Revenue">Doanh Thu 6 Tháng</div><div class="cs">Triệu VND</div></div><div class="flex gap2 items-c"><div class="bx g">↑ +18% YoY</div></div></div>
+          <div class="cb"><div class="ch-area" id="rev-chart"></div><div class="ch-lbls" id="rev-lbls"></div></div>
+        </div>
+        <div class="c">
+          <div class="ch"><div class="ct" data-vi="Trạng Thái Cơ Sở" data-en="Center Status">Trạng Thái Cơ Sở</div><div class="cs" data-vi="8 cơ sở" data-en="8 centers">8 cơ sở</div></div>
+          <div class="cb" style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:14px 16px">
+            <svg width="100" height="100" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="36" fill="none" stroke="var(--bg5)" stroke-width="12"/>
+              <circle cx="50" cy="50" r="36" fill="none" stroke="var(--g1)" stroke-width="12" stroke-dasharray="136 90" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+              <circle cx="50" cy="50" r="36" fill="none" stroke="var(--amber)" stroke-width="12" stroke-dasharray="45 181" stroke-dashoffset="-136" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+              <circle cx="50" cy="50" r="36" fill="none" stroke="var(--red)" stroke-width="12" stroke-dasharray="45 181" stroke-dashoffset="-181" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+              <text x="50" y="47" text-anchor="middle" fill="var(--t1)" font-family="Roboto,sans-serif" font-size="18" font-weight="700">8</text>
+              <text x="50" y="59" text-anchor="middle" fill="var(--t4)" font-family="Roboto,sans-serif" font-size="7.5">Cơ Sở</text>
+            </svg>
+            <div class="dn-leg">
+              <div class="dn-li"><div class="dn-ld" style="background:var(--g1)"></div>Hoạt động<div class="dn-lv">6</div></div>
+              <div class="dn-li"><div class="dn-ld" style="background:var(--amber)"></div>Đang setup<div class="dn-lv">1</div></div>
+              <div class="dn-li"><div class="dn-ld" style="background:var(--red)"></div>Bảo trì<div class="dn-lv">1</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 260px 250px;gap:12px;margin-bottom:18px" class="fu d3">
+        <div class="c">
+          <div class="ch"><div><div class="ct" data-vi="Hoạt Động Gần Đây" data-en="Recent Activity">Hoạt Động Gần Đây</div><div class="cs" data-vi="Thời gian thực" data-en="Real-time">Thời gian thực</div></div><div class="bx g"><div class="bx-dot"></div>Live</div></div>
+          <div class="cb"><div class="act" id="act-feed"></div></div>
+        </div>
+        <div class="c">
+          <div class="ch"><div class="ct">Thao Tác Nhanh</div></div>
+          <div class="cb" style="display:flex;flex-direction:column;gap:7px">
+            <button class="btn btn-p" onclick="openM('mo-book')" style="width:100%;justify-content:center"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg data-vi="Tạo Lịch Hẹn" data-en="New Appointment" data-vi="Tạo Lịch Hẹn" data-en="New Appointment" data-vi="Tạo Lịch Hẹn" data-en="Create Appointment">Tạo Lịch Hẹn</button>
+            <button class="btn btn-s" onclick="openM('mo-mem')" style="width:100%;justify-content:center"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg data-vi="Thêm Khách Hàng" data-en="Add Customer">Thêm Khách Hàng</button>
+            <button class="btn btn-g" onclick="go('orders',null)" style="width:100%;justify-content:center"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/></svg data-vi="Xử Lý Đơn Hàng" data-en="Process Orders">Xử Lý Đơn Hàng</button>
+            <button class="btn btn-g" onclick="go('ai',null)" style="width:100%;justify-content:center"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg data-vi="AI Reports" data-en="AI Reports">AI Reports</button>
+            <div style="padding:10px;background:rgba(255,77,109,.06);border:0.5px solid rgba(255,77,109,.18);border-radius:7px;margin-top:2px">
+              <div style="font-family:var(--fm);font-size:8.5px;color:var(--red);letter-spacing:1px;margin-bottom:5px">⚠ CẦN XỬ LÝ</div>
+              <div style="font-size:12px;color:var(--t2);line-height:1.7">3 đơn hàng chờ xác nhận<br>12 lịch hẹn chờ duyệt<br>1 cơ sở báo cáo sự cố</div>
+            </div>
+          </div>
+        </div>
+        <div class="c">
+          <div class="ch"><div class="ct" data-vi="Tồn Kho Anima 119" data-en="Anima 119 Inventory">Tồn Kho Anima 119</div><div class="bx a">Cảnh báo</div></div>
+          <div class="cb" id="stock-widget"></div>
+        </div>
+      </div>
+
+      <div class="c fu d4">
+        <div class="ch"><div><div class="ct" data-vi="Lịch Hẹn Hôm Nay" data-en="Today's Appointments">Lịch Hẹn Hôm Nay</div><div class="cs" data-vi="17/03/2026 · 87 lịch hẹn" data-en="03/17/2026 · 87 appointments">17/03/2026 · 87 lịch hẹn</div></div><button class="btn btn-sm btn-s" onclick="go('bookings',null)" data-vi="Xem tất cả" data-en="View All">Xem tất cả</button></div>
+        <div class="tw"><table class="dt" id="today-bk"></table></div>
+      </div>
+    </div>
+
+    <!-- ═══ CENTERS ═══ -->
+    <div class="pg" id="pg-centers">
+      <div class="pg-hd flex just-b items-c mb4">
+        <div><div class="pg-title" data-vi="Quản Lý <em>Cơ Sở</em>" data-en="Center <em>Management</em>">Quản Lý <em>Cơ Sở</em></div><div class="pg-sub" data-vi="8 cơ sở · 6 hoạt động · 1 setup · 1 bảo trì" data-en="8 centers · 6 active · 1 setup · 1 maintenance">8 cơ sở · 6 hoạt động · 1 setup · 1 bảo trì</div></div>
+        <button class="btn btn-p" onclick="openM('mo-center')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg data-vi="Thêm Cơ Sở" data-en="Add Center">Thêm Cơ Sở</button>
+      </div>
+      <div class="srow fu"><div class="sc"><div class="sc-v" style="color:var(--g2)">8</div><div class="sc-l" data-vi="Tổng Cơ Sở" data-en="Total Centers">Tổng Cơ Sở</div></div><div class="sc"><div class="sc-v" style="color:var(--g2)">6</div><div class="sc-l" data-vi="Hoạt Động" data-en="Active">Hoạt Động</div></div><div class="sc"><div class="sc-v" style="color:var(--amber)">1</div><div class="sc-l" data-vi="Đang Setup" data-en="In Setup">Đang Setup</div></div><div class="sc"><div class="sc-v" style="color:var(--red)">1</div><div class="sc-l" data-vi="Bảo Trì" data-en="Maintenance">Bảo Trì</div></div><div class="sc"><div class="sc-v">142</div><div class="sc-l" data-vi="Tổng KTV" data-en="Total Therapists">Tổng KTV</div></div><div class="sc"><div class="sc-v">87%</div><div class="sc-l" data-vi="Lấp Đầy TB" data-en="Avg Occupancy">Lấp Đầy TB</div></div></div>
+
+      <div class="c mb4 fu d1">
+        <div class="ch"><div class="ct" data-vi="Bản Đồ Cơ Sở" data-en="Center Map">Bản Đồ Cơ Sở</div><div class="bx g">Thực tế</div></div>
+        <div class="cb">
+          <div class="mapp">
+            <div class="mapp-grid"></div>
+            <div class="mapp-dot" style="top:35%;left:48%;background:var(--g1)"><div class="mapp-ring" style="color:var(--g1)"></div></div>
+            <div class="mapp-dot" style="top:37%;left:52%;background:var(--g1)"><div class="mapp-ring" style="color:var(--g1);animation-delay:.5s"></div></div>
+            <div class="mapp-dot" style="top:62%;left:52%;background:var(--amber)"></div>
+            <div class="mapp-dot" style="top:60%;left:55%;background:var(--g1)"><div class="mapp-ring" style="color:var(--g1);animation-delay:.3s"></div></div>
+            <div style="position:absolute;bottom:8px;left:8px;display:flex;gap:8px">
+              <span style="background:rgba(0,0,0,.65);border-radius:20px;padding:3px 8px;font-size:9.5px;color:var(--t3);display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:var(--g1);display:inline-block"></span>Hoạt động</span>
+              <span style="background:rgba(0,0,0,.65);border-radius:20px;padding:3px 8px;font-size:9.5px;color:var(--t3);display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:var(--amber);display:inline-block"></span>Setup</span>
+              <span style="background:rgba(0,0,0,.65);border-radius:20px;padding:3px 8px;font-size:9.5px;color:var(--t3);display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:var(--red);display:inline-block"></span>Bảo trì</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fbar fu d2">
+        <div class="fbar-in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="Tìm cơ sở..."></div>
+        <select class="fbar-sel"><option>Tất cả trạng thái</option><option>Hoạt động</option><option>Setup</option><option>Bảo trì</option></select>
+        <select class="fbar-sel"><option>Tất cả khu vực</option><option>Hà Nội</option><option>TP.HCM</option></select>
+      </div>
+      <div class="c fu d3"><div class="tw"><table class="dt" id="tbl-centers"></table></div></div>
+    </div>
+
+    <!-- ═══ BOOKINGS ═══ -->
+    <div class="pg" id="pg-bookings">
+      <div class="pg-hd flex just-b items-c mb4">
+        <div><div class="pg-title" data-vi="Lịch Hẹn & <em>Điều Phối</em>" data-en="Appointments & <em>Scheduling</em>">Lịch Hẹn & <em>Điều Phối</em></div><div class="pg-sub" data-vi="Quản lý toàn bộ lịch hẹn tất cả cơ sở" data-en="Manage all appointments across all centers">Quản lý toàn bộ lịch hẹn tất cả cơ sở</div></div>
+        <button class="btn btn-p" onclick="openM('mo-book')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg data-vi="Tạo Lịch Hẹn" data-en="New Appointment" data-vi="Tạo Lịch Hẹn" data-en="New Appointment" data-vi="Tạo Lịch Hẹn" data-en="Create Appointment">Tạo Lịch Hẹn</button>
+      </div>
+      <div class="srow fu"><div class="sc"><div class="sc-v" style="color:var(--g2)">87</div><div class="sc-l" data-vi="Hôm Nay" data-en="Today">Hôm Nay</div></div><div class="sc"><div class="sc-v" style="color:var(--amber)">12</div><div class="sc-l" data-vi="Chờ Duyệt" data-en="Pending">Chờ Duyệt</div></div><div class="sc"><div class="sc-v">54</div><div class="sc-l" data-vi="Đã Xác Nhận" data-en="Confirmed">Đã Xác Nhận</div></div><div class="sc"><div class="sc-v" style="color:var(--g2)">21</div><div class="sc-l" data-vi="Hoàn Thành" data-en="Completed">Hoàn Thành</div></div><div class="sc"><div class="sc-v" style="color:var(--red)">3</div><div class="sc-l" data-vi="Huỷ" data-en="Cancelled">Huỷ</div></div><div class="sc"><div class="sc-v">94%</div><div class="sc-l" data-vi="Đúng Hẹn" data-en="On Time">Đúng Hẹn</div></div></div>
+      <div class="tabs fu"><div class="tab on">Tất Cả</div><div class="tab">Chờ Duyệt <span class="sb-bx a" style="margin-left:4px">12</span></div><div class="tab">Đã Xác Nhận</div><div class="tab">Hoàn Thành</div></div>
+      <div class="fbar fu d1">
+        <div class="fbar-in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="Tên KH, dịch vụ, mã hẹn..."></div>
+        <select class="fbar-sel"><option>Tất cả cơ sở</option><option>Thanh Liệt</option><option>Cầu Giấy</option></select>
+        <select class="fbar-sel"><option>Tất cả dịch vụ</option><option>Khai Vấn AI</option><option>Thảo Mộc Nhiệt</option><option>Bồn Ngâm</option></select>
+        <input type="date" class="fbar-sel" value="2026-03-17">
+      </div>
+      <div class="c fu d2"><div class="tw"><table class="dt" id="tbl-bookings"></table></div></div>
+    </div>
+
+    <!-- ═══ MEMBERS ═══ -->
+    <div class="pg" id="pg-members">
+      <div class="pg-hd flex just-b items-c mb4">
+        <div><div class="pg-title" data-vi="Quản Lý <em>Khách Hàng</em>" data-en="Customer <em>Management</em>">Quản Lý <em>Khách Hàng</em></div><div class="pg-sub" data-vi="1,247 active · 3,891 tổng hồ sơ" data-en="1,247 active · 3,891 total profiles">1,247 active · 3,891 tổng hồ sơ</div></div>
+        <button class="btn btn-p" onclick="openM('mo-mem')"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg data-vi="Thêm Hồ Sơ" data-en="Add Profile">Thêm Hồ Sơ</button>
+      </div>
+      <div class="srow fu"><div class="sc"><div class="sc-v">3,891</div><div class="sc-l" data-vi="Tổng Hồ Sơ" data-en="Total Profiles">Tổng Hồ Sơ</div></div><div class="sc"><div class="sc-v" style="color:var(--g2)">1,247</div><div class="sc-l" data-vi="Active 30 Ngày" data-en="Active 30 Days">Active 30 Ngày</div></div><div class="sc"><div class="sc-v" style="color:var(--pu2)">847</div><div class="sc-l" data-vi="Membership" data-en="Membership">Membership</div></div><div class="sc"><div class="sc-v" style="color:var(--amber)">4.7</div><div class="sc-l" data-vi="NPS Score" data-en="NPS Score">NPS Score</div></div><div class="sc"><div class="sc-v">8.2 tr</div><div class="sc-l" data-vi="LTV TB" data-en="Avg LTV">LTV TB</div></div><div class="sc"><div class="sc-v" style="color:var(--red)">3.2%</div><div class="sc-l" data-vi="Churn Rate" data-en="Churn Rate">Churn Rate</div></div></div>
+
+      <div class="g2 mb4 fu d1">
+        <div class="c">
+          <div class="ch"><div class="ct" data-vi="Phân Bố Thể Tạng" data-en="Constitution Distribution">Phân Bố Thể Tạng</div><div class="cs" data-vi="3,891 hồ sơ" data-en="3,891 profiles">3,891 hồ sơ</div></div>
+          <div class="cb" style="display:flex;flex-direction:column;gap:10px">
+            <div><div class="flex just-b" style="font-size:12px;margin-bottom:5px"><span style="color:var(--t2)">Khí Hư</span><span style="font-family:var(--fm);color:var(--t3)">34% · 1,323</span></div><div class="pb"><div class="pbf" style="width:34%;background:var(--g1)"></div></div></div>
+            <div><div class="flex just-b" style="font-size:12px;margin-bottom:5px"><span style="color:var(--t2)">Huyết Ứ</span><span style="font-family:var(--fm);color:var(--t3)">27% · 1,051</span></div><div class="pb"><div class="pbf" style="width:27%;background:var(--pu2)"></div></div></div>
+            <div><div class="flex just-b" style="font-size:12px;margin-bottom:5px"><span style="color:var(--t2)">Âm Hư</span><span style="font-family:var(--fm);color:var(--t3)">22% · 856</span></div><div class="pb"><div class="pbf" style="width:22%;background:var(--amber)"></div></div></div>
+            <div><div class="flex just-b" style="font-size:12px;margin-bottom:5px"><span style="color:var(--t2)">Dương Hư</span><span style="font-family:var(--fm);color:var(--t3)">17% · 661</span></div><div class="pb"><div class="pbf" style="width:17%;background:var(--sky)"></div></div></div>
+          </div>
+        </div>
+        <div class="c">
+          <div class="ch"><div class="ct" data-vi="Hồ Sơ Mới Theo Tháng" data-en="New Profiles by Month">Hồ Sơ Mới Theo Tháng</div></div>
+          <div class="cb"><div class="ch-area" id="mem-chart"></div><div class="ch-lbls" id="mem-lbls"></div></div>
+        </div>
+      </div>
+
+      <div class="fbar fu d2">
+        <div class="fbar-in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="Tên, SĐT, mã thành viên..."></div>
+        <select class="fbar-sel"><option>Tất cả thể tạng</option><option>Khí Hư</option><option>Huyết Ứ</option><option>Âm Hư</option><option>Dương Hư</option></select>
+        <select class="fbar-sel"><option>Tất cả gói</option><option>Membership</option><option>Thông thường</option></select>
+      </div>
+      <div class="c fu d3"><div class="tw"><table class="dt" id="tbl-members"></table></div></div>
+    </div>
+
+    <!-- ═══ ORDERS ═══ -->
+    <div class="pg" id="pg-orders">
+      <div class="pg-hd flex just-b items-c mb4">
+        <div><div class="pg-title" data-vi="Đơn Hàng <em>Anima 119</em>" data-en="Orders <em>Anima 119</em>">Đơn Hàng <em>Anima 119</em></div><div class="pg-sub" data-vi="D2C + B2B · Giao toàn quốc" data-en="D2C + B2B · Nationwide delivery">D2C + B2B · Giao toàn quốc</div></div>
+        <div class="btn-row"><button class="btn btn-g btn-sm" data-vi="⬇ Export" data-en="⬇ Export">⬇ Export</button><button class="btn btn-p" onclick="openM('mo-order')" data-vi="+ Tạo Đơn" data-en="+ New Order">+ Tạo Đơn</button></div>
+      </div>
+      <div class="srow fu"><div class="sc"><div class="sc-v" style="color:var(--amber)">3</div><div class="sc-l" data-vi="Chờ XN" data-en="Pending">Chờ XN</div></div><div class="sc"><div class="sc-v" style="color:var(--pu2)">18</div><div class="sc-l" data-vi="Đang Xử Lý" data-en="Processing">Đang Xử Lý</div></div><div class="sc"><div class="sc-v" style="color:var(--sky)">24</div><div class="sc-l" data-vi="Đang Giao" data-en="Shipping">Đang Giao</div></div><div class="sc"><div class="sc-v" style="color:var(--g2)">147</div><div class="sc-l" data-vi="Hoàn Thành T3" data-en="Completed Q1">Hoàn Thành T3</div></div><div class="sc"><div class="sc-v">274.5 tr</div><div class="sc-l" data-vi="GMV Tháng" data-en="Monthly GMV">GMV Tháng</div></div><div class="sc"><div class="sc-v">1.87 tr</div><div class="sc-l" data-vi="AOV TB" data-en="Avg AOV">AOV TB</div></div></div>
+      <div class="fbar fu d1">
+        <div class="fbar-in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="Mã đơn, tên KH, SĐT..."></div>
+        <select class="fbar-sel"><option>Tất cả trạng thái</option><option>Chờ xác nhận</option><option>Đang giao</option><option>Hoàn thành</option></select>
+        <select class="fbar-sel"><option>Tất cả SKU</option><option>A119-10 (1 hộp)</option><option>A119-30 (3 hộp)</option><option>A119-120 (12 hộp)</option></select>
+      </div>
+      <div class="c fu d2"><div class="tw"><table class="dt" id="tbl-orders"></table></div></div>
+    </div>
+
+    <!-- ═══ REVENUE ═══ -->
+    <div class="pg" id="pg-revenue">
+      <div class="pg-hd"><div class="pg-title" data-vi="Doanh Thu & <em>Tài Chính</em>" data-en="Revenue & <em>Finance</em>">Doanh Thu & <em>Tài Chính</em></div><div class="pg-sub" data-vi="Lộ trình ARR · Mục tiêu IPO SGX 2031" data-en="ARR roadmap · IPO SGX 2031 target">Lộ trình ARR · Mục tiêu IPO SGX 2031</div></div>
+      <div class="srow fu"><div class="sc"><div class="sc-v" style="color:var(--g2)">142 tr</div><div class="sc-l" data-vi="ARR Tháng Này" data-en="This Month ARR">ARR Tháng Này</div></div><div class="sc"><div class="sc-v">1.7 tỷ</div><div class="sc-l" data-vi="ARR Năm 2026" data-en="2026 Annual ARR">ARR Năm 2026</div></div><div class="sc"><div class="sc-v" style="color:var(--pu2)">67%</div><div class="sc-l" data-vi="Recurring %" data-en="Recurring %">Recurring %</div></div><div class="sc"><div class="sc-v" style="color:var(--amber)">72%</div><div class="sc-l" data-vi="Gross Margin" data-en="Gross Margin">Gross Margin</div></div><div class="sc"><div class="sc-v">+18%</div><div class="sc-l" data-vi="MoM Growth" data-en="MoM Growth">MoM Growth</div></div><div class="sc"><div class="sc-v" style="color:var(--g2)">$300M</div><div class="sc-l" data-vi="Target 2031" data-en="Target 2031">Target 2031</div></div></div>
+
+      <div class="g23 mb4 fu d1">
+        <div class="c">
+          <div class="ch"><div class="ct" data-vi="Lộ Trình ARR 2025–2031" data-en="ARR Roadmap 2025–2031">Lộ Trình ARR 2025–2031</div><div class="bx g">On Track</div></div>
+          <div class="cb"><div class="ch-area" id="arr-chart"></div><div class="ch-lbls" id="arr-lbls"></div></div>
+        </div>
+        <div class="c">
+          <div class="ch"><div class="ct" data-vi="Cơ Cấu Doanh Thu" data-en="Revenue Structure">Cơ Cấu Doanh Thu</div><div class="cs" data-vi="8 tầng" data-en="8 tiers">8 tầng</div></div>
+          <div class="cb" style="display:flex;flex-direction:column;gap:9px">
+            <div><div class="flex just-b" style="font-size:11.5px;margin-bottom:4px"><span>T1 · Anima 119</span><span style="font-family:var(--fm);color:var(--t3)">38%</span></div><div class="pb"><div class="pbf" style="width:38%;background:var(--g1)"></div></div></div>
+            <div><div class="flex just-b" style="font-size:11.5px;margin-bottom:4px"><span>T2 · Dịch Vụ Spa</span><span style="font-family:var(--fm);color:var(--t3)">28%</span></div><div class="pb"><div class="pbf" style="width:28%;background:var(--g2)"></div></div></div>
+            <div><div class="flex just-b" style="font-size:11.5px;margin-bottom:4px"><span>T3 · Membership</span><span style="font-family:var(--fm);color:var(--t3)">18%</span></div><div class="pb"><div class="pbf" style="width:18%;background:var(--pu2)"></div></div></div>
+            <div><div class="flex just-b" style="font-size:11.5px;margin-bottom:4px"><span>T4 · Franchise</span><span style="font-family:var(--fm);color:var(--t3)">10%</span></div><div class="pb"><div class="pbf" style="width:10%;background:var(--amber)"></div></div></div>
+            <div><div class="flex just-b" style="font-size:11.5px;margin-bottom:4px"><span>T5–T8 · Khác</span><span style="font-family:var(--fm);color:var(--t3)">6%</span></div><div class="pb"><div class="pbf" style="width:6%;background:var(--sky)"></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="c fu d2"><div class="ch"><div class="ct" data-vi="Giao Dịch Gần Đây" data-en="Recent Transactions">Giao Dịch Gần Đây</div><div class="bx g">142 tr hôm nay</div></div><div class="tw"><table class="dt" id="tbl-rev"></table></div></div>
+    </div>
+
+    <!-- ═══ AI ENGINE ═══ -->
+    <div class="pg" id="pg-ai">
+      <div class="pg-hd"><div class="pg-title" data-vi="Anima AI <em>Engine</em>" data-en="Anima AI <em>Engine</em>">Anima AI <em>Engine</em></div><div class="pg-sub" data-vi="Hệ thần kinh số · 50,847 hồ sơ thể tạng ASEAN" data-en="Digital nervous system · 50,847 ASEAN constitution records">Hệ thần kinh số · 50,847 hồ sơ thể tạng ASEAN</div></div>
+      <div class="srow fu"><div class="sc"><div class="sc-v" style="color:var(--pu2)">64</div><div class="sc-l" data-vi="Khai Vấn Hôm Nay" data-en="AI Assessments Today">Khai Vấn Hôm Nay</div></div><div class="sc"><div class="sc-v" style="color:var(--g2)">96.4%</div><div class="sc-l" data-vi="Độ Chính Xác" data-en="Accuracy">Độ Chính Xác</div></div><div class="sc"><div class="sc-v">4.7 ph</div><div class="sc-l" data-vi="Thời Gian TB" data-en="Avg Duration">Thời Gian TB</div></div><div class="sc"><div class="sc-v">50,847</div><div class="sc-l" data-vi="Tổng Dataset" data-en="Total Dataset">Tổng Dataset</div></div><div class="sc"><div class="sc-v" style="color:var(--amber)">2,341</div><div class="sc-l" data-vi="Scans T3/2026" data-en="Scans Q1/2026">Scans T3/2026</div></div><div class="sc"><div class="sc-v" style="color:var(--g2)">v2.4</div><div class="sc-l" data-vi="Model Version" data-en="Model Version">Model Version</div></div></div>
+
+      <div class="g2 mb4 fu d1">
+        <div class="c">
+          <div class="ch"><div class="ct" data-vi="Khai Vấn 7 Ngày" data-en="7-Day Assessments">Khai Vấn 7 Ngày</div><div class="bx p">AI Running</div></div>
+          <div class="cb"><div class="ch-area" id="ai-chart"></div><div class="ch-lbls" id="ai-lbls"></div></div>
+        </div>
+        <div class="c">
+          <div class="ch"><div class="ct" data-vi="Phân Bố Thể Tạng Hôm Nay" data-en="Today's Constitution Distribution">Phân Bố Thể Tạng Hôm Nay</div></div>
+          <div class="cb" style="display:flex;flex-direction:column;gap:10px">
+            <div class="flex items-c gap2" style="font-size:12.5px">
+              <div style="width:38px;height:38px;border-radius:9px;background:rgba(0,200,150,.1);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:12px;font-weight:600;color:var(--g2);flex-shrink:0">34%</div>
+              <div><div style="color:var(--t1);font-weight:500">Khí Hư</div><div style="color:var(--t4);font-size:10.5px;font-family:var(--fm)">22 ca · Phác đồ: Bổ khí</div></div>
+            </div>
+            <div class="flex items-c gap2" style="font-size:12.5px">
+              <div style="width:38px;height:38px;border-radius:9px;background:rgba(123,95,255,.1);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:12px;font-weight:600;color:var(--pu2);flex-shrink:0">27%</div>
+              <div><div style="color:var(--t1);font-weight:500">Huyết Ứ</div><div style="color:var(--t4);font-size:10.5px;font-family:var(--fm)">17 ca · Phác đồ: Hoạt huyết</div></div>
+            </div>
+            <div class="flex items-c gap2" style="font-size:12.5px">
+              <div style="width:38px;height:38px;border-radius:9px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:12px;font-weight:600;color:var(--amber);flex-shrink:0">22%</div>
+              <div><div style="color:var(--t1);font-weight:500">Âm Hư</div><div style="color:var(--t4);font-size:10.5px;font-family:var(--fm)">14 ca · Phác đồ: Dưỡng âm</div></div>
+            </div>
+            <div class="flex items-c gap2" style="font-size:12.5px">
+              <div style="width:38px;height:38px;border-radius:9px;background:rgba(96,165,250,.1);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:12px;font-weight:600;color:var(--sky);flex-shrink:0">17%</div>
+              <div><div style="color:var(--t1);font-weight:500">Dương Hư</div><div style="color:var(--t4);font-size:10.5px;font-family:var(--fm)">11 ca · Phác đồ: Ôn dương</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="c fu d2"><div class="ch"><div class="ct" data-vi="Lịch Sử Khai Vấn AI" data-en="AI Assessment History">Lịch Sử Khai Vấn AI</div></div><div class="tw"><table class="dt" id="tbl-ai"></table></div></div>
+    </div>
+
+    <!-- ═══ STAFF ═══ -->
+    <div class="pg" id="pg-staff">
+      <div class="pg-hd flex just-b items-c mb4">
+        <div><div class="pg-title" data-vi="Kỹ Thuật <em>Viên</em>" data-en="Therapist <em>Management</em>">Kỹ Thuật <em>Viên</em></div><div class="pg-sub" data-vi="142 KTV · 8 cơ sở · Lịch làm việc & hiệu suất" data-en="142 therapists · 8 centers · Schedules & performance">142 KTV · 8 cơ sở · Lịch làm việc & hiệu suất</div></div>
+        <button class="btn btn-p" onclick="openM('mo-staff')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg data-vi="Thêm KTV" data-en="Add Therapist" data-vi="Thêm KTV" data-en="Add Therapist">Thêm KTV</button>
+      </div>
+      <div class="srow fu"><div class="sc"><div class="sc-v">142</div><div class="sc-l" data-vi="Tổng KTV" data-en="Total Therapists">Tổng KTV</div></div><div class="sc"><div class="sc-v" style="color:var(--g2)">128</div><div class="sc-l" data-vi="Đang Hoạt Động" data-en="Currently Active">Đang Hoạt Động</div></div><div class="sc"><div class="sc-v" style="color:var(--amber)">14</div><div class="sc-l" data-vi="Đang Đào Tạo" data-en="In Training">Đang Đào Tạo</div></div><div class="sc"><div class="sc-v">4.8</div><div class="sc-l" data-vi="Rating TB" data-en="Avg Rating">Rating TB</div></div><div class="sc"><div class="sc-v">91%</div><div class="sc-l" data-vi="Tỷ Lệ Đúng Hẹn" data-en="On-Time Rate">Tỷ Lệ Đúng Hẹn</div></div><div class="sc"><div class="sc-v" style="color:var(--pu2)">L1–L4</div><div class="sc-l">Cấp Độ</div></div></div>
+      <div class="fbar fu d1">
+        <div class="fbar-in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="Tên KTV, mã nhân viên..."></div>
+        <select class="fbar-sel"><option>Tất cả cơ sở</option><option>Thanh Liệt</option><option>Cầu Giấy</option></select>
+        <select class="fbar-sel"><option>Tất cả cấp độ</option><option>L1 KTV Cơ Bản</option><option>L2 KTV Chuyên Sâu</option><option>L3 Trưởng KT</option><option>L4 Master Trainer</option></select>
+      </div>
+      <div class="c fu d2"><div class="tw"><table class="dt" id="tbl-staff"></table></div></div>
+    </div>
+
+    <!-- ═══ INVENTORY ═══ -->
+    <div class="pg" id="pg-inventory">
+      <div class="pg-hd flex just-b items-c mb4">
+        <div><div class="pg-title" data-vi="Quản Lý <em>Kho Hàng</em>" data-en="Inventory <em>Management</em>">Quản Lý <em>Kho Hàng</em></div><div class="pg-sub" data-vi="Anima 119 · Các SKU · Nhập xuất tồn" data-en="Anima 119 · SKUs · Stock in/out">Anima 119 · Các SKU · Nhập xuất tồn</div></div>
+        <button class="btn btn-p" data-vi="+ Nhập Kho" data-en="+ Stock In">+ Nhập Kho</button>
+      </div>
+      <div class="srow fu"><div class="sc"><div class="sc-v">6</div><div class="sc-l" data-vi="Tổng SKU" data-en="Total SKUs">Tổng SKU</div></div><div class="sc"><div class="sc-v" style="color:var(--g2)">1,240</div><div class="sc-l" data-vi="Tổng Tồn (hộp)" data-en="Total Stock (boxes)">Tổng Tồn (hộp)</div></div><div class="sc"><div class="sc-v" style="color:var(--red)">3</div><div class="sc-l" data-vi="SKU Cảnh Báo" data-en="SKU Alerts">SKU Cảnh Báo</div></div><div class="sc"><div class="sc-v">147</div><div class="sc-l" data-vi="Xuất Kho T3" data-en="Out Q1">Xuất Kho T3</div></div><div class="sc"><div class="sc-v">230.6 tr</div><div class="sc-l" data-vi="Giá Trị Tồn" data-en="Stock Value">Giá Trị Tồn</div></div><div class="sc"><div class="sc-v">12 ng</div><div class="sc-l" data-vi="Ngày Tồn TB" data-en="Avg Stock Days">Ngày Tồn TB</div></div></div>
+      <div class="c fu d1"><div class="tw"><table class="dt" id="tbl-inv"></table></div></div>
+    </div>
+
+    <!-- ═══ FRANCHISE ═══ -->
+    <div class="pg" id="pg-franchise">
+      <div class="pg-hd flex just-b items-c mb4">
+        <div><div class="pg-title" data-vi="Nhượng Quyền <em>Franchise</em>" data-en="Franchise <em>Management</em>">Nhượng Quyền <em>Franchise</em></div><div class="pg-sub" data-vi="Đối tác nhượng quyền · Doanh thu · Hợp đồng" data-en="Franchise partners · Revenue · Contracts">Đối tác nhượng quyền · Doanh thu · Hợp đồng</div></div>
+        <button class="btn btn-p" onclick="openM('mo-center')" data-vi="+ Thêm Franchise" data-en="+ Add Franchise">+ Thêm Franchise</button>
+      </div>
+      <div class="srow fu"><div class="sc"><div class="sc-v" style="color:var(--g2)">3</div><div class="sc-l" data-vi="Đối Tác Hiện Tại" data-en="Current Partners">Đối Tác Hiện Tại</div></div><div class="sc"><div class="sc-v" style="color:var(--amber)">5</div><div class="sc-l" data-vi="Đang Đàm Phán" data-en="In Negotiation">Đang Đàm Phán</div></div><div class="sc"><div class="sc-v">42.5 tr</div><div class="sc-l" data-vi="Revenue T3" data-en="Revenue Q1">Revenue T3</div></div><div class="sc"><div class="sc-v" style="color:var(--pu2)">Lite/Full</div><div class="sc-l" data-vi="2 Gói" data-en="2 Packages">2 Gói</div></div><div class="sc"><div class="sc-v">300+</div><div class="sc-l" data-vi="Target 2031" data-en="Target 2031">Target 2031</div></div><div class="sc"><div class="sc-v" style="color:var(--g2)">ASEAN</div><div class="sc-l" data-vi="Thị Trường" data-en="Market">Thị Trường</div></div></div>
+      <div class="c fu d1"><div class="tw"><table class="dt" id="tbl-fr"></table></div></div>
+    </div>
+
+    <!-- ═══ ACADEMY ═══ -->
+    <div class="pg" id="pg-academy">
+      <div class="pg-hd flex just-b items-c mb4">
+        <div><div class="pg-title" data-vi="Anima Care <em>Academy</em>" data-en="Anima Care <em>Academy</em>">Anima Care <em>Academy</em></div><div class="pg-sub" data-vi="Đào tạo KTV · Chứng chỉ L1–L4 · 7 quốc gia" data-en="Therapist training · L1–L4 Certificates · 7 countries">Đào tạo KTV · Chứng chỉ L1–L4 · 7 quốc gia</div></div>
+        <button class="btn btn-p" data-vi="+ Khai Giảng" data-en="+ New Cohort">+ Khai Giảng</button>
+      </div>
+      <div class="srow fu"><div class="sc"><div class="sc-v">4</div><div class="sc-l" data-vi="Cấp Độ L1–L4" data-en="L1–L4 Levels">Cấp Độ L1–L4</div></div><div class="sc"><div class="sc-v" style="color:var(--g2)">34</div><div class="sc-l" data-vi="Học Viên Hiện Tại" data-en="Current Students">Học Viên Hiện Tại</div></div><div class="sc"><div class="sc-v" style="color:var(--pu2)">2</div><div class="sc-l" data-vi="Khoá Đang Học" data-en="Active Courses">Khoá Đang Học</div></div><div class="sc"><div class="sc-v">200+</div><div class="sc-l" data-vi="Giờ Học" data-en="Learning Hours">Giờ Học</div></div><div class="sc"><div class="sc-v" style="color:var(--amber)">7</div><div class="sc-l" data-vi="Quốc Gia" data-en="Countries">Quốc Gia</div></div><div class="sc"><div class="sc-v">100%</div><div class="sc-l" data-vi="Tỷ Lệ Có Việc" data-en="Employment Rate">Tỷ Lệ Có Việc</div></div></div>
+      <div class="g2 fu d1 mb4">
+        <div class="c">
+          <div class="ch"><div class="ct" data-vi="Học Viên Hiện Tại" data-en="Current Students">Học Viên Hiện Tại</div></div>
+          <div class="tw"><table class="dt" id="tbl-acad"></table></div>
+        </div>
+        <div class="c">
+          <div class="ch"><div class="ct" data-vi="Lịch Khai Giảng" data-en="Course Schedule">Lịch Khai Giảng</div></div>
+          <div class="cb" style="display:flex;flex-direction:column;gap:10px" id="acad-sched"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ INVESTORS ═══ -->
+    <div class="pg" id="pg-investors">
+      <div class="pg-hd"><div class="pg-title" data-vi="Nhà Đầu Tư & <em>IPO 2031</em>" data-en="Investors & <em>IPO 2031</em>">Nhà Đầu Tư & <em>IPO 2031</em></div><div class="pg-sub" data-vi="Lộ trình vốn · SGX Mainboard · Target $4.7B" data-en="Funding roadmap · SGX Mainboard · Target $4.7B">Lộ trình vốn · SGX Mainboard · Target $4.7B</div></div>
+      <div class="srow fu"><div class="sc"><div class="sc-v" style="color:var(--g2)">Seed</div><div class="sc-l" data-vi="Round Hiện Tại" data-en="Current Round">Round Hiện Tại</div></div><div class="sc"><div class="sc-v">$1–3M</div><div class="sc-l" data-vi="Mục Tiêu Seed" data-en="Seed Target">Mục Tiêu Seed</div></div><div class="sc"><div class="sc-v" style="color:var(--pu2)">Q2/2026</div><div class="sc-l" data-vi="Timeline" data-en="Timeline">Timeline</div></div><div class="sc"><div class="sc-v">$4.7B</div><div class="sc-l" data-vi="IPO Valuation" data-en="IPO Valuation">IPO Valuation</div></div><div class="sc"><div class="sc-v" style="color:var(--amber)">2031</div><div class="sc-l" data-vi="IPO Target Year" data-en="IPO Target Year">IPO Target Year</div></div><div class="sc"><div class="sc-v">SGX</div><div class="sc-l" data-vi="Sàn Niêm Yết" data-en="Exchange">Sàn Niêm Yết</div></div></div>
+
+      <div class="g2 mb4 fu d1">
+        <div class="c">
+          <div class="ch"><div class="ct" data-vi="Lộ Trình Gọi Vốn" data-en="Funding Roadmap">Lộ Trình Gọi Vốn</div></div>
+          <div class="cb" style="display:flex;flex-direction:column;gap:0" id="inv-roadmap"></div>
+        </div>
+        <div class="c">
+          <div class="ch"><div class="ct" data-vi="KPI Mục Tiêu IPO" data-en="IPO Target KPIs">KPI Mục Tiêu IPO</div></div>
+          <div class="cb" style="display:flex;flex-direction:column;gap:9px" id="ipo-kpi"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CONTENT ═══ -->
+    <div class="pg" id="pg-content">
+      <div class="pg-hd flex just-b items-c mb4">
+        <div><div class="pg-title" data-vi="CMS · <em>Nội Dung</em>" data-en="CMS · <em>Content</em>">CMS · <em>Nội Dung</em></div><div class="pg-sub" data-vi="Blog · Sự kiện · Banner · SEO" data-en="Blog · Events · Banner · SEO">Blog · Sự kiện · Banner · SEO</div></div>
+        <button class="btn btn-p" data-vi="+ Viết Bài" data-en="+ New Post">+ Viết Bài</button>
+      </div>
+      <div class="srow fu"><div class="sc"><div class="sc-v">12</div><div class="sc-l" data-vi="Bài Đã Xuất Bản" data-en="Published Posts">Bài Đã Xuất Bản</div></div><div class="sc"><div class="sc-v" style="color:var(--amber)">3</div><div class="sc-l" data-vi="Bản Nháp" data-en="Drafts">Bản Nháp</div></div><div class="sc"><div class="sc-v" style="color:var(--g2)">4</div><div class="sc-l" data-vi="Sự Kiện Sắp Tới" data-en="Upcoming Events">Sự Kiện Sắp Tới</div></div><div class="sc"><div class="sc-v">2,847</div><div class="sc-l" data-vi="Lượt Xem T3" data-en="Views Q1">Lượt Xem T3</div></div><div class="sc"><div class="sc-v">340</div><div class="sc-l" data-vi="Newsletter Subs" data-en="Newsletter Subs">Newsletter Subs</div></div><div class="sc"><div class="sc-v">4.2s</div><div class="sc-l" data-vi="Avg Read Time" data-en="Avg Read Time">Avg Read Time</div></div></div>
+      <div class="c fu d1"><div class="tw"><table class="dt" id="tbl-cms"></table></div></div>
+    </div>
+
+    <!-- ═══ ANALYTICS ═══ -->
+    <div class="pg" id="pg-analytics">
+      <div class="pg-hd"><div class="pg-title" data-vi="Analytics <em>Nâng Cao</em>" data-en="Advanced <em>Analytics</em>">Analytics <em>Nâng Cao</em></div><div class="pg-sub" data-vi="Funnel · Retention · Cohort · LTV" data-en="Funnel · Retention · Cohort · LTV">Funnel · Retention · Cohort · LTV</div></div>
+      <div class="g2 fu mb4">
+        <div class="c">
+          <div class="ch"><div class="ct" data-vi="Conversion Funnel" data-en="Conversion Funnel">Conversion Funnel</div></div>
+          <div class="cb" id="funnel-widget"></div>
+        </div>
+        <div class="c">
+          <div class="ch"><div class="ct" data-vi="Retention 3 Tháng" data-en="3-Month Retention">Retention 3 Tháng</div></div>
+          <div class="cb"><div class="ch-area" id="ret-chart"></div><div class="ch-lbls" id="ret-lbls"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SETTINGS ═══ -->
+    <div class="pg" id="pg-settings">
+      <div class="pg-hd"><div class="pg-title" data-vi="Cài Đặt <em>Hệ Thống</em>" data-en="System <em>Settings</em>">Cài Đặt <em>Hệ Thống</em></div><div class="pg-sub" data-vi="Cấu hình nền tảng Anima Care Global" data-en="Configure Anima Care Global platform">Cấu hình nền tảng Anima Care Global</div></div>
+      <div class="g2 fu">
+        <div>
+          <div class="c mb4">
+            <div class="ch"><div class="ct" data-vi="Thông Tin Hệ Thống" data-en="System Information">Thông Tin Hệ Thống</div></div>
+            <div class="cb">
+              <div class="fg"><div class="fl">Tên Công Ty</div><input class="fi" value="Anima Care Global JSC"></div>
+              <div class="fg"><div class="fl">Hotline</div><input class="fi" value="0913 156 676"></div>
+              <div class="fg"><div class="fl" data-vi="Email" data-en="Email">Email</div><input class="fi" value="info@animacare.global"></div>
+              <div class="fg"><div class="fl">Website</div><input class="fi" value="animacare.global"></div>
+              <div class="fg"><div class="fl">Địa Chỉ HQ</div><input class="fi" value="286 Nguyễn Xiển, Thanh Liệt, Hà Nội"></div>
+              <button class="btn btn-p" data-vi="Lưu Thay Đổi" data-en="Save Changes">Lưu Thay Đổi</button>
+            </div>
+          </div>
+          <div class="c">
+            <div class="ch"><div class="ct" data-vi="Tích Hợp & API" data-en="Integrations & API">Tích Hợp & API</div></div>
+            <div class="cb" style="display:flex;flex-direction:column;gap:11px">
+              <div class="flex just-b items-c"><div><div style="font-size:12.5px;font-weight:500;color:var(--t1)">Anima AI Engine v2.4</div><div style="font-size:10.5px;color:var(--t4);font-family:var(--fm)">96.4% accuracy · Connected</div></div><div class="bx g">Live</div></div>
+              <div class="flex just-b items-c"><div><div style="font-size:12.5px;font-weight:500;color:var(--t1)">Merchant OS (POS + CRM)</div><div style="font-size:10.5px;color:var(--t4);font-family:var(--fm)">Booking · CRM · Payment</div></div><div class="bx g">Live</div></div>
+              <div class="flex just-b items-c"><div><div style="font-size:12.5px;font-weight:500;color:var(--t1)">Insurance Bridge API</div><div style="font-size:10.5px;color:var(--t4);font-family:var(--fm)">Staging · API v1</div></div><div class="bx a">Beta</div></div>
+              <div class="flex just-b items-c"><div><div style="font-size:12.5px;font-weight:500;color:var(--t1)">Consumer App iOS/Android</div><div style="font-size:10.5px;color:var(--t4);font-family:var(--fm)">v1.2.4 · 4.7★</div></div><div class="bx g">Live</div></div>
+              <div class="flex just-b items-c"><div><div style="font-size:12.5px;font-weight:500;color:var(--t1)">Zalo OA Integration</div><div style="font-size:10.5px;color:var(--t4);font-family:var(--fm)">Notification · Mini App</div></div><div class="bx b">Dev</div></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="c mb4">
+            <div class="ch"><div class="ct" data-vi="Phân Quyền Admin" data-en="Admin Permissions">Phân Quyền Admin</div></div>
+            <div class="cb" style="display:flex;flex-direction:column;gap:11px">
+              <div class="flex just-b items-c"><div><div style="font-size:12.5px;font-weight:500;color:var(--t1)">Super Admin (HQ)</div><div style="font-size:10.5px;color:var(--t4)">Toàn quyền hệ thống</div></div><label class="tgl"><input type="checkbox" checked><span class="tgl-sl"></span></label></div>
+              <div class="flex just-b items-c"><div><div style="font-size:12.5px;font-weight:500;color:var(--t1)">Quản Lý Cơ Sở</div><div style="font-size:10.5px;color:var(--t4)">Booking · Staff · Report cơ sở</div></div><label class="tgl"><input type="checkbox" checked><span class="tgl-sl"></span></label></div>
+              <div class="flex just-b items-c"><div><div style="font-size:12.5px;font-weight:500;color:var(--t1)">Kỹ Thuật Viên</div><div style="font-size:10.5px;color:var(--t4)">Lịch hẹn · Hồ sơ khách hàng</div></div><label class="tgl"><input type="checkbox" checked><span class="tgl-sl"></span></label></div>
+              <div class="flex just-b items-c"><div><div style="font-size:12.5px;font-weight:500;color:var(--t1)">Franchise Partner</div><div style="font-size:10.5px;color:var(--t4)">Cơ sở riêng · Báo cáo doanh thu</div></div><label class="tgl"><input type="checkbox" checked><span class="tgl-sl"></span></label></div>
+              <div class="flex just-b items-c"><div><div style="font-size:12.5px;font-weight:500;color:var(--t1)">Investor View</div><div style="font-size:10.5px;color:var(--t4)">KPI · Revenue · IPO dashboard</div></div><label class="tgl"><input type="checkbox"><span class="tgl-sl"></span></label></div>
+            </div>
+          </div>
+          <div class="c">
+            <div class="ch"><div class="ct" data-vi="Thông Báo & Alerts" data-en="Notifications & Alerts">Thông Báo & Alerts</div></div>
+            <div class="cb" style="display:flex;flex-direction:column;gap:10px">
+              <div class="flex just-b items-c"><span style="font-size:12.5px;color:var(--t2)">Đơn hàng mới</span><label class="tgl"><input type="checkbox" checked><span class="tgl-sl"></span></label></div>
+              <div class="flex just-b items-c"><span style="font-size:12.5px;color:var(--t2)">Lịch hẹn chờ duyệt</span><label class="tgl"><input type="checkbox" checked><span class="tgl-sl"></span></label></div>
+              <div class="flex just-b items-c"><span style="font-size:12.5px;color:var(--t2)">Tồn kho thấp (&lt;50 hộp)</span><label class="tgl"><input type="checkbox" checked><span class="tgl-sl"></span></label></div>
+              <div class="flex just-b items-c"><span style="font-size:12.5px;color:var(--t2)">Báo cáo cuối ngày</span><label class="tgl"><input type="checkbox" checked><span class="tgl-sl"></span></label></div>
+              <div class="flex just-b items-c"><span style="font-size:12.5px;color:var(--t2)">AI accuracy &lt;95%</span><label class="tgl"><input type="checkbox"><span class="tgl-sl"></span></label></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /pages -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ═══ NOTIFICATION PANEL ═══ -->
+<div class="np" id="np">
+  <div class="np-h"><div style="font-size:13.5px;font-weight:600;color:var(--t1)" data-vi="Thông Báo" data-en="Notifications">Thông Báo</div><div class="bx r">5 mới</div></div>
+  <div class="np-i unr"><div class="np-it" data-vi="🛒 Đơn hàng mới #ORD-2847" data-en="🛒 New order #ORD-2847">🛒 Đơn hàng mới #ORD-2847</div><div class="np-ib" data-vi="Nguyễn Thị Hoa — 3 hộp Anima 119 (5.604.000đ) · COD · Hà Nội" data-en="Nguyen Thi Hoa — 3 boxes Anima 119 (5,604,000₫) · COD · Hanoi">Nguyễn Thị Hoa — 3 hộp Anima 119 (5.604.000đ) · COD · Hà Nội</div><div class="np-it2">2 phút trước</div></div>
+  <div class="np-i unr"><div class="np-it" data-vi="📅 12 lịch hẹn chờ duyệt" data-en="📅 12 appointments pending approval">📅 12 lịch hẹn chờ duyệt</div><div class="np-ib" data-vi="Thanh Liệt: 7 lịch · Cầu Giấy: 5 lịch" data-en="Thanh Liet: 7 · Cau Giay: 5">Thanh Liệt: 7 lịch · Cầu Giấy: 5 lịch</div><div class="np-it2">8 phút trước</div></div>
+  <div class="np-i unr"><div class="np-it" data-vi="⚠️ Tồn kho thấp" data-en="⚠️ Low inventory">⚠️ Tồn kho thấp</div><div class="np-ib" data-vi="A119-Standard còn 42 hộp · Dự kiến hết 3 ngày" data-en="A119-Standard: 42 boxes left · Est. 3 days">A119-Standard còn 42 hộp · Dự kiến hết 3 ngày</div><div class="np-it2">15 phút trước</div></div>
+  <div class="np-i unr"><div class="np-it" data-vi="🤖 AI Report — Tuần 11" data-en="🤖 AI Report — Week 11">🤖 AI Report — Tuần 11</div><div class="np-ib" data-vi="96.4% accuracy · 312 khai vấn · Khí Hư 34%" data-en="96.4% accuracy · 312 assessments · Qi Deficiency 34%">96.4% accuracy · 312 khai vấn · Khí Hư 34%</div><div class="np-it2">1 giờ trước</div></div>
+  <div class="np-i unr"><div class="np-it" data-vi="✅ Cơ sở Cầu Giấy setup xong" data-en="✅ Cau Giay center setup complete">✅ Cơ sở Cầu Giấy setup xong</div><div class="np-ib" data-vi="Chờ phê duyệt khai trương chính thức" data-en="Awaiting official opening approval">Chờ phê duyệt khai trương chính thức</div><div class="np-it2">3 giờ trước</div></div>
+</div>
+
+<!-- ═══ MODALS ═══ -->
+<!-- Booking Modal -->
+<div class="mov" id="mo-book">
+  <div class="mo">
+    <div class="mo-h"><div class="mo-t" data-vi="Tạo Lịch Hẹn" data-en="New Appointment">Tạo Lịch Hẹn</div><div class="mo-x" onclick="closeM('mo-book')">✕</div></div>
+    <div class="mo-b" id="bk-form">
+      <div class="fr2">
+        <div class="fg"><div class="fl">Họ Tên Khách</div><input class="fi" name="customer_name" placeholder="Nguyễn Văn A"></div>
+        <div class="fg"><div class="fl">Số Điện Thoại *</div>
+          <input class="fi" name="customer_phone" placeholder="0900 000 000" oninput="liveSearchCustomer(this,'bk-cu-found')">
+          <div id="bk-cu-found" style="font-size:11px;margin-top:4px;min-height:14px"></div>
+        </div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><div class="fl">Cơ Sở *</div><select class="fs" name="center_id" id="bk-center"><option value="">-- Đang tải --</option></select></div>
+        <div class="fg"><div class="fl">Dịch Vụ *</div><select class="fs" name="service_id" id="bk-service"><option value="">-- Đang tải --</option></select></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><div class="fl">Ngày Giờ Hẹn *</div><input class="fi" type="datetime-local" name="booked_at"></div>
+        <div class="fg"><div class="fl">Kỹ Thuật Viên</div><select class="fs" name="technician_id" id="bk-technician"><option value="">Auto phân công</option></select></div>
+      </div>
+      <div class="fg"><div class="fl">Ghi Chú</div><textarea class="fta" name="notes" placeholder="Thể tạng, yêu cầu đặc biệt, tiền sử..."></textarea></div>
+    </div>
+    <div class="mo-f">
+      <button class="btn btn-g" onclick="closeM('mo-book')">Huỷ</button>
+      <button class="btn btn-p" id="bk-submit" onclick="submitBookingForm()">Tạo Lịch Hẹn</button>
+    </div>
+  </div>
+</div>
+
+<!-- Member Modal -->
+<div class="mov" id="mo-mem">
+  <div class="mo">
+    <div class="mo-h"><div class="mo-t" data-vi="Thêm Khách Hàng" data-en="Add Customer">Thêm Khách Hàng</div><div class="mo-x" onclick="closeM('mo-mem')">✕</div></div>
+    <div class="mo-b" id="cu-form">
+      <div class="fr2">
+        <div class="fg"><div class="fl">Họ Tên *</div><input class="fi" name="full_name" placeholder="Nguyễn Thị Lan"></div>
+        <div class="fg"><div class="fl">Số Điện Thoại *</div><input class="fi" name="phone" placeholder="0912 345 678"></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><div class="fl">Email</div><input class="fi" name="email" type="email" placeholder="lan@email.com"></div>
+        <div class="fg"><div class="fl">Ngày Sinh</div><input class="fi" name="dob" type="date"></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><div class="fl">Giới Tính</div>
+          <select class="fs" name="gender">
+            <option value="">-- Chọn --</option>
+            <option value="F">Nữ</option><option value="M">Nam</option><option value="O">Khác</option>
+          </select>
+        </div>
+        <div class="fg"><div class="fl">Thể Tạng</div>
+          <select class="fs" name="constitution">
+            <option value="unknown">Chưa xác định</option>
+            <option value="moc">🌱 Mộc</option><option value="hoa">🔥 Hỏa</option>
+            <option value="tho">🌍 Thổ</option><option value="kim">⚡ Kim</option><option value="thuy">💧 Thủy</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><div class="fl">Cơ Sở</div><select class="fs" name="center_id" id="cu-center"><option value="">-- Chọn cơ sở --</option></select></div>
+      <div class="fg"><div class="fl">Địa Chỉ</div><input class="fi" name="address" placeholder="Số nhà, phố, quận, thành phố"></div>
+      <div class="fg"><div class="fl">Ghi Chú</div><textarea class="fta" name="notes" placeholder="Tiền sử, dị ứng, lưu ý..."></textarea></div>
+    </div>
+    <div class="mo-f">
+      <button class="btn btn-g" onclick="closeM('mo-mem')">Huỷ</button>
+      <button class="btn btn-p" id="cu-submit" onclick="submitCustomerForm()">Thêm Khách Hàng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Center Modal -->
+<div class="mov" id="mo-center">
+  <div class="mo">
+    <div class="mo-h"><div class="mo-t">Thêm Cơ Sở</div><div class="mo-x" onclick="closeM('mo-center')">✕</div></div>
+    <div class="mo-b" id="ct-form">
+      <div class="fr2">
+        <div class="fg"><div class="fl">Mã Cơ Sở *</div><input class="fi" name="code" placeholder="C009" style="text-transform:uppercase"></div>
+        <div class="fg"><div class="fl">Tên Cơ Sở *</div><input class="fi" name="name" placeholder="Anima Care Hoàn Kiếm"></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><div class="fl">Thành Phố *</div><input class="fi" name="city" placeholder="Hà Nội"></div>
+        <div class="fg"><div class="fl">Quận / Huyện</div><input class="fi" name="district" placeholder="Hoàn Kiếm"></div>
+      </div>
+      <div class="fg"><div class="fl">Địa Chỉ *</div><input class="fi" name="address" placeholder="123 Phố Huế, Hai Bà Trưng"></div>
+      <div class="fr2">
+        <div class="fg"><div class="fl">Loại</div>
+          <select class="fs" name="type">
+            <option value="direct">Trực tiếp</option>
+            <option value="franchise_full">Franchise Full</option>
+            <option value="franchise_lite" selected>Franchise Lite</option>
+          </select>
+        </div>
+        <div class="fg"><div class="fl">Số Phòng</div><input class="fi" name="rooms" type="number" value="4" min="1" max="20"></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><div class="fl">Hotline</div><input class="fi" name="phone" placeholder="0913 000 000"></div>
+        <div class="fg"><div class="fl">Email</div><input class="fi" name="email" type="email" placeholder="coso@animacare.global"></div>
+      </div>
+    </div>
+    <div class="mo-f">
+      <button class="btn btn-g" onclick="closeM('mo-center')">Huỷ</button>
+      <button class="btn btn-p" id="ct-submit" onclick="submitCenterForm()">Thêm Cơ Sở</button>
+    </div>
+  </div>
+</div>
+
+<!-- Order Modal -->
+<div class="mov" id="mo-order">
+  <div class="mo" style="max-width:560px">
+    <div class="mo-h"><div class="mo-t">Tạo Đơn Hàng</div><div class="mo-x" onclick="closeM('mo-order')">✕</div></div>
+    <div class="mo-b" id="ord-form">
+      <div class="fr2">
+        <div class="fg"><div class="fl">SĐT Khách Hàng *</div>
+          <input class="fi" name="customer_phone" placeholder="0912 345 678" oninput="liveSearchCustomer(this,'ord-cu-found')">
+          <div id="ord-cu-found" style="font-size:11px;margin-top:4px;min-height:14px"></div>
+        </div>
+        <div class="fg"><div class="fl">Cơ Sở</div><select class="fs" name="center_id" id="ord-center"><option value="">-- Tuỳ chọn --</option></select></div>
+      </div>
+      <div class="fg" style="margin-bottom:8px">
+        <div class="fl" style="display:flex;justify-content:space-between;align-items:center">
+          Sản Phẩm *
+          <button type="button" onclick="addOrderItemRow()" style="background:none;border:1px solid var(--bd);border-radius:6px;padding:2px 10px;color:var(--g1);cursor:pointer;font-size:11px">+ Thêm dòng</button>
+        </div>
+        <div id="ord-items-list" style="margin-top:6px"></div>
+        <div style="text-align:right;font-size:13px;font-weight:600;margin-top:6px;color:var(--g1)">Tổng: <span id="ord-total-display">—</span></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><div class="fl">Phương Thức TT</div>
+          <select class="fs" name="payment_method">
+            <option value="cod">COD</option><option value="bank_transfer">Chuyển khoản</option>
+            <option value="momo">MoMo</option><option value="vnpay">VNPay</option>
+          </select>
+        </div>
+        <div class="fg"><div class="fl">Tên người nhận</div><input class="fi" name="ship_name" placeholder="Nguyễn Văn A"></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><div class="fl">SĐT nhận hàng</div><input class="fi" name="ship_phone" placeholder="0900 000 000"></div>
+        <div class="fg"><div class="fl">Địa chỉ giao</div><input class="fi" name="ship_address" placeholder="123 Đường ABC, Quận 1"></div>
+      </div>
+      <div class="fg"><div class="fl">Ghi Chú</div><textarea class="fta" name="notes" placeholder="Yêu cầu đặc biệt..."></textarea></div>
+    </div>
+    <div class="mo-f">
+      <button class="btn btn-g" onclick="closeM('mo-order')">Huỷ</button>
+      <button class="btn btn-p" id="ord-submit" onclick="submitOrderForm()">Tạo Đơn Hàng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Staff Modal -->
+<div class="mov" id="mo-staff">
+  <div class="mo">
+    <div class="mo-h"><div class="mo-t">Thêm Kỹ Thuật Viên</div><div class="mo-x" onclick="closeM('mo-staff')">✕</div></div>
+    <div class="mo-b" id="ktv-form">
+      <div class="fr2">
+        <div class="fg"><div class="fl">Họ Tên *</div><input class="fi" name="full_name" placeholder="Nguyễn Thị Mai"></div>
+        <div class="fg"><div class="fl">Số Điện Thoại *</div><input class="fi" name="phone" placeholder="0912 000 000"></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><div class="fl">Email</div><input class="fi" name="email" type="email" placeholder="mai@animacare.global"></div>
+        <div class="fg"><div class="fl">Ngày Vào Làm</div><input class="fi" name="joined_at" type="date"></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><div class="fl">Cơ Sở *</div><select class="fs" name="center_id" id="ktv-center"><option value="">-- Đang tải --</option></select></div>
+        <div class="fg"><div class="fl">Cấp Độ</div>
+          <select class="fs" name="level">
+            <option value="L1">L1 · Thực Tập</option>
+            <option value="L2">L2 · Cơ Bản</option>
+            <option value="L3">L3 · Senior</option>
+            <option value="L4">L4 · Master</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><div class="fl">Chuyên Môn (phân cách bởi dấu phẩy)</div><input class="fi" name="specialties" placeholder="Châm cứu, Bấm huyệt, Xông hơi"></div>
+    </div>
+    <div class="mo-f">
+      <button class="btn btn-g" onclick="closeM('mo-staff')">Huỷ</button>
+      <button class="btn btn-p" id="ktv-submit" onclick="submitKtvForm()">Thêm KTV</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══ LIVE API INTEGRATION ═══ -->
+<script>
+// Auth guard
+(function(){
+  if(!localStorage.getItem('ac_token')){
+    window.location.href='login.html';
+  }
+})();
+</script>
+
+<script>window.API_BASE = '/api/v1';</script>
+<script src="api-client.js"></script>
+<script src="live-data.js"></script>
+<script src="forms.js"></script>
+
+</body>
+</html>

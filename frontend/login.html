@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AnimaCare Admin · Đăng nhập</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --g1:#00C896;--g2:#00E5A8;--gd:#005A42;
+  --pu1:#7B5FFF;--red:#FF4D6D;
+  --bg:#030608;--bg2:#060C0F;--bg3:#0A1218;
+  --t1:#F8F2E0;--t2:rgba(248,242,224,.7);--t3:rgba(248,242,224,.4);
+  --bd:rgba(0,200,150,.15);
+}
+html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Roboto',sans-serif;
+  display:flex;align-items:center;justify-content:center;overflow:hidden}
+
+/* Background orbs */
+body::before,body::after{
+  content:'';position:fixed;border-radius:50%;pointer-events:none;
+  filter:blur(80px);z-index:0;
+}
+body::before{width:500px;height:500px;background:radial-gradient(circle,rgba(0,200,150,.08),transparent 70%);top:-100px;left:-100px}
+body::after{width:400px;height:400px;background:radial-gradient(circle,rgba(123,95,255,.06),transparent 70%);bottom:-80px;right:-80px}
+
+.card{
+  position:relative;z-index:1;
+  background:var(--bg2);
+  border:1px solid var(--bd);
+  border-radius:20px;
+  padding:44px 40px;
+  width:400px;
+  max-width:calc(100vw - 32px);
+  box-shadow:0 32px 80px rgba(0,0,0,.5);
+}
+
+.logo{text-align:center;margin-bottom:32px}
+.logo-gem{
+  width:52px;height:52px;border-radius:14px;
+  background:linear-gradient(145deg,var(--gd),var(--g1));
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 14px;
+  box-shadow:0 8px 24px rgba(0,200,150,.3);
+}
+.logo-gem svg{width:26px;height:26px;fill:none;stroke:#000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.logo-name{font-size:20px;font-weight:700;letter-spacing:.5px}
+.logo-sub{font-size:12px;color:var(--t3);margin-top:4px;font-family:'Roboto Mono',monospace;letter-spacing:2px;text-transform:uppercase}
+
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;color:var(--t3);margin-bottom:6px;font-weight:500}
+.field input{
+  width:100%;
+  background:rgba(0,200,150,.05);
+  border:1px solid var(--bd);
+  border-radius:10px;
+  padding:11px 14px;
+  color:var(--t1);
+  font-size:14px;
+  font-family:'Roboto',sans-serif;
+  outline:none;
+  transition:border-color .2s;
+}
+.field input:focus{border-color:var(--g1);background:rgba(0,200,150,.08)}
+.field input::placeholder{color:var(--t3)}
+
+.btn-login{
+  width:100%;
+  background:linear-gradient(135deg,var(--gd),var(--g1));
+  color:#000;
+  border:none;
+  border-radius:10px;
+  padding:13px;
+  font-size:14px;
+  font-weight:700;
+  font-family:'Roboto',sans-serif;
+  cursor:pointer;
+  margin-top:8px;
+  transition:opacity .2s, transform .1s;
+  letter-spacing:.3px;
+}
+.btn-login:hover{opacity:.9}
+.btn-login:active{transform:scale(.99)}
+.btn-login:disabled{opacity:.5;cursor:not-allowed}
+
+.err{
+  color:var(--red);font-size:12px;text-align:center;
+  margin-top:12px;min-height:18px;
+  background:rgba(255,77,109,.08);
+  border-radius:6px;padding:6px 10px;
+  display:none;
+}
+.err.show{display:block}
+
+.footer{text-align:center;margin-top:24px;font-size:11px;color:var(--t3);line-height:1.8}
+.footer a{color:var(--g1);text-decoration:none}
+
+/* Loading spinner */
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(0,0,0,.3);
+  border-top-color:#000;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo">
+    <div class="logo-gem">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <div class="logo-name">AnimaCare Global</div>
+    <div class="logo-sub">Admin Platform</div>
+  </div>
+
+  <div class="field">
+    <label>Email</label>
+    <input id="email" type="email" placeholder="admin@animacare.global" autocomplete="email">
+  </div>
+  <div class="field">
+    <label>Mật khẩu</label>
+    <input id="pass" type="password" placeholder="••••••••" autocomplete="current-password">
+  </div>
+
+  <button class="btn-login" id="btn" onclick="doLogin()">Đăng nhập</button>
+  <div class="err" id="err"></div>
+
+  <div class="footer">
+    AnimaCare Global Pte. Ltd. · Singapore<br>
+    <a href="mailto:info@animacare.global">info@animacare.global</a>
+  </div>
+</div>
+
+<script>window.API_BASE = '/api/v1';</script>
+<script src="api-client.js"></script>
+<script>
+// Check if already logged in
+(function(){
+  const t = localStorage.getItem('ac_token');
+  if(t) window.location.href = 'admin.html';
+})();
+
+document.getElementById('pass').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') doLogin();
+});
+document.getElementById('email').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') document.getElementById('pass').focus();
+});
+
+async function doLogin(){
+  const btn = document.getElementById('btn');
+  const err = document.getElementById('err');
+  const email = document.getElementById('email').value.trim();
+  const pass  = document.getElementById('pass').value;
+
+  if(!email || !pass){
+    showErr('Vui lòng nhập đầy đủ thông tin');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>Đang đăng nhập...';
+  err.classList.remove('show');
+
+  try {
+    await window.api.login(email, pass);
+    btn.innerHTML = '✅ Thành công — Đang chuyển hướng...';
+    setTimeout(() => window.location.href = 'admin.html', 600);
+  } catch(e) {
+    showErr(e.message === 'Invalid credentials'
+      ? 'Email hoặc mật khẩu không đúng'
+      : (e.message || 'Lỗi kết nối — kiểm tra API server'));
+    btn.disabled = false;
+    btn.textContent = 'Đăng nhập';
+  }
+}
+
+function showErr(msg){
+  const el = document.getElementById('err');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+</script>
+</body>
+</html>
