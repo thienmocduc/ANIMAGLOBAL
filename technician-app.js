@@ -351,30 +351,115 @@ function renderTechDash() {
     });
   }
 
-  // NEARBY PAGE
+  // NEARBY PAGE — Centers + KTV scan
   else if(tPage === 't-nearby') {
-    html += '<div style="font-size:18px;font-weight:600;margin-bottom:4px">' + t('KTV Quanh \u0110\u00E2y','Nearby Technicians') + '</div>';
-    html += '<div style="font-size:12px;color:rgba(248,242,224,.42);margin-bottom:16px">' + t('Qu\u00E9t t\u00ECm KTV c\u00F9ng c\u01A1 s\u1EDF','Scan for technicians at your center') + '</div>';
-    html += '<button onclick="window._tScanNearby()" style="width:100%;background:linear-gradient(135deg,#5B3FDF,#7B5FFF);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:16px">';
-    html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:6px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>' + t('Qu\u00E9t quanh \u0111\u00E2y','Scan Nearby') + '</button>';
+    // Get all centers with coordinates
+    var allCenters = sync ? sync.get('centers', []) : [];
+    var centerCoords = {
+      CTR001:{lat:21.0045,lng:105.8412,name:'Anima Care H\u00E0 N\u1ED9i HQ'},
+      CTR002:{lat:10.7769,lng:106.7009,name:'Anima Care H\u1ED3 Ch\u00ED Minh'},
+      CTR003:{lat:16.0544,lng:108.2022,name:'Anima Care \u0110\u00E0 N\u1EB5ng'},
+      CTR004:{lat:20.8449,lng:106.6881,name:'Anima Care H\u1EA3i Ph\u00F2ng'},
+      CTR005:{lat:10.0452,lng:105.7469,name:'Anima Care C\u1EA7n Th\u01A1'},
+      CTR006:{lat:12.2388,lng:109.1967,name:'Anima Care Nha Trang'},
+      CTR007:{lat:16.4637,lng:107.5909,name:'Anima Care Hu\u1EBF'},
+      CTR008:{lat:10.3460,lng:107.0843,name:'Anima Care V\u0169ng T\u00E0u'}
+    };
+    // Merge dynamic centers
+    allCenters.forEach(function(c) { if(!centerCoords[c._id]) centerCoords[c._id] = {lat:0,lng:0,name:c.name}; });
 
-    html += '<div id="tNearbyList">';
+    // Calculate distance from KTV position
+    function calcDist(lat1,lng1,lat2,lng2) {
+      if(!lat1||!lng1||!lat2||!lng2) return 9999;
+      var R=6371,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;
+      var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+      return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+    }
+
+    // Sort centers by distance
+    var sortedCenters = Object.keys(centerCoords).map(function(cid) {
+      var cc = centerCoords[cid];
+      var dist = calcDist(tUser.lat||0, tUser.lng||0, cc.lat, cc.lng);
+      var cData = allCenters.find(function(c) { return c._id === cid; }) || {};
+      var cPending = sync ? sync.get('bookings',[]).filter(function(b) { return b.centerId === cid && b.status === 'pending'; }).length : 0;
+      return { id:cid, name:cc.name, lat:cc.lat, lng:cc.lng, dist:dist, pending:cPending, status:cData.status||'active', type:cData.type||'Full', manager:cData.manager||'', phone:cData.phone||'' };
+    }).sort(function(a,b) { return a.dist - b.dist; });
+
+    // Scan button
+    html += '<button onclick="window._tScanNearby()" style="width:100%;background:linear-gradient(135deg,#5B3FDF,#7B5FFF);color:#fff;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px">';
+    html += '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+    html += t('Qu\u00E9t v\u1ECB tr\u00ED & T\u00ECm c\u01A1 s\u1EDF g\u1EA7n nh\u1EA5t','Scan Location & Find Nearest Centers');
+    html += '</button>';
+
+    if(tUser.lat) {
+      html += '<div style="font-size:10px;color:rgba(248,242,224,.3);text-align:center;margin:-10px 0 14px;font-family:\'Roboto Mono\',monospace">GPS: ' + tUser.lat.toFixed(4) + ', ' + tUser.lng.toFixed(4) + '</div>';
+    }
+
+    // ── Section: Nearby Centers ──
+    html += '<div style="font-size:15px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00C896" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>' + t('C\u01A1 S\u1EDF G\u1EA7n \u0110\u00E2y','Nearby Centers') + '</div>';
+
+    sortedCenters.forEach(function(c) {
+      var isMyCenter = c.id === tUser.centerId;
+      var distTxt = c.dist < 1 ? (c.dist*1000).toFixed(0) + 'm' : c.dist.toFixed(1) + 'km';
+      if(!tUser.lat) distTxt = '--';
+      var borderColor = isMyCenter ? 'rgba(0,200,150,.3)' : 'rgba(123,95,255,.1)';
+
+      html += '<div style="background:#0A1218;border:1px solid ' + borderColor + ';border-radius:14px;padding:14px;margin-bottom:10px">';
+
+      // Header row
+      html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">';
+      html += '<div style="flex:1"><div style="font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px">' + c.name;
+      if(isMyCenter) html += ' <span style="font-size:9px;padding:2px 6px;border-radius:10px;background:rgba(0,200,150,.15);color:#00E5A8;font-weight:600">C\u01A0 S\u1EDE C\u1EE6A T\u00D4I</span>';
+      html += '</div>';
+      html += '<div style="font-size:11px;color:rgba(248,242,224,.42);margin-top:2px">' + c.type + ' \u00B7 ' + c.id + '</div></div>';
+      html += '<div style="text-align:right"><div style="font-size:16px;font-weight:700;color:' + (c.dist < 5 ? '#00E5A8' : c.dist < 20 ? '#F59E0B' : 'rgba(248,242,224,.42)') + '">' + distTxt + '</div></div>';
+      html += '</div>';
+
+      // Pending bookings info
+      if(c.pending > 0) {
+        html += '<div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.15);border-radius:8px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px">';
+        html += '<div style="width:6px;height:6px;border-radius:50%;background:#F59E0B;animation:pulse 1.5s infinite"></div>';
+        html += '<span style="font-size:12px;color:#F59E0B;font-weight:600">' + c.pending + ' ' + t('l\u1ECBch h\u1EB9n \u0111ang ch\u1EDD KTV','bookings waiting for KTV') + '</span></div>';
+      }
+
+      // Action buttons
+      html += '<div style="display:flex;gap:8px">';
+      // Book for my client at this center
+      html += '<button onclick="window._tBookAtCenter(\'' + c.id + '\',\'' + c.name.replace(/'/g,"\\'") + '\')" style="flex:1;background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.2);color:#00E5A8;border-radius:8px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px">';
+      html += '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' + t('\u0110\u1EB7t l\u1ECBch','Book') + '</button>';
+
+      // Join queue — accept pending bookings from this center
+      if(c.pending > 0) {
+        html += '<button onclick="window._tJoinCenterQueue(\'' + c.id + '\',\'' + c.name.replace(/'/g,"\\'") + '\')" style="flex:1;background:linear-gradient(135deg,#5B3FDF,#7B5FFF);border:none;color:#fff;border-radius:8px;padding:9px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px">';
+        html += '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>' + t('Nh\u1EADn l\u1ECBch ch\u1EDD','Join Queue') + ' (' + c.pending + ')</button>';
+      }
+      html += '</div></div>';
+    });
+
+    // ── Section: Nearby KTV ──
+    html += '<div style="font-size:15px;font-weight:600;margin:20px 0 10px;display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9B82FF" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>' + t('KTV Quanh \u0110\u00E2y','Nearby Technicians') + '</div>';
+
     if(nearbyTechs.length === 0) {
-      html += '<div style="text-align:center;padding:30px;color:rgba(248,242,224,.3)">' + t('Ch\u01B0a t\u00ECm th\u1EA5y KTV n\u00E0o','No technicians found') + '</div>';
+      html += '<div style="text-align:center;padding:24px;color:rgba(248,242,224,.3);font-size:13px">' + t('Ch\u01B0a t\u00ECm th\u1EA5y KTV kh\u00E1c','No other technicians found') + '</div>';
     }
     nearbyTechs.forEach(function(tech) {
       var sc = statusColors[tech.status] || '#607870';
       var ini = tech.name.split(' ').map(function(w) { return w[0]; }).join('').substr(0,2);
+      var techDist = calcDist(tUser.lat||0, tUser.lng||0, tech.lat||0, tech.lng||0);
+      var techDistTxt = (!tUser.lat || !tech.lat) ? '--' : (techDist < 1 ? (techDist*1000).toFixed(0) + 'm' : techDist.toFixed(1) + 'km');
       html += '<div style="display:flex;align-items:center;gap:12px;padding:12px;background:#0A1218;border:1px solid rgba(123,95,255,.1);border-radius:12px;margin-bottom:8px">';
       html += '<div style="position:relative"><div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#5B3FDF,#7B5FFF);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff">' + ini + '</div>';
       html += '<div style="position:absolute;bottom:-1px;right:-1px;width:10px;height:10px;border-radius:50%;background:' + sc + ';border:2px solid #0A1218"></div></div>';
       html += '<div style="flex:1"><div style="font-size:14px;font-weight:600">' + tech.name + '</div>';
       html += '<div style="font-size:11px;color:rgba(248,242,224,.42)">' + tech.specialty + '</div>';
       html += '<div style="font-size:11px;color:rgba(248,242,224,.32);margin-top:2px">\u2605 ' + tech.rating + ' \u00B7 ' + tech.sessions + ' sessions</div></div>';
-      html += '<div style="text-align:right"><div style="font-size:10px;padding:3px 8px;border-radius:12px;background:' + sc + '22;color:' + sc + ';font-weight:600">' + (tLang==='vi'?statusLabels[tech.status].vi:statusLabels[tech.status].en) + '</div></div>';
+      html += '<div style="text-align:right"><div style="font-size:12px;font-weight:600;color:rgba(248,242,224,.52)">' + techDistTxt + '</div>';
+      html += '<div style="font-size:10px;padding:3px 8px;border-radius:12px;background:' + sc + '22;color:' + sc + ';font-weight:600;margin-top:4px">' + (tLang==='vi'?statusLabels[tech.status].vi:statusLabels[tech.status].en) + '</div></div>';
       html += '</div>';
     });
-    html += '</div>';
+
+    // CSS animation for pulse
+    html += '<style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}</style>';
   }
 
   // PROFILE PAGE
@@ -464,6 +549,72 @@ window._tComplete = function(id) {
   localStorage.setItem('anima_tech_user', JSON.stringify(tUser));
   renderTechDash();
   if(typeof showToast === 'function') showToast(t('Ho\u00E0n th\u00E0nh!','Completed!'), '#00C896');
+};
+
+// Book a client at a specific center
+window._tBookAtCenter = function(centerId, centerName) {
+  var customerName = prompt(t('T\u00EAn kh\u00E1ch h\u00E0ng c\u1EE7a b\u1EA1n:','Your client\'s name:'));
+  if(!customerName) return;
+  var service = prompt(t('D\u1ECBch v\u1EE5 (VD: Ch\u00E2m c\u1EE9u, Spa...):','Service (e.g. Acupuncture, Spa...):'), tUser.specialty.split(',')[0].trim());
+  if(!service) return;
+  var date = prompt(t('Ng\u00E0y (YYYY-MM-DD):','Date (YYYY-MM-DD):'), new Date().toISOString().split('T')[0]);
+  if(!date) return;
+  var time = prompt(t('Gi\u1EDD (VD: 14:00):','Time (e.g. 14:00):'), new Date().getHours() + ':00');
+
+  if(window.AnimaSync) {
+    AnimaSync.push('bookings', {
+      centerId: centerId,
+      centerName: centerName,
+      customer: customerName,
+      service: service,
+      date: date,
+      time: time || (new Date().getHours() + ':00'),
+      status: 'confirmed',
+      ktvId: tUser.id,
+      ktvName: tUser.name,
+      bookedByKtv: true
+    });
+    AnimaSync.push('activities', {
+      type: 'booking_new',
+      vi: tUser.name + ' \u0111\u1EB7t l\u1ECBch cho ' + customerName + ' t\u1EA1i ' + centerName,
+      en: tUser.name + ' booked ' + customerName + ' at ' + centerName,
+      centerId: centerId,
+      ago: 0
+    });
+  }
+  renderTechDash();
+  if(typeof showToast === 'function') showToast(t('\u0110\u00E3 \u0111\u1EB7t l\u1ECBch t\u1EA1i ' + centerName + '!','Booked at ' + centerName + '!'), '#00C896');
+};
+
+// Join a center's pending queue — show their pending bookings to accept
+window._tJoinCenterQueue = function(centerId, centerName) {
+  if(!window.AnimaSync) return;
+  var pendingAtCenter = AnimaSync.get('bookings', []).filter(function(b) {
+    return b.centerId === centerId && b.status === 'pending';
+  });
+  if(pendingAtCenter.length === 0) {
+    if(typeof showToast === 'function') showToast(t('Kh\u00F4ng c\u00F2n l\u1ECBch ch\u1EDD','No pending bookings left'), '#F59E0B');
+    return;
+  }
+  // Show confirmation with list
+  var list = pendingAtCenter.map(function(b) { return b.customer + ' - ' + b.service + ' (' + b.date + ')'; }).join('\n');
+  var msg = t('Nh\u1EADn t\u1EA5t c\u1EA3 ' + pendingAtCenter.length + ' l\u1ECBch ch\u1EDD t\u1EA1i ' + centerName + '?\n\n','Accept all ' + pendingAtCenter.length + ' pending bookings at ' + centerName + '?\n\n') + list;
+  if(!confirm(msg)) return;
+
+  // Accept all pending
+  pendingAtCenter.forEach(function(b) {
+    AnimaSync.update('bookings', b._id, { status:'confirmed', ktvId:tUser.id, ktvName:tUser.name });
+  });
+  AnimaSync.push('activities', {
+    type: 'booking_accepted',
+    vi: tUser.name + ' nh\u1EADn ' + pendingAtCenter.length + ' l\u1ECBch t\u1EA1i ' + centerName,
+    en: tUser.name + ' accepted ' + pendingAtCenter.length + ' bookings at ' + centerName,
+    centerId: centerId,
+    ago: 0
+  });
+
+  renderTechDash();
+  if(typeof showToast === 'function') showToast(t('\u0110\u00E3 nh\u1EADn ' + pendingAtCenter.length + ' l\u1ECBch!','Accepted ' + pendingAtCenter.length + ' bookings!'), '#00C896');
 };
 
 window._tScanNearby = function() {
