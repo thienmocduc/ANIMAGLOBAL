@@ -9413,6 +9413,12 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&document.ge
       </div>
       <div class="srow fu"><div class="sc"><div class="sc-v">3,891</div><div class="sc-l" data-vi="Tổng Hồ Sơ" data-en="Total Profiles">Tổng Hồ Sơ</div></div><div class="sc"><div class="sc-v" style="color:var(--g2)">1,247</div><div class="sc-l" data-vi="Active 30 Ngày" data-en="Active 30 Days">Active 30 Ngày</div></div><div class="sc"><div class="sc-v" style="color:var(--pu2)">847</div><div class="sc-l" data-vi="Membership" data-en="Membership">Membership</div></div><div class="sc"><div class="sc-v" style="color:var(--amber)">4.7</div><div class="sc-l" data-vi="NPS Score" data-en="NPS Score">NPS Score</div></div><div class="sc"><div class="sc-v">8.2 tr</div><div class="sc-l" data-vi="LTV TB" data-en="Avg LTV">LTV TB</div></div><div class="sc"><div class="sc-v" style="color:var(--red)">3.2%</div><div class="sc-l" data-vi="Churn Rate" data-en="Churn Rate">Churn Rate</div></div></div>
 
+      <!-- CRM Realtime from KTV -->
+      <div class="c mb4 fu" style="border:1px solid rgba(123,95,255,.15)">
+        <div class="ch"><div class="ct" style="color:var(--pu2)" data-vi="&#x1F4E1; CRM Realtime — Dữ Liệu Từ KTV" data-en="&#x1F4E1; CRM Realtime — From Technicians">&#x1F4E1; CRM Realtime — Dữ Liệu Từ KTV</div><div class="cs" data-vi="Đồng bộ tự động từ app KTV" data-en="Auto-sync from KTV app">Đồng bộ tự động từ app KTV</div></div>
+        <div id="crm-stats" style="padding:12px 16px"></div>
+      </div>
+
       <div class="g2 mb4 fu d1">
         <div class="c">
           <div class="ch"><div class="ct" data-vi="Phân Bố Thể Tạng" data-en="Constitution Distribution">Phân Bố Thể Tạng</div><div class="cs" data-vi="3,891 hồ sơ" data-en="3,891 profiles">3,891 hồ sơ</div></div>
@@ -9895,9 +9901,56 @@ if(t2) t2.innerHTML='<thead><tr><th>Mã</th><th>Khách Hàng</th><th>Dịch Vụ
 BOOKINGS.slice(0,5).map(function(b){return '<tr><td class="td-mo">'+b.id+'</td><td><div class="td-nm"><div class="td-av" style="background:rgba(123,95,255,.15);color:var(--pu2)">'+b.name[0]+'</div>'+b.name+'</div></td><td>'+b.service+'</td><td style="font-family:var(--fm);color:var(--g2)">'+b.time+'</td><td>'+statusBadge(b.status)+'</td><td><button class="btn btn-sm btn-s">Xem</button></td></tr>'}).join('')+'</tbody>';
 }
 function renderMembersTable(){
-var t=document.getElementById('tbl-members');if(!t)return;
-t.innerHTML='<thead><tr><th>'+t('Thành Viên')+'</th><th>'+t('Thể Tạng')+'</th><th>'+t('Gói')+'</th><th>'+t('Cơ Sở')+'</th><th>'+t('Lần Cuối')+'</th><th>'+t('Sessions')+'</th><th>'+t('LTV')+'</th><th>'+t('Trạng Thái')+'</th><th>'+t('Action')+'</th></tr></thead><tbody>'+
-MEMBERS.map(function(m,i){return '<tr><td><div class="td-nm"><div class="td-av" style="background:'+avatarColor(i)+'22;color:'+avatarColor(i)+'">'+m.name.split(' ').pop()[0]+'</div><div><div style="color:var(--t1);font-weight:500">'+m.name+'</div><div class="td-mo">'+m.phone+' · '+m.id+'</div></div></div></td><td>'+m.constitution+'</td><td style="font-size:11.5px">'+m.plan+'</td><td style="font-size:11.5px">'+m.center+'</td><td class="td-mo">'+m.lastVisit+'</td><td style="text-align:center;font-family:var(--fm)">'+m.sessions+'</td><td style="color:var(--g2);font-family:var(--fm)">'+m.ltv+'</td><td>'+statusBadge(m.status)+'</td><td><div class="btn-row"><button class="btn btn-sm btn-s">Hồ Sơ</button></div></td></tr>'}).join('')+'</tbody>';
+var tbl=document.getElementById('tbl-members');if(!tbl)return;
+// Merge static MEMBERS + realtime crm_clients from KTV
+var crmClients = (window.AnimaSync ? AnimaSync.get('crm_clients',[]) : []);
+var allM = MEMBERS.slice();
+crmClients.forEach(function(c){
+  if(!allM.some(function(m){return m.phone===c.phone && m.name===c.name})){
+    allM.push({name:c.name,phone:c.phone||'--',id:c._id,constitution:c.bodyType||'--',plan:c.service||'KTV',center:c.centerName||'--',lastVisit:c.lastSessionDate||(c.updatedAt?new Date(c.updatedAt).toISOString().split('T')[0]:'--'),sessions:(c.sessions||[]).length,ltv:((c.sessions||[]).length*150).toLocaleString('vi')+'K',status:c.dataComplete?'active':'pending',ktvName:c.ktvName||'--',painLevel:c.currentPainLevel,symptoms:c.symptoms||'',medHist:c.medicalHistory||'',fromCRM:true,completionPct:c.completionPercent||0});
+  }
+});
+tbl.innerHTML='<thead><tr><th>'+t('Thành Viên')+'</th><th>'+t('Thể Tạng')+'</th><th>'+t('KTV / Gói')+'</th><th>'+t('Cơ Sở')+'</th><th>'+t('Lần Cuối')+'</th><th>Sessions</th><th>'+t('Đau')+'</th><th>'+t('Hồ Sơ')+'</th><th>'+t('Trạng Thái')+'</th><th>Action</th></tr></thead><tbody>'+
+allM.map(function(m,i){
+  var painHtml = m.painLevel ? '<span style="color:'+(m.painLevel<=3?'var(--g2)':m.painLevel<=6?'#F59E0B':'#FF4D6D')+'">'+m.painLevel+'/10</span>' : '—';
+  var completionHtml = m.fromCRM ? '<div style="width:40px;height:4px;background:rgba(248,242,224,.08);border-radius:2px;margin-top:3px"><div style="width:'+m.completionPct+'%;height:100%;background:'+(m.completionPct>=75?'var(--g1)':m.completionPct>=50?'#F59E0B':'#FF4D6D')+';border-radius:2px"></div></div><span class="td-mo">'+m.completionPct+'%</span>' : '<span class="td-mo">100%</span>';
+  return '<tr><td><div class="td-nm"><div class="td-av" style="background:'+avatarColor(i)+'22;color:'+avatarColor(i)+'">'+m.name.split(' ').pop()[0]+'</div><div><div style="color:var(--t1);font-weight:500">'+m.name+'</div><div class="td-mo">'+m.phone+' · '+(m.id||'')+'</div></div></div></td><td>'+(m.constitution||'--')+'</td><td style="font-size:11.5px">'+(m.ktvName||m.plan||'--')+'</td><td style="font-size:11.5px">'+m.center+'</td><td class="td-mo">'+m.lastVisit+'</td><td style="text-align:center;font-family:var(--fm)">'+m.sessions+'</td><td style="text-align:center;font-family:var(--fm)">'+painHtml+'</td><td>'+completionHtml+'</td><td>'+statusBadge(m.status)+'</td><td><div class="btn-row"><button class="btn btn-sm btn-s" onclick="'+(m.fromCRM?'showCRMDetail(\''+m.id+'\')':'')+'">'+t('Hồ Sơ')+'</button></div></td></tr>'}).join('')+'</tbody>';
+// Realtime CRM stats
+var crmBox=document.getElementById('crm-stats');
+if(crmBox){
+  var total=crmClients.length,complete=crmClients.filter(function(c){return c.dataComplete}).length,incomplete=total-complete;
+  var avgPain=0;if(total>0){var sum=0,cnt=0;crmClients.forEach(function(c){if(c.currentPainLevel){sum+=c.currentPainLevel;cnt++}});avgPain=cnt>0?(sum/cnt).toFixed(1):0;}
+  crmBox.innerHTML='<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px"><div class="kpi-s"><span class="kpi-n" style="color:var(--g2)">'+total+'</span><span class="kpi-l">'+t('T\u1EEB KTV')+'</span></div><div class="kpi-s"><span class="kpi-n" style="color:var(--g2)">'+complete+'</span><span class="kpi-l">'+t('Ho\u00E0n th\u00E0nh')+'</span></div><div class="kpi-s"><span class="kpi-n" style="color:#F59E0B">'+incomplete+'</span><span class="kpi-l">'+t('Thi\u1EBFu data')+'</span></div><div class="kpi-s"><span class="kpi-n" style="color:#9B82FF">'+avgPain+'</span><span class="kpi-l">'+t('Avg Pain')+'</span></div></div>';
+}
+}
+function showCRMDetail(id){
+var cl = (window.AnimaSync ? AnimaSync.get('crm_clients',[]) : []).find(function(c){return c._id===id});
+if(!cl) return;
+var sessions=cl.sessions||[];
+var html='<div style="max-width:500px"><h3 style="margin:0 0 16px;color:var(--t1)">'+cl.name+'</h3>';
+html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;font-size:12px">';
+var fields=[['SĐT',cl.phone],['Email',cl.email||'--'],['Thể tạng',cl.bodyType||'--'],['Huyết áp',cl.bloodPressure||'--'],['Mạch',cl.pulse||'--'],['Đau',cl.currentPainLevel?cl.currentPainLevel+'/10':'--'],['Dị ứng',cl.allergies||'Không'],['KTV',cl.ktvName||'--'],['Cơ sở',cl.centerName||'--'],['Đơn vị GT',cl.referral||'--']];
+fields.forEach(function(f){html+='<div><span style="color:var(--t3);font-size:10px;text-transform:uppercase;letter-spacing:1px;display:block">'+f[0]+'</span><span style="color:var(--t1)">'+f[1]+'</span></div>'});
+html+='</div>';
+if(cl.medicalHistory) html+='<div style="margin-bottom:12px"><span style="color:var(--t3);font-size:10px;text-transform:uppercase;letter-spacing:1px">Tiền sử bệnh</span><div style="color:var(--t2);font-size:12px;margin-top:4px">'+cl.medicalHistory+'</div></div>';
+if(cl.symptoms) html+='<div style="margin-bottom:12px"><span style="color:var(--t3);font-size:10px;text-transform:uppercase;letter-spacing:1px">Triệu chứng</span><div style="color:var(--t2);font-size:12px;margin-top:4px">'+cl.symptoms+'</div></div>';
+if(cl.ktvNotes) html+='<div style="margin-bottom:12px"><span style="color:var(--t3);font-size:10px;text-transform:uppercase;letter-spacing:1px">Ghi chú KTV</span><div style="color:var(--pu2);font-size:12px;margin-top:4px">'+cl.ktvNotes+'</div></div>';
+if(sessions.length>0){
+html+='<div style="margin-bottom:8px;font-weight:600;color:var(--t1)">Lịch sử buổi ('+sessions.length+')</div>';
+sessions.slice().reverse().forEach(function(s,idx){
+  var pc=(s.painLevel||5)<=3?'var(--g2)':(s.painLevel||5)<=6?'#F59E0B':'#FF4D6D';
+  html+='<div style="border-left:3px solid '+pc+';padding:8px 12px;margin-bottom:6px;background:rgba(123,95,255,.03);border-radius:0 6px 6px 0"><div style="display:flex;justify-content:space-between;font-size:11px"><span style="font-weight:600">Buổi #'+(sessions.length-idx)+'</span><span style="color:var(--t3);font-family:var(--fm)">'+(s.date||'--')+'</span></div><div style="font-size:11px;color:var(--t2);margin-top:2px">'+s.service+' · Đau: <b style="color:'+pc+'">'+s.painLevel+'/10</b></div>';
+  if(s.improvement) html+='<div style="font-size:10px;color:var(--g2);margin-top:2px">↑ '+s.improvement+'</div>';
+  if(s.notes) html+='<div style="font-size:10px;color:var(--t3);font-style:italic;margin-top:2px">"'+s.notes+'"</div>';
+  html+='</div>';
+});
+}
+html+='</div>';
+// Show in modal
+var mo=document.getElementById('crm-detail-modal');
+if(!mo){mo=document.createElement('div');mo.id='crm-detail-modal';mo.className='mov';mo.innerHTML='<div class="mo" style="max-height:85vh;overflow-y:auto"><button class="mo-x" onclick="closeM(\'crm-detail-modal\')">&times;</button><div id="crm-detail-content"></div></div>';document.getElementById('adminDashboard').appendChild(mo)}
+document.getElementById('crm-detail-content').innerHTML=html;
+openM('crm-detail-modal');
 }
 function renderOrdersTable(){
 var t=document.getElementById('tbl-orders');if(!t)return;
@@ -10488,7 +10541,7 @@ localStorage.removeItem('anima_admin_user');
 
 // ── Sync Bridge: Listen for center updates and refresh admin tables ──
 if(window.AnimaSync){
-  ['bookings','orders','customers','inventory','activities'].forEach(function(key){
+  ['bookings','orders','customers','inventory','activities','crm_clients'].forEach(function(key){
     AnimaSync.on(key, function(){
       var dash = document.getElementById('adminDashboard');
       if(dash && dash.style.display !== 'none'){

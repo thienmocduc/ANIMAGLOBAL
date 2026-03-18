@@ -283,10 +283,15 @@ function renderTechDash() {
   html += '</div>';
 
   // ── Bottom Nav ──
+  // Count clients needing data
+  var allClients = sync ? sync.get('crm_clients', []).filter(function(c) { return c.ktvId === tUser.id; }) : [];
+  var incompleteClients = allClients.filter(function(c) { return !c.dataComplete; });
+
   var tabs = [
     { id:'t-queue', icon:'M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9', vi:'H\u00E0ng ch\u1EDD', en:'Queue', badge:pending.length },
-    { id:'t-schedule', icon:'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', vi:'L\u1ECBch', en:'Schedule' },
+    { id:'t-clients', icon:'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', vi:'Kh\u00E1ch h\u00E0ng', en:'Clients', badge:incompleteClients.length },
     { id:'t-nearby', icon:'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z', vi:'Quanh \u0111\u00E2y', en:'Nearby' },
+    { id:'t-schedule', icon:'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', vi:'L\u1ECBch', en:'Schedule' },
     { id:'t-profile', icon:'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2', vi:'C\u00E1 nh\u00E2n', en:'Profile' }
   ];
 
@@ -462,6 +467,243 @@ function renderTechDash() {
     html += '<style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}</style>';
   }
 
+  // CLIENTS PAGE — Customer data tracking, health records, session history
+  else if(tPage === 't-clients') {
+    var clientSubPage = window._tClientSub || 'list'; // list | form | detail
+    var editingClient = window._tEditClient || null;
+
+    // Header
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
+    html += '<div><div style="font-size:18px;font-weight:600">' + t('D\u1EEF Li\u1EC7u Kh\u00E1ch H\u00E0ng','Client Records') + '</div>';
+    html += '<div style="font-size:11px;color:rgba(248,242,224,.42)">' + t('Ho\u00E0n th\u00E0nh h\u1ED3 s\u01A1 \u0111\u1EC3 nh\u1EADn th\u00F9 lao','Complete records to receive compensation') + '</div></div>';
+    if(clientSubPage !== 'list') {
+      html += '<button onclick="window._tClientSub=\'list\';window._tEditClient=null;renderTechDash()" style="background:rgba(123,95,255,.1);border:1px solid rgba(123,95,255,.2);border-radius:8px;padding:6px 14px;color:#9B82FF;font-size:12px;font-weight:600;cursor:pointer">' + t('\u2190 Danh s\u00E1ch','\u2190 Back') + '</button>';
+    }
+    html += '</div>';
+
+    // Compensation summary
+    var completedClients = allClients.filter(function(c) { return c.dataComplete; });
+    var pendingPay = completedClients.filter(function(c) { return !c.paid; });
+    var totalEarned = completedClients.reduce(function(s,c) { return s + (c.sessionFee||150000); }, 0);
+
+    html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">';
+    html += '<div style="background:#0A1218;border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;color:#00E5A8">' + allClients.length + '</div><div style="font-size:9px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:1px">' + t('Kh\u00E1ch h\u00E0ng','Clients') + '</div></div>';
+    html += '<div style="background:#0A1218;border:1px solid rgba(245,158,11,.15);border-radius:10px;padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;color:#F59E0B">' + incompleteClients.length + '</div><div style="font-size:9px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:1px">' + t('Ch\u01B0a xong','Incomplete') + '</div></div>';
+    html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.15);border-radius:10px;padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;color:#9B82FF">' + (totalEarned/1000000).toFixed(1) + 'M</div><div style="font-size:9px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:1px">' + t('Th\u00F9 lao','Earned') + '</div></div>';
+    html += '</div>';
+
+    if(incompleteClients.length > 0) {
+      html += '<div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:8px">';
+      html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+      html += '<span style="font-size:12px;color:#F59E0B">' + t('C\u00F2n ' + incompleteClients.length + ' kh\u00E1ch ch\u01B0a ho\u00E0n th\u00E0nh h\u1ED3 s\u01A1. Vui l\u00F2ng \u0111i\u1EC1n \u0111\u1EC3 nh\u1EADn th\u00F9 lao.', incompleteClients.length + ' clients with incomplete records. Complete to receive payment.') + '</span></div>';
+    }
+
+    // ── CLIENT LIST VIEW ──
+    if(clientSubPage === 'list') {
+      // Add new client button
+      html += '<button onclick="window._tNewClient()" style="width:100%;background:linear-gradient(135deg,#5B3FDF,#7B5FFF);color:#fff;border:none;border-radius:10px;padding:12px;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:6px">';
+      html += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' + t('Th\u00EAm kh\u00E1ch h\u00E0ng m\u1EDBi','Add New Client') + '</button>';
+
+      if(allClients.length === 0) {
+        html += '<div style="text-align:center;padding:40px 20px;color:rgba(248,242,224,.25)"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin-bottom:10px;opacity:.4"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>';
+        html += '<div style="font-size:14px">' + t('Ch\u01B0a c\u00F3 kh\u00E1ch h\u00E0ng','No clients yet') + '</div>';
+        html += '<div style="font-size:12px;margin-top:4px">' + t('Nh\u1EADn l\u1ECBch h\u1EB9n ho\u1EB7c th\u00EAm kh\u00E1ch m\u1EDBi','Accept bookings or add new clients') + '</div></div>';
+      }
+
+      // Sort: incomplete first, then by date desc
+      var sortedClients = allClients.slice().sort(function(a,b) {
+        if(a.dataComplete !== b.dataComplete) return a.dataComplete ? 1 : -1;
+        return (b.createdAt||0) - (a.createdAt||0);
+      });
+
+      sortedClients.forEach(function(cl) {
+        var isComplete = cl.dataComplete;
+        var sessions = cl.sessions || [];
+        var lastSession = sessions.length > 0 ? sessions[sessions.length-1] : null;
+        var initials = cl.name.split(' ').map(function(w){return w[0]||'';}).join('').substr(0,2).toUpperCase();
+        var improveTxt = '';
+        if(sessions.length >= 2) {
+          var first = sessions[0].painLevel || 0;
+          var last = sessions[sessions.length-1].painLevel || 0;
+          var diff = first - last;
+          improveTxt = diff > 0 ? ('\u2193' + diff + ' ' + t('\u0111i\u1EC3m \u0111au','pain pts')) : (diff < 0 ? ('\u2191' + Math.abs(diff)) : '\u2194 0');
+        }
+
+        html += '<div onclick="window._tViewClient(\'' + cl._id + '\')" style="background:#0A1218;border:1px solid ' + (isComplete?'rgba(0,200,150,.15)':'rgba(245,158,11,.2)') + ';border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px">';
+
+        // Avatar
+        html += '<div style="width:42px;height:42px;border-radius:50%;background:' + (isComplete?'linear-gradient(135deg,#00896A,#00C896)':'linear-gradient(135deg,#B8860B,#F59E0B)') + ';display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0">' + initials + '</div>';
+
+        // Info
+        html += '<div style="flex:1;min-width:0">';
+        html += '<div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + cl.name + '</span>';
+        if(!isComplete) html += '<span style="font-size:8px;padding:2px 6px;border-radius:8px;background:rgba(245,158,11,.15);color:#F59E0B;font-weight:600;white-space:nowrap">' + t('CH\u01ACA XONG','INCOMPLETE') + '</span>';
+        if(isComplete && !cl.paid) html += '<span style="font-size:8px;padding:2px 6px;border-radius:8px;background:rgba(0,200,150,.15);color:#00E5A8;font-weight:600;white-space:nowrap">' + t('\u0110\u1EE6 \u0110I\u1EC0U KI\u1EC6N','ELIGIBLE') + '</span>';
+        html += '</div>';
+        html += '<div style="font-size:11px;color:rgba(248,242,224,.42);margin-top:2px">' + (cl.phone||'--') + ' \u00B7 ' + sessions.length + ' ' + t('bu\u1ED5i','sessions');
+        if(improveTxt) html += ' \u00B7 ' + improveTxt;
+        html += '</div>';
+        if(lastSession) {
+          html += '<div style="font-size:10px;color:rgba(248,242,224,.3);margin-top:2px">' + t('L\u1EA7n cu\u1ED1i: ','Last: ') + (lastSession.date||'--') + ' - ' + (lastSession.service||'') + '</div>';
+        }
+        html += '</div>';
+
+        // Arrow
+        html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(248,242,224,.2)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>';
+        html += '</div>';
+      });
+    }
+
+    // ── CLIENT DETAIL VIEW ──
+    else if(clientSubPage === 'detail' && editingClient) {
+      var cl = allClients.find(function(c) { return c._id === editingClient; });
+      if(cl) {
+        var sessions = cl.sessions || [];
+        var initials = cl.name.split(' ').map(function(w){return w[0]||'';}).join('').substr(0,2).toUpperCase();
+
+        // Client header
+        html += '<div style="text-align:center;margin-bottom:16px">';
+        html += '<div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#5B3FDF,#7B5FFF);display:inline-flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;margin-bottom:8px">' + initials + '</div>';
+        html += '<div style="font-size:18px;font-weight:600">' + cl.name + '</div>';
+        html += '<div style="font-size:12px;color:#9B82FF">' + (cl.phone||'') + ' \u00B7 ' + (cl.email||'') + '</div>';
+        if(!cl.dataComplete) html += '<div style="margin-top:6px;padding:4px 12px;display:inline-block;border-radius:12px;background:rgba(245,158,11,.12);color:#F59E0B;font-size:11px;font-weight:600">' + t('\u26A0 Ch\u01B0a ho\u00E0n th\u00E0nh h\u1ED3 s\u01A1','\u26A0 Incomplete record') + '</div>';
+        html += '</div>';
+
+        // Health overview card
+        html += '<div style="background:#0A1218;border:1px solid rgba(0,200,150,.12);border-radius:14px;padding:16px;margin-bottom:12px">';
+        html += '<div style="font-size:13px;font-weight:600;color:#00E5A8;margin-bottom:10px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>' + t('T\u00ECnh Tr\u1EA1ng S\u1EE9c Kh\u1ECFe','Health Status') + '</div>';
+
+        var hFields = [
+          [t('Th\u1EC3 t\u1EA1ng','\u0110\u00F4ng Y'),t('Body Constitution'), cl.bodyType||t('Ch\u01B0a kh\u00E1m','Not assessed')],
+          [t('Huy\u1EBFt \u00E1p','Blood Pressure'), cl.bloodPressure||'--'],
+          [t('M\u1EA1ch','Pulse'), cl.pulse||'--'],
+          [t('M\u1EE9c \u0111au (1-10)','Pain Level (1-10)'), cl.currentPainLevel||'--'],
+          [t('D\u1ECB \u1EE9ng','Allergies'), cl.allergies||t('Kh\u00F4ng','None')],
+          [t('Ti\u1EC1n s\u1EED b\u1EC7nh','Medical History'), cl.medicalHistory||'--'],
+          [t('Thu\u1ED1c \u0111ang d\u00F9ng','Medications'), cl.medications||'--'],
+          [t('Ghi ch\u00FA KTV','KTV Notes'), cl.ktvNotes||'--']
+        ];
+        hFields.forEach(function(f) {
+          html += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(123,95,255,.05)">';
+          html += '<div style="font-size:10px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:.8px;font-family:\'Roboto Mono\',monospace;flex-shrink:0">' + f[0] + '</div>';
+          html += '<div style="font-size:12px;font-weight:500;text-align:right;max-width:55%;word-break:break-word">' + f[1] + '</div></div>';
+        });
+        html += '</div>';
+
+        // Session history
+        html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px;margin-bottom:12px">';
+        html += '<div style="font-size:13px;font-weight:600;color:#9B82FF;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center"><span>' + t('L\u1ECBch S\u1EED Bu\u1ED5i Tr\u1ECB Li\u1EC7u','Session History') + ' (' + sessions.length + ')</span>';
+        html += '<button onclick="window._tAddSession(\'' + cl._id + '\')" style="background:rgba(123,95,255,.1);border:1px solid rgba(123,95,255,.2);border-radius:6px;padding:4px 10px;color:#9B82FF;font-size:11px;font-weight:600;cursor:pointer">+ ' + t('Th\u00EAm bu\u1ED5i','Add Session') + '</button></div>';
+
+        if(sessions.length === 0) {
+          html += '<div style="text-align:center;padding:20px;color:rgba(248,242,224,.25);font-size:12px">' + t('Ch\u01B0a c\u00F3 bu\u1ED5i tr\u1ECB li\u1EC7u','No sessions yet') + '</div>';
+        }
+
+        // Progress bar if multiple sessions
+        if(sessions.length >= 2) {
+          var firstPain = sessions[0].painLevel || 5;
+          var lastPain = sessions[sessions.length-1].painLevel || 5;
+          var improve = Math.round(((firstPain - lastPain) / firstPain) * 100);
+          var improveColor = improve > 0 ? '#00E5A8' : improve < 0 ? '#FF4D6D' : '#F59E0B';
+          html += '<div style="background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.1);border-radius:10px;padding:12px;margin-bottom:12px;text-align:center">';
+          html += '<div style="font-size:10px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">' + t('Ti\u1EBFn tri\u1EC3n \u0111au','Pain Progress') + '</div>';
+          html += '<div style="font-size:28px;font-weight:700;color:' + improveColor + '">' + (improve > 0 ? '+' : '') + improve + '%</div>';
+          html += '<div style="font-size:11px;color:rgba(248,242,224,.4)">' + t('Gi\u1EA3m t\u1EEB ','Reduced from ') + firstPain + '/10 \u2192 ' + lastPain + '/10 qua ' + sessions.length + ' ' + t('bu\u1ED5i','sessions') + '</div>';
+
+          // Mini chart
+          html += '<div style="display:flex;align-items:flex-end;gap:3px;height:40px;margin-top:10px;justify-content:center">';
+          sessions.forEach(function(s) {
+            var h = Math.max(6, ((s.painLevel||5) / 10) * 40);
+            var col = (s.painLevel||5) <= 3 ? '#00E5A8' : (s.painLevel||5) <= 6 ? '#F59E0B' : '#FF4D6D';
+            html += '<div style="width:' + Math.max(8, Math.floor(200/sessions.length)) + 'px;height:' + h + 'px;background:' + col + ';border-radius:3px 3px 0 0;opacity:.7" title="' + (s.date||'') + ': ' + (s.painLevel||'?') + '/10"></div>';
+          });
+          html += '</div>';
+          html += '</div>';
+        }
+
+        sessions.slice().reverse().forEach(function(s, idx) {
+          var painColor = (s.painLevel||5) <= 3 ? '#00E5A8' : (s.painLevel||5) <= 6 ? '#F59E0B' : '#FF4D6D';
+          html += '<div style="border-left:3px solid ' + painColor + ';padding:10px 12px;margin-bottom:8px;background:rgba(123,95,255,.03);border-radius:0 8px 8px 0">';
+          html += '<div style="display:flex;justify-content:space-between;align-items:center">';
+          html += '<div style="font-size:12px;font-weight:600">' + t('Bu\u1ED5i #','Session #') + (sessions.length - idx) + '</div>';
+          html += '<div style="font-size:10px;color:rgba(248,242,224,.42);font-family:\'Roboto Mono\',monospace">' + (s.date||'--') + '</div></div>';
+          html += '<div style="font-size:11px;color:rgba(248,242,224,.6);margin-top:4px">' + (s.service||'') + '</div>';
+          html += '<div style="display:flex;gap:12px;margin-top:6px;font-size:10px;color:rgba(248,242,224,.42)">';
+          html += '<span>\u0110au: <b style="color:' + painColor + '">' + (s.painLevel||'?') + '/10</b></span>';
+          if(s.improvement) html += '<span>' + t('C\u1EA3i thi\u1EC7n: ','Improvement: ') + '<b style="color:#00E5A8">' + s.improvement + '</b></span>';
+          html += '</div>';
+          if(s.notes) html += '<div style="font-size:11px;color:rgba(248,242,224,.35);margin-top:4px;font-style:italic">"' + s.notes + '"</div>';
+          html += '</div>';
+        });
+        html += '</div>';
+
+        // Action buttons
+        html += '<div style="display:flex;gap:8px">';
+        html += '<button onclick="window._tEditClientForm(\'' + cl._id + '\')" style="flex:1;background:linear-gradient(135deg,#5B3FDF,#7B5FFF);color:#fff;border:none;border-radius:10px;padding:12px;font-size:13px;font-weight:600;cursor:pointer">' + t('S\u1EEDa h\u1ED3 s\u01A1','Edit Record') + '</button>';
+        html += '<button onclick="window._tAddSession(\'' + cl._id + '\')" style="flex:1;background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.2);color:#00E5A8;border-radius:10px;padding:12px;font-size:13px;font-weight:600;cursor:pointer">' + t('+ Bu\u1ED5i m\u1EDBi','+ New Session') + '</button>';
+        html += '</div>';
+      }
+    }
+
+    // ── CLIENT FORM VIEW (new/edit) ──
+    else if(clientSubPage === 'form') {
+      var cl = editingClient ? allClients.find(function(c) { return c._id === editingClient; }) : null;
+      var isNew = !cl;
+      html += '<div style="font-size:16px;font-weight:600;margin-bottom:14px">' + (isNew ? t('Th\u00EAm Kh\u00E1ch H\u00E0ng M\u1EDBi','Add New Client') : t('C\u1EADp Nh\u1EADt H\u1ED3 S\u01A1','Update Record')) + '</div>';
+
+      var fStyle = 'width:100%;background:#060C0F;border:1px solid rgba(123,95,255,.15);border-radius:8px;padding:10px 12px;color:#F8F2E0;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:10px';
+      var lStyle = 'font-size:9px;color:rgba(248,242,224,.42);letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:3px;font-family:\'Roboto Mono\',monospace';
+      var secStyle = 'background:#0A1218;border:1px solid rgba(123,95,255,.1);border-radius:12px;padding:14px;margin-bottom:12px';
+
+      // Personal info
+      html += '<div style="' + secStyle + '">';
+      html += '<div style="font-size:12px;font-weight:600;color:#9B82FF;margin-bottom:10px">' + t('\u{1F4CB} Th\u00F4ng Tin C\u00E1 Nh\u00E2n','\u{1F4CB} Personal Info') + '</div>';
+      html += '<label style="' + lStyle + '">' + t('H\u1ECD v\u00E0 t\u00EAn *','Full name *') + '</label><input id="cf-name" style="' + fStyle + '" value="' + (cl?cl.name:'') + '" placeholder="Nguy\u1EC5n V\u0103n A">';
+      html += '<label style="' + lStyle + '">' + t('\u0110i\u1EC7n tho\u1EA1i *','Phone *') + '</label><input id="cf-phone" style="' + fStyle + '" value="' + (cl?cl.phone:'') + '" placeholder="0912 345 678">';
+      html += '<label style="' + lStyle + '">Email</label><input id="cf-email" style="' + fStyle + '" value="' + (cl?cl.email||'':'') + '" placeholder="email@example.com">';
+      html += '<label style="' + lStyle + '">' + t('Ng\u00E0y sinh','Date of Birth') + '</label><input id="cf-dob" type="date" style="' + fStyle + '" value="' + (cl?cl.dob||'':'') + '">';
+      html += '<label style="' + lStyle + '">' + t('Gi\u1EDBi t\u00EDnh','Gender') + '</label><select id="cf-gender" style="' + fStyle + '"><option value="">' + t('Ch\u1ECDn','Select') + '</option><option value="male"' + (cl&&cl.gender==='male'?' selected':'') + '>' + t('Nam','Male') + '</option><option value="female"' + (cl&&cl.gender==='female'?' selected':'') + '>' + t('N\u1EEF','Female') + '</option></select>';
+      html += '<label style="' + lStyle + '">' + t('\u0110\u1ECBa ch\u1EC9','Address') + '</label><input id="cf-addr" style="' + fStyle + '" value="' + (cl?cl.address||'':'') + '">';
+      html += '<label style="' + lStyle + '">' + t('\u0110\u01A1n v\u1ECB gi\u1EDBi thi\u1EC7u','Referral Source') + '</label><input id="cf-referral" style="' + fStyle + '" value="' + (cl?cl.referral||'':'') + '" placeholder="' + t('KTV gi\u1EDBi thi\u1EC7u, Facebook, B\u1EA1n b\u00E8...','Technician, Facebook, Friends...') + '">';
+      html += '</div>';
+
+      // Health assessment
+      html += '<div style="' + secStyle + '">';
+      html += '<div style="font-size:12px;font-weight:600;color:#00E5A8;margin-bottom:10px">' + t('\u{1FA7A} Kh\u00E1m T\u1ED5ng Qu\u00E1t','\u{1FA7A} General Assessment') + '</div>';
+      html += '<label style="' + lStyle + '">' + t('Th\u1EC3 t\u1EA1ng \u0110\u00F4ng Y','TCM Body Type') + '</label><select id="cf-body" style="' + fStyle + '">';
+      html += '<option value="">' + t('Ch\u1ECDn th\u1EC3 t\u1EA1ng','Select type') + '</option>';
+      ['Kh\u00ED h\u01B0|Qi Deficiency', 'Huy\u1EBFt h\u01B0|Blood Deficiency', '\u00C2m h\u01B0|Yin Deficiency', 'D\u01B0\u01A1ng h\u01B0|Yang Deficiency', '\u0110\u00E0m th\u1EA5p|Phlegm Dampness', 'Th\u1EA5p nhi\u1EC7t|Damp Heat', 'Huy\u1EBFt \u1EE9|Blood Stasis', 'Kh\u00ED tr\u1EC7|Qi Stagnation', 'B\u00ECnh h\u00F2a|Balanced'].forEach(function(v) {
+        var parts = v.split('|');
+        html += '<option value="' + parts[0] + '"' + (cl&&cl.bodyType===parts[0]?' selected':'') + '>' + parts[0] + (parts[1]?' (' + parts[1] + ')':'') + '</option>';
+      });
+      html += '</select>';
+      html += '<label style="' + lStyle + '">' + t('Huy\u1EBFt \u00E1p','Blood Pressure') + '</label><input id="cf-bp" style="' + fStyle + '" value="' + (cl?cl.bloodPressure||'':'') + '" placeholder="120/80 mmHg">';
+      html += '<label style="' + lStyle + '">' + t('M\u1EA1ch (nh\u1ECBp/ph\u00FAt)','Pulse (bpm)') + '</label><input id="cf-pulse" style="' + fStyle + '" value="' + (cl?cl.pulse||'':'') + '" placeholder="72">';
+      html += '<label style="' + lStyle + '">' + t('M\u1EE9c \u0111au hi\u1EC7n t\u1EA1i (1-10)','Current Pain Level (1-10)') + '</label><input id="cf-pain" type="number" min="1" max="10" style="' + fStyle + '" value="' + (cl?cl.currentPainLevel||'':'') + '">';
+      html += '<label style="' + lStyle + '">' + t('D\u1ECB \u1EE9ng','Allergies') + '</label><input id="cf-allergy" style="' + fStyle + '" value="' + (cl?cl.allergies||'':'') + '" placeholder="' + t('Kh\u00F4ng','None') + '">';
+      html += '</div>';
+
+      // Medical history
+      html += '<div style="' + secStyle + '">';
+      html += '<div style="font-size:12px;font-weight:600;color:#F59E0B;margin-bottom:10px">' + t('\u{1F4C4} Ti\u1EC1n S\u1EED B\u1EC7nh','\u{1F4C4} Medical History') + '</div>';
+      html += '<label style="' + lStyle + '">' + t('B\u1EC7nh l\u00FD n\u1EC1n','Underlying Conditions') + '</label><textarea id="cf-medhist" style="' + fStyle + 'min-height:60px;resize:vertical" placeholder="' + t('Ti\u1EC3u \u0111\u01B0\u1EDDng, huy\u1EBFt \u00E1p cao...','Diabetes, hypertension...') + '">' + (cl?cl.medicalHistory||'':'') + '</textarea>';
+      html += '<label style="' + lStyle + '">' + t('Thu\u1ED1c \u0111ang d\u00F9ng','Current Medications') + '</label><textarea id="cf-meds" style="' + fStyle + 'min-height:50px;resize:vertical" placeholder="' + t('T\u00EAn thu\u1ED1c, li\u1EC1u l\u01B0\u1EE3ng','Drug name, dosage') + '">' + (cl?cl.medications||'':'') + '</textarea>';
+      html += '<label style="' + lStyle + '">' + t('Tri\u1EC7u ch\u1EE9ng ch\u00EDnh','Main Symptoms') + '</label><textarea id="cf-symptoms" style="' + fStyle + 'min-height:50px;resize:vertical" placeholder="' + t('\u0110au l\u01B0ng, m\u1EA5t ng\u1EE7, m\u1EC7t m\u1ECFi...','Back pain, insomnia, fatigue...') + '">' + (cl?cl.symptoms||'':'') + '</textarea>';
+      html += '</div>';
+
+      // KTV notes
+      html += '<div style="' + secStyle + '">';
+      html += '<div style="font-size:12px;font-weight:600;color:#9B82FF;margin-bottom:10px">' + t('\u{1F4DD} Ghi Ch\u00FA KTV','\u{1F4DD} KTV Notes') + '</div>';
+      html += '<textarea id="cf-notes" style="' + fStyle + 'min-height:80px;resize:vertical" placeholder="' + t('Nh\u1EADn x\u00E9t c\u1EE7a KTV v\u1EC1 t\u00ECnh tr\u1EA1ng kh\u00E1ch h\u00E0ng...','KTV observations about client condition...') + '">' + (cl?cl.ktvNotes||'':'') + '</textarea>';
+      html += '</div>';
+
+      // Save button
+      html += '<button onclick="window._tSaveClient(' + (cl ? '\'' + cl._id + '\'' : 'null') + ')" style="width:100%;background:linear-gradient(135deg,#00896A,#00C896);color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px">';
+      html += t('\u2714 L\u01B0u & Ho\u00E0n Th\u00E0nh H\u1ED3 S\u01A1','\u2714 Save & Complete Record') + '</button>';
+      html += '<div style="text-align:center;font-size:10px;color:rgba(248,242,224,.3)">' + t('D\u1EEF li\u1EC7u \u0111\u01B0\u1EE3c \u0111\u1ED3ng b\u1ED9 v\u1EC1 Admin CRM realtime','Data syncs to Admin CRM in realtime') + '</div>';
+    }
+  }
+
   // PROFILE PAGE
   else if(tPage === 't-profile') {
     html += '<div style="text-align:center;margin-bottom:20px">';
@@ -631,6 +873,222 @@ window._tScanNearby = function() {
 };
 
 // ═══════════════════════════════════════════
+// CLIENT DATA MANAGEMENT
+// ═══════════════════════════════════════════
+window._tNewClient = function() {
+  window._tClientSub = 'form';
+  window._tEditClient = null;
+  renderTechDash();
+};
+
+window._tViewClient = function(id) {
+  window._tClientSub = 'detail';
+  window._tEditClient = id;
+  renderTechDash();
+};
+
+window._tEditClientForm = function(id) {
+  window._tClientSub = 'form';
+  window._tEditClient = id;
+  renderTechDash();
+};
+
+window._tSaveClient = function(existingId) {
+  var name = (document.getElementById('cf-name').value || '').trim();
+  var phone = (document.getElementById('cf-phone').value || '').trim();
+  if(!name || !phone) {
+    alert(t('Vui l\u00F2ng nh\u1EADp h\u1ECD t\u00EAn v\u00E0 s\u1ED1 \u0111i\u1EC7n tho\u1EA1i','Please enter name and phone'));
+    return;
+  }
+
+  var data = {
+    name: name,
+    phone: phone,
+    email: (document.getElementById('cf-email').value || '').trim(),
+    dob: document.getElementById('cf-dob').value || '',
+    gender: document.getElementById('cf-gender').value || '',
+    address: (document.getElementById('cf-addr').value || '').trim(),
+    referral: (document.getElementById('cf-referral').value || '').trim(),
+    bodyType: document.getElementById('cf-body').value || '',
+    bloodPressure: (document.getElementById('cf-bp').value || '').trim(),
+    pulse: (document.getElementById('cf-pulse').value || '').trim(),
+    currentPainLevel: parseInt(document.getElementById('cf-pain').value) || null,
+    allergies: (document.getElementById('cf-allergy').value || '').trim(),
+    medicalHistory: (document.getElementById('cf-medhist').value || '').trim(),
+    medications: (document.getElementById('cf-meds').value || '').trim(),
+    symptoms: (document.getElementById('cf-symptoms').value || '').trim(),
+    ktvNotes: (document.getElementById('cf-notes').value || '').trim(),
+    ktvId: tUser.id,
+    ktvName: tUser.name,
+    centerId: tUser.centerId,
+    centerName: tUser.centerName,
+    updatedAt: Date.now()
+  };
+
+  // Check if form is complete enough for compensation
+  var requiredFields = ['name','phone','bodyType','bloodPressure','currentPainLevel','medicalHistory','symptoms','ktvNotes'];
+  var filledCount = requiredFields.filter(function(f) { return data[f] && String(data[f]).trim().length > 0; }).length;
+  data.dataComplete = filledCount >= 6; // at least 6/8 fields filled
+  data.completionPercent = Math.round((filledCount / requiredFields.length) * 100);
+
+  if(window.AnimaSync) {
+    if(existingId) {
+      // Update existing
+      AnimaSync.update('crm_clients', existingId, data);
+    } else {
+      // Create new
+      data.createdAt = Date.now();
+      data.sessions = [];
+      data.paid = false;
+      data.sessionFee = 150000; // 150k VND default
+      AnimaSync.push('crm_clients', data);
+    }
+
+    // Push activity to admin
+    AnimaSync.push('activities', {
+      type: 'client_record',
+      vi: tUser.name + (existingId ? ' c\u1EADp nh\u1EADt' : ' th\u00EAm') + ' h\u1ED3 s\u01A1 KH: ' + name + (data.dataComplete ? ' (\u2713 Ho\u00E0n th\u00E0nh)' : ' (' + data.completionPercent + '%)'),
+      en: tUser.name + (existingId ? ' updated' : ' added') + ' client record: ' + name + (data.dataComplete ? ' (\u2713 Complete)' : ' (' + data.completionPercent + '%)'),
+      centerId: tUser.centerId,
+      ago: 0
+    });
+
+    // Also sync to customers collection for admin CRM
+    AnimaSync.push('customers', {
+      name: name,
+      phone: phone,
+      email: data.email,
+      source: 'KTV-' + tUser.id,
+      centerId: tUser.centerId,
+      centerName: tUser.centerName,
+      ktvId: tUser.id,
+      ktvName: tUser.name,
+      bodyType: data.bodyType,
+      healthStatus: data.symptoms,
+      painLevel: data.currentPainLevel,
+      referral: data.referral,
+      createdAt: data.createdAt || Date.now()
+    });
+  }
+
+  // Navigate back to detail or list
+  if(existingId) {
+    window._tClientSub = 'detail';
+    window._tEditClient = existingId;
+  } else {
+    window._tClientSub = 'list';
+    window._tEditClient = null;
+  }
+  renderTechDash();
+
+  var msg = data.dataComplete
+    ? t('\u2714 H\u1ED3 s\u01A1 ho\u00E0n th\u00E0nh! \u0110\u1EE7 \u0111i\u1EC1u ki\u1EC7n nh\u1EADn th\u00F9 lao.','\u2714 Record complete! Eligible for compensation.')
+    : t('\u0110\u00E3 l\u01B0u! C\u1EA7n \u0111i\u1EC1n th\u00EAm \u0111\u1EC3 ho\u00E0n th\u00E0nh h\u1ED3 s\u01A1.','Saved! Fill more fields to complete the record.');
+  if(typeof showToast === 'function') showToast(msg, data.dataComplete ? '#00C896' : '#F59E0B');
+};
+
+window._tAddSession = function(clientId) {
+  var service = prompt(t('D\u1ECBch v\u1EE5 th\u1EF1c hi\u1EC7n:','Service performed:'), tUser.specialty.split(',')[0].trim());
+  if(!service) return;
+  var painLevel = parseInt(prompt(t('M\u1EE9c \u0111au sau tr\u1ECB li\u1EC7u (1-10):','Pain level after treatment (1-10):'), '5'));
+  if(isNaN(painLevel) || painLevel < 1 || painLevel > 10) painLevel = 5;
+  var improvement = prompt(t('C\u1EA3i thi\u1EC7n (VD: Gi\u1EA3m \u0111au l\u01B0ng 30%, ng\u1EE7 t\u1ED1t h\u01A1n):','Improvement (e.g. Back pain -30%, better sleep):'), '');
+  var notes = prompt(t('Ghi ch\u00FA bu\u1ED5i tr\u1ECB li\u1EC7u:','Session notes:'), '');
+
+  var sessionData = {
+    date: new Date().toISOString().split('T')[0],
+    time: new Date().getHours() + ':' + String(new Date().getMinutes()).padStart(2,'0'),
+    service: service,
+    painLevel: painLevel,
+    improvement: improvement || '',
+    notes: notes || '',
+    ktvId: tUser.id,
+    ktvName: tUser.name,
+    centerId: tUser.centerId
+  };
+
+  if(window.AnimaSync) {
+    var clients = AnimaSync.get('crm_clients', []);
+    var cl = clients.find(function(c) { return c._id === clientId; });
+    if(cl) {
+      var sessions = cl.sessions || [];
+      sessions.push(sessionData);
+      AnimaSync.update('crm_clients', clientId, {
+        sessions: sessions,
+        currentPainLevel: painLevel,
+        lastSessionDate: sessionData.date,
+        updatedAt: Date.now()
+      });
+
+      // Push to admin activity feed
+      AnimaSync.push('activities', {
+        type: 'session_complete',
+        vi: tUser.name + ' ho\u00E0n th\u00E0nh bu\u1ED5i #' + sessions.length + ' cho ' + cl.name + ' - \u0110au: ' + painLevel + '/10',
+        en: tUser.name + ' completed session #' + sessions.length + ' for ' + cl.name + ' - Pain: ' + painLevel + '/10',
+        centerId: tUser.centerId,
+        ago: 0
+      });
+
+      // Sync session to bookings (admin can see completed sessions)
+      AnimaSync.push('bookings', {
+        centerId: tUser.centerId,
+        centerName: tUser.centerName,
+        customer: cl.name,
+        service: service,
+        date: sessionData.date,
+        time: sessionData.time,
+        status: 'completed',
+        ktvId: tUser.id,
+        ktvName: tUser.name,
+        painLevel: painLevel,
+        sessionNumber: sessions.length,
+        fromClientRecord: true
+      });
+    }
+  }
+
+  window._tClientSub = 'detail';
+  window._tEditClient = clientId;
+  renderTechDash();
+  if(typeof showToast === 'function') showToast(t('\u0110\u00E3 th\u00EAm bu\u1ED5i tr\u1ECB li\u1EC7u!','Session added!'), '#00C896');
+};
+
+// Also auto-create client record when KTV accepts a booking
+var origAccept = window._tAccept;
+window._tAccept = function(id) {
+  origAccept(id);
+  // Auto-create client stub in crm_clients if not exists
+  if(window.AnimaSync) {
+    var booking = AnimaSync.get('bookings', []).find(function(b) { return b._id === id; });
+    if(booking && booking.customer) {
+      var existing = AnimaSync.get('crm_clients', []).find(function(c) {
+        return c.name === booking.customer && c.ktvId === tUser.id;
+      });
+      if(!existing) {
+        AnimaSync.push('crm_clients', {
+          name: booking.customer,
+          phone: '',
+          email: '',
+          ktvId: tUser.id,
+          ktvName: tUser.name,
+          centerId: tUser.centerId,
+          centerName: tUser.centerName,
+          sessions: [],
+          dataComplete: false,
+          completionPercent: 0,
+          paid: false,
+          sessionFee: 150000,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+          fromBooking: booking._id,
+          service: booking.service
+        });
+      }
+    }
+  }
+};
+
+// ═══════════════════════════════════════════
 // GEOLOCATION WATCH
 // ═══════════════════════════════════════════
 function startLocationWatch() {
@@ -647,6 +1105,9 @@ function startLocationWatch() {
 function setupTechSync() {
   if(!window.AnimaSync) return;
   AnimaSync.on('bookings', function() {
+    if(document.getElementById('techDashboard').style.display !== 'none') renderTechDash();
+  });
+  AnimaSync.on('crm_clients', function() {
     if(document.getElementById('techDashboard').style.display !== 'none') renderTechDash();
   });
 }
