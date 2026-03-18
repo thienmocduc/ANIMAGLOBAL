@@ -1,40 +1,38 @@
-/* AnimaCare Global — Mobile & Tablet Responsive CSS v2
-   Android, iOS, iPad — Bilingual ready (VI/EN) */
+/* ═══════════════════════════════════════════════════════════
+   AnimaCare Global — Mobile Responsive v3
+   Fixed: inline grids, footer, cards, overlays
+   ═══════════════════════════════════════════════════════════ */
 
-/* ── Touch & Performance ── */
 *{-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 img,video{max-width:100%;height:auto}
 
-/* ── Mobile Nav Hamburger ── */
+/* ── Hamburger ── */
 .mobile-menu-btn{
   display:none;width:40px;height:40px;border:none;background:transparent;
-  cursor:pointer;padding:8px;z-index:310;position:relative;
+  cursor:pointer;padding:8px;z-index:310;
   flex-direction:column;justify-content:center;align-items:center;gap:5px;
 }
-.mobile-menu-btn span{
-  display:block;width:22px;height:2px;background:#00C896;
-  border-radius:2px;transition:all .3s ease;
-}
+.mobile-menu-btn span{display:block;width:22px;height:2px;background:#00C896;border-radius:2px;transition:all .3s}
 .mobile-menu-btn.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
 .mobile-menu-btn.open span:nth-child(2){opacity:0}
 .mobile-menu-btn.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
 
-/* ── Mobile Overlay Menu ── */
+/* ── Mobile Nav Overlay ── */
 .mobile-nav-overlay{
   display:none;position:fixed;inset:0;z-index:299;
-  background:rgba(0,0,0,.94);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  flex-direction:column;align-items:center;justify-content:center;gap:0;
-  opacity:0;transition:opacity .3s ease;overflow-y:auto;
+  background:rgba(0,0,0,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .3s;overflow-y:auto;
 }
 .mobile-nav-overlay.show{display:flex;opacity:1}
 .mobile-nav-overlay a,.mobile-nav-overlay .dropdown-label{
   color:#F8F2E0;font-size:18px;font-weight:500;padding:14px 24px;
   text-decoration:none;text-align:center;width:100%;
-  border-bottom:1px solid rgba(0,200,150,.08);transition:color .2s;
+  border-bottom:1px solid rgba(0,200,150,.08);
 }
-.mobile-nav-overlay a:active{color:#00C896;background:rgba(0,200,150,.06)}
-.mobile-nav-overlay .mob-sub{display:none;flex-direction:column;background:rgba(0,200,150,.04);padding:4px 0}
+.mobile-nav-overlay a:active{color:#00C896}
+.mobile-nav-overlay .mob-sub{display:none;flex-direction:column;background:rgba(0,200,150,.04)}
 .mobile-nav-overlay .mob-sub.open{display:flex}
 .mobile-nav-overlay .mob-sub a{font-size:15px;color:rgba(248,242,224,.6);padding:10px 40px}
 .mobile-nav-overlay .mobile-lang{display:flex;gap:8px;margin-top:20px}
@@ -47,124 +45,179 @@ img,video{max-width:100%;height:auto}
 /* ════════════════════ TABLET ≤1024px ════════════════════ */
 @media(max-width:1024px){
   nav{padding:0 16px!important}
-  .nav-center .nav-link{font-size:12px!important;padding:0 8px!important}
-  .eco-grid{grid-template-columns:repeat(2,1fr)!important}
-  .tech-grid{grid-template-columns:repeat(2,1fr)!important}
-  .steps-grid{grid-template-columns:repeat(3,1fr)!important}
-  .intro-headline{font-size:28px!important}
-  .intro-stats{flex-wrap:wrap!important}
-  /* All multi-column grids to 2 cols */
-  [class*="-grid"]{grid-template-columns:repeat(2,1fr)!important}
-  [class*="-grid"][style*="repeat(6"]{grid-template-columns:repeat(3,1fr)!important}
+  .nav-center .nav-link{font-size:11px!important;padding:0 6px!important}
+  .eco-grid,.intro-pillars{grid-template-columns:repeat(2,1fr)!important}
+  .tech-grid,.st-grid{grid-template-columns:repeat(2,1fr)!important}
+  .intro-stats{grid-template-columns:repeat(3,1fr)!important}
+  .fg{grid-template-columns:1fr 1fr!important;gap:24px!important}
 }
 
 /* ════════════════════ MOBILE ≤768px ════════════════════ */
 @media(max-width:768px){
-  /* Hamburger visible, desktop nav hidden */
+  /* ── Nav ── */
   .mobile-menu-btn{display:flex!important}
   .nav-center{display:none!important}
   .nav-right .nav-cta{display:none!important}
-  .nav-right .auth-btn{display:none!important}
-
-  /* Nav slim */
   nav{padding:0 12px!important;height:52px!important}
-  .nav-logo-img{height:28px!important}
+  .nav-logo-img{height:26px!important}
   .lang-toggle{transform:scale(.85);transform-origin:right center}
 
-  /* Hero */
-  .hero{min-height:60vh!important}
-  .hero-img{object-position:center!important}
-
-  /* Intro */
-  .intro-section{padding:30px 16px!important}
-  .intro-wrap{padding:0!important}
-  .intro-headline{font-size:20px!important;line-height:1.35!important}
-  .intro-quote{font-size:13px!important}
-  .intro-stats{flex-direction:column!important;gap:12px!important}
-  .intro-pillars{flex-direction:column!important;gap:12px!important}
-  .intro-btns{flex-direction:column!important;gap:10px!important;align-items:stretch!important}
-  .intro-btns a,.intro-btns button{width:100%!important;text-align:center!important}
-
-  /* Sections */
+  /* ── Global ── */
   section{padding:30px 16px!important}
-  [class*="section-title"],h2[class*="title"]{font-size:20px!important}
+  input,select,textarea{font-size:16px!important}
 
-  /* All grids → 1 col on mobile */
-  .eco-grid,.tech-grid,.steps-grid,
-  [class$="-grid"]{grid-template-columns:1fr!important;gap:12px!important}
-  /* Keep 2-col for small stat grids */
-  .ip-hero-kpis,.fr-hero-kpis{grid-template-columns:repeat(2,1fr)!important}
+  /* ── Hero ── */
+  .hero{min-height:50vh!important}
 
-  /* Cards */
-  .eco-card,.tech-card,.step-card{padding:16px!important}
-  .eco-ico{width:36px!important;height:36px!important}
-  .step-num{font-size:28px!important}
-
-  /* Footer */
-  footer{padding:30px 16px!important}
-  footer [class*="grid"],footer [class*="row"]{
-    grid-template-columns:1fr!important;flex-direction:column!important;gap:16px!important;
-  }
-
-  /* Modals & overlays fullscreen */
-  .modal,.overlay,[class*="modal"],[class*="overlay"]{
-    width:95vw!important;max-width:95vw!important;
-    max-height:90vh!important;overflow-y:auto!important;
-    border-radius:14px!important;margin:auto!important;
-  }
-
-  /* Admin portal modal */
-  #adminPortal>div{width:95vw!important;max-width:400px!important;padding:20px!important}
-
-  /* Tables horizontal scroll */
-  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
-
-  /* Product slider */
-  [class*="slider"],[class*="carousel"]{overflow-x:auto!important;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
-  [class*="slide"]{scroll-snap-align:start;min-width:85vw!important;flex-shrink:0!important}
-
-  /* Multi-step flows */
-  [class*="step-section"],[class*="steps"]{flex-direction:column!important}
-
-  /* Hide heavy decorative elements */
+  /* ── Intro ── */
+  .intro-section{padding:24px 14px!important}
+  .intro-headline{font-size:20px!important;line-height:1.4!important}
+  .intro-eyebrow{font-size:10px!important;letter-spacing:1px!important}
+  .intro-quote{font-size:13px!important;padding:0 4px!important}
+  .intro-stats{grid-template-columns:repeat(2,1fr)!important;gap:0!important}
+  .intro-pillars{grid-template-columns:1fr!important;gap:10px!important}
+  .intro-btns{flex-direction:column!important;gap:10px!important;padding:0 10px!important}
+  .intro-btns a,.intro-btns button{width:100%!important;text-align:center!important;padding:14px!important}
   .intro-ambient-l,.intro-ambient-r{display:none!important}
 
-  /* Fix input zoom on iOS */
-  input,select,textarea{font-size:16px!important}
+  /* ── Ecosystem — ALL grids to 1 col ── */
+  .eco-grid{grid-template-columns:1fr!important;gap:10px!important}
+  .eco-card{padding:14px 16px!important;flex-direction:row!important;align-items:center!important;gap:14px!important}
+  .eco-ico{width:40px!important;height:40px!important;min-width:40px!important;flex-shrink:0!important}
+  .eco-ttl{font-size:15px!important}
+  .eco-desc{font-size:12px!important;-webkit-line-clamp:2;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
+
+  /* ── Steps ── */
+  .steps-grid{grid-template-columns:1fr!important;gap:10px!important}
+  .step-card{padding:16px!important}
+
+  /* ── Technology ── */
+  .tech-grid{grid-template-columns:1fr!important;gap:10px!important}
+  .tech-card{padding:14px!important}
+
+  /* ── Store ── */
+  .st-grid{grid-template-columns:1fr!important;gap:12px!important}
+
+  /* ── Footer — single col ── */
+  .fg{grid-template-columns:1fr!important;gap:20px!important;text-align:center!important}
+  .f-links{columns:2!important;text-align:left}
+  footer{padding:24px 16px 30px!important}
+
+  /* ── ALL inline grids → 1 col ── */
+  [style*="grid-template-columns:repeat(3"]{grid-template-columns:1fr!important}
+  [style*="grid-template-columns:repeat(4"]{grid-template-columns:1fr!important}
+  [style*="grid-template-columns:repeat(5"]{grid-template-columns:1fr!important}
+  [style*="grid-template-columns:repeat(6"]{grid-template-columns:1fr!important}
+  [style*="grid-template-columns:1fr 1fr 1fr"]{grid-template-columns:1fr!important}
+  [style*="grid-template-columns:2.2fr"]{grid-template-columns:1fr!important}
+
+  /* Keep 2-col for small stat grids */
+  [style*="grid-template-columns:repeat(2"]{grid-template-columns:repeat(2,1fr)!important}
+  .intro-stats{grid-template-columns:repeat(2,1fr)!important}
+
+  /* ── Overlays ── */
+  [id$="Overlay"]>div:first-child+div,
+  [id$="Overlay"]>[style*="max-width"]{
+    width:100%!important;max-width:100%!important;margin:0!important;
+    border-radius:0!important;min-height:100vh;
+  }
+  [id$="Overlay"]{padding:0!important}
+  [id$="Overlay"] [style*="padding:0 48px"],
+  [id$="Overlay"] [style*="padding: 0 48px"]{padding:0 16px!important}
+  [id$="Overlay"] [style*="padding:48px"],
+  [id$="Overlay"] [style*="padding: 48px"]{padding:20px 16px!important}
+
+  /* ── Modals ── */
+  .modal,[id*="Modal"]>div:nth-child(2){
+    width:95vw!important;max-width:95vw!important;
+    max-height:90vh!important;overflow-y:auto!important;
+    border-radius:14px!important;
+  }
+  #adminPortal>div{width:95vw!important;max-width:400px!important;padding:20px!important}
+
+  /* ── Tables ── */
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
+
+  /* ── Horizontal scroll containers on mobile ── */
+  [style*="overflow-x:auto"]{-webkit-overflow-scrolling:touch}
+
+  /* ── Flex row items that overflow ── */
+  [style*="display:flex"][style*="gap"]{flex-wrap:wrap!important}
+
+  /* ── Font size floors ── */
+  [style*="font-size:10px"]{font-size:11px!important}
+  [style*="font-size:9px"]{font-size:11px!important}
+  [style*="font-size:8px"]{font-size:10px!important}
+  [style*="letter-spacing:3px"]{letter-spacing:1.5px!important}
+  [style*="letter-spacing:4px"]{letter-spacing:2px!important}
+  [style*="letter-spacing:5px"]{letter-spacing:2px!important}
+
+  /* ── Padding normalization for overlay content ── */
+  [style*="padding:60px"]{padding:24px 16px!important}
+  [style*="padding:80px"]{padding:24px 16px!important}
+  [style*="padding:48px"]{padding:20px 16px!important}
+  [style*="padding:40px"]{padding:20px 16px!important}
+  [style*="margin:0 auto"][style*="max-width:1200"]{max-width:100%!important;padding:0 12px!important}
+  [style*="margin:0 auto"][style*="max-width:1100"]{max-width:100%!important;padding:0 12px!important}
+  [style*="margin:0 auto"][style*="max-width:1000"]{max-width:100%!important;padding:0 12px!important}
+  [style*="margin:0 auto"][style*="max-width:900"]{max-width:100%!important;padding:0 12px!important}
+
+  /* ── Section titles ── */
+  [style*="font-size:36px"]{font-size:24px!important}
+  [style*="font-size:32px"]{font-size:22px!important}
+  [style*="font-size:28px"]{font-size:20px!important}
+  [style*="font-size:48px"]{font-size:28px!important}
+  [style*="font-size:42px"]{font-size:26px!important}
+  [style*="font-size:56px"]{font-size:30px!important}
+  [style*="font-size:64px"]{font-size:32px!important}
+
+  /* ── Store product buttons ── */
+  .st-card{border-radius:12px!important}
+  [onclick*="openOrder"] + [onclick*="addToCart"]{
+    margin-top:6px;
+  }
+
+  /* ── Cart sidebar ── */
+  #cartSidebar{width:100vw!important;max-width:100vw!important;right:-100vw!important}
+  #cartSidebar[style*="right: 0"],#cartSidebar[style*="right:0"]{right:0!important}
 }
 
-/* ════════════════════ SMALL MOBILE ≤480px ════════════════════ */
+/* ════════════════════ SMALL ≤480px ════════════════════ */
 @media(max-width:480px){
+  nav{padding:0 8px!important;height:48px!important}
+  .nav-logo-img{height:22px!important}
+  section{padding:20px 10px!important}
+  .hero{min-height:40vh!important}
   .intro-headline{font-size:17px!important}
-  .intro-eyebrow{font-size:10px!important}
-  nav{padding:0 8px!important}
-  section{padding:24px 12px!important}
-  .hero{min-height:50vh!important}
-  .ip-hero-kpis,.fr-hero-kpis{grid-template-columns:1fr!important}
+  .intro-stats{grid-template-columns:repeat(2,1fr)!important}
+  .intro-stats>div{padding:10px 6px!important}
+  [style*="grid-template-columns:repeat(2"]{grid-template-columns:1fr!important}
+  .intro-stats{grid-template-columns:repeat(2,1fr)!important}
+  .fg{text-align:left!important}
+
+  /* All 2-col inline grids to 1 col on very small */
+  [style*="1fr 1fr"]:not(.intro-stats){grid-template-columns:1fr!important}
 }
 
-/* ════════════ ADMIN DASHBOARD RESPONSIVE ════════════ */
-
-/* Admin — Tablet: icon-only sidebar */
+/* ════════════ ADMIN DASHBOARD ════════════ */
 @media(max-width:1024px){
   #adminDashboard .app{grid-template-columns:56px 1fr!important}
   #adminDashboard .sb{width:56px!important;min-width:56px!important}
   #adminDashboard .sb-logo-text,#adminDashboard .sb-un,#adminDashboard .sb-ur,
   #adminDashboard .sb-grp,#adminDashboard .sb-dot{display:none!important}
   #adminDashboard nav.sb-nav .sb-i{justify-content:center!important;padding:10px!important}
-  #adminDashboard nav.sb-nav .sb-i svg+*:not(.sb-bx){display:none!important}
+  #adminDashboard nav.sb-nav .sb-i svg~*:not(.sb-bx){display:none!important}
   #adminDashboard .sb-bx{position:absolute!important;top:2px;right:2px;font-size:7px!important;padding:0 3px!important}
   #adminDashboard .sb-logo{justify-content:center!important;padding:12px 6px!important}
   #adminDashboard .sb-user{justify-content:center!important;padding:8px 4px!important}
   #adminDashboard .sb-av{width:28px!important;height:28px!important;font-size:11px!important}
   #adminDashboard .sb-ft{flex-direction:column!important;padding:6px 4px!important}
   #adminDashboard .sb-ft-b{padding:8px 4px!important;justify-content:center!important}
-  #adminDashboard .sb-ft-b svg+*{display:none!important}
+  #adminDashboard .sb-ft-b svg~*{display:none!important}
   #adminDashboard .kpi-g{grid-template-columns:repeat(2,1fr)!important}
   #adminDashboard .g2,#adminDashboard .g3,#adminDashboard .g23,#adminDashboard .g13{grid-template-columns:1fr!important}
 }
 
-/* Admin — Mobile: sliding drawer sidebar */
 @media(max-width:768px){
   #adminDashboard .app{grid-template-columns:1fr!important}
   #adminDashboard .sb{
@@ -178,23 +231,20 @@ img,video{max-width:100%;height:auto}
   #adminDashboard .sb.mob-open .sb-ur,#adminDashboard .sb.mob-open .sb-grp,
   #adminDashboard .sb.mob-open .sb-dot{display:block!important}
   #adminDashboard .sb.mob-open nav.sb-nav .sb-i{justify-content:flex-start!important;padding:7px 10px!important}
-  #adminDashboard .sb.mob-open nav.sb-nav .sb-i svg+*{display:inline!important}
+  #adminDashboard .sb.mob-open nav.sb-nav .sb-i svg~*{display:inline!important}
   #adminDashboard .sb.mob-open .sb-bx{position:static!important;font-size:8.5px!important;padding:1px 6px!important}
-  #adminDashboard .sb.mob-open .sb-ft{flex-direction:row!important;padding:10px 8px!important}
-  #adminDashboard .sb.mob-open .sb-ft-b svg+*{display:inline!important}
+  #adminDashboard .sb.mob-open .sb-ft{flex-direction:row!important}
+  #adminDashboard .sb.mob-open .sb-ft-b svg~*{display:inline!important}
   #adminDashboard .adm-mob-toggle{display:flex!important}
   #adminDashboard .adm-mob-overlay.show{display:block!important}
   #adminDashboard .top{padding:0 10px 0 50px!important;height:44px!important}
   #adminDashboard .top-search{width:120px!important}
   #adminDashboard .top-date{display:none!important}
-  #adminDashboard .top-bc{font-size:11px!important}
   #adminDashboard .kpi-g{grid-template-columns:1fr 1fr!important;gap:8px!important}
-  #adminDashboard .kpi{padding:12px!important}
-  #adminDashboard .kpi .val{font-size:22px!important}
   #adminDashboard .pg{padding:12px!important}
   #adminDashboard .pg-title{font-size:18px!important}
   #adminDashboard .srow{flex-wrap:wrap!important;gap:8px!important}
-  #adminDashboard .sc{min-width:45%!important;flex:0 0 45%!important;padding:10px!important}
+  #adminDashboard .sc{min-width:45%!important;flex:0 0 45%!important}
   #adminDashboard .dt{display:block!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch!important}
   #adminDashboard .mo{width:95vw!important;max-height:85vh!important;border-radius:12px!important}
   #adminDashboard .fg{grid-template-columns:1fr!important}
@@ -204,7 +254,6 @@ img,video{max-width:100%;height:auto}
   #adminDashboard .tab{white-space:nowrap!important;flex-shrink:0!important}
 }
 
-/* Admin — Small Mobile */
 @media(max-width:480px){
   #adminDashboard .kpi-g{grid-template-columns:1fr!important}
   #adminDashboard .top-search{display:none!important}
@@ -220,7 +269,6 @@ img,video{max-width:100%;height:auto}
   footer{padding-bottom:env(safe-area-inset-bottom)!important}
 }
 
-/* ═══ Reduced Motion ═══ */
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
