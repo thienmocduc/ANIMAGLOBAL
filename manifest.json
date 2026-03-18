@@ -1,0 +1,33 @@
+{
+  "name": "AnimaCare Global",
+  "short_name": "AnimaCare",
+  "description": "Thức Tỉnh Năng Lượng Nguyên Sơ | Awaken Primal Energy",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#00C896",
+  "lang": "vi",
+  "dir": "ltr",
+  "categories": ["health", "wellness", "business"],
+  "icons": [
+    {"src": "icons/icon-72.png", "sizes": "72x72", "type": "image/png"},
+    {"src": "icons/icon-96.png", "sizes": "96x96", "type": "image/png"},
+    {"src": "icons/icon-128.png", "sizes": "128x128", "type": "image/png"},
+    {"src": "icons/icon-144.png", "sizes": "144x144", "type": "image/png"},
+    {"src": "icons/icon-152.png", "sizes": "152x152", "type": "image/png"},
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icons/icon-384.png", "sizes": "384x384", "type": "image/png"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Admin Portal",
+      "short_name": "Admin",
+      "description": "Cổng quản trị / Admin Portal",
+      "url": "/admin",
+      "icons": [{"src": "icons/icon-96.png", "sizes": "96x96"}]
+    }
+  ]
+}
