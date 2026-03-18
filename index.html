@@ -7551,10 +7551,12 @@ dd.innerHTML='<div style="padding:12px 16px;border-bottom:0.5px solid rgba(0,200
 +'<div style="font-size:12px;color:var(--t3,#aaa);margin-top:2px">'+currentUser.email+'</div>'
 +(currentUser.provider==='google'?'<div style="font-size:10px;color:#4285F4;margin-top:4px">Google Account</div>':'')
 +'</div>'
-+'<div onclick="openProfile();toggleUserMenu()" style="padding:10px 16px;cursor:pointer;color:var(--t2,#ccc);font-size:13px;display:flex;align-items:center;gap:8px;transition:background .15s" onmouseover="this.style.background='rgba(0,200,150,0.06)'" onmouseout="this.style.background='transparent'">' +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' +(l==='vi'?'Thông tin cá nhân':'My Profile')+'</div>' +'<div onclick="logoutUser();toggleUserMenu()" style="padding:10px 16px;cursor:pointer;color:var(--t2,#ccc);font-size:13px;display:flex;align-items:center;gap:8px;transition:background .15s" onmouseover="this.style.background='rgba(0,200,150,0.06)'" onmouseout="this.style.background='transparent'">'
++'<div onclick="openProfile();toggleUserMenu()" style="padding:10px 16px;cursor:pointer;color:var(--t2,#ccc);font-size:13px;display:flex;align-items:center;gap:8px;transition:background .15s" class="dd-hover"">' +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' +(l==='vi'?'Thông tin cá nhân':'My Profile')+'</div>' +'<div onclick="logoutUser();toggleUserMenu()" style="padding:10px 16px;cursor:pointer;color:var(--t2,#ccc);font-size:13px;display:flex;align-items:center;gap:8px;transition:background .15s" class="dd-hover"">'
 +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>'
 +(l==='vi'?'Đăng xuất':'Sign Out')+'</div>';
 document.body.appendChild(dd);
+/* Add hover effect via CSS */
+if(!document.getElementById('dd-hover-style')){var hst=document.createElement('style');hst.id='dd-hover-style';hst.textContent='.dd-hover:hover{background:rgba(0,200,150,0.06)!important}';document.head.appendChild(hst);}
 document.addEventListener('click',function(e){
 if(!dd.contains(e.target)&&!btn.contains(e.target))dd.style.display='none';
 });
@@ -10541,7 +10543,7 @@ localStorage.removeItem('anima_admin_user');
 
 // ── Sync Bridge: Listen for center updates and refresh admin tables ──
 if(window.AnimaSync){
-  ['bookings','orders','customers','inventory','activities','crm_clients'].forEach(function(key){
+  ['bookings','orders','customers','inventory','activities','crm_clients','reviews'].forEach(function(key){
     AnimaSync.on(key, function(){
       var dash = document.getElementById('adminDashboard');
       if(dash && dash.style.display !== 'none'){
@@ -11375,5 +11377,6 @@ document.addEventListener('keydown',function(e){
 <script src="sync-engine.js"></script>
 <script src="center-dashboard.js"></script>
 <script src="technician-app.js"></script>
+<script src="review-system.js"></script>
 </body>
 </html>
