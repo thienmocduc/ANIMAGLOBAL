@@ -24,26 +24,117 @@ var cLang = 'vi';
 var cUser = null;
 var cPage = 'c-dash';
 
+// Load registered accounts from localStorage
+try {
+  var saved = JSON.parse(localStorage.getItem('anima_center_accounts') || '[]');
+  saved.forEach(function(a) {
+    var exists = CENTER_ACCOUNTS.some(function(c) { return c.id === a.id; });
+    if(!exists) CENTER_ACCOUNTS.push(a);
+  });
+} catch(e) {}
+
 function t(vi, en) { return cLang === 'vi' ? vi : en; }
 
 // ── Inject HTML ──
 function injectCenterPortal() {
-  // Login Portal
+  var S = 'style', C = 'center', inp = 'width:100%;background:#060C0F;border:1px solid rgba(0,200,150,.12);border-radius:8px;padding:11px 14px;color:#F8F2E0;font-size:14px;outline:none;box-sizing:border-box';
+  var lbl = 'font-size:9px;color:rgba(248,242,224,.42);letter-spacing:2px;text-transform:uppercase;font-family:\'Roboto Mono\',monospace;display:block;margin-bottom:4px';
+  var btn = 'width:100%;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:600;cursor:pointer';
+  var tabBase = 'flex:1;padding:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;border-bottom:2px solid transparent;background:transparent;color:rgba(248,242,224,.42);transition:all .2s';
+  var tabOn = tabBase + ';color:#00E5A8;border-bottom-color:#00C896';
+
   var portal = document.createElement('div');
   portal.id = 'centerPortal';
-  portal.innerHTML = '<div style="position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;padding:20px">' +
-    '<div style="background:#0A1218;border:1px solid rgba(0,200,150,.15);border-radius:20px;padding:36px 32px;width:100%;max-width:400px;position:relative">' +
-    '<div style="text-align:center;margin-bottom:24px">' +
+  portal.innerHTML =
+    '<div style="position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto">' +
+    '<div style="background:#0A1218;border:1px solid rgba(0,200,150,.15);border-radius:20px;padding:0;width:100%;max-width:440px;position:relative;overflow:hidden">' +
+
+    // Header
+    '<div style="text-align:center;padding:28px 32px 0">' +
     '<div style="width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,#005A42,#00C896);display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>' +
-    '<h2 style="color:#F8F2E0;font-size:20px;font-weight:600;margin:0" id="cpTitle">C\u1ED5ng Qu\u1EA3n L\u00FD C\u01A1 S\u1EDF</h2>' +
-    '<p style="color:rgba(248,242,224,.42);font-size:12px;margin-top:4px" id="cpSub">\u0110\u0103ng nh\u1EADp b\u1EB1ng t\u00E0i kho\u1EA3n c\u01A1 s\u1EDF</p></div>' +
-    '<div id="cpError" style="display:none;background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.2);border-radius:8px;padding:8px 12px;margin-bottom:12px;color:#FF4D6D;font-size:12px;text-align:center"></div>' +
-    '<div style="margin-bottom:14px"><label style="font-size:9px;color:rgba(248,242,224,.42);letter-spacing:2px;text-transform:uppercase;font-family:\'Roboto Mono\',monospace;display:block;margin-bottom:4px">CENTER ID</label>' +
-    '<input id="cpIdInput" style="width:100%;background:#060C0F;border:1px solid rgba(0,200,150,.12);border-radius:8px;padding:11px 14px;color:#F8F2E0;font-size:14px;outline:none;box-sizing:border-box" placeholder="VD: CTR001"></div>' +
-    '<div style="margin-bottom:20px"><label style="font-size:9px;color:rgba(248,242,224,.42);letter-spacing:2px;text-transform:uppercase;font-family:\'Roboto Mono\',monospace;display:block;margin-bottom:4px">M\u1EACT KH\u1EA8U</label>' +
-    '<input id="cpPwdInput" type="password" style="width:100%;background:#060C0F;border:1px solid rgba(0,200,150,.12);border-radius:8px;padding:11px 14px;color:#F8F2E0;font-size:14px;outline:none;box-sizing:border-box" placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"></div>' +
-    '<button onclick="window._centerLogin()" style="width:100%;background:linear-gradient(135deg,#005A42,#00C896);color:#000;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:600;cursor:pointer">\u0110\u0103ng Nh\u1EADp</button>' +
-    '<button onclick="window._closeCenterPortal()" style="position:absolute;top:14px;right:14px;background:none;border:none;color:rgba(248,242,224,.42);font-size:18px;cursor:pointer;width:28px;height:28px;display:flex;align-items:center;justify-content:center">\u2715</button>' +
+    '<h2 style="color:#F8F2E0;font-size:20px;font-weight:600;margin:0">C\u1ED5ng Qu\u1EA3n L\u00FD C\u01A1 S\u1EDF</h2>' +
+    '<p style="color:rgba(248,242,224,.42);font-size:12px;margin-top:4px">Center Management Portal</p></div>' +
+
+    // Tabs
+    '<div style="display:flex;margin:20px 32px 0;border-bottom:1px solid rgba(0,200,150,.1)">' +
+    '<button id="cpTabLogin" onclick="window._cpSwitchTab(\'login\')" style="' + tabOn + '">\u0110\u0103ng Nh\u1EADp</button>' +
+    '<button id="cpTabRegister" onclick="window._cpSwitchTab(\'register\')" style="' + tabBase + '">\u0110\u0103ng K\u00FD</button>' +
+    '</div>' +
+
+    // Error box
+    '<div id="cpError" style="display:none;background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.2);border-radius:8px;padding:8px 12px;margin:12px 32px 0;color:#FF4D6D;font-size:12px;text-align:center"></div>' +
+    '<div id="cpSuccess" style="display:none;background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.2);border-radius:8px;padding:8px 12px;margin:12px 32px 0;color:#00E5A8;font-size:12px;text-align:center"></div>' +
+
+    // ═══ LOGIN FORM ═══
+    '<div id="cpLoginForm" style="padding:20px 32px 28px">' +
+    '<div style="margin-bottom:14px"><label style="' + lbl + '">CENTER ID</label>' +
+    '<input id="cpIdInput" style="' + inp + '" placeholder="VD: CTR001"></div>' +
+    '<div style="margin-bottom:20px"><label style="' + lbl + '">M\u1EACT KH\u1EA8U</label>' +
+    '<input id="cpPwdInput" type="password" style="' + inp + '" placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"></div>' +
+    '<button onclick="window._centerLogin()" style="' + btn + ';background:linear-gradient(135deg,#005A42,#00C896);color:#000">\u0110\u0103ng Nh\u1EADp</button>' +
+    '<p style="text-align:center;margin-top:14px;font-size:12px;color:rgba(248,242,224,.32)">Ch\u01B0a c\u00F3 t\u00E0i kho\u1EA3n? <a href="#" onclick="window._cpSwitchTab(\'register\');return false" style="color:#00C896;text-decoration:none">\u0110\u0103ng k\u00FD ngay</a></p>' +
+    '</div>' +
+
+    // ═══ REGISTER FORM ═══
+    '<div id="cpRegisterForm" style="display:none;padding:20px 32px 28px">' +
+
+    // Row 1: Name + Phone
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">' +
+    '<div><label style="' + lbl + '">H\u1ECC V\u00C0 T\u00CAN</label>' +
+    '<input id="cpRegName" style="' + inp + '" placeholder="Nguy\u1EC5n V\u0103n A"></div>' +
+    '<div><label style="' + lbl + '">\u0110I\u1EC6N THO\u1EA0I</label>' +
+    '<input id="cpRegPhone" style="' + inp + '" placeholder="0912 345 678"></div></div>' +
+
+    // Row 2: Email
+    '<div style="margin-bottom:12px"><label style="' + lbl + '">EMAIL</label>' +
+    '<input id="cpRegEmail" type="email" style="' + inp + '" placeholder="email@example.com"></div>' +
+
+    // Row 3: Center Name + City
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">' +
+    '<div><label style="' + lbl + '">T\u00CAN C\u01A0 S\u1EDE</label>' +
+    '<input id="cpRegCenter" style="' + inp + '" placeholder="Anima Care + T\u1EC9nh"></div>' +
+    '<div><label style="' + lbl + '">TH\u00C0NH PH\u1ED0</label>' +
+    '<select id="cpRegCity" style="' + inp + ';cursor:pointer;-webkit-appearance:none">' +
+    '<option value="">Ch\u1ECDn th\u00E0nh ph\u1ED1...</option>' +
+    '<option>H\u00E0 N\u1ED9i</option><option>TP.HCM</option><option>\u0110\u00E0 N\u1EB5ng</option>' +
+    '<option>H\u1EA3i Ph\u00F2ng</option><option>C\u1EA7n Th\u01A1</option><option>Nha Trang</option>' +
+    '<option>Hu\u1EBF</option><option>V\u0169ng T\u00E0u</option><option>Qu\u1EA3ng Ninh</option>' +
+    '<option>Bi\u00EAn H\u00F2a</option><option>B\u00ECnh D\u01B0\u01A1ng</option><option>Kh\u00E1c</option>' +
+    '</select></div></div>' +
+
+    // Row 4: Address
+    '<div style="margin-bottom:12px"><label style="' + lbl + '">\u0110\u1ECAA CH\u1EC8</label>' +
+    '<input id="cpRegAddr" style="' + inp + '" placeholder="S\u1ED1 nh\u00E0, \u0111\u01B0\u1EDDng, qu\u1EADn/huy\u1EC7n"></div>' +
+
+    // Row 5: Type + Capacity
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">' +
+    '<div><label style="' + lbl + '">LO\u1EA0I C\u01A0 S\u1EDE</label>' +
+    '<select id="cpRegType" style="' + inp + ';cursor:pointer;-webkit-appearance:none">' +
+    '<option value="Lite">Lite — C\u01A1 b\u1EA3n</option>' +
+    '<option value="Full">Full — \u0110\u1EA7y \u0111\u1EE7</option>' +
+    '</select></div>' +
+    '<div><label style="' + lbl + '">S\u1EE8C CH\u1EE8A (ng\u01B0\u1EDDi)</label>' +
+    '<input id="cpRegCap" type="number" style="' + inp + '" placeholder="30" value="30"></div></div>' +
+
+    // Row 6: Password + Confirm
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">' +
+    '<div><label style="' + lbl + '">M\u1EACT KH\u1EA8U</label>' +
+    '<input id="cpRegPwd" type="password" style="' + inp + '" placeholder="T\u1ED1i thi\u1EC3u 8 k\u00FD t\u1EF1"></div>' +
+    '<div><label style="' + lbl + '">X\u00C1C NH\u1EACN MK</label>' +
+    '<input id="cpRegPwd2" type="password" style="' + inp + '" placeholder="Nh\u1EADp l\u1EA1i m\u1EADt kh\u1EA9u"></div></div>' +
+
+    // Terms
+    '<label style="display:flex;align-items:flex-start;gap:8px;margin-bottom:16px;cursor:pointer;font-size:12px;color:rgba(248,242,224,.52)">' +
+    '<input type="checkbox" id="cpRegTerms" style="margin-top:2px;accent-color:#00C896">' +
+    '<span>T\u00F4i \u0111\u1ED3ng \u00FD v\u1EDBi <a href="#" style="color:#00C896;text-decoration:none">\u0110i\u1EC1u kho\u1EA3n nh\u01B0\u1EE3ng quy\u1EC1n</a> v\u00E0 <a href="#" style="color:#00C896;text-decoration:none">Ch\u00EDnh s\u00E1ch b\u1EA3o m\u1EADt</a> c\u1EE7a AnimaCare Global</span></label>' +
+
+    // Submit
+    '<button onclick="window._centerRegister()" style="' + btn + ';background:linear-gradient(135deg,#005A42,#00C896);color:#000">\u0110\u0103ng K\u00FD C\u01A1 S\u1EDF</button>' +
+    '<p style="text-align:center;margin-top:14px;font-size:12px;color:rgba(248,242,224,.32)">\u0110\u00E3 c\u00F3 t\u00E0i kho\u1EA3n? <a href="#" onclick="window._cpSwitchTab(\'login\');return false" style="color:#00C896;text-decoration:none">\u0110\u0103ng nh\u1EADp</a></p>' +
+    '</div>' +
+
+    // Close button
+    '<button onclick="window._closeCenterPortal()" style="position:absolute;top:14px;right:14px;background:rgba(248,242,224,.06);border:none;color:rgba(248,242,224,.42);font-size:16px;cursor:pointer;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center">\u2715</button>' +
     '</div></div>';
   document.body.appendChild(portal);
 
@@ -54,18 +145,179 @@ function injectCenterPortal() {
   document.body.appendChild(dash);
 }
 
+// ── Tab Switching ──
+window._cpSwitchTab = function(tab) {
+  var loginTab = document.getElementById('cpTabLogin');
+  var regTab = document.getElementById('cpTabRegister');
+  var loginForm = document.getElementById('cpLoginForm');
+  var regForm = document.getElementById('cpRegisterForm');
+  var err = document.getElementById('cpError');
+  var suc = document.getElementById('cpSuccess');
+  if(err) err.style.display = 'none';
+  if(suc) suc.style.display = 'none';
+
+  var onStyle = 'flex:1;padding:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;border-bottom:2px solid #00C896;background:transparent;color:#00E5A8;transition:all .2s';
+  var offStyle = 'flex:1;padding:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;border-bottom:2px solid transparent;background:transparent;color:rgba(248,242,224,.42);transition:all .2s';
+
+  if(tab === 'login') {
+    loginTab.style.cssText = onStyle;
+    regTab.style.cssText = offStyle;
+    loginForm.style.display = 'block';
+    regForm.style.display = 'none';
+  } else {
+    loginTab.style.cssText = offStyle;
+    regTab.style.cssText = onStyle;
+    loginForm.style.display = 'none';
+    regForm.style.display = 'block';
+  }
+};
+
 // ── Portal Logic ──
-window._openCenterPortal = function() {
+window._openCenterPortal = function(tab) {
   var p = document.getElementById('centerPortal').firstChild;
   p.style.display = 'flex';
   document.body.style.overflow = 'hidden';
-  setTimeout(function() { document.getElementById('cpIdInput').focus(); }, 200);
+  window._cpSwitchTab(tab || 'login');
+  if(!tab || tab === 'login') {
+    setTimeout(function() { document.getElementById('cpIdInput').focus(); }, 200);
+  } else {
+    setTimeout(function() { document.getElementById('cpRegName').focus(); }, 200);
+  }
 };
 
 window._closeCenterPortal = function() {
   document.getElementById('centerPortal').firstChild.style.display = 'none';
   document.body.style.overflow = '';
 };
+
+// ── Center Registration ──
+window._centerRegister = function() {
+  var err = document.getElementById('cpError');
+  var suc = document.getElementById('cpSuccess');
+  err.style.display = 'none';
+  suc.style.display = 'none';
+
+  var name = (document.getElementById('cpRegName').value || '').trim();
+  var phone = (document.getElementById('cpRegPhone').value || '').trim();
+  var email = (document.getElementById('cpRegEmail').value || '').trim();
+  var centerName = (document.getElementById('cpRegCenter').value || '').trim();
+  var city = document.getElementById('cpRegCity').value;
+  var addr = (document.getElementById('cpRegAddr').value || '').trim();
+  var type = document.getElementById('cpRegType').value;
+  var cap = parseInt(document.getElementById('cpRegCap').value) || 30;
+  var pwd = document.getElementById('cpRegPwd').value;
+  var pwd2 = document.getElementById('cpRegPwd2').value;
+  var terms = document.getElementById('cpRegTerms').checked;
+
+  // Validate
+  if(!name) { showCPError(t('Vui l\u00F2ng nh\u1EADp h\u1ECD t\u00EAn','Please enter your name')); return; }
+  if(!phone) { showCPError(t('Vui l\u00F2ng nh\u1EADp s\u1ED1 \u0111i\u1EC7n tho\u1EA1i','Please enter phone number')); return; }
+  if(!email || !email.includes('@')) { showCPError(t('Email kh\u00F4ng h\u1EE3p l\u1EC7','Invalid email address')); return; }
+  if(!centerName) { showCPError(t('Vui l\u00F2ng nh\u1EADp t\u00EAn c\u01A1 s\u1EDF','Please enter center name')); return; }
+  if(!city) { showCPError(t('Vui l\u00F2ng ch\u1ECDn th\u00E0nh ph\u1ED1','Please select city')); return; }
+  if(!addr) { showCPError(t('Vui l\u00F2ng nh\u1EADp \u0111\u1ECBa ch\u1EC9','Please enter address')); return; }
+  if(!pwd || pwd.length < 8) { showCPError(t('M\u1EADt kh\u1EA9u t\u1ED1i thi\u1EC3u 8 k\u00FD t\u1EF1','Password must be at least 8 characters')); return; }
+  if(pwd !== pwd2) { showCPError(t('M\u1EADt kh\u1EA9u x\u00E1c nh\u1EADn kh\u00F4ng kh\u1EDBp','Passwords do not match')); return; }
+  if(!terms) { showCPError(t('Vui l\u00F2ng \u0111\u1ED3ng \u00FD \u0111i\u1EC1u kho\u1EA3n','Please accept the terms')); return; }
+
+  // Check duplicate
+  var existing = JSON.parse(localStorage.getItem('anima_center_accounts') || '[]');
+  var dupEmail = existing.some(function(a) { return a.email === email; });
+  var dupPhone = existing.some(function(a) { return a.phone === phone; });
+  if(dupEmail) { showCPError(t('Email \u0111\u00E3 \u0111\u01B0\u1EE3c s\u1EED d\u1EE5ng','Email already registered')); return; }
+  if(dupPhone) { showCPError(t('S\u1ED1 \u0111i\u1EC7n tho\u1EA1i \u0111\u00E3 \u0111\u01B0\u1EE3c s\u1EED d\u1EE5ng','Phone already registered')); return; }
+
+  // Generate Center ID
+  var maxNum = 8; // Start after hardcoded CTR008
+  existing.forEach(function(a) {
+    var n = parseInt(a.id.replace('CTR',''));
+    if(n > maxNum) maxNum = n;
+  });
+  var newId = 'CTR' + String(maxNum + 1).padStart(3, '0');
+
+  // Create account
+  var newAccount = {
+    id: newId,
+    pwd: pwd,
+    name: name,
+    phone: phone,
+    email: email,
+    centerId: newId,
+    centerName: centerName,
+    centerNameEn: centerName,
+    city: city,
+    address: addr,
+    type: type,
+    capacity: cap,
+    role: 'center_manager',
+    status: 'pending',
+    createdAt: new Date().toISOString()
+  };
+
+  // Save to localStorage
+  existing.push(newAccount);
+  localStorage.setItem('anima_center_accounts', JSON.stringify(existing));
+
+  // Also add to CENTER_ACCOUNTS array for immediate login
+  CENTER_ACCOUNTS.push(newAccount);
+
+  // Add center to sync store
+  if(window.AnimaSync) {
+    var centers = AnimaSync.get('centers', []);
+    centers.push({
+      _id: newId,
+      name: centerName,
+      nameEn: centerName,
+      city: city,
+      cityEn: city,
+      address: addr,
+      status: 'pending',
+      manager: name,
+      phone: phone,
+      type: type,
+      capacity: cap
+    });
+    AnimaSync.set('centers', centers);
+
+    // Add activity
+    AnimaSync.push('activities', {
+      type: 'center_new',
+      vi: 'C\u01A1 s\u1EDF m\u1EDBi \u0111\u0103ng k\u00FD: ' + centerName + ' (' + city + ')',
+      en: 'New center registered: ' + centerName + ' (' + city + ')',
+      centerId: newId,
+      ago: 0
+    });
+  }
+
+  // Show success
+  suc.style.display = 'block';
+  suc.innerHTML = '<strong>' + t('\u0110\u0103ng k\u00FD th\u00E0nh c\u00F4ng!','Registration successful!') + '</strong><br>' +
+    t('Center ID c\u1EE7a b\u1EA1n: ','Your Center ID: ') + '<strong style="color:#F8F2E0">' + newId + '</strong><br>' +
+    '<span style="font-size:11px;opacity:.7">' + t('Tr\u1EA1ng th\u00E1i: Ch\u1EDD duy\u1EC7t b\u1EDFi Admin. B\u1EA1n c\u00F3 th\u1EC3 \u0111\u0103ng nh\u1EADp ngay.','Status: Pending admin approval. You can login now.') + '</span>';
+
+  // Clear form
+  ['cpRegName','cpRegPhone','cpRegEmail','cpRegCenter','cpRegAddr','cpRegPwd','cpRegPwd2'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+  document.getElementById('cpRegCity').selectedIndex = 0;
+  document.getElementById('cpRegTerms').checked = false;
+
+  // Auto switch to login after 3s
+  setTimeout(function() {
+    window._cpSwitchTab('login');
+    document.getElementById('cpIdInput').value = newId;
+    document.getElementById('cpIdInput').focus();
+  }, 3000);
+};
+
+function showCPError(msg) {
+  var err = document.getElementById('cpError');
+  err.style.display = 'block';
+  err.textContent = msg;
+  // Scroll error into view
+  err.scrollIntoView({ behavior:'smooth', block:'center' });
+}
 
 window._centerLogin = function() {
   var id = document.getElementById('cpIdInput').value.trim().toUpperCase();
