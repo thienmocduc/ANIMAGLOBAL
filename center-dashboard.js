@@ -106,12 +106,16 @@ function injectCenterPortal() {
     '<div style="margin-bottom:12px"><label style="' + lbl + '">\u0110\u1ECAA CH\u1EC8</label>' +
     '<input id="cpRegAddr" style="' + inp + '" placeholder="S\u1ED1 nh\u00E0, \u0111\u01B0\u1EDDng, qu\u1EADn/huy\u1EC7n"></div>' +
 
-    // Row 5: Type + Capacity
+    // Row 5: Referral
+    '<div style="margin-bottom:12px"><label style="' + lbl + '">\u0110\u01A0N V\u1ECA GI\u1EDAI THI\u1EC6U</label>' +
+    '<input id="cpRegRef" style="' + inp + '" placeholder="T\u00EAn ng\u01B0\u1EDDi/\u0111\u01A1n v\u1ECB gi\u1EDBi thi\u1EC7u (n\u1EBFu c\u00F3)"></div>' +
+
+    // Row 6: Type + Capacity
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">' +
     '<div><label style="' + lbl + '">LO\u1EA0I C\u01A0 S\u1EDE</label>' +
     '<select id="cpRegType" style="' + inp + ';cursor:pointer;-webkit-appearance:none">' +
-    '<option value="Lite">Lite — C\u01A1 b\u1EA3n</option>' +
-    '<option value="Full">Full — \u0110\u1EA7y \u0111\u1EE7</option>' +
+    '<option value="Lite">Lite \u2014 C\u01A1 b\u1EA3n</option>' +
+    '<option value="Full">Full \u2014 \u0110\u1EA7y \u0111\u1EE7</option>' +
     '</select></div>' +
     '<div><label style="' + lbl + '">S\u1EE8C CH\u1EE8A (ng\u01B0\u1EDDi)</label>' +
     '<input id="cpRegCap" type="number" style="' + inp + '" placeholder="30" value="30"></div></div>' +
@@ -205,6 +209,7 @@ window._centerRegister = function() {
   var addr = (document.getElementById('cpRegAddr').value || '').trim();
   var type = document.getElementById('cpRegType').value;
   var cap = parseInt(document.getElementById('cpRegCap').value) || 30;
+  var referral = (document.getElementById('cpRegRef').value || '').trim();
   var pwd = document.getElementById('cpRegPwd').value;
   var pwd2 = document.getElementById('cpRegPwd2').value;
   var terms = document.getElementById('cpRegTerms').checked;
@@ -249,6 +254,7 @@ window._centerRegister = function() {
     address: addr,
     type: type,
     capacity: cap,
+    referral: referral,
     role: 'center_manager',
     status: 'pending',
     createdAt: new Date().toISOString()
@@ -296,7 +302,7 @@ window._centerRegister = function() {
     '<span style="font-size:11px;opacity:.7">' + t('Tr\u1EA1ng th\u00E1i: Ch\u1EDD duy\u1EC7t b\u1EDFi Admin. B\u1EA1n c\u00F3 th\u1EC3 \u0111\u0103ng nh\u1EADp ngay.','Status: Pending admin approval. You can login now.') + '</span>';
 
   // Clear form
-  ['cpRegName','cpRegPhone','cpRegEmail','cpRegCenter','cpRegAddr','cpRegPwd','cpRegPwd2'].forEach(function(id) {
+  ['cpRegName','cpRegPhone','cpRegEmail','cpRegCenter','cpRegAddr','cpRegRef','cpRegPwd','cpRegPwd2'].forEach(function(id) {
     var el = document.getElementById(id);
     if(el) el.value = '';
   });
