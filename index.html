@@ -4196,14 +4196,38 @@ document.body.style.overflow='';
 function submitOrder(){
 var name=document.getElementById('ord-name-inp').value.trim();
 var phone=document.getElementById('ord-phone').value.trim();
+var addr=(document.getElementById('ord-addr')||{}).value||'';
+var note=(document.getElementById('ord-note')||{}).value||'';
+var center=(document.getElementById('ord-center')||{}).value||'';
 if(!name||!phone){
 alert(lang==='vi'?'Vui lòng điền đầy đủ họ tên và số điện thoại.':'Please fill in your full name and phone number.');
 return;
 }
+/* ══ SYNC TO ADMIN ══ */
+var orderId='ORD-'+Date.now().toString(36).toUpperCase();
+var orderData={
+  _id:orderId,id:orderId,
+  name:name,phone:phone,address:addr.trim(),note:note.trim(),
+  sku:_currentOrder.sku||'',product:_currentOrder.name,
+  amount:_currentOrder.price,qty:_currentOrder.qty||1,
+  channel:'Website',method:'COD',city:addr?addr.split(',').pop().trim():'Online',
+  status:'pending',date:new Date().toISOString().split('T')[0],
+  createdAt:Date.now()
+};
+if(window.AnimaSync){
+  AnimaSync.push('orders',orderData);
+  AnimaSync.push('activities',{type:'order_new',vi:name+' dat don '+_currentOrder.name+' - '+_currentOrder.price,en:name+' ordered '+_currentOrder.name+' - '+_currentOrder.price,ago:0});
+  /* CRM lead */
+  AnimaSync.push('crm_leads',{name:name,phone:phone,address:addr.trim(),type:'order',product:_currentOrder.name,amount:_currentOrder.price,source:'website_store',date:new Date().toISOString().split('T')[0],status:'hot',createdAt:Date.now()});
+}
+/* Save to localStorage too */
+var orders=[];try{orders=JSON.parse(localStorage.getItem('anima_orders')||'[]');}catch(e){}
+orders.push(orderData);localStorage.setItem('anima_orders',JSON.stringify(orders));
+
 closeOrder();
 document.getElementById('suc-name').textContent=_currentOrder.name;
 document.getElementById('suc-price').textContent=_currentOrder.price;
-document.getElementById('suc-phone').textContent='📞 '+phone+' · '+name;
+document.getElementById('suc-phone').textContent='\ud83d\udcde '+phone+' \u00b7 '+name;
 var suc=document.getElementById('orderSuccess');
 setTimeout(function(){
 suc.style.visibility='visible';suc.style.opacity='1';
@@ -8352,9 +8376,11 @@ var msg=document.getElementById('ctMsg');
 if(msg) msg.focus();
 }
 function handleContactSubmit(){
-var name=document.getElementById('ctName').value;
-var email=document.getElementById('ctEmail').value;
-var msg=document.getElementById('ctMsg').value;
+var name=document.getElementById('ctName').value.trim();
+var email=document.getElementById('ctEmail').value.trim();
+var phone=(document.getElementById('ctPhone')||{}).value||'';
+var subject=(document.getElementById('ctSubject')||{}).value||'';
+var msg=document.getElementById('ctMsg').value.trim();
 var suc=document.getElementById('ctSuccess');
 var l=lang||'vi';
 if(!name||!email||!msg){
@@ -8365,11 +8391,20 @@ suc.style.color='#FF9090';
 suc.textContent=l==='vi'?'Vui lòng điền họ tên, email và nội dung tin nhắn.':'Please fill in name, email and message.';
 return;
 }
+/* ══ SYNC TO ADMIN CRM ══ */
+if(window.AnimaSync){
+  AnimaSync.push('crm_leads',{name:name,email:email,phone:phone.trim(),subject:subject.trim(),message:msg,type:'contact',source:'website_contact',status:'new',date:new Date().toISOString().split('T')[0],createdAt:Date.now()});
+  AnimaSync.push('activities',{type:'lead_new',vi:name+' gui lien he: '+msg.substring(0,50),en:name+' sent contact: '+msg.substring(0,50),ago:0});
+}
+var leads=[];try{leads=JSON.parse(localStorage.getItem('anima_crm_leads')||'[]');}catch(e){}
+leads.push({name:name,email:email,phone:phone,message:msg,type:'contact',date:new Date().toISOString()});
+localStorage.setItem('anima_crm_leads',JSON.stringify(leads));
+
 suc.style.display='block';
 suc.style.background='rgba(0,200,150,0.08)';
 suc.style.borderColor='rgba(0,200,150,0.25)';
 suc.style.color='var(--g2)';
-suc.textContent=l==='vi'?'✓ Tin nhắn đã gửi! Chúng tôi sẽ liên hệ trong vòng 24 giờ.':'✓ Message sent! We will contact you within 24 hours.';
+suc.textContent=l==='vi'?'\u2713 Tin nhan da gui! Chung toi se lien he trong vong 24 gio.':'\u2713 Message sent! We will contact you within 24 hours.';
 setTimeout(function(){suc.style.display='none';},5000);
 }
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeContact();});</script>
@@ -9895,12 +9930,20 @@ t.innerHTML='<thead><tr><th>'+t('Cơ Sở')+'</th><th>'+t('Địa Điểm')+'</t
 CENTERS.map(function(c,i){return '<tr><td><div class="td-nm"><div class="td-av" style="background:rgba(0,200,150,.12);color:var(--g2)">'+c.name[0]+'</div><div><div style="font-weight:600;color:var(--t1)">'+c.name+'</div><div class="td-mo">'+c.id+'</div></div></div></td><td>'+c.city+'<br><span class="td-mo">'+c.addr+'</span></td><td>'+c.type+'</td><td style="text-align:center">'+c.rooms+'</td><td style="text-align:center">'+c.ktv+'</td><td style="text-align:center;font-family:var(--fm)">'+c.bookToday+'</td><td style="font-family:var(--fm)">'+( c.rating>0?'★'+c.rating:'—' )+'</td><td style="color:var(--g2);font-family:var(--fm)">'+c.rev+'</td><td>'+statusBadge(c.status)+'</td><td><div class="btn-row"><button class="btn btn-sm btn-s">Xem</button><button class="btn btn-sm btn-g">Sửa</button></div></td></tr>'}).join('')+'</tbody>';
 }
 function renderBookingsTable(){
-var t=document.getElementById('tbl-bookings');if(!t)return;
-t.innerHTML='<thead><tr><th>'+t('Mã Hẹn')+'</th><th>'+t('Khách Hàng')+'</th><th>'+t('Dịch Vụ')+'</th><th>'+t('Cơ Sở')+'</th><th>'+t('Giờ')+'</th><th>'+t('KTV')+'</th><th>'+t('Trạng Thái')+'</th><th>'+t('Action')+'</th></tr></thead><tbody>'+
-BOOKINGS.map(function(b){return '<tr><td class="td-mo">'+b.id+'</td><td><div class="td-nm"><div class="td-av" style="background:rgba(123,95,255,.15);color:var(--pu2)">'+b.name[0]+'</div><div><div style="color:var(--t1);font-weight:500">'+b.name+'</div><div class="td-mo">'+b.phone+'</div></div></div></td><td>'+b.service+'</td><td>'+b.center+'</td><td style="font-family:var(--fm);color:var(--g2)">'+b.time+'</td><td style="font-size:11.5px">'+b.ktv+'</td><td>'+statusBadge(b.status)+'</td><td><div class="btn-row"><button class="btn btn-sm btn-s">Xem</button>'+( b.status==='pending'?'<button class="btn btn-sm btn-p">Duyệt</button>':'' )+'</div></td></tr>'}).join('')+'</tbody>';
+var tbl=document.getElementById('tbl-bookings');if(!tbl)return;
+/* Merge static + realtime bookings */
+var allB=BOOKINGS.slice();
+var syncBk=window.AnimaSync?AnimaSync.get('bookings',[]):[];
+syncBk.forEach(function(b){
+  if(!allB.some(function(x){return x.id===(b.id||b._id)})){
+    allB.unshift({id:b.id||b._id,name:b.customer||b.name||'--',phone:b.phone||'',service:b.service||'',center:b.centerName||b.center||'',time:(b.date||'')+' '+(b.time||''),ktv:b.ktvName||b.ktv||'--',status:b.status||'pending',_rt:true});
+  }
+});
+tbl.innerHTML='<thead><tr><th>'+t('Mã Hẹn')+'</th><th>'+t('Khách Hàng')+'</th><th>'+t('Dịch Vụ')+'</th><th>'+t('Cơ Sở')+'</th><th>'+t('Giờ')+'</th><th>'+t('KTV')+'</th><th>'+t('Trạng Thái')+'</th><th>'+t('Action')+'</th></tr></thead><tbody>'+
+allB.map(function(b){var rtTag=b._rt?'<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#00C896;margin-left:4px" title="Realtime"></span>':'';return '<tr><td class="td-mo">'+b.id+rtTag+'</td><td><div class="td-nm"><div class="td-av" style="background:rgba(123,95,255,.15);color:var(--pu2)">'+(b.name||'?')[0]+'</div><div><div style="color:var(--t1);font-weight:500">'+b.name+'</div><div class="td-mo">'+(b.phone||'')+'</div></div></div></td><td>'+b.service+'</td><td>'+b.center+'</td><td style="font-family:var(--fm);color:var(--g2)">'+b.time+'</td><td style="font-size:11.5px">'+b.ktv+'</td><td>'+statusBadge(b.status)+'</td><td><div class="btn-row"><button class="btn btn-sm btn-s">Xem</button>'+( b.status==='pending'?'<button class="btn btn-sm btn-p">Duyệt</button>':'' )+'</div></td></tr>'}).join('')+'</tbody>';
 var t2=document.getElementById('today-bk');
-if(t2) t2.innerHTML='<thead><tr><th>Mã</th><th>Khách Hàng</th><th>Dịch Vụ</th><th>Giờ</th><th>Trạng Thái</th><th>Action</th></tr></thead><tbody>'+
-BOOKINGS.slice(0,5).map(function(b){return '<tr><td class="td-mo">'+b.id+'</td><td><div class="td-nm"><div class="td-av" style="background:rgba(123,95,255,.15);color:var(--pu2)">'+b.name[0]+'</div>'+b.name+'</div></td><td>'+b.service+'</td><td style="font-family:var(--fm);color:var(--g2)">'+b.time+'</td><td>'+statusBadge(b.status)+'</td><td><button class="btn btn-sm btn-s">Xem</button></td></tr>'}).join('')+'</tbody>';
+if(t2){var recent=allB.slice(0,5);t2.innerHTML='<thead><tr><th>Mã</th><th>Khách Hàng</th><th>Dịch Vụ</th><th>Giờ</th><th>Trạng Thái</th><th>Action</th></tr></thead><tbody>'+
+recent.map(function(b){return '<tr><td class="td-mo">'+b.id+'</td><td><div class="td-nm"><div class="td-av" style="background:rgba(123,95,255,.15);color:var(--pu2)">'+(b.name||'?')[0]+'</div>'+b.name+'</div></td><td>'+b.service+'</td><td style="font-family:var(--fm);color:var(--g2)">'+b.time+'</td><td>'+statusBadge(b.status)+'</td><td><button class="btn btn-sm btn-s">Xem</button></td></tr>'}).join('')+'</tbody>';}
 }
 function renderMembersTable(){
 var tbl=document.getElementById('tbl-members');if(!tbl)return;
@@ -9955,9 +9998,20 @@ document.getElementById('crm-detail-content').innerHTML=html;
 openM('crm-detail-modal');
 }
 function renderOrdersTable(){
-var t=document.getElementById('tbl-orders');if(!t)return;
-t.innerHTML='<thead><tr><th>'+t('Mã Đơn')+'</th><th>'+t('Khách Hàng')+'</th><th>'+t('SKU')+'</th><th>'+t('Thành Tiền')+'</th><th>'+t('Kênh')+'</th><th>TT</th><th>'+t('Thành Phố')+'</th><th>'+t('Ngày')+'</th><th>'+t('Trạng Thái')+'</th><th>'+t('Action')+'</th></tr></thead><tbody>'+
-ORDERS.map(function(o){return '<tr><td class="td-mo">'+o.id+'</td><td><div style="color:var(--t1);font-weight:500">'+o.name+'</div><div class="td-mo">'+o.phone+'</div></td><td style="font-size:11.5px">'+o.sku+'</td><td style="color:var(--g2);font-family:var(--fm);font-weight:600">'+o.amount+'</td><td style="font-size:11.5px">'+o.channel+'</td><td style="font-size:11.5px">'+o.method+'</td><td>'+o.city+'</td><td class="td-mo">'+o.date+'</td><td>'+statusBadge(o.status)+'</td><td><div class="btn-row"><button class="btn btn-sm btn-s">Xem</button>'+( o.status==='pending'?'<button class="btn btn-sm btn-p">XN</button>':'' )+'</div></td></tr>'}).join('')+'</tbody>';
+var tbl=document.getElementById('tbl-orders');if(!tbl)return;
+/* Merge static + realtime orders */
+var allO=ORDERS.slice();
+var syncOrders=window.AnimaSync?AnimaSync.get('orders',[]):[];
+syncOrders.forEach(function(o){
+  if(!allO.some(function(x){return x.id===o.id})){
+    allO.unshift({id:o.id||o._id,name:o.name||o.customer||'--',phone:o.phone||'',sku:o.sku||o.product||'',amount:o.amount||o.price||'',channel:o.channel||'Website',method:o.method||'COD',city:o.city||'Online',date:o.date||'',status:o.status||'pending',_rt:true});
+  }
+});
+tbl.innerHTML='<thead><tr><th>'+t('Mã Đơn')+'</th><th>'+t('Khách Hàng')+'</th><th>'+t('SKU')+'</th><th>'+t('Thành Tiền')+'</th><th>'+t('Kênh')+'</th><th>TT</th><th>'+t('Thành Phố')+'</th><th>'+t('Ngày')+'</th><th>'+t('Trạng Thái')+'</th><th>'+t('Action')+'</th></tr></thead><tbody>'+
+allO.map(function(o){var rtTag=o._rt?'<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#00C896;margin-left:4px" title="Realtime"></span>':'';return '<tr><td class="td-mo">'+o.id+rtTag+'</td><td><div style="color:var(--t1);font-weight:500">'+o.name+'</div><div class="td-mo">'+(o.phone||'')+'</div></td><td style="font-size:11.5px">'+(o.sku||'')+'</td><td style="color:var(--g2);font-family:var(--fm);font-weight:600">'+o.amount+'</td><td style="font-size:11.5px">'+o.channel+'</td><td style="font-size:11.5px">'+o.method+'</td><td>'+o.city+'</td><td class="td-mo">'+o.date+'</td><td>'+statusBadge(o.status)+'</td><td><div class="btn-row"><button class="btn btn-sm btn-s">Xem</button>'+( o.status==='pending'?'<button class="btn btn-sm btn-p">XN</button>':'' )+'</div></td></tr>'}).join('')+'</tbody>';
+/* Update KPI count */
+var kpiOrd=document.querySelector('#pg-dashboard .kpi-v[data-key="orders"]');
+if(kpiOrd)kpiOrd.textContent=allO.length;
 }
 function renderRevTable(){
 var t=document.getElementById('tbl-rev');if(!t)return;
@@ -10039,13 +10093,25 @@ function initDashboard(){
 drawBarChart('rev-chart','rev-lbls',[62,78,95,108,118,142],['T10','T11','T12','T1','T2','T3'],'var(--g1)');
 drawBarChart('mem-chart','mem-lbls',[89,124,167,203,245,312],['T10','T11','T12','T1','T2','T3'],['rgba(0,200,150,.4)','var(--g1)','var(--g1)','var(--g2)','var(--g2)','var(--g2)']);
 var af=document.getElementById('act-feed');
-if(af) af.innerHTML=[
-{c:'var(--g1)',t:'<strong>Nguyễn Thị Lan</strong> hoàn thành phiên Khai Vấn AI · Thể tạng: Khí Hư',ts:'2 phút trước'},
-{c:'var(--amber)',t:'<strong>Đơn ORD-2847</strong> đặt 3 hộp Anima 119 · 5.604.000đ · COD Hà Nội',ts:'5 phút trước'},
-{c:'var(--pu2)',t:'<strong>KTV Nguyễn Thị Mai</strong> check-in cơ sở Thanh Liệt',ts:'12 phút trước'},
-{c:'var(--sky)',t:'<strong>AI Engine</strong> xử lý 64 khai vấn hôm nay · 96.4% chính xác',ts:'30 phút trước'},
-{c:'var(--red)',t:'<strong>Cảnh báo kho:</strong> A119-Premium còn 42 hộp',ts:'1 giờ trước'},
-].map(function(a){return '<div class="act-i"><div class="act-dot" style="background:'+a.c+'"></div><div><div class="act-txt">'+a.t+'</div><div class="act-time">'+a.ts+'</div></div></div>'}).join('');
+if(af){
+/* Merge static + realtime activities */
+var staticActs=[
+{c:'var(--g1)',t:'<strong>Nguy\u1EC5n Th\u1ECB Lan</strong> ho\u00E0n th\u00E0nh phi\u00EAn Khai V\u1EA5n AI',ts:'2 ph\u00FAt tr\u01B0\u1EDBc',_ts:Date.now()-120000},
+{c:'var(--amber)',t:'<strong>\u0110\u01A1n ORD-2847</strong> \u0111\u1EB7t 3 h\u1ED9p Anima 119 \u00B7 5.604.000\u0111',ts:'5 ph\u00FAt tr\u01B0\u1EDBc',_ts:Date.now()-300000},
+{c:'var(--pu2)',t:'<strong>KTV Nguy\u1EC5n Th\u1ECB Mai</strong> check-in c\u01A1 s\u1EDF',ts:'12 ph\u00FAt tr\u01B0\u1EDBc',_ts:Date.now()-720000},
+{c:'var(--sky)',t:'<strong>AI Engine</strong> x\u1EED l\u00FD 64 khai v\u1EA5n \u00B7 96.4%',ts:'30 ph\u00FAt tr\u01B0\u1EDBc',_ts:Date.now()-1800000}
+];
+var realtimeActs=(window.AnimaSync?AnimaSync.get('activities',[]):[]).slice(-20).reverse();
+var allActs=realtimeActs.map(function(a){
+  var ago=a.ago||0; var ts=a._ts||Date.now()-ago*60000;
+  var mins=Math.round((Date.now()-ts)/60000);
+  var tsTxt=mins<1?'V\u1EEBa xong':(mins<60?mins+' ph\u00FAt tr\u01B0\u1EDBc':Math.round(mins/60)+' gi\u1EDD tr\u01B0\u1EDBc');
+  var color=a.type==='order_new'?'var(--amber)':a.type==='lead_new'?'var(--sky)':a.type==='booking_accepted'?'var(--pu2)':a.type==='review_new'?'#F59E0B':a.type==='client_record'?'var(--g1)':'var(--g1)';
+  return {c:color,t:(typeof adminLang!=='undefined'&&adminLang==='en'?(a.en||a.vi):(a.vi||a.en)),ts:tsTxt,_ts:ts};
+}).concat(staticActs);
+allActs.sort(function(a,b){return (b._ts||0)-(a._ts||0);});
+af.innerHTML=allActs.slice(0,10).map(function(a){return '<div class="act-i"><div class="act-dot" style="background:'+a.c+'"></div><div><div class="act-txt">'+a.t+'</div><div class="act-time">'+a.ts+'</div></div></div>'}).join('');
+}
 var sw=document.getElementById('stock-widget');
 if(sw) sw.innerHTML=INVENTORY_DATA.slice(0,5).map(function(iv){var pct=Math.min(100,Math.round((iv.stock/Math.max(iv.stock,iv.min*2))*100));var c=iv.stock<iv.min?'var(--red)':(iv.stock<iv.min*1.5?'var(--amber)':'var(--g1)');return '<div class="sk-i"><div class="sk-nm"><div class="sk-n">'+iv.name.replace('Anima 119 ','')+'</div><div class="sk-sku">'+iv.sku+'</div></div><div class="sk-bar"><div class="pb" style="margin-bottom:0"><div class="pbf" style="width:'+pct+'%;background:'+c+'"></div></div></div><div class="sk-q" style="color:'+c+'">'+iv.stock+'</div></div>'}).join('');
 renderBookingsTable();
@@ -10543,7 +10609,7 @@ localStorage.removeItem('anima_admin_user');
 
 // ── Sync Bridge: Listen for center updates and refresh admin tables ──
 if(window.AnimaSync){
-  ['bookings','orders','customers','inventory','activities','crm_clients','reviews'].forEach(function(key){
+  ['bookings','orders','customers','inventory','activities','crm_clients','reviews','crm_leads'].forEach(function(key){
     AnimaSync.on(key, function(){
       var dash = document.getElementById('adminDashboard');
       if(dash && dash.style.display !== 'none'){
@@ -10972,6 +11038,24 @@ function placeOrder(){
   var orders=JSON.parse(localStorage.getItem('anima_orders')||'[]');
   orders.unshift(order);
   localStorage.setItem('anima_orders',JSON.stringify(orders));
+  /* ══ SYNC TO ADMIN ══ */
+  if(window.AnimaSync){
+    _cart.forEach(function(item){
+      AnimaSync.push('orders',{
+        id:orderId,name:name,phone:phone,
+        sku:item.sku||'',product:item.name,amount:item.price,qty:item.qty||1,
+        channel:'Website Cart',method:document.getElementById('ck-pay').value||'COD',
+        city:addr?addr.split(',').pop().trim():'Online',
+        status:'pending',date:new Date().toISOString().split('T')[0],createdAt:Date.now()
+      });
+    });
+    AnimaSync.push('activities',{type:'order_new',
+      vi:name+' dat '+_cart.length+' san pham - '+getCartTotal().toLocaleString('vi')+'d',
+      en:name+' ordered '+_cart.length+' items - '+getCartTotal().toLocaleString('vi')+'d',ago:0});
+    AnimaSync.push('crm_leads',{name:name,phone:phone,email:(document.getElementById('ck-email')||{}).value||'',
+      address:addr,type:'cart_order',totalAmount:getCartTotal(),items:_cart.length,
+      source:'website_cart',status:'hot',date:new Date().toISOString().split('T')[0],createdAt:Date.now()});
+  }
   clearCart();closeCheckout();
   ['ck-name','ck-phone','ck-email','ck-addr','ck-note'].forEach(function(id){
     var el=document.getElementById(id);if(el)el.value='';
