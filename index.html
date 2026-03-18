@@ -7534,8 +7534,8 @@ function updateNavUser(){var btn=document.getElementById('navAuthBtn');if(!btn||
 var initials=(currentUser.name||'U').substring(0,2).toUpperCase();
 var avatar;
 if(currentUser.picture){
-avatar='<img src="'+currentUser.picture+'" style="width:30px;height:30px;border-radius:50%;border:2px solid var(--g1);object-fit:cover" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextSibling.style.display='flex'">'
-+'<div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--g-dark),var(--g1));display:none;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#000">'+initials+'</div>';
+avatar='<img src="'+currentUser.picture+'" style="width:30px;height:30px;border-radius:50%;border:2px solid var(--g1);object-fit:cover" referrerpolicy="no-referrer" onerror="this.hidden=true">'
++'<div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--g-dark),var(--g1));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#000">'+initials+'</div>';
 }else{
 avatar='<div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--g-dark),var(--g1));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#000">'+initials+'</div>';
 }
