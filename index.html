@@ -7485,7 +7485,7 @@ dd.innerHTML='<div style="padding:12px 16px;border-bottom:0.5px solid rgba(0,200
 +'<div style="font-size:12px;color:var(--t3,#aaa);margin-top:2px">'+currentUser.email+'</div>'
 +(currentUser.provider==='google'?'<div style="font-size:10px;color:#4285F4;margin-top:4px">Google Account</div>':'')
 +'</div>'
-+'<div onclick="logoutUser();toggleUserMenu()" style="padding:10px 16px;cursor:pointer;color:var(--t2,#ccc);font-size:13px;display:flex;align-items:center;gap:8px;transition:background .15s" onmouseover="this.style.background='rgba(0,200,150,0.06)'" onmouseout="this.style.background='transparent'">'
++'<div onclick="openProfile();toggleUserMenu()" style="padding:10px 16px;cursor:pointer;color:var(--t2,#ccc);font-size:13px;display:flex;align-items:center;gap:8px;transition:background .15s" onmouseover="this.style.background='rgba(0,200,150,0.06)'" onmouseout="this.style.background='transparent'">' +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' +(l==='vi'?'Thông tin cá nhân':'My Profile')+'</div>' +'<div onclick="logoutUser();toggleUserMenu()" style="padding:10px 16px;cursor:pointer;color:var(--t2,#ccc);font-size:13px;display:flex;align-items:center;gap:8px;transition:background .15s" onmouseover="this.style.background='rgba(0,200,150,0.06)'" onmouseout="this.style.background='transparent'">'
 +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>'
 +(l==='vi'?'Đăng xuất':'Sign Out')+'</div>';
 document.body.appendChild(dd);
@@ -10451,6 +10451,7 @@ navigator.serviceWorker.register('/sw.js').catch(function(){});
 <a href="#" onclick="scrollToSection('technology');closeMobileMenu()" data-vi="Công Nghệ" data-en="Technology">Công Nghệ</a>
 <a href="#" onclick="scrollToSection('investor');closeMobileMenu()" data-vi="Nhà Đầu Tư" data-en="Investors">Nhà Đầu Tư</a>
 <a href="#" onclick="if(typeof openAdminPortal==='function')openAdminPortal();closeMobileMenu()">Admin</a>
+<a href="#" onclick="openProfile();closeMobileMenu()" data-vi="Thông tin cá nhân" data-en="My Profile">Thông tin cá nhân</a>
 <div class="mobile-lang">
 <button onclick="if(typeof setLang==='function')setLang('vi')" id="mobLangVI" class="active">VI</button>
 <button onclick="if(typeof setLang==='function')setLang('en')" id="mobLangEN">EN</button>
@@ -10846,6 +10847,387 @@ function closeOrderSuccess(){
 }
 
 updateCartUI();
+</script>
+
+
+<!-- ═══ USER PROFILE OVERLAY ═══ -->
+<div id="profileOverlay" style="position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow-y:auto;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;-webkit-overflow-scrolling:touch">
+
+  <!-- Header -->
+  <div style="position:sticky;top:0;z-index:10;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);border-bottom:1px solid rgba(0,200,150,.1);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:10px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00C896" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span style="font-family:'Roboto',sans-serif;font-size:15px;font-weight:700;color:#F8F2E0;letter-spacing:1px" data-vi="THÔNG TIN CÁ NHÂN" data-en="MY PROFILE">THÔNG TIN CÁ NHÂN</span>
+    </div>
+    <button onclick="closeProfile()" style="background:rgba(248,242,224,.06);border:1px solid rgba(248,242,224,.1);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(248,242,224,.5);font-size:20px;transition:all .2s">&times;</button>
+  </div>
+
+  <div style="max-width:640px;margin:0 auto;padding:24px 20px 60px">
+
+    <!-- Avatar Section -->
+    <div style="text-align:center;margin-bottom:32px">
+      <div id="profAvatar" style="width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,#005A42,#00C896);display:inline-flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:#000;margin-bottom:12px;border:3px solid rgba(0,200,150,.3);overflow:hidden">
+        <span id="profAvatarText">U</span>
+        <img id="profAvatarImg" style="width:100%;height:100%;object-fit:cover;display:none" referrerpolicy="no-referrer">
+      </div>
+      <div id="profDisplayName" style="font-size:20px;font-weight:700;color:#F8F2E0;margin-bottom:2px"></div>
+      <div id="profEmail" style="font-size:13px;color:rgba(248,242,224,.4)"></div>
+      <div id="profProvider" style="margin-top:6px;display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px"></div>
+    </div>
+
+    <!-- Tabs -->
+    <div style="display:flex;border-bottom:1px solid rgba(0,200,150,.1);margin-bottom:24px;gap:0">
+      <button class="prof-tab on" onclick="switchProfTab('info',this)" style="flex:1;padding:12px 0;background:transparent;border:none;border-bottom:2px solid #00C896;font-family:'Roboto',sans-serif;font-size:13px;font-weight:600;color:#00C896;cursor:pointer;transition:all .2s" data-vi="Thông Tin" data-en="Info">Thông Tin</button>
+      <button class="prof-tab" onclick="switchProfTab('health',this)" style="flex:1;padding:12px 0;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;font-size:13px;font-weight:600;color:rgba(248,242,224,.4);cursor:pointer;transition:all .2s" data-vi="Sức Khỏe" data-en="Health">Sức Khỏe</button>
+      <button class="prof-tab" onclick="switchProfTab('orders',this)" style="flex:1;padding:12px 0;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;font-size:13px;font-weight:600;color:rgba(248,242,224,.4);cursor:pointer;transition:all .2s" data-vi="Đơn Hàng" data-en="Orders">Đơn Hàng</button>
+      <button class="prof-tab" onclick="switchProfTab('settings',this)" style="flex:1;padding:12px 0;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;font-size:13px;font-weight:600;color:rgba(248,242,224,.4);cursor:pointer;transition:all .2s" data-vi="Cài Đặt" data-en="Settings">Cài Đặt</button>
+    </div>
+
+    <!-- TAB: Info -->
+    <div id="profTabInfo" class="prof-panel">
+      <div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.1);border-radius:16px;padding:24px">
+        <div style="font-size:14px;font-weight:700;color:#00C896;margin-bottom:16px;display:flex;align-items:center;gap:8px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span data-vi="Thông tin cơ bản" data-en="Basic Information">Thông tin cơ bản</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Họ và tên" data-en="Full Name">Họ và tên</label>
+            <input id="profName" type="text" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='rgba(0,200,150,.4)'" onblur="this.style.borderColor='rgba(0,200,150,.15)'">
+          </div>
+          <div>
+            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block">Email</label>
+            <input id="profEmailInput" type="email" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='rgba(0,200,150,.4)'" onblur="this.style.borderColor='rgba(0,200,150,.15)'">
+          </div>
+          <div>
+            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Số điện thoại" data-en="Phone">Số điện thoại</label>
+            <input id="profPhone" type="tel" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='rgba(0,200,150,.4)'" onblur="this.style.borderColor='rgba(0,200,150,.15)'" placeholder="0913 xxx xxx">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Ngày sinh" data-en="Birthday">Ngày sinh</label>
+              <input id="profDob" type="date" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none">
+            </div>
+            <div>
+              <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Giới tính" data-en="Gender">Giới tính</label>
+              <select id="profGender" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none">
+                <option value="">—</option>
+                <option value="male" data-vi="Nam" data-en="Male">Nam</option>
+                <option value="female" data-vi="Nữ" data-en="Female">Nữ</option>
+                <option value="other" data-vi="Khác" data-en="Other">Khác</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Địa chỉ" data-en="Address">Địa chỉ</label>
+            <textarea id="profAddr" rows="2" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none;resize:none" onfocus="this.style.borderColor='rgba(0,200,150,.4)'" onblur="this.style.borderColor='rgba(0,200,150,.15)'"></textarea>
+          </div>
+        </div>
+        <button onclick="saveProfile()" style="width:100%;margin-top:20px;padding:13px;background:linear-gradient(135deg,#005A42,#00C896);border:none;border-radius:10px;font-size:14px;font-weight:700;color:#000;cursor:pointer;letter-spacing:.5px;transition:opacity .2s">
+          <span data-vi="LƯU THÔNG TIN" data-en="SAVE PROFILE">LƯU THÔNG TIN</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB: Health -->
+    <div id="profTabHealth" class="prof-panel" style="display:none">
+      <div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.1);border-radius:16px;padding:24px">
+        <div style="font-size:14px;font-weight:700;color:#00C896;margin-bottom:16px;display:flex;align-items:center;gap:8px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          <span data-vi="Hồ sơ sức khỏe" data-en="Health Profile">Hồ sơ sức khỏe</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Chiều cao (cm)" data-en="Height (cm)">Chiều cao (cm)</label>
+              <input id="profHeight" type="number" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none" placeholder="170">
+            </div>
+            <div>
+              <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Cân nặng (kg)" data-en="Weight (kg)">Cân nặng (kg)</label>
+              <input id="profWeight" type="number" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none" placeholder="65">
+            </div>
+          </div>
+          <div>
+            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Nhóm máu" data-en="Blood Type">Nhóm máu</label>
+            <select id="profBlood" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none">
+              <option value="">—</option>
+              <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+              <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Thể tạng Đông Y (AI Khai Vấn)" data-en="TCM Constitution (AI Assessment)">Thể tạng Đông Y (AI Khai Vấn)</label>
+            <div id="profConstitution" style="background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:14px;color:rgba(248,242,224,.4);min-height:42px" data-vi="Chưa đánh giá — Sử dụng AI Khai Vấn để xác định" data-en="Not assessed — Use AI Assessment to determine">Chưa đánh giá — Sử dụng AI Khai Vấn để xác định</div>
+          </div>
+          <div>
+            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Dị ứng" data-en="Allergies">Dị ứng</label>
+            <input id="profAllergy" type="text" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none" data-vi-placeholder="Không có" data-en-placeholder="None" placeholder="Không có">
+          </div>
+          <div>
+            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Bệnh lý nền" data-en="Pre-existing Conditions">Bệnh lý nền</label>
+            <textarea id="profConditions" rows="2" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none;resize:none" data-vi-placeholder="Tiểu đường, huyết áp cao..." data-en-placeholder="Diabetes, hypertension..." placeholder="Tiểu đường, huyết áp cao..."></textarea>
+          </div>
+          <div>
+            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Ghi chú sức khỏe" data-en="Health Notes">Ghi chú sức khỏe</label>
+            <textarea id="profHealthNote" rows="2" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none;resize:none"></textarea>
+          </div>
+        </div>
+        <button onclick="saveProfile()" style="width:100%;margin-top:20px;padding:13px;background:linear-gradient(135deg,#005A42,#00C896);border:none;border-radius:10px;font-size:14px;font-weight:700;color:#000;cursor:pointer">
+          <span data-vi="LƯU HỒ SƠ SỨC KHỎE" data-en="SAVE HEALTH PROFILE">LƯU HỒ SƠ SỨC KHỎE</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB: Orders -->
+    <div id="profTabOrders" class="prof-panel" style="display:none">
+      <div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.1);border-radius:16px;padding:24px">
+        <div style="font-size:14px;font-weight:700;color:#00C896;margin-bottom:16px;display:flex;align-items:center;gap:8px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span data-vi="Lịch sử đơn hàng" data-en="Order History">Lịch sử đơn hàng</span>
+        </div>
+        <div id="profOrderList"></div>
+        <div id="profOrderEmpty" style="text-align:center;padding:40px 0;color:rgba(248,242,224,.3)">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin-bottom:10px;opacity:.3"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+          <div style="font-size:13px" data-vi="Chưa có đơn hàng nào" data-en="No orders yet">Chưa có đơn hàng nào</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Settings -->
+    <div id="profTabSettings" class="prof-panel" style="display:none">
+      <!-- Notifications -->
+      <div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.1);border-radius:16px;padding:24px;margin-bottom:16px">
+        <div style="font-size:14px;font-weight:700;color:#00C896;margin-bottom:16px;display:flex;align-items:center;gap:8px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span data-vi="Thông báo" data-en="Notifications">Thông báo</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+            <span style="font-size:14px;color:rgba(248,242,224,.7)" data-vi="Khuyến mãi & ưu đãi" data-en="Promotions & offers">Khuyến mãi & ưu đãi</span>
+            <input type="checkbox" id="profNotifPromo" checked style="width:18px;height:18px;accent-color:#00C896">
+          </label>
+          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+            <span style="font-size:14px;color:rgba(248,242,224,.7)" data-vi="Cập nhật đơn hàng" data-en="Order updates">Cập nhật đơn hàng</span>
+            <input type="checkbox" id="profNotifOrder" checked style="width:18px;height:18px;accent-color:#00C896">
+          </label>
+          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+            <span style="font-size:14px;color:rgba(248,242,224,.7)" data-vi="Nhắc lịch hẹn" data-en="Appointment reminders">Nhắc lịch hẹn</span>
+            <input type="checkbox" id="profNotifAppt" checked style="width:18px;height:18px;accent-color:#00C896">
+          </label>
+          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
+            <span style="font-size:14px;color:rgba(248,242,224,.7)" data-vi="Tin tức sức khỏe" data-en="Health news">Tin tức sức khỏe</span>
+            <input type="checkbox" id="profNotifHealth" style="width:18px;height:18px;accent-color:#00C896">
+          </label>
+        </div>
+      </div>
+      <!-- Language -->
+      <div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.1);border-radius:16px;padding:24px;margin-bottom:16px">
+        <div style="font-size:14px;font-weight:700;color:#00C896;margin-bottom:16px;display:flex;align-items:center;gap:8px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          <span data-vi="Ngôn ngữ" data-en="Language">Ngôn ngữ</span>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button onclick="if(typeof setLang==='function')setLang('vi');this.style.background='#00C896';this.style.color='#000';this.nextElementSibling.style.background='transparent';this.nextElementSibling.style.color='rgba(248,242,224,.5)'" style="flex:1;padding:12px;border-radius:10px;border:1px solid rgba(0,200,150,.2);background:#00C896;color:#000;font-size:14px;font-weight:600;cursor:pointer">🇻🇳 Tiếng Việt</button>
+          <button onclick="if(typeof setLang==='function')setLang('en');this.style.background='#00C896';this.style.color='#000';this.previousElementSibling.style.background='transparent';this.previousElementSibling.style.color='rgba(248,242,224,.5)'" style="flex:1;padding:12px;border-radius:10px;border:1px solid rgba(0,200,150,.2);background:transparent;color:rgba(248,242,224,.5);font-size:14px;font-weight:600;cursor:pointer">🇬🇧 English</button>
+        </div>
+      </div>
+      <!-- Account Actions -->
+      <div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.1);border-radius:16px;padding:24px">
+        <div style="font-size:14px;font-weight:700;color:#00C896;margin-bottom:16px;display:flex;align-items:center;gap:8px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          <span data-vi="Tài khoản" data-en="Account">Tài khoản</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button onclick="exportUserData()" style="width:100%;padding:12px;background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.15);border-radius:10px;font-size:13px;color:rgba(248,242,224,.6);cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;transition:background .2s">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span data-vi="Xuất dữ liệu cá nhân" data-en="Export my data">Xuất dữ liệu cá nhân</span>
+          </button>
+          <button onclick="if(typeof logoutUser==='function'){logoutUser();closeProfile()}" style="width:100%;padding:12px;background:rgba(255,77,109,.06);border:1px solid rgba(255,77,109,.2);border-radius:10px;font-size:13px;color:#FF4D6D;cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;transition:background .2s">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <span data-vi="Đăng xuất" data-en="Sign Out">Đăng xuất</span>
+          </button>
+          <button onclick="if(confirm(lang==='vi'?'Xóa toàn bộ dữ liệu cá nhân?':'Delete all personal data?')){clearUserData();closeProfile()}" style="width:100%;padding:12px;background:transparent;border:1px solid rgba(248,242,224,.06);border-radius:10px;font-size:12px;color:rgba(248,242,224,.25);cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+            <span data-vi="Xóa dữ liệu cá nhân" data-en="Delete my data">Xóa dữ liệu cá nhân</span>
+          </button>
+        </div>
+      </div>
+      <button onclick="saveProfile()" style="width:100%;margin-top:16px;padding:13px;background:linear-gradient(135deg,#005A42,#00C896);border:none;border-radius:10px;font-size:14px;font-weight:700;color:#000;cursor:pointer">
+        <span data-vi="LƯU CÀI ĐẶT" data-en="SAVE SETTINGS">LƯU CÀI ĐẶT</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ PROFILE JAVASCRIPT ═══ -->
+<script>
+function openProfile(){
+  var u;
+  try{u=JSON.parse(localStorage.getItem('anima_user'));}catch(e){}
+  if(!u){
+    if(typeof openAuth==='function')openAuth('login');
+    return;
+  }
+  loadProfileData(u);
+  var ov=document.getElementById('profileOverlay');
+  ov.style.visibility='visible';ov.style.opacity='1';
+  document.body.style.overflow='hidden';
+}
+
+function closeProfile(){
+  var ov=document.getElementById('profileOverlay');
+  if(ov){ov.style.opacity='0';ov.style.visibility='hidden';}
+  document.body.style.overflow='';
+}
+
+function switchProfTab(tab,btn){
+  document.querySelectorAll('.prof-panel').forEach(function(p){p.style.display='none';});
+  document.querySelectorAll('.prof-tab').forEach(function(t){
+    t.style.borderBottomColor='transparent';t.style.color='rgba(248,242,224,.4)';t.classList.remove('on');
+  });
+  var panel=document.getElementById('profTab'+tab.charAt(0).toUpperCase()+tab.slice(1));
+  if(panel)panel.style.display='block';
+  if(btn){btn.style.borderBottomColor='#00C896';btn.style.color='#00C896';btn.classList.add('on');}
+  if(tab==='orders')renderOrderHistory();
+}
+
+function loadProfileData(u){
+  var prof=JSON.parse(localStorage.getItem('anima_profile')||'{}');
+  /* Avatar */
+  var avTxt=document.getElementById('profAvatarText');
+  var avImg=document.getElementById('profAvatarImg');
+  if(u.picture){avImg.src=u.picture;avImg.style.display='block';avTxt.style.display='none';}
+  else{avTxt.textContent=(u.name||'U').charAt(0).toUpperCase();avImg.style.display='none';avTxt.style.display='block';}
+  document.getElementById('profDisplayName').textContent=u.name||'';
+  document.getElementById('profEmail').textContent=u.email||'';
+  var prov=document.getElementById('profProvider');
+  if(u.provider==='google'){
+    prov.style.display='inline-flex';prov.style.background='rgba(66,133,244,.15)';prov.style.color='#60A5FA';
+    prov.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.07 5.07 0 01-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/></svg> Google';
+  } else {prov.style.display='none';}
+  /* Form fields */
+  document.getElementById('profName').value=prof.name||u.name||'';
+  document.getElementById('profEmailInput').value=prof.email||u.email||'';
+  document.getElementById('profPhone').value=prof.phone||'';
+  document.getElementById('profDob').value=prof.dob||'';
+  document.getElementById('profGender').value=prof.gender||'';
+  document.getElementById('profAddr').value=prof.addr||'';
+  document.getElementById('profHeight').value=prof.height||'';
+  document.getElementById('profWeight').value=prof.weight||'';
+  document.getElementById('profBlood').value=prof.blood||'';
+  document.getElementById('profAllergy').value=prof.allergy||'';
+  document.getElementById('profConditions').value=prof.conditions||'';
+  document.getElementById('profHealthNote').value=prof.healthNote||'';
+  var settings=JSON.parse(localStorage.getItem('anima_settings')||'{}');
+  document.getElementById('profNotifPromo').checked=settings.notifPromo!==false;
+  document.getElementById('profNotifOrder').checked=settings.notifOrder!==false;
+  document.getElementById('profNotifAppt').checked=settings.notifAppt!==false;
+  document.getElementById('profNotifHealth').checked=settings.notifHealth===true;
+}
+
+function saveProfile(){
+  var prof={
+    name:document.getElementById('profName').value.trim(),
+    email:document.getElementById('profEmailInput').value.trim(),
+    phone:document.getElementById('profPhone').value.trim(),
+    dob:document.getElementById('profDob').value,
+    gender:document.getElementById('profGender').value,
+    addr:document.getElementById('profAddr').value.trim(),
+    height:document.getElementById('profHeight').value,
+    weight:document.getElementById('profWeight').value,
+    blood:document.getElementById('profBlood').value,
+    allergy:document.getElementById('profAllergy').value.trim(),
+    conditions:document.getElementById('profConditions').value.trim(),
+    healthNote:document.getElementById('profHealthNote').value.trim(),
+    updatedAt:new Date().toISOString()
+  };
+  localStorage.setItem('anima_profile',JSON.stringify(prof));
+  /* Update user session name/email if changed */
+  var u=JSON.parse(localStorage.getItem('anima_user')||'{}');
+  if(prof.name)u.name=prof.name;
+  if(prof.email)u.email=prof.email;
+  localStorage.setItem('anima_user',JSON.stringify(u));
+  window.currentUser=u;
+  if(typeof updateNavUser==='function')updateNavUser();
+  var settings={
+    notifPromo:document.getElementById('profNotifPromo').checked,
+    notifOrder:document.getElementById('profNotifOrder').checked,
+    notifAppt:document.getElementById('profNotifAppt').checked,
+    notifHealth:document.getElementById('profNotifHealth').checked
+  };
+  localStorage.setItem('anima_settings',JSON.stringify(settings));
+  var l=typeof lang!=='undefined'?lang:'vi';
+  if(typeof showToast==='function')showToast(l==='vi'?'\u0110\u00e3 l\u01b0u th\u00f4ng tin!':'Profile saved!','var(--g1)');
+}
+
+function renderOrderHistory(){
+  var orders=JSON.parse(localStorage.getItem('anima_orders')||'[]');
+  var list=document.getElementById('profOrderList');
+  var empty=document.getElementById('profOrderEmpty');
+  if(!list)return;
+  if(orders.length===0){
+    list.innerHTML='';
+    if(empty)empty.style.display='block';
+    return;
+  }
+  if(empty)empty.style.display='none';
+  var l=typeof lang!=='undefined'?lang:'vi';
+  var html='';
+  orders.forEach(function(o){
+    var d=new Date(o.date);
+    var dateStr=d.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'});
+    var itemCount=o.items?o.items.reduce(function(s,i){return s+(i.qty||1);},0):0;
+    var totalStr=o.total?o.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.')+'\u0111':'';
+    html+='<div style="border:1px solid rgba(0,200,150,.08);border-radius:12px;padding:14px;margin-bottom:10px">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'
+    +'<span style="font-family:\'Roboto Mono\',monospace;font-size:12px;color:#00C896;font-weight:600">'+o.id+'</span>'
+    +'<span style="font-size:11px;color:rgba(248,242,224,.35)">'+dateStr+'</span>'
+    +'</div>';
+    if(o.items){
+      o.items.forEach(function(item){
+        html+='<div style="display:flex;justify-content:space-between;font-size:13px;padding:3px 0">'
+        +'<span style="color:rgba(248,242,224,.6)">'+item.name+' \u00d7'+item.qty+'</span>'
+        +'<span style="color:rgba(248,242,224,.4)">'+item.price+'</span></div>';
+      });
+    }
+    html+='<div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px solid rgba(0,200,150,.06);margin-top:6px">'
+    +'<span style="font-size:12px;color:rgba(248,242,224,.4)">'+(l==='vi'?itemCount+' s\u1ea3n ph\u1ea9m':itemCount+' items')+'</span>'
+    +'<span style="font-size:14px;font-weight:700;color:#00E5A8">'+totalStr+'</span>'
+    +'</div></div>';
+  });
+  list.innerHTML=html;
+}
+
+function exportUserData(){
+  var data={
+    user:JSON.parse(localStorage.getItem('anima_user')||'{}'),
+    profile:JSON.parse(localStorage.getItem('anima_profile')||'{}'),
+    orders:JSON.parse(localStorage.getItem('anima_orders')||'[]'),
+    settings:JSON.parse(localStorage.getItem('anima_settings')||'{}'),
+    cart:JSON.parse(localStorage.getItem('anima_cart')||'[]'),
+    exportedAt:new Date().toISOString()
+  };
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='animacare-mydata-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function clearUserData(){
+  ['anima_user','anima_profile','anima_orders','anima_settings','anima_cart'].forEach(function(k){
+    localStorage.removeItem(k);
+  });
+  window.currentUser=null;
+  if(typeof updateNavUser==='function')updateNavUser();
+  if(typeof showToast==='function')showToast(typeof lang!=='undefined'&&lang==='vi'?'\u0110\u00e3 x\u00f3a d\u1eef li\u1ec7u':'Data deleted','var(--red)');
+}
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){var ov=document.getElementById('profileOverlay');if(ov&&ov.style.visibility==='visible')closeProfile();}
+});
 </script>
 
 </body>
