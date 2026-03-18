@@ -7356,7 +7356,10 @@ document.body.style.overflow='';
           <button onclick="togglePwd('loginPwd')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--t3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
         </div>
       </div>
-      <div style="text-align:right;margin-bottom:20px"><button onclick="showForgot()" style="background:none;border:none;font-family:var(--fb);font-size:14px;color:var(--g1);cursor:pointer" data-vi="Quên mật khẩu?" data-en="Forgot password?">Quên mật khẩu?</button></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="loginRemember" checked style="accent-color:var(--g1);width:14px;height:14px"><span style="font-family:var(--fb);font-size:13px;color:var(--t3)" data-vi="Ghi nh\u1EDB \u0111\u0103ng nh\u1EADp" data-en="Remember me">Ghi nh\u1EDB \u0111\u0103ng nh\u1EADp</span></label>
+        <button onclick="showForgot()" style="background:none;border:none;font-family:var(--fb);font-size:14px;color:var(--g1);cursor:pointer" data-vi="Qu\u00EAn m\u1EADt kh\u1EA9u?" data-en="Forgot password?">Qu\u00EAn m\u1EADt kh\u1EA9u?</button>
+      </div>
       <button onclick="handleLogin()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--g-dark),var(--g1));border:none;border-radius:10px;font-family:var(--fb);font-size:15px;font-weight:700;color:#000;cursor:pointer;letter-spacing:0.5px" data-vi="ĐĂNG NHẬP" data-en="SIGN IN">ĐĂNG NHẬP</button>
       <div style="display:flex;align-items:center;gap:12px;margin:18px 0"><div style="flex:1;height:0.5px;background:rgba(255,255,255,.1)"></div><span style="font-family:var(--fb);font-size:13px;color:var(--t3)" data-vi="hoặc" data-en="or">hoặc</span><div style="flex:1;height:0.5px;background:rgba(255,255,255,.1)"></div></div>
       <button onclick="handleGoogleAuth()" style="width:100%;padding:12px;background:rgba(255,255,255,.05);border:0.5px solid rgba(255,255,255,.15);border-radius:10px;font-family:var(--fb);font-size:15px;color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px">
@@ -7400,7 +7403,10 @@ document.body.style.overflow='';
 <script>var currentUser=null;
 /* Restore session on load */
 (function(){try{var u=localStorage.getItem('anima_current_user');if(u){currentUser=JSON.parse(u);setTimeout(function(){if(typeof updateNavUser==='function')updateNavUser();},500);}}catch(e){}})();
-function openAuth(tab){var m=document.getElementById('authModal');m.style.visibility='visible';m.style.opacity='1';document.body.style.overflow='hidden';switchAuthTab(tab||'login');var l=lang||'vi';m.querySelectorAll('[data-'+l+']').forEach(function(e){var v=e.getAttribute('data-'+l);if(v)e.innerHTML=v});}
+function openAuth(tab){var m=document.getElementById('authModal');m.style.visibility='visible';m.style.opacity='1';document.body.style.overflow='hidden';switchAuthTab(tab||'login');var l=lang||'vi';m.querySelectorAll('[data-'+l+']').forEach(function(e){var v=e.getAttribute('data-'+l);if(v)e.innerHTML=v});
+/* Auto-fill saved credentials */
+try{var saved=JSON.parse(localStorage.getItem('anima_saved_login'));if(saved&&saved.email){document.getElementById('loginEmail').value=saved.email;document.getElementById('loginPwd').value=atob(saved.pwd);var rb=document.getElementById('loginRemember');if(rb)rb.checked=true;}}catch(ex){}
+}
 function closeAuth(){var m=document.getElementById('authModal');m.style.opacity='0';setTimeout(function(){m.style.visibility='hidden'},300);document.body.style.overflow='';}
 function switchAuthTab(tab){
 var isL=tab==='login';
@@ -7418,21 +7424,26 @@ function checkPwdStrength(v){var bars=document.getElementById('pwdBars').childre
 function showToast(msg,color){var t=document.getElementById('authToast');document.getElementById('authToastMsg').textContent=msg;document.getElementById('authToastMsg').style.color=color||'var(--g2)';t.style.transform='translateX(-50%) translateY(0)';setTimeout(function(){t.style.transform='translateX(-50%) translateY(80px)';},3000);}
 function handleLogin(){
 var e=document.getElementById('loginEmail').value.trim(),p=document.getElementById('loginPwd').value;
-if(!e||!p){showToast(lang==='vi'?'Vui lòng điền đầy đủ thông tin':'Please fill in all fields','#FF7070');return;}
-/* Check registered users in localStorage */
+if(!e||!p){showToast(lang==='vi'?'Vui l\u00f2ng \u0111i\u1ec1n \u0111\u1ea7y \u0111\u1ee7 th\u00f4ng tin':'Please fill in all fields','#FF7070');return;}
 var users=[];try{users=JSON.parse(localStorage.getItem('anima_users')||'[]');}catch(ex){}
 var found=users.find(function(u){return (u.email===e||u.phone===e);});
 if(found){
   currentUser=found;
 }else{
-  /* Allow first-time login (create basic account) */
   currentUser={id:'USR-'+Date.now().toString(36).toUpperCase(),name:e.split('@')[0],email:e,phone:'',provider:'email',picture:'',createdAt:new Date().toISOString()};
   users.push(currentUser);
   localStorage.setItem('anima_users',JSON.stringify(users));
 }
 localStorage.setItem('anima_current_user',JSON.stringify(currentUser));
+/* Save credentials if Remember Me checked */
+var remember=document.getElementById('loginRemember');
+if(remember&&remember.checked){
+  localStorage.setItem('anima_saved_login',JSON.stringify({email:e,pwd:btoa(p),ts:Date.now()}));
+}else{
+  localStorage.removeItem('anima_saved_login');
+}
 updateNavUser();closeAuth();
-showToast(lang==='vi'?'Đăng nhập thành công! Chào mừng '+(currentUser.firstName||currentUser.name)+' trở lại':'Signed in! Welcome back '+(currentUser.firstName||currentUser.name),'var(--g2)');
+showToast(lang==='vi'?'\u0110\u0103ng nh\u1eadp th\u00e0nh c\u00f4ng! Ch\u00e0o m\u1eebng '+(currentUser.firstName||currentUser.name)+' tr\u1edf l\u1ea1i':'Signed in! Welcome back '+(currentUser.firstName||currentUser.name),'var(--g2)');
 }
 function handleRegister(){
 var last=document.getElementById('regLast').value.trim();
@@ -9098,7 +9109,10 @@ var ADMIN_ACCOUNTS = [
 { id:'SA001', pwd:'Admin@2026!', name:'Superadmin', email:'doanhnhancaotuan@gmail.com', role:'superadmin' }
 ];
 (function(){var boxes=document.querySelectorAll('#otpGrid .otp-box');boxes.forEach(function(box,i){box.addEventListener('input',function(){this.value=this.value.replace(/[^0-9]/g,'');if(this.value&&i<boxes.length-1)boxes[i+1].focus();});box.addEventListener('keydown',function(e){if(e.key==='Backspace'&&!this.value&&i>0){boxes[i-1].focus();boxes[i-1].value='';}if(e.key==='Enter')handleAdminLogin();});box.addEventListener('paste',function(e){e.preventDefault();var data=(e.clipboardData||window.clipboardData).getData('text').replace(/[^0-9]/g,'');for(var j=0;j<Math.min(data.length,boxes.length-i);j++){boxes[i+j].value=data[j];}boxes[Math.min(i+data.length,boxes.length-1)].focus();});});})();
-function openAdminPortal(){var p=document.getElementById('adminPortal');p.style.display='flex';document.body.style.overflow='hidden';initAdminBg();setTimeout(function(){document.getElementById('adminIdInput').focus()},300);var l=lang||'vi';p.querySelectorAll('[data-'+l+']').forEach(function(e){var v=e.getAttribute('data-'+l);if(v)e.innerHTML=v});}
+function openAdminPortal(){var p=document.getElementById('adminPortal');p.style.display='flex';document.body.style.overflow='hidden';initAdminBg();setTimeout(function(){document.getElementById('adminIdInput').focus()},300);var l=lang||'vi';p.querySelectorAll('[data-'+l+']').forEach(function(e){var v=e.getAttribute('data-'+l);if(v)e.innerHTML=v});
+/* Auto-fill saved admin credentials */
+try{var saved=JSON.parse(localStorage.getItem('anima_saved_admin'));if(saved&&saved.id){document.getElementById('adminIdInput').value=saved.id;document.getElementById('adminPwdInput').value=atob(saved.pwd);}}catch(ex){}
+}
 function closeAdminPortal(){document.getElementById('adminPortal').style.display='none';if(!window._adKeepOverflow)document.body.style.overflow='';window._adKeepOverflow=false;document.getElementById('adminOtpSection').style.display='none';document.getElementById('adminSendOtpBtn').style.display='block';if(adminOtpTimer)clearInterval(adminOtpTimer);adminOtpCode=null;if(window.location.pathname==='/admin'||window.location.hash==='#admin')window.history.pushState({},'','/');}
 function generateOtp(){return String(Math.floor(100000+Math.random()*900000));}
 function requestAdminOtp(){
@@ -9182,7 +9196,10 @@ var id=document.getElementById('adminIdInput').value.trim().toUpperCase();
 var account=null;
 for(var i=0;i<ADMIN_ACCOUNTS.length;i++){if(ADMIN_ACCOUNTS[i].id===id){account=ADMIN_ACCOUNTS[i];break;}}
 localStorage.setItem('anima_admin_user',JSON.stringify({name:account?account.name:'Admin',role:account?account.role:'admin',id:id}));
-showAdminSuccess(lang==='vi'?'Đăng nhập thành công! Chào mừng '+(account?account.name:'Admin'):'Login successful! Welcome '+(account?account.name:'Admin'));
+/* Save admin credentials */
+var pwd=document.getElementById('adminPwdInput').value;
+localStorage.setItem('anima_saved_admin',JSON.stringify({id:id,pwd:btoa(pwd),ts:Date.now()}));
+showAdminSuccess(lang==='vi'?'\u0110\u0103ng nh\u1EADp th\u00E0nh c\u00F4ng! Ch\u00E0o m\u1EEBng '+(account?account.name:'Admin'):'Login successful! Welcome '+(account?account.name:'Admin'));
 setTimeout(function(){window._adKeepOverflow=true;closeAdminPortal();openAdminDashboard();showToast(lang==='vi'?'Chào mừng Admin! 🔒':'Welcome Admin! 🔒','var(--g1)');},1500);
 } else {
 var rem=3-adminOtpAttempts;

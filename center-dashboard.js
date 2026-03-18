@@ -183,7 +183,12 @@ window._openCenterPortal = function(tab) {
   document.body.style.overflow = 'hidden';
   window._cpSwitchTab(tab || 'login');
   if(!tab || tab === 'login') {
-    setTimeout(function() { document.getElementById('cpIdInput').focus(); }, 200);
+    setTimeout(function() {
+      var idEl = document.getElementById('cpIdInput');
+      if(idEl) idEl.focus();
+      /* Auto-fill saved center credentials */
+      try{var saved=JSON.parse(localStorage.getItem('anima_saved_center'));if(saved&&saved.id){idEl.value=saved.id;var pwdEl=document.getElementById('cpPwdInput');if(pwdEl)pwdEl.value=atob(saved.pwd);}}catch(ex){}
+    }, 200);
   } else {
     setTimeout(function() { document.getElementById('cpRegName').focus(); }, 200);
   }
@@ -352,6 +357,8 @@ window._centerLogin = function() {
   err.style.display = 'none';
   cUser = account;
   localStorage.setItem('anima_center_user', JSON.stringify(account));
+  /* Save center credentials for auto-fill */
+  localStorage.setItem('anima_saved_center', JSON.stringify({id:id, pwd:btoa(pwd), ts:Date.now()}));
   _closeCenterPortal();
   openCenterDashboard();
   if(typeof showToast === 'function') showToast(t('Ch\u00E0o m\u1EEBng ' + account.name + '!', 'Welcome ' + account.name + '!'), '#00C896');

@@ -143,6 +143,8 @@ window._openTechPortal = function(tab) {
   document.getElementById('techPortal').firstChild.style.display = 'flex';
   document.body.style.overflow = 'hidden';
   window._tpSwitch(tab || 'login');
+  /* Auto-fill saved KTV credentials */
+  try{var saved=JSON.parse(localStorage.getItem('anima_saved_tech'));if(saved&&saved.id){setTimeout(function(){var idEl=document.getElementById('tpIdInput');var pwdEl=document.getElementById('tpPwdInput');if(idEl)idEl.value=saved.id;if(pwdEl)pwdEl.value=atob(saved.pwd);},100);}}catch(ex){}
 };
 window._closeTechPortal = function() {
   document.getElementById('techPortal').firstChild.style.display = 'none';
@@ -163,6 +165,8 @@ window._techLogin = function() {
   if(!acc) { err.style.display = 'block'; err.textContent = t('Sai KTV ID ho\u1EB7c m\u1EADt kh\u1EA9u','Invalid KTV ID or password'); return; }
   tUser = acc;
   localStorage.setItem('anima_tech_user', JSON.stringify(acc));
+  /* Save KTV credentials for auto-fill */
+  localStorage.setItem('anima_saved_tech', JSON.stringify({id:id, pwd:btoa(pwd), ts:Date.now()}));
   _closeTechPortal();
   openTechDashboard();
   if(typeof showToast === 'function') showToast(t('Ch\u00E0o KTV ' + acc.name + '!','Welcome KTV ' + acc.name + '!'), '#7B5FFF');
