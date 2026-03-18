@@ -10419,6 +10419,25 @@ document.getElementById('adminDashboard').style.display='none';
 document.body.style.overflow='';
 localStorage.removeItem('anima_admin_user');
 };
+
+// ── Sync Bridge: Listen for center updates and refresh admin tables ──
+if(window.AnimaSync){
+  ['bookings','orders','customers','inventory','activities'].forEach(function(key){
+    AnimaSync.on(key, function(){
+      var dash = document.getElementById('adminDashboard');
+      if(dash && dash.style.display !== 'none'){
+        // Refresh current admin page
+        var activeItem = dash.querySelector('.sb-i.on');
+        if(activeItem){
+          var onclick = activeItem.getAttribute('onclick')||'';
+          var match = onclick.match(/go\('(\w+)'/);
+          if(match) loadPage(match[1]);
+        }
+      }
+    });
+  });
+}
+
 function checkAdminSession(){
 var u;
 try{u=JSON.parse(localStorage.getItem('anima_admin_user'));}catch(e){return;}
@@ -11234,5 +11253,7 @@ document.addEventListener('keydown',function(e){
 
 <link rel="stylesheet" href="mobile.css">
 <script src="mobile-fix.js"></script>
+<script src="sync-engine.js"></script>
+<script src="center-dashboard.js"></script>
 </body>
 </html>
