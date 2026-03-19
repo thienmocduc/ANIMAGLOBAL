@@ -9521,8 +9521,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&document.ge
       <div class="srow fu"><div class="sc"><div class="sc-v" style="color:var(--amber)">3</div><div class="sc-l" data-vi="Chờ XN" data-en="Pending">Chờ XN</div></div><div class="sc"><div class="sc-v" style="color:var(--pu2)">18</div><div class="sc-l" data-vi="Đang Xử Lý" data-en="Processing">Đang Xử Lý</div></div><div class="sc"><div class="sc-v" style="color:var(--sky)">24</div><div class="sc-l" data-vi="Đang Giao" data-en="Shipping">Đang Giao</div></div><div class="sc"><div class="sc-v" style="color:var(--g2)">147</div><div class="sc-l" data-vi="Hoàn Thành T3" data-en="Completed Q1">Hoàn Thành T3</div></div><div class="sc"><div class="sc-v">274.5 tr</div><div class="sc-l" data-vi="GMV Tháng" data-en="Monthly GMV">GMV Tháng</div></div><div class="sc"><div class="sc-v">1.87 tr</div><div class="sc-l" data-vi="AOV TB" data-en="Avg AOV">AOV TB</div></div></div>
       <div class="fbar fu d1">
         <div class="fbar-in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="Mã đơn, tên KH, SĐT..."></div>
-        <select class="fbar-sel"><option>Tất cả trạng thái</option><option>Chờ xác nhận</option><option>Đang giao</option><option>Hoàn thành</option></select>
-        <select class="fbar-sel"><option>Tất cả SKU</option><option>A119-10 (1 hộp)</option><option>A119-30 (3 hộp)</option><option>A119-120 (12 hộp)</option></select>
+        <select class="fbar-sel"><option>T\u1EA5t c\u1EA3 tr\u1EA1ng th\u00E1i</option><option>Ch\u1EDD x\u00E1c nh\u1EADn</option><option>\u0110ang x\u1EED l\u00FD</option><option>\u0110ang giao</option><option>Ho\u00E0n th\u00E0nh</option></select>
+        <select class="fbar-sel"><option>T\u1EA5t c\u1EA3 SKU</option><option>A119-STD (Standard)</option><option>A119-PRE (Premium)</option><option>A119-LIT (Lite)</option><option>A119-B3 (3 h\u1ED9p)</option><option>A119-B12 (12 h\u1ED9p)</option><option>A119-B2B (Clinic)</option></select>
       </div>
       <div class="c fu d2"><div class="tw"><table class="dt" id="tbl-orders"></table></div></div>
     </div>
@@ -10062,11 +10062,40 @@ var allO=ORDERS.slice();
 var syncOrders=window.AnimaSync?AnimaSync.get('orders',[]):[];
 syncOrders.forEach(function(o){
   if(!allO.some(function(x){return x.id===o.id})){
-    allO.unshift({id:o.id||o._id,name:o.name||o.customer||'--',phone:o.phone||'',sku:o.sku||o.product||'',amount:o.amount||o.price||'',channel:o.channel||'Website',method:o.method||'COD',city:o.city||'Online',date:o.date||'',status:o.status||'pending',_rt:true});
+    allO.unshift({id:o.id||o._id,name:o.name||o.customer||'--',phone:o.phone||'',sku:o.sku||o.product||'',amount:o.amount||o.price||'',channel:o.channel||'Website',method:o.method||'COD',city:o.city||'Online',date:o.date||'',status:o.status||'pending',_rt:true,_id:o._id});
   }
 });
-tbl.innerHTML='<thead><tr><th>'+t('Mã Đơn')+'</th><th>'+t('Khách Hàng')+'</th><th>'+t('SKU')+'</th><th>'+t('Thành Tiền')+'</th><th>'+t('Kênh')+'</th><th>TT</th><th>'+t('Thành Phố')+'</th><th>'+t('Ngày')+'</th><th>'+t('Trạng Thái')+'</th><th>'+t('Action')+'</th></tr></thead><tbody>'+
-allO.map(function(o,idx){var rtTag=o._rt?'<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#00C896;margin-left:4px" title="Realtime"></span>':'';return '<tr><td class="td-mo">'+o.id+rtTag+'</td><td><div style="color:var(--t1);font-weight:500">'+o.name+'</div><div class="td-mo">'+(o.phone||'')+'</div></td><td style="font-size:11.5px">'+(o.sku||'')+'</td><td style="color:var(--g2);font-family:var(--fm);font-weight:600">'+o.amount+'</td><td style="font-size:11.5px">'+o.channel+'</td><td style="font-size:11.5px">'+o.method+'</td><td>'+o.city+'</td><td class="td-mo">'+o.date+'</td><td>'+statusBadge(o.status)+'</td><td><div class="btn-row"><button class="btn btn-sm btn-s" onclick="viewOrder('+idx+',window._allOrders)">Xem</button>'+( o.status==='pending'?'<button class="btn btn-sm btn-p" onclick="confirmOrder('+idx+')">XN</button>':'' )+'</div></td></tr>'}).join('')+'</tbody>';window._allOrders=allO;
+/* Get filter values */
+var pg=document.getElementById('pg-orders');
+var inputs=pg?pg.querySelectorAll('.fbar-in input, .fbar-sel'):[];
+var searchTxt=(inputs[0]?inputs[0].value:'').toLowerCase();
+var filterStatus=inputs[1]?inputs[1].value:'';
+var filterSku=inputs[2]?inputs[2].value:'';
+/* Wire filters if not already */
+if(pg&&!pg._filtersWired){
+  pg._filtersWired=true;
+  pg.querySelectorAll('.fbar-in input').forEach(function(el){el.addEventListener('input',renderOrdersTable)});
+  pg.querySelectorAll('.fbar-sel').forEach(function(el){el.addEventListener('change',renderOrdersTable)});
+}
+/* Map filter status text to status values */
+var statusMap={'Ch\u1EDD x\u00e1c nh\u1eadn':'pending','Pending':'pending','\u0110ang giao':'shipping','Shipping':'shipping','Ho\u00e0n th\u00e0nh':'completed','Completed':'completed','\u0110ang x\u1eed l\u00fd':'processing','Processing':'processing'};
+var filterStatusVal=statusMap[filterStatus]||'';
+/* Filter */
+var filtered=allO.filter(function(o){
+  if(searchTxt){var txt=(o.id+' '+o.name+' '+(o.phone||'')).toLowerCase();if(txt.indexOf(searchTxt)===-1)return false}
+  if(filterStatusVal&&o.status!==filterStatusVal)return false;
+  if(filterSku&&filterSku.indexOf('T\u1EA5t')===-1){var skuCode=filterSku.split('(')[0].trim();if((o.sku||'').indexOf(skuCode)===-1)return false}
+  return true;
+});
+/* Update status counts */
+var pCnt=allO.filter(function(o){return o.status==='pending'}).length;
+var sCnt=allO.filter(function(o){return o.status==='shipping'}).length;
+var prCnt=allO.filter(function(o){return o.status==='processing'}).length;
+var cCnt=allO.filter(function(o){return o.status==='completed'}).length;
+var scVals=pg?pg.querySelectorAll('.sc-v'):[];
+if(scVals.length>=4){scVals[0].textContent=pCnt;scVals[1].textContent=prCnt;scVals[2].textContent=sCnt;scVals[3].textContent=cCnt;}
+tbl.innerHTML='<thead><tr><th>'+t('M\u00E3 \u0110\u01A1n')+'</th><th>'+t('Kh\u00E1ch H\u00E0ng')+'</th><th>SKU</th><th>'+t('Th\u00E0nh Ti\u1EC1n')+'</th><th>'+t('K\u00EAnh')+'</th><th>TT</th><th>'+t('Th\u00E0nh Ph\u1ED1')+'</th><th>'+t('Ng\u00E0y')+'</th><th>'+t('Tr\u1EA1ng Th\u00E1i')+'</th><th>Action</th></tr></thead><tbody>'+
+filtered.map(function(o){var realIdx=allO.indexOf(o);var rtTag=o._rt?'<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#00C896;margin-left:4px" title="Realtime"></span>':'';return '<tr><td class="td-mo">'+o.id+rtTag+'</td><td><div style="color:var(--t1);font-weight:500">'+o.name+'</div><div class="td-mo">'+(o.phone||'')+'</div></td><td style="font-size:11.5px">'+(o.sku||'')+'</td><td style="color:var(--g2);font-family:var(--fm);font-weight:600">'+o.amount+'</td><td style="font-size:11.5px">'+o.channel+'</td><td style="font-size:11.5px">'+o.method+'</td><td>'+o.city+'</td><td class="td-mo">'+o.date+'</td><td>'+statusBadge(o.status)+'</td><td><div class="btn-row"><button class="btn btn-sm btn-s" onclick="viewOrder('+realIdx+',window._allOrders)">Xem</button>'+( o.status==='pending'?'<button class="btn btn-sm btn-p" onclick="confirmOrder('+realIdx+')">XN</button>':'' )+'</div></td></tr>'}).join('')+'</tbody>';window._allOrders=allO;
 /* Update KPI count */
 var kpiOrd=document.querySelector('#pg-dashboard .kpi-v[data-key="orders"]');
 if(kpiOrd)kpiOrd.textContent=allO.length;
@@ -10085,9 +10114,56 @@ drawBarChart('ai-chart','ai-lbls',[48,52,61,58,64,70,64],['T2','T3','T4','T5','T
 }
 function renderStaffTable(){
 var t=document.getElementById('tbl-staff');if(!t)return;
-t.innerHTML='<thead><tr><th>Kỹ Thuật Viên</th><th>Cơ Sở</th><th>Cấp Độ</th><th>Chuyên Môn</th><th>Sessions Hôm Nay</th><th>Rating</th><th>Trạng Thái</th><th>Action</th></tr></thead><tbody>'+
-STAFF_DATA.map(function(s,i){return '<tr><td><div class="td-nm"><div class="td-av" style="background:'+avatarColor(i)+'22;color:'+avatarColor(i)+'">'+s.name.split(' ').pop()[0]+'</div><div><div style="color:var(--t1);font-weight:500">'+s.name+'</div><div class="td-mo">'+s.id+'</div></div></div></td><td>'+s.center+'</td><td><span class="bx b">'+s.level+'</span></td><td style="font-size:11.5px">'+s.specialty+'</td><td style="text-align:center;font-family:var(--fm)">'+s.sessions_today+'</td><td style="font-family:var(--fm)">★'+s.rating+'</td><td>'+statusBadge(s.status)+'</td><td><button class="btn btn-sm btn-s">Lịch Làm</button></td></tr>'}).join('')+'</tbody>';
+/* Get filter values */
+var pg=document.getElementById('pg-staff');
+var inputs=pg?pg.querySelectorAll('.fbar-in input, .fbar-sel'):[];
+var searchTxt=(inputs[0]?inputs[0].value:'').toLowerCase();
+var filterCenter=inputs[1]?inputs[1].value:'';
+var filterLevel=inputs[2]?inputs[2].value:'';
+/* Wire filters if not already */
+if(!pg._filtersWired){
+  pg._filtersWired=true;
+  pg.querySelectorAll('.fbar-in input').forEach(function(el){el.addEventListener('input',renderStaffTable)});
+  pg.querySelectorAll('.fbar-sel').forEach(function(el){el.addEventListener('change',renderStaffTable)});
 }
+/* Merge with registered KTV from AnimaSync */
+var allStaff=STAFF_DATA.slice();
+var syncTechs=window.AnimaSync?AnimaSync.get('technicians',[]):[];
+try{var regTechs=JSON.parse(localStorage.getItem('anima_tech_accounts')||'[]');regTechs.forEach(function(rt){if(!allStaff.some(function(s){return s.id===rt.id})){allStaff.push({id:rt.id,name:rt.name,center:rt.centerName||'--',level:'L1',specialty:rt.specialty||'--',sessions_today:rt.sessions||0,rating:rt.rating||0,status:rt.status||'active',phone:rt.phone,_rt:true})}});}catch(e){}
+/* Filter */
+var filtered=allStaff.filter(function(s){
+  if(searchTxt&&s.name.toLowerCase().indexOf(searchTxt)===-1&&s.id.toLowerCase().indexOf(searchTxt)===-1)return false;
+  if(filterCenter&&filterCenter.indexOf('T\u1EA5t')===-1&&s.center.indexOf(filterCenter.replace('T\u1EA5t c\u1EA3 c\u01A1 s\u1EDF',''))===-1)return false;
+  if(filterLevel&&filterLevel.indexOf('T\u1EA5t')===-1&&s.level!==filterLevel.split(' ')[0])return false;
+  return true;
+});
+t.innerHTML='<thead><tr><th>K\u1EF9 Thu\u1EADt Vi\u00EAn</th><th>C\u01A1 S\u1EDF</th><th>C\u1EA5p \u0110\u1ED9</th><th>Chuy\u00EAn M\u00F4n</th><th>Sessions</th><th>Rating</th><th>Tr\u1EA1ng Th\u00E1i</th><th>Action</th></tr></thead><tbody>'+
+filtered.map(function(s,i){var rtTag=s._rt?'<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#00C896;margin-left:4px"></span>':'';return '<tr><td><div class="td-nm"><div class="td-av" style="background:'+avatarColor(i)+'22;color:'+avatarColor(i)+'">'+s.name.split(' ').pop()[0]+'</div><div><div style="color:var(--t1);font-weight:500">'+s.name+rtTag+'</div><div class="td-mo">'+s.id+'</div></div></div></td><td>'+s.center+'</td><td><span class="bx b">'+s.level+'</span></td><td style="font-size:11.5px">'+s.specialty+'</td><td style="text-align:center;font-family:var(--fm)">'+s.sessions_today+'</td><td style="font-family:var(--fm)">\u2605'+s.rating+'</td><td>'+statusBadge(s.status)+'</td><td><div class="btn-row"><button class="btn btn-sm btn-s" onclick="viewStaff('+allStaff.indexOf(s)+')">Xem</button><button class="btn btn-sm btn-g" onclick="viewStaffSchedule('+allStaff.indexOf(s)+')">L\u1ECBch</button></div></td></tr>'}).join('')+'</tbody>';
+window._allStaff=allStaff;
+}
+/* Staff detail + schedule */
+function viewStaff(idx){var s=window._allStaff[idx];if(!s)return;showDetail('KTV '+s.name,detailRow('M\u00E3',s.id)+detailRow('C\u01A1 s\u1EDF',s.center)+detailRow('C\u1EA5p \u0111\u1ED9',s.level)+detailRow('Chuy\u00EAn m\u00F4n',s.specialty)+detailRow('Sessions h\u00F4m nay',''+s.sessions_today,'var(--g2)')+detailRow('Rating','\u2605'+s.rating)+detailRow('Tr\u1EA1ng th\u00E1i',s.status)+(s.phone?detailRow('SĐT',s.phone):''))}
+function viewStaffSchedule(idx){var s=window._allStaff[idx];if(!s)return;
+var days=['CN','T2','T3','T4','T5','T6','T7'];var today=new Date();
+var html='<div style="font-size:13px;color:var(--t3);margin-bottom:14px">L\u1ECBch l\u00E0m vi\u1EC7c 7 ng\u00E0y t\u1EDBi c\u1EE7a <strong style="color:var(--t1)">'+s.name+'</strong> t\u1EA1i '+s.center+'</div>';
+html+='<div style="display:flex;flex-direction:column;gap:6px">';
+for(var d=0;d<7;d++){
+  var dt=new Date(today);dt.setDate(dt.getDate()+d);
+  var dayName=days[dt.getDay()];
+  var dateStr=dt.getDate()+'/'+(dt.getMonth()+1);
+  var isOff=dt.getDay()===0;
+  var sessions=isOff?0:Math.floor(Math.random()*4)+3;
+  var start=isOff?'--':'08:00';
+  var end=isOff?'--':'17:00';
+  var color=isOff?'var(--t4)':d===0?'var(--g2)':'var(--t2)';
+  html+='<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:'+(d===0?'rgba(0,200,150,.06)':'rgba(0,0,0,.15)')+';border-radius:8px;border-left:3px solid '+(isOff?'var(--t4)':d===0?'var(--g1)':'var(--pu1)')+'">';
+  html+='<div style="min-width:50px"><div style="font-weight:600;color:'+color+'">'+dayName+'</div><div style="font-size:10px;color:var(--t4)">'+dateStr+'</div></div>';
+  html+='<div style="flex:1;font-size:12px;color:var(--t3)">'+(isOff?'Ngh\u1EC9':'<span style="color:var(--t1)">'+start+' \u2013 '+end+'</span> \u00B7 '+sessions+' sessions')+'</div>';
+  if(!isOff)html+='<span class="bx g">'+sessions+' ph\u00EAn</span>';
+  html+='</div>';
+}
+html+='</div>';
+showDetail('L\u1ECBch: '+s.name,html)}
 function renderInvTable(){
 var t=document.getElementById('tbl-inv');if(!t)return;
 t.innerHTML='<thead><tr><th>SKU</th><th>Tên Sản Phẩm</th><th>Loại</th><th>Tồn Kho</th><th>Tối Thiểu</th><th>Xuất T3</th><th>Giá Bán</th><th>Trạng Thái</th><th>Action</th></tr></thead><tbody>'+
