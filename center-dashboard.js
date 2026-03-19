@@ -725,7 +725,7 @@ function renderDashboard() {
     + '#centerDashboard .mb4{margin-bottom:16px}'
     + '#centerDashboard .flex{display:flex}'
     + '#centerDashboard .items-c{align-items:center}'
-    + '#centerDashboard .just-b{justify-content:space-between}#centerDashboard *::-webkit-scrollbar{display:none}#centerDashboard *{scrollbar-width:none;-ms-overflow-style:none}'
+    + '#centerDashboard .just-b{justify-content:space-between}#centerDashboard *::-webkit-scrollbar{display:none}#centerDashboard *::-webkit-scrollbar,#centerPortal *::-webkit-scrollbar{display:none!important;width:0!important}#centerDashboard,#centerDashboard *,#centerPortal,#centerPortal *{scrollbar-width:none!important;-ms-overflow-style:none!important}'
     + '</style>' + html;
   }
 
