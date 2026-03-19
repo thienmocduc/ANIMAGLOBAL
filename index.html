@@ -9118,15 +9118,30 @@ function generateOtp(){return String(Math.floor(100000+Math.random()*900000));}
 function requestAdminOtp(){
 var id=document.getElementById('adminIdInput').value.trim().toUpperCase();
 var pwd=document.getElementById('adminPwdInput').value;
-if(!id){showAdminError(lang==='vi'?'Vui lòng nhập Admin ID':'Please enter Admin ID');return;}
-if(!pwd){showAdminError(lang==='vi'?'Vui lòng nhập mật khẩu':'Please enter password');return;}
+console.log('[Admin] Login attempt: ID='+id);
+if(!id){showAdminError(lang==='vi'?'Vui l\u00f2ng nh\u1eadp Admin ID':'Please enter Admin ID');return;}
+if(!pwd){showAdminError(lang==='vi'?'Vui l\u00f2ng nh\u1eadp m\u1eadt kh\u1ea9u':'Please enter password');return;}
 var account=null;
 for(var i=0;i<ADMIN_ACCOUNTS.length;i++){
+console.log('[Admin] Checking: '+ADMIN_ACCOUNTS[i].id+' vs '+id);
 if(ADMIN_ACCOUNTS[i].id===id && ADMIN_ACCOUNTS[i].pwd===pwd){account=ADMIN_ACCOUNTS[i];break;}
 }
 if(!account){
-showAdminError(lang==='vi'?'Sai Admin ID hoặc mật khẩu':'Invalid Admin ID or password');
+showAdminError(lang==='vi'?'Sai Admin ID ho\u1eb7c m\u1eadt kh\u1ea9u':'Invalid Admin ID or password');
+console.log('[Admin] FAILED - no matching account. Accounts:',ADMIN_ACCOUNTS.map(function(a){return a.id}));
 return;
+}
+console.log('[Admin] Account found:',account.name);
+/* Check if this is a trusted device (previously verified) */
+var trustedKey='anima_admin_trusted_'+id;
+var trusted=localStorage.getItem(trustedKey);
+if(trusted){
+  console.log('[Admin] Trusted device — skip OTP');
+  localStorage.setItem('anima_admin_user',JSON.stringify({name:account.name,role:account.role,id:id}));
+  localStorage.setItem('anima_saved_admin',JSON.stringify({id:id,pwd:btoa(pwd),ts:Date.now()}));
+  showAdminSuccess(lang==='vi'?'\u0110\u0103ng nh\u1EADp th\u00E0nh c\u00F4ng! Ch\u00E0o m\u1EEBng '+account.name:'Login successful! Welcome '+account.name);
+  setTimeout(function(){window._adKeepOverflow=true;closeAdminPortal();openAdminDashboard();showToast(lang==='vi'?'Ch\u00E0o m\u1EEBng Admin!':'Welcome Admin!','var(--g1)');},1000);
+  return;
 }
 var txt=document.getElementById('adminSendOtpText'),spin=document.getElementById('adminSendOtpSpinner');
 txt.style.opacity='0';spin.style.display='flex';
@@ -9196,9 +9211,10 @@ var id=document.getElementById('adminIdInput').value.trim().toUpperCase();
 var account=null;
 for(var i=0;i<ADMIN_ACCOUNTS.length;i++){if(ADMIN_ACCOUNTS[i].id===id){account=ADMIN_ACCOUNTS[i];break;}}
 localStorage.setItem('anima_admin_user',JSON.stringify({name:account?account.name:'Admin',role:account?account.role:'admin',id:id}));
-/* Save admin credentials */
+/* Save admin credentials + mark device as trusted */
 var pwd=document.getElementById('adminPwdInput').value;
 localStorage.setItem('anima_saved_admin',JSON.stringify({id:id,pwd:btoa(pwd),ts:Date.now()}));
+localStorage.setItem('anima_admin_trusted_'+id,Date.now().toString());
 showAdminSuccess(lang==='vi'?'\u0110\u0103ng nh\u1EADp th\u00E0nh c\u00F4ng! Ch\u00E0o m\u1EEBng '+(account?account.name:'Admin'):'Login successful! Welcome '+(account?account.name:'Admin'));
 setTimeout(function(){window._adKeepOverflow=true;closeAdminPortal();openAdminDashboard();showToast(lang==='vi'?'Chào mừng Admin! 🔒':'Welcome Admin! 🔒','var(--g1)');},1500);
 } else {
