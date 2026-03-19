@@ -9820,44 +9820,19 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&document.ge
 {id:'C008',name:'Anima Care Long Biên',city:'Hà Nội',addr:'234 Nguyễn Văn Cừ',type:'Franchise Lite',status:'maintenance',rooms:4,ktv:10,bookToday:0,rating:4.5,rev:'0tr'},
 ];
 var BOOKINGS = [
-{id:'BK-4821',name:'Nguyễn Thị Lan',phone:'0912 345 678',service:'Khai Vấn AI',center:'Thanh Liệt',time:'08:00',ktv:'Nguyễn Thị Mai',status:'confirmed',note:'Khí hư'},
-{id:'BK-4822',name:'Trần Văn Minh',phone:'0934 567 890',service:'Thảo Mộc Nhiệt',center:'Thanh Liệt',time:'09:00',ktv:'Lê Thu Hương',status:'pending',note:''},
-{id:'BK-4823',name:'Phạm Thu Hà',phone:'0945 678 901',service:'Bồn Ngâm',center:'Cầu Giấy',time:'10:00',ktv:'Auto',status:'pending',note:''},
-{id:'BK-4824',name:'Lê Hoàng Nam',phone:'0956 789 012',service:'Liệu Trình Đầy Đủ',center:'Đống Đa',time:'09:30',ktv:'Trần Văn Hùng',status:'confirmed',note:'Huyết ứ'},
-{id:'BK-4825',name:'Hoàng Mỹ Linh',phone:'0967 890 123',service:'Khai Vấn AI',center:'Quận 1',time:'10:30',ktv:'Nguyễn Minh Tuấn',status:'completed',note:''},
-{id:'BK-4826',name:'Vũ Thanh Tùng',phone:'0978 901 234',service:'Thảo Mộc Nhiệt',center:'Ba Đình',time:'11:00',ktv:'Phạm Thị Ngọc',status:'confirmed',note:''},
-{id:'BK-4827',name:'Đặng Thị Yến',phone:'0989 012 345',service:'Phòng Thiền',center:'Quận 3',time:'14:00',ktv:'Auto',status:'pending',note:''},
+/* Data th\u1EF1c s\u1EBD \u0111\u01B0\u1EE3c t\u1EA3i t\u1EEB AnimaSync realtime */
 ];
 var MEMBERS = [
-{id:'MB-1001',name:'Nguyễn Thị Lan',phone:'0912 345 678',constitution:'Khí Hư',plan:'Membership 12T',center:'Thanh Liệt',lastVisit:'15/03/2026',sessions:28,ltv:'8.4 tr',status:'active'},
-{id:'MB-1002',name:'Trần Văn Minh',phone:'0934 567 890',constitution:'Huyết Ứ',plan:'Thông thường',center:'Cầu Giấy',lastVisit:'12/03/2026',sessions:14,ltv:'3.2 tr',status:'active'},
-{id:'MB-1003',name:'Phạm Thu Hà',phone:'0945 678 901',constitution:'Âm Hư',plan:'Membership 3T',center:'Quận 1',lastVisit:'10/03/2026',sessions:9,ltv:'5.1 tr',status:'active'},
-{id:'MB-1004',name:'Lê Hoàng Nam',phone:'0956 789 012',constitution:'Dương Hư',plan:'Thông thường',center:'Đống Đa',lastVisit:'08/03/2026',sessions:6,ltv:'1.9 tr',status:'active'},
-{id:'MB-1005',name:'Hoàng Mỹ Linh',phone:'0967 890 123',constitution:'Khí Hư',plan:'Membership 12T',center:'Ba Đình',lastVisit:'16/03/2026',sessions:41,ltv:'15.7 tr',status:'active'},
-{id:'MB-1006',name:'Vũ Thanh Tùng',phone:'0978 901 234',constitution:'Chưa xác định',plan:'Thông thường',center:'Thanh Liệt',lastVisit:'05/03/2026',sessions:2,ltv:'0.6 tr',status:'trial'},
+/* Data th\u1EF1c t\u1EEB \u0111\u0103ng k\u00FD user + CRM KTV */
 ];
 var ORDERS = [
-{id:'ORD-2847',name:'Nguyễn Thị Hoa',phone:'0912 111 222',sku:'A119-30 · 3 hộp',amount:'5.604.000đ',method:'COD',channel:'Website',status:'pending',city:'Hà Nội',date:'17/03/2026'},
-{id:'ORD-2846',name:'Trần Minh Quang',phone:'0934 333 444',sku:'A119-10 · 1 hộp',amount:'1.868.000đ',method:'Chuyển khoản',channel:'Zalo',status:'shipping',city:'TP.HCM',date:'17/03/2026'},
-{id:'ORD-2845',name:'Lê Thu Hà',phone:'0945 555 666',sku:'A119-120 · 12 hộp',amount:'22.416.000đ',method:'COD',channel:'Hotline',status:'pending',city:'Đà Nẵng',date:'16/03/2026'},
-{id:'ORD-2844',name:'Phạm Văn Bình',phone:'0956 777 888',sku:'A119-30 · 3 hộp',amount:'5.604.000đ',method:'Chuyển khoản',channel:'Website',status:'completed',city:'Hà Nội',date:'16/03/2026'},
-{id:'ORD-2843',name:'Hoàng Thị Nga',phone:'0967 999 000',sku:'A119-10 · 1 hộp',amount:'1.868.000đ',method:'COD',channel:'Tại cơ sở',status:'completed',city:'TP.HCM',date:'15/03/2026'},
-{id:'ORD-2842',name:'Vũ Đình Khải',phone:'0978 111 333',sku:'A119-120 · 12 hộp',amount:'22.416.000đ',method:'Chuyển khoản',channel:'Zalo',status:'processing',city:'Hà Nội',date:'15/03/2026'},
+/* Data th\u1EF1c t\u1EEB \u0111\u01A1n h\u00E0ng website + AnimaSync */
 ];
 var REVENUE_TXN = [
-{id:'TX-5521',type:'Dịch Vụ',desc:'Liệu Trình Đầy Đủ · BK-4821',amount:'+850.000đ',center:'Thanh Liệt',time:'08:45',method:'Tiền mặt'},
-{id:'TX-5520',type:'Sản Phẩm',desc:'A119-30 · ORD-2847',amount:'+5.604.000đ',center:'Online',time:'08:12',method:'COD'},
-{id:'TX-5519',type:'Membership',desc:'Gia hạn 12T · MB-1001',amount:'+12.000.000đ',center:'Thanh Liệt',time:'Yesterday',method:'CK'},
-{id:'TX-5518',type:'Franchise',desc:'Phí brand T3 · C005',amount:'+8.400.000đ',center:'Quận 1',time:'15/03',method:'CK'},
-{id:'TX-5517',type:'Sản Phẩm',desc:'A119-120 · ORD-2845',amount:'+22.416.000đ',center:'Online',time:'16/03',method:'COD'},
+/* Data th\u1EF1c t\u1EEB giao d\u1ECBch */
 ];
 var STAFF_DATA = [
-{id:'KTV-001',name:'Nguyễn Thị Mai',center:'Thanh Liệt',level:'L3',specialty:'Toàn bộ',sessions_today:6,rating:4.9,status:'active'},
-{id:'KTV-002',name:'Lê Thu Hương',center:'Thanh Liệt',level:'L2',specialty:'Thảo Mộc Nhiệt',sessions_today:5,rating:4.8,status:'active'},
-{id:'KTV-003',name:'Trần Văn Hùng',center:'Đống Đa',level:'L2',specialty:'Đả Thông Kinh Lạc',sessions_today:4,rating:4.7,status:'active'},
-{id:'KTV-004',name:'Phạm Thị Ngọc',center:'Ba Đình',level:'L1',specialty:'Thảo Mộc Nhiệt',sessions_today:3,rating:4.6,status:'active'},
-{id:'KTV-005',name:'Nguyễn Minh Tuấn',center:'Quận 1',level:'L3',specialty:'Toàn bộ',sessions_today:7,rating:4.9,status:'active'},
-{id:'KTV-006',name:'Hoàng Thị Bích',center:'Quận 3',level:'L1',specialty:'Bồn Ngâm',sessions_today:2,rating:4.5,status:'training'},
+/* Data th\u1EF1c t\u1EEB KTV \u0111\u0103ng k\u00FD */
 ];
 var INVENTORY_DATA = [
 {sku:'A119-STD',name:'Anima 119 Standard',type:'10 gói/hộp',stock:420,min:100,price:'1.868.000đ',out_month:280,status:'ok'},
@@ -9868,18 +9843,10 @@ var INVENTORY_DATA = [
 {sku:'A119-B2B',name:'Anima 119 B2B Clinic',type:'30 gói/thùng',stock:516,min:100,price:'Theo HĐ',out_month:420,status:'ok'},
 ];
 var FRANCHISE_DATA = [
-{id:'FR-001',name:'Nguyễn Thị Thanh',center:'Quận 1, HCM',type:'Franchise Full',signed:'01/09/2025',fee:'500tr',royalty:'5%',revenue:'38tr',status:'active'},
-{id:'FR-002',name:'Trần Minh Phúc',center:'Ba Đình, HN',type:'Franchise Full',signed:'15/10/2025',fee:'500tr',royalty:'5%',revenue:'31tr',status:'active'},
-{id:'FR-003',name:'Lê Thanh Bình',center:'Đống Đa, HN',type:'Franchise Lite',signed:'01/11/2025',fee:'250tr',royalty:'4%',revenue:'28tr',status:'active'},
-{id:'FR-004',name:'Hoàng Văn Dũng',center:'Quận 7, HCM',type:'Franchise Full',signed:'—',fee:'500tr',royalty:'5%',revenue:'—',status:'negotiating'},
-{id:'FR-005',name:'Phạm Thu Trang',center:'Hai Bà Trưng, HN',type:'Franchise Lite',signed:'—',fee:'250tr',royalty:'4%',revenue:'—',status:'negotiating'},
+/* Data th\u1EF1c t\u1EEB nh\u01B0\u1EE3ng quy\u1EC1n */
 ];
 var AI_DATA = [
-{id:'AI-3041',name:'Nguyễn Văn Long',time:'08:12',center:'Thanh Liệt',result:'Khí Hư',accuracy:'97.2%',duration:'4.5 ph',protocol:'Bổ khí · A119 + Thảo Mộc Nhiệt'},
-{id:'AI-3042',name:'Trần Thị Mai',time:'08:45',center:'Quận 1',result:'Âm Hư',accuracy:'96.8%',duration:'5.1 ph',protocol:'Dưỡng âm · A119 + Bồn Ngâm'},
-{id:'AI-3043',name:'Lê Văn Hùng',time:'09:15',center:'Đống Đa',result:'Huyết Ứ',accuracy:'95.4%',duration:'4.8 ph',protocol:'Hoạt huyết · A119 + Đả Thông'},
-{id:'AI-3044',name:'Phạm Thị Hoa',time:'10:00',center:'Ba Đình',result:'Dương Hư',accuracy:'96.1%',duration:'5.3 ph',protocol:'Ôn dương · A119 Standard'},
-{id:'AI-3045',name:'Vũ Minh Tú',time:'10:30',center:'Thanh Liệt',result:'Khí Hư',accuracy:'97.5%',duration:'4.2 ph',protocol:'Bổ khí · A119 Premium'},
+/* Data th\u1EF1c t\u1EEB AI Engine */
 ];
 var CMS_DATA = [
 {id:'P001',title:'Lên Men 3 Tầng — Cách Mạng Sinh Khả Dụng',cat:'Công Nghệ',author:'Anima Research',views:847,status:'published',date:'15/03/2026'},
@@ -9889,10 +9856,7 @@ var CMS_DATA = [
 {id:'P005',title:'Nhượng Quyền Q2/2026 — Cơ Hội Cuối Gói Pilot',cat:'Kinh Doanh',author:'Admin',views:0,status:'draft',date:'—'},
 ];
 var ACAD_DATA = [
-{id:'ST-001',name:'Nguyễn Thị Lan',level:'L2',course:'KTV Đông Dược Lên Men',start:'05/03/2026',end:'30/04/2026',progress:55,status:'active'},
-{id:'ST-002',name:'Trần Văn Sơn',level:'L1',course:'KTV Thảo Mộc Nhiệt',start:'10/03/2026',end:'07/04/2026',progress:40,status:'active'},
-{id:'ST-003',name:'Lê Minh Châu',level:'L3',course:'Trưởng Kỹ Thuật & Quản Lý',start:'01/02/2026',end:'25/04/2026',progress:72,status:'active'},
-{id:'ST-004',name:'Hoàng Thị Bích',level:'L1',course:'KTV Thảo Mộc Nhiệt',start:'01/03/2026',end:'29/03/2026',progress:88,status:'active'},
+/* Data th\u1EF1c t\u1EEB Academy */
 ];
 function go(page, el){
 document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on')});
@@ -10232,12 +10196,7 @@ drawBarChart('mem-chart','mem-lbls',[89,124,167,203,245,312],['T10','T11','T12',
 var af=document.getElementById('act-feed');
 if(af){
 /* Merge static + realtime activities */
-var staticActs=[
-{c:'var(--g1)',t:'<strong>Nguy\u1EC5n Th\u1ECB Lan</strong> ho\u00E0n th\u00E0nh phi\u00EAn Khai V\u1EA5n AI',ts:'2 ph\u00FAt tr\u01B0\u1EDBc',_ts:Date.now()-120000},
-{c:'var(--amber)',t:'<strong>\u0110\u01A1n ORD-2847</strong> \u0111\u1EB7t 3 h\u1ED9p Anima 119 \u00B7 5.604.000\u0111',ts:'5 ph\u00FAt tr\u01B0\u1EDBc',_ts:Date.now()-300000},
-{c:'var(--pu2)',t:'<strong>KTV Nguy\u1EC5n Th\u1ECB Mai</strong> check-in c\u01A1 s\u1EDF',ts:'12 ph\u00FAt tr\u01B0\u1EDBc',_ts:Date.now()-720000},
-{c:'var(--sky)',t:'<strong>AI Engine</strong> x\u1EED l\u00FD 64 khai v\u1EA5n \u00B7 96.4%',ts:'30 ph\u00FAt tr\u01B0\u1EDBc',_ts:Date.now()-1800000}
-];
+var staticActs=[];
 var realtimeActs=(window.AnimaSync?AnimaSync.get('activities',[]):[]).slice(-20).reverse();
 var allActs=realtimeActs.map(function(a){
   var ago=a.ago||0; var ts=a._ts||Date.now()-ago*60000;

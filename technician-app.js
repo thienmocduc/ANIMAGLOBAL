@@ -9,13 +9,9 @@
 (function(){
 'use strict';
 
-// ── Demo Technician Accounts ──
+// ── KTV Accounts (only from registration) ──
 var TECH_ACCOUNTS = [
-  { id:'KTV001', pwd:'Ktv001@2026', name:'Tr\u1EA7n V\u0103n Long', phone:'0911222333', email:'long@animacare.vn', centerId:'CTR001', centerName:'Anima Care H\u00E0 N\u1ED9i HQ', specialty:'Ch\u00E2m c\u1EE9u, Th\u1EA3o m\u1ED9c nhi\u1EC7t', rating:4.8, sessions:342, role:'technician', status:'online', lat:21.0045, lng:105.8412 },
-  { id:'KTV002', pwd:'Ktv002@2026', name:'Nguy\u1EC5n Th\u1ECB Mai', phone:'0922333444', email:'mai@animacare.vn', centerId:'CTR001', centerName:'Anima Care H\u00E0 N\u1ED9i HQ', specialty:'Spa & Grooming, X\u00F4ng h\u01A1i', rating:4.9, sessions:521, role:'technician', status:'online', lat:21.0078, lng:105.8356 },
-  { id:'KTV003', pwd:'Ktv003@2026', name:'L\u00EA Ho\u00E0ng Nam', phone:'0933444555', email:'nam@animacare.vn', centerId:'CTR002', centerName:'Anima Care H\u1ED3 Ch\u00ED Minh', specialty:'V\u1EADt l\u00FD tr\u1ECB li\u1EC7u', rating:4.7, sessions:198, role:'technician', status:'offline', lat:10.7769, lng:106.7009 },
-  { id:'KTV004', pwd:'Ktv004@2026', name:'Ph\u1EA1m Th\u1ECB H\u01B0\u01A1ng', phone:'0944555666', email:'huong@animacare.vn', centerId:'CTR002', centerName:'Anima Care H\u1ED3 Ch\u00ED Minh', specialty:'\u0110\u00F4ng y, Ti\u00EAm ph\u00F2ng', rating:4.6, sessions:156, role:'technician', status:'online', lat:10.7820, lng:106.6950 },
-  { id:'KTV005', pwd:'Ktv005@2026', name:'V\u00F5 Minh Tu\u1EA5n', phone:'0955666777', email:'tuan@animacare.vn', centerId:'CTR003', centerName:'Anima Care \u0110\u00E0 N\u1EB5ng', specialty:'T\u1EA9m so\u00E1t AI, Ch\u00E2m c\u1EE9u', rating:4.5, sessions:89, role:'technician', status:'busy', lat:16.0544, lng:108.2022 }
+  /* Data th\u1EF1c t\u1EEB KTV \u0111\u0103ng k\u00FD - kh\u00F4ng c\u00F3 data \u1EA3o */
 ];
 
 // Load registered techs from localStorage
