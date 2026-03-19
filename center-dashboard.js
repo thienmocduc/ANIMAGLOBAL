@@ -725,7 +725,7 @@ function renderDashboard() {
     + '#centerDashboard .mb4{margin-bottom:16px}'
     + '#centerDashboard .flex{display:flex}'
     + '#centerDashboard .items-c{align-items:center}'
-    + '#centerDashboard .just-b{justify-content:space-between}'
+    + '#centerDashboard .just-b{justify-content:space-between}#centerDashboard *::-webkit-scrollbar{display:none}#centerDashboard *{scrollbar-width:none;-ms-overflow-style:none}'
     + '</style>' + html;
   }
 

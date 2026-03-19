@@ -752,7 +752,7 @@ function renderTechDash() {
   html += '</div>';
 
   // Mobile-first responsive
-  html += '<style>#techDashboard{font-family:"Roboto",sans-serif}#techDashboard *{box-sizing:border-box;margin:0;padding:0}#techDashboard select{-webkit-appearance:none}</style>';
+  html += '<style>#techDashboard{font-family:"Roboto",sans-serif}#techDashboard *{box-sizing:border-box;margin:0;padding:0}#techDashboard select{-webkit-appearance:none}#techDashboard *::-webkit-scrollbar{display:none}#techDashboard *{scrollbar-width:none;-ms-overflow-style:none}</style>';
 
   d.innerHTML = html;
 }
