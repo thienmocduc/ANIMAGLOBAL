@@ -4144,9 +4144,9 @@ document.body.style.overflow='';
   </div>
 </div>
 
-<div id="orderModal" style="position:fixed;inset:0;z-index:900;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s">
+<div id="orderModal" style="position:fixed;inset:0;z-index:900;display:flex;align-items:flex-start;justify-content:center;padding:20px;padding-top:5vh;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;overflow-y:auto">
   <div style="position:absolute;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px)" onclick="closeOrder()"></div>
-  <div id="orderBox" style="position:relative;width:100%;max-width:520px;background:var(--dark3);border:0.5px solid rgba(0,200,150,0.25);border-radius:24px;padding:36px 36px 32px;box-shadow:0 40px 100px rgba(0,0,0,.9)">
+  <div id="orderBox" style="position:relative;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;background:var(--dark3);border:0.5px solid rgba(0,200,150,0.25);border-radius:24px;padding:36px 36px 32px;box-shadow:0 40px 100px rgba(0,0,0,.9)">
 
     <button onclick="closeOrder()" style="position:absolute;top:16px;right:16px;background:rgba(0,200,150,0.08);border:0.5px solid rgba(0,200,150,0.2);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--g1);font-size:16px;font-family:var(--fb)">✕</button>
 
