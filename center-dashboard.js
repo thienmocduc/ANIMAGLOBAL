@@ -1584,19 +1584,9 @@ function setupSyncListeners() {
   });
 }
 
-// ── Add Center Login Button to Nav ──
+// ── Add Center Login Button to Nav (now in user dropdown menu) ──
 function addCenterButton() {
-  var navRight = document.querySelector('.nav-right');
-  if(!navRight) return;
-  if(document.getElementById('centerLoginBtn')) return;
-
-  var btn = document.createElement('button');
-  btn.id = 'centerLoginBtn';
-  btn.title = 'Center Manager Login';
-  btn.style.cssText = 'background:linear-gradient(135deg,#005A42,#00C896);border:none;width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:6px';
-  btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>';
-  btn.onclick = function() { window._openCenterPortal(); };
-  navRight.appendChild(btn);
+  // Portal access is now in user dropdown menu, no separate nav button needed
 }
 
 // ── Auto-restore session ──
