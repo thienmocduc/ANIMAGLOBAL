@@ -41,7 +41,7 @@ function injectTechPortal() {
   portal.id = 'techPortal';
   portal.innerHTML =
     '<div style="position:fixed;inset:0;z-index:9997;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto">' +
-    '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.2);border-radius:20px;padding:0;width:100%;max-width:440px;position:relative;overflow:hidden;max-height:90vh;overflow-y:auto">' +
+    '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.2);border-radius:20px;padding:0;width:100%;max-width:440px;position:relative;max-height:90vh;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none">' +
 
     // Header
     '<div style="text-align:center;padding:28px 32px 0">' +
@@ -287,11 +287,15 @@ function renderTechDash() {
   var allClients = sync ? sync.get('crm_clients', []).filter(function(c) { return c.ktvId === tUser.id; }) : [];
   var incompleteClients = allClients.filter(function(c) { return !c.dataComplete; });
 
+  // Calculate income data for badge
+  var ktvIncome = JSON.parse(localStorage.getItem('anima_ktv_income_' + tUser.id) || '{}');
+  var pendingWithdraw = (ktvIncome.pendingWithdrawals || []).filter(function(w){return w.status==='pending';}).length;
+
   var tabs = [
     { id:'t-queue', icon:'M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9', vi:'H\u00E0ng ch\u1EDD', en:'Queue', badge:pending.length },
     { id:'t-clients', icon:'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', vi:'Kh\u00E1ch h\u00E0ng', en:'Clients', badge:incompleteClients.length },
+    { id:'t-income', icon:'M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6', vi:'Thu nh\u1EADp', en:'Income', badge:pendingWithdraw },
     { id:'t-nearby', icon:'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z', vi:'Quanh \u0111\u00E2y', en:'Nearby' },
-    { id:'t-schedule', icon:'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', vi:'L\u1ECBch', en:'Schedule' },
     { id:'t-profile', icon:'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2', vi:'C\u00E1 nh\u00E2n', en:'Profile' }
   ];
 
@@ -705,6 +709,219 @@ function renderTechDash() {
   }
 
   // PROFILE PAGE
+  // ═══════════════════════════════════════════
+  // TAB: THU NHAP + RUT TIEN
+  // ═══════════════════════════════════════════
+  else if(tPage === 't-income') {
+    var incData = JSON.parse(localStorage.getItem('anima_ktv_income_' + tUser.id) || '{}');
+    if(!incData.totalEarned) incData.totalEarned = 0;
+    if(!incData.withdrawn) incData.withdrawn = 0;
+    if(!incData.pendingAmount) incData.pendingAmount = 0;
+    if(!incData.transactions) incData.transactions = [];
+    if(!incData.pendingWithdrawals) incData.pendingWithdrawals = [];
+    var balance = incData.totalEarned - incData.withdrawn - incData.pendingAmount;
+    if(balance < 0) balance = 0;
+
+    // Calculate income from completed bookings
+    var myCompleted = completed || [];
+    var monthlyMap = {};
+    var now = new Date();
+    var thisMonth = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+    var monthIncome = 0;
+    myCompleted.forEach(function(b) {
+      var d = (b.completedAt || b.date || '').substring(0,7) || thisMonth;
+      var amt = b.ktvPay || b.commission || 150000;
+      if(!monthlyMap[d]) monthlyMap[d] = 0;
+      monthlyMap[d] += amt;
+      if(d === thisMonth) monthIncome += amt;
+    });
+
+    // Auto-update total from sessions if not manually set
+    var autoTotal = 0;
+    myCompleted.forEach(function(b){ autoTotal += (b.ktvPay || b.commission || 150000); });
+    if(autoTotal > incData.totalEarned) { incData.totalEarned = autoTotal; balance = autoTotal - incData.withdrawn - incData.pendingAmount; if(balance<0) balance=0; }
+
+    var subTab = window._incomeSubTab || 'overview';
+
+    // Sub-tab navigation
+    html += '<div style="display:flex;gap:0;margin-bottom:16px;border-radius:10px;overflow:hidden;border:1px solid rgba(123,95,255,.12)">';
+    var subTabs = [{id:'overview',vi:'T\u1ED5ng quan',en:'Overview'},{id:'withdraw',vi:'R\u00FAt ti\u1EC1n',en:'Withdraw'},{id:'history',vi:'L\u1ECBch s\u1EED',en:'History'}];
+    subTabs.forEach(function(st){
+      var act = subTab === st.id;
+      html += '<button onclick="window._incomeSubTab=\'' + st.id + '\';window._tNav(\'t-income\')" style="flex:1;padding:10px;border:none;font-size:12px;font-weight:' + (act?'700':'400') + ';cursor:pointer;background:' + (act?'rgba(123,95,255,.15)':'transparent') + ';color:' + (act?'#9B82FF':'rgba(248,242,224,.42)') + '">' + t(st.vi,st.en) + '</button>';
+    });
+    html += '</div>';
+
+    // ── OVERVIEW ──
+    if(subTab === 'overview') {
+      // Balance card
+      html += '<div style="background:linear-gradient(135deg,#1A0F3C,#0D1B2A);border:1px solid rgba(123,95,255,.25);border-radius:16px;padding:24px;margin-bottom:16px;text-align:center">';
+      html += '<div style="font-size:11px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px">' + t('S\u1ED1 d\u01B0 kh\u1EA3 d\u1EE5ng','Available Balance') + '</div>';
+      html += '<div style="font-size:32px;font-weight:700;color:#00E5A8;font-family:\'Roboto Mono\',monospace">' + formatVND(balance) + '</div>';
+      html += '<button onclick="window._incomeSubTab=\'withdraw\';window._tNav(\'t-income\')" style="margin-top:14px;padding:10px 28px;border:none;border-radius:8px;background:linear-gradient(135deg,#5B3FDF,#7B5FFF);color:#fff;font-size:13px;font-weight:600;cursor:pointer">' + t('R\u00FAt ti\u1EC1n','Withdraw') + '</button>';
+      html += '</div>';
+
+      // KPI cards
+      html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">';
+      var kpis = [
+        {label:t('T\u1ED5ng thu nh\u1EADp','Total Earned'),val:formatVND(incData.totalEarned),color:'#00E5A8',icon:'M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6'},
+        {label:t('Th\u00E1ng n\u00E0y','This Month'),val:formatVND(monthIncome),color:'#4DA6FF',icon:'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'},
+        {label:t('\u0110\u00E3 r\u00FAt','Withdrawn'),val:formatVND(incData.withdrawn),color:'#F59E0B',icon:'M5 12h14M12 5l7 7-7 7'},
+        {label:t('Ch\u1EDD duy\u1EC7t','Pending'),val:formatVND(incData.pendingAmount),color:'#FF4D6D',icon:'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'}
+      ];
+      kpis.forEach(function(k){
+        html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.12);border-radius:12px;padding:14px">';
+        html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="' + k.color + '" stroke-width="2" stroke-linecap="round"><path d="' + k.icon + '"/></svg><span style="font-size:10px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:1px">' + k.label + '</span></div>';
+        html += '<div style="font-size:18px;font-weight:700;color:' + k.color + ';font-family:\'Roboto Mono\',monospace">' + k.val + '</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+
+      // Income per session breakdown
+      html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px;margin-bottom:16px">';
+      html += '<div style="font-size:13px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9B82FF" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>' + t('Thu nh\u1EADp theo phi\u00EAn','Income per Session') + '</div>';
+      // Last 5 completed sessions
+      var last5 = myCompleted.slice(-5).reverse();
+      if(last5.length === 0) {
+        html += '<div style="text-align:center;padding:20px;color:rgba(248,242,224,.3);font-size:12px">' + t('Ch\u01B0a c\u00F3 phi\u00EAn ho\u00E0n th\u00E0nh','No completed sessions') + '</div>';
+      } else {
+        last5.forEach(function(s){
+          var amt = s.ktvPay || s.commission || 150000;
+          html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(123,95,255,.06)">';
+          html += '<div><div style="font-size:13px;font-weight:500">' + (s.customerName || s.name || t('Kh\u00E1ch h\u00E0ng','Client')) + '</div>';
+          html += '<div style="font-size:10px;color:rgba(248,242,224,.35)">' + (s.service || s.type || 'Anima Care') + ' \u00B7 ' + (s.completedAt || s.date || '').substring(0,10) + '</div></div>';
+          html += '<div style="font-size:14px;font-weight:700;color:#00E5A8;font-family:\'Roboto Mono\',monospace">+' + formatVND(amt) + '</div>';
+          html += '</div>';
+        });
+      }
+      html += '</div>';
+
+      // Monthly chart (simple bar)
+      html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px">';
+      html += '<div style="font-size:13px;font-weight:600;margin-bottom:12px">' + t('Bi\u1EC3u \u0111\u1ED3 th\u00E1ng','Monthly Chart') + '</div>';
+      var months = [];
+      for(var mi=5; mi>=0; mi--) {
+        var md = new Date(now.getFullYear(), now.getMonth()-mi, 1);
+        var mk = md.getFullYear() + '-' + String(md.getMonth()+1).padStart(2,'0');
+        months.push({key:mk, label:String(md.getMonth()+1).padStart(2,'0')+'/'+md.getFullYear(), val:monthlyMap[mk]||0});
+      }
+      var maxVal = Math.max.apply(null, months.map(function(m){return m.val;})) || 1;
+      html += '<div style="display:flex;align-items:flex-end;gap:6px;height:100px">';
+      months.forEach(function(m){
+        var h = Math.max(4, (m.val/maxVal)*80);
+        var isCurrent = m.key === thisMonth;
+        html += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">';
+        html += '<div style="font-size:8px;color:rgba(248,242,224,.35);font-family:\'Roboto Mono\',monospace">' + (m.val > 0 ? formatShortVND(m.val) : '-') + '</div>';
+        html += '<div style="width:100%;height:' + h + 'px;border-radius:4px 4px 0 0;background:' + (isCurrent?'linear-gradient(180deg,#7B5FFF,#5B3FDF)':'rgba(123,95,255,.2)') + '"></div>';
+        html += '<div style="font-size:8px;color:rgba(248,242,224,.3)">' + m.label.substring(0,2) + '</div>';
+        html += '</div>';
+      });
+      html += '</div></div>';
+    }
+
+    // ── WITHDRAW ──
+    else if(subTab === 'withdraw') {
+      // Bank info
+      var bank = JSON.parse(localStorage.getItem('anima_ktv_bank_' + tUser.id) || '{}');
+
+      html += '<div style="background:linear-gradient(135deg,#1A0F3C,#0D1B2A);border:1px solid rgba(123,95,255,.25);border-radius:16px;padding:20px;margin-bottom:16px;text-align:center">';
+      html += '<div style="font-size:11px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px">' + t('S\u1ED1 d\u01B0 kh\u1EA3 r\u00FAt','Withdrawable') + '</div>';
+      html += '<div style="font-size:28px;font-weight:700;color:#00E5A8;font-family:\'Roboto Mono\',monospace">' + formatVND(balance) + '</div>';
+      html += '</div>';
+
+      // Bank account setup
+      html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px;margin-bottom:16px">';
+      html += '<div style="font-size:13px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9B82FF" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>' + t('T\u00E0i kho\u1EA3n ng\u00E2n h\u00E0ng','Bank Account') + '</div>';
+
+      var bankLbl = 'font-size:9px;color:rgba(248,242,224,.42);letter-spacing:1.5px;text-transform:uppercase;font-family:\'Roboto Mono\',monospace;display:block;margin-bottom:4px';
+      var bankInp = 'width:100%;background:#060C0F;border:1px solid rgba(123,95,255,.15);border-radius:8px;padding:10px 12px;color:#F8F2E0;font-size:13px;outline:none;box-sizing:border-box';
+
+      html += '<div style="margin-bottom:10px"><label style="' + bankLbl + '">' + t('Ng\u00E2n h\u00E0ng','Bank') + '</label>';
+      html += '<select id="ktvBankName" style="' + bankInp + ';cursor:pointer;-webkit-appearance:none">';
+      var banks = ['Vietcombank','Techcombank','BIDV','VietinBank','MB Bank','ACB','Sacombank','TPBank','VPBank','HDBank','Agribank','SHB','MSB','OCB','LienVietPostBank'];
+      html += '<option value="">' + t('Ch\u1ECDn ng\u00E2n h\u00E0ng','Select bank') + '</option>';
+      banks.forEach(function(b){ html += '<option value="' + b + '"' + (bank.bankName===b?' selected':'') + '>' + b + '</option>'; });
+      html += '</select></div>';
+
+      html += '<div style="margin-bottom:10px"><label style="' + bankLbl + '">' + t('S\u1ED1 t\u00E0i kho\u1EA3n','Account Number') + '</label>';
+      html += '<input id="ktvBankAcct" style="' + bankInp + '" placeholder="VD: 1234567890" value="' + (bank.accountNumber||'') + '"></div>';
+
+      html += '<div style="margin-bottom:10px"><label style="' + bankLbl + '">' + t('Ch\u1EE7 t\u00E0i kho\u1EA3n','Account Holder') + '</label>';
+      html += '<input id="ktvBankHolder" style="' + bankInp + '" placeholder="' + t('T\u00EAn \u0111\u00FAng tr\u00EAn th\u1EBB','Name on card') + '" value="' + (bank.holderName||'') + '"></div>';
+
+      html += '<button onclick="window._ktvSaveBank()" style="width:100%;padding:10px;border:none;border-radius:8px;background:rgba(123,95,255,.15);color:#9B82FF;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:4px">' + t('L\u01B0u t\u00E0i kho\u1EA3n','Save Account') + '</button>';
+      html += '</div>';
+
+      // Withdrawal form
+      html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px;margin-bottom:16px">';
+      html += '<div style="font-size:13px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00E5A8" stroke-width="2" stroke-linecap="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>' + t('Y\u00EAu c\u1EA7u r\u00FAt ti\u1EC1n','Withdrawal Request') + '</div>';
+
+      html += '<div style="margin-bottom:12px"><label style="' + bankLbl + '">' + t('S\u1ED1 ti\u1EC1n (VN\u0110)','Amount (VND)') + '</label>';
+      html += '<input id="ktvWithdrawAmt" type="number" style="' + bankInp + ';font-size:18px;font-weight:700;font-family:\'Roboto Mono\',monospace" placeholder="0" min="50000" max="' + balance + '"></div>';
+
+      // Quick amount buttons
+      html += '<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">';
+      [100000,200000,500000,1000000].forEach(function(amt){
+        if(amt <= balance || balance === 0) {
+          html += '<button onclick="document.getElementById(\'ktvWithdrawAmt\').value=' + amt + '" style="padding:6px 12px;border:1px solid rgba(123,95,255,.15);border-radius:6px;background:transparent;color:#9B82FF;font-size:11px;cursor:pointer;font-family:\'Roboto Mono\',monospace">' + formatShortVND(amt) + '</button>';
+        }
+      });
+      html += '<button onclick="document.getElementById(\'ktvWithdrawAmt\').value=' + balance + '" style="padding:6px 12px;border:1px solid rgba(0,229,168,.15);border-radius:6px;background:transparent;color:#00E5A8;font-size:11px;cursor:pointer">' + t('T\u1EA5t c\u1EA3','All') + '</button>';
+      html += '</div>';
+
+      html += '<div style="margin-bottom:14px"><label style="' + bankLbl + '">' + t('Ghi ch\u00FA','Note') + '</label>';
+      html += '<input id="ktvWithdrawNote" style="' + bankInp + '" placeholder="' + t('Tu\u1EF3 ch\u1ECDn','Optional') + '"></div>';
+
+      html += '<button onclick="window._ktvRequestWithdraw()" style="width:100%;padding:12px;border:none;border-radius:8px;background:linear-gradient(135deg,#00C896,#00E5A8);color:#060C0F;font-size:14px;font-weight:700;cursor:pointer">' + t('G\u1EEDi y\u00EAu c\u1EA7u r\u00FAt ti\u1EC1n','Submit Withdrawal') + '</button>';
+
+      html += '<div style="margin-top:10px;font-size:10px;color:rgba(248,242,224,.3);text-align:center;line-height:1.6">' + t('T\u1ED1i thi\u1EC3u 50,000\u0111. X\u1EED l\u00FD trong 1-3 ng\u00E0y l\u00E0m vi\u1EC7c.','Min 50,000d. Processed in 1-3 business days.') + '</div>';
+      html += '</div>';
+
+      // Pending withdrawals
+      var pendingW = incData.pendingWithdrawals.filter(function(w){return w.status==='pending';});
+      if(pendingW.length > 0) {
+        html += '<div style="background:#0A1218;border:1px solid rgba(255,77,109,.12);border-radius:14px;padding:16px">';
+        html += '<div style="font-size:13px;font-weight:600;margin-bottom:10px;color:#F59E0B">' + t('\u0110ang ch\u1EDD duy\u1EC7t','Pending Approval') + ' (' + pendingW.length + ')</div>';
+        pendingW.forEach(function(w){
+          html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(123,95,255,.06)">';
+          html += '<div><div style="font-size:13px;font-weight:600;color:#F59E0B;font-family:\'Roboto Mono\',monospace">' + formatVND(w.amount) + '</div>';
+          html += '<div style="font-size:10px;color:rgba(248,242,224,.3)">' + (w.date||'').substring(0,10) + ' \u00B7 ' + (w.bankName||'') + '</div></div>';
+          html += '<span style="font-size:9px;padding:3px 8px;border-radius:4px;background:rgba(245,158,11,.1);color:#F59E0B;border:1px solid rgba(245,158,11,.15)">' + t('Ch\u1EDD','Pending') + '</span>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+    }
+
+    // ── HISTORY ──
+    else if(subTab === 'history') {
+      var allTx = (incData.transactions || []).concat(incData.pendingWithdrawals || []);
+      allTx.sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
+
+      html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px">';
+      html += '<div style="font-size:13px;font-weight:600;margin-bottom:12px">' + t('L\u1ECBch s\u1EED giao d\u1ECBch','Transaction History') + '</div>';
+
+      if(allTx.length === 0) {
+        html += '<div style="text-align:center;padding:30px;color:rgba(248,242,224,.3);font-size:12px">' + t('Ch\u01B0a c\u00F3 giao d\u1ECBch','No transactions yet') + '</div>';
+      } else {
+        allTx.forEach(function(tx){
+          var isWithdraw = tx.type === 'withdraw';
+          var statusColor = tx.status === 'completed' ? '#00E5A8' : tx.status === 'pending' ? '#F59E0B' : '#FF4D6D';
+          var statusText = tx.status === 'completed' ? t('Th\u00E0nh c\u00F4ng','Done') : tx.status === 'pending' ? t('Ch\u1EDD','Pending') : t('T\u1EEB ch\u1ED1i','Rejected');
+          html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(123,95,255,.06)">';
+          html += '<div style="display:flex;align-items:center;gap:10px">';
+          html += '<div style="width:32px;height:32px;border-radius:8px;background:' + (isWithdraw?'rgba(255,77,109,.08)':'rgba(0,229,168,.08)') + ';display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="' + (isWithdraw?'#FF4D6D':'#00E5A8') + '" stroke-width="2" stroke-linecap="round"><path d="' + (isWithdraw?'M12 19V5M5 12l7-7 7 7':'M12 5v14M19 12l-7 7-7-7') + '"/></svg></div>';
+          html += '<div><div style="font-size:13px;font-weight:500">' + (isWithdraw ? t('R\u00FAt ti\u1EC1n','Withdrawal') : (tx.description || t('Thu nh\u1EADp phi\u00EAn','Session Income'))) + '</div>';
+          html += '<div style="font-size:10px;color:rgba(248,242,224,.3)">' + (tx.date||'').substring(0,10) + (tx.bankName ? ' \u00B7 ' + tx.bankName : '') + '</div></div></div>';
+          html += '<div style="text-align:right"><div style="font-size:14px;font-weight:700;font-family:\'Roboto Mono\',monospace;color:' + (isWithdraw?'#FF4D6D':'#00E5A8') + '">' + (isWithdraw?'-':'+') + formatVND(tx.amount) + '</div>';
+          html += '<div style="font-size:9px;color:' + statusColor + '">' + statusText + '</div></div>';
+          html += '</div>';
+        });
+      }
+      html += '</div>';
+    }
+  }
+
   else if(tPage === 't-profile') {
     html += '<div style="text-align:center;margin-bottom:20px">';
     html += '<div style="width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#5B3FDF,#7B5FFF);display:inline-flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#fff;margin-bottom:10px">' + initials + '</div>';
@@ -1130,6 +1347,123 @@ function addTechButton() {
   if(adminBtn) navRight.insertBefore(btn, adminBtn);
   else navRight.appendChild(btn);
 }
+
+// ═══════════════════════════════════════════
+// INCOME HELPERS
+// ═══════════════════════════════════════════
+function formatVND(n) {
+  if(!n || n === 0) return '0\u0111';
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '\u0111';
+}
+function formatShortVND(n) {
+  if(n >= 1000000) return (n/1000000) + 'tr';
+  if(n >= 1000) return (n/1000) + 'k';
+  return n + '\u0111';
+}
+
+window._ktvSaveBank = function() {
+  if(!tUser) return;
+  var bankName = document.getElementById('ktvBankName').value;
+  var accountNumber = document.getElementById('ktvBankAcct').value.trim();
+  var holderName = document.getElementById('ktvBankHolder').value.trim();
+  if(!bankName || !accountNumber || !holderName) {
+    if(typeof showToast === 'function') showToast(t('Vui long dien day du thong tin ngan hang','Please fill in all bank details'), '#FF7070');
+    return;
+  }
+  var bankData = { bankName:bankName, accountNumber:accountNumber, holderName:holderName, updatedAt:new Date().toISOString() };
+  localStorage.setItem('anima_ktv_bank_' + tUser.id, JSON.stringify(bankData));
+  if(typeof showToast === 'function') showToast(t('Da luu tai khoan ngan hang!','Bank account saved!'), '#00C896');
+};
+
+window._ktvRequestWithdraw = function() {
+  if(!tUser) return;
+  var amtEl = document.getElementById('ktvWithdrawAmt');
+  var noteEl = document.getElementById('ktvWithdrawNote');
+  var amount = parseInt(amtEl ? amtEl.value : 0);
+  var note = noteEl ? noteEl.value.trim() : '';
+
+  // Validate bank
+  var bank = JSON.parse(localStorage.getItem('anima_ktv_bank_' + tUser.id) || '{}');
+  if(!bank.bankName || !bank.accountNumber) {
+    if(typeof showToast === 'function') showToast(t('Vui long nhap tai khoan ngan hang truoc','Please add bank account first'), '#FF7070');
+    return;
+  }
+  // Validate amount
+  if(!amount || amount < 50000) {
+    if(typeof showToast === 'function') showToast(t('So tien toi thieu la 50,000d','Minimum withdrawal is 50,000d'), '#FF7070');
+    return;
+  }
+  var incData = JSON.parse(localStorage.getItem('anima_ktv_income_' + tUser.id) || '{}');
+  if(!incData.totalEarned) incData.totalEarned = 0;
+  if(!incData.withdrawn) incData.withdrawn = 0;
+  if(!incData.pendingAmount) incData.pendingAmount = 0;
+  if(!incData.pendingWithdrawals) incData.pendingWithdrawals = [];
+  if(!incData.transactions) incData.transactions = [];
+
+  var balance = incData.totalEarned - incData.withdrawn - incData.pendingAmount;
+  if(amount > balance) {
+    if(typeof showToast === 'function') showToast(t('So du khong du!','Insufficient balance!'), '#FF7070');
+    return;
+  }
+
+  var withdrawal = {
+    id: 'WD-' + Date.now().toString(36).toUpperCase(),
+    type: 'withdraw',
+    amount: amount,
+    note: note,
+    bankName: bank.bankName,
+    accountNumber: bank.accountNumber,
+    holderName: bank.holderName,
+    ktvId: tUser.id,
+    ktvName: tUser.name,
+    status: 'pending',
+    date: new Date().toISOString()
+  };
+
+  incData.pendingAmount += amount;
+  incData.pendingWithdrawals.push(withdrawal);
+  localStorage.setItem('anima_ktv_income_' + tUser.id, JSON.stringify(incData));
+
+  // Sync to admin
+  if(window.AnimaSync) {
+    AnimaSync.push('ktv_withdrawals', withdrawal);
+    AnimaSync.push('activities', {
+      type: 'ktv_withdraw',
+      vi: tUser.name + ' yeu cau rut ' + formatVND(amount),
+      en: tUser.name + ' requested withdrawal ' + formatVND(amount),
+      ktvId: tUser.id,
+      amount: amount,
+      ago: 0
+    });
+  }
+
+  if(typeof showToast === 'function') showToast(t('Da gui yeu cau rut tien! Xu ly trong 1-3 ngay.','Withdrawal submitted! Processing in 1-3 days.'), '#00C896');
+  window._incomeSubTab = 'overview';
+  renderTechDash();
+};
+
+// Auto-record income when KTV completes a session
+var _origComplete = window._tComplete;
+window._tComplete = function(id) {
+  if(_origComplete) _origComplete(id);
+  // Add income record
+  if(tUser) {
+    var incData = JSON.parse(localStorage.getItem('anima_ktv_income_' + tUser.id) || '{}');
+    if(!incData.totalEarned) incData.totalEarned = 0;
+    if(!incData.transactions) incData.transactions = [];
+    var sessionPay = 150000; // default per session
+    incData.totalEarned += sessionPay;
+    incData.transactions.push({
+      id: 'TX-' + Date.now().toString(36).toUpperCase(),
+      type: 'income',
+      amount: sessionPay,
+      description: t('Phien dieu tri ' + id, 'Session ' + id),
+      status: 'completed',
+      date: new Date().toISOString()
+    });
+    localStorage.setItem('anima_ktv_income_' + tUser.id, JSON.stringify(incData));
+  }
+};
 
 function checkTechSession() {
   try {

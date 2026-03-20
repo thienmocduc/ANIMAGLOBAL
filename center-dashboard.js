@@ -10,14 +10,27 @@
 
 // ── Center Accounts ──
 var CENTER_ACCOUNTS = [
-  { id:'CTR001', pwd:'Center001@', name:'Nguyễn Văn An', email:'doanhnhancaotuan@gmail.com', centerId:'CTR001', centerName:'Anima Care Hà Nội HQ', centerNameEn:'Anima Care Hanoi HQ', role:'center_manager' },
-  { id:'CTR002', pwd:'Center002@', name:'Trần Thị Bình', email:'doanhnhancaotuan@gmail.com', centerId:'CTR002', centerName:'Anima Care Hồ Chí Minh', centerNameEn:'Anima Care HCMC', role:'center_manager' },
-  { id:'CTR003', pwd:'Center003@', name:'Lê Hoàng Cường', email:'doanhnhancaotuan@gmail.com', centerId:'CTR003', centerName:'Anima Care Đà Nẵng', centerNameEn:'Anima Care Da Nang', role:'center_manager' },
-  { id:'CTR004', pwd:'Center004@', name:'Phạm Minh Dũng', email:'doanhnhancaotuan@gmail.com', centerId:'CTR004', centerName:'Anima Care Hải Phòng', centerNameEn:'Anima Care Hai Phong', role:'center_manager' },
-  { id:'CTR005', pwd:'Center005@', name:'Hoàng Thị E', email:'doanhnhancaotuan@gmail.com', centerId:'CTR005', centerName:'Anima Care Cần Thơ', centerNameEn:'Anima Care Can Tho', role:'center_manager' },
-  { id:'CTR006', pwd:'Center006@', name:'Võ Thanh F', email:'doanhnhancaotuan@gmail.com', centerId:'CTR006', centerName:'Anima Care Nha Trang', centerNameEn:'Anima Care Nha Trang', role:'center_manager' },
-  { id:'CTR007', pwd:'Center007@', name:'Đặng Văn G', email:'doanhnhancaotuan@gmail.com', centerId:'CTR007', centerName:'Anima Care Huế', centerNameEn:'Anima Care Hue', role:'center_manager' },
-  { id:'CTR008', pwd:'Center008@', name:'Bùi Thị H', email:'doanhnhancaotuan@gmail.com', centerId:'CTR008', centerName:'Anima Care Vũng Tàu', centerNameEn:'Anima Care Vung Tau', role:'center_manager' }
+  {
+    id:'CTR001',
+    pwd:'Anima@2026',
+    name:'Cao Tu\u00E2n',
+    phone:'0913156676',
+    email:'doanhnhancaotuan@gmail.com',
+    centerId:'CTR001',
+    centerName:'Anima Care Thanh Li\u1EC7t',
+    centerNameEn:'Anima Care Thanh Liet',
+    city:'H\u00E0 N\u1ED9i',
+    address:'286 Nguy\u1EC5n Xi\u1EC3n, Thanh Li\u1EC7t',
+    type:'Full',
+    capacity:30,
+    role:'center_manager',
+    status:'active',
+    kycStatus:'verified',
+    cccd:'***verified***',
+    bankName:'Vietcombank',
+    bankHolder:'CAO TUAN',
+    createdAt:'2026-03-01T00:00:00.000Z'
+  }
 ];
 
 var cLang = 'vi';
@@ -47,7 +60,7 @@ function injectCenterPortal() {
   portal.id = 'centerPortal';
   portal.innerHTML =
     '<div style="position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto">' +
-    '<div style="background:#0A1218;border:1px solid rgba(0,200,150,.15);border-radius:20px;padding:0;width:100%;max-width:440px;position:relative;overflow:hidden">' +
+    '<div style="background:#0A1218;border:1px solid rgba(0,200,150,.15);border-radius:20px;padding:0;width:100%;max-width:440px;position:relative;overflow-y:auto;max-height:90vh;scrollbar-width:none;-ms-overflow-style:none">' +
 
     // Header
     '<div style="text-align:center;padding:28px 32px 0">' +
@@ -67,8 +80,8 @@ function injectCenterPortal() {
 
     // ═══ LOGIN FORM ═══
     '<div id="cpLoginForm" style="padding:20px 32px 28px">' +
-    '<div style="margin-bottom:14px"><label style="' + lbl + '">CENTER ID</label>' +
-    '<input id="cpIdInput" style="' + inp + '" placeholder="VD: CTR001"></div>' +
+    '<div style="margin-bottom:14px"><label style="' + lbl + '">CENTER ID / EMAIL / S\u0110T</label>' +
+    '<input id="cpIdInput" style="' + inp + '" placeholder="CTR001 ho\u1EB7c email ho\u1EB7c s\u1ED1 \u0111i\u1EC7n tho\u1EA1i"></div>' +
     '<div style="margin-bottom:20px"><label style="' + lbl + '">M\u1EACT KH\u1EA8U</label>' +
     '<input id="cpPwdInput" type="password" style="' + inp + '" placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"></div>' +
     '<button onclick="window._centerLogin()" style="' + btn + ';background:linear-gradient(135deg,#005A42,#00C896);color:#000">\u0110\u0103ng Nh\u1EADp</button>' +
@@ -109,6 +122,66 @@ function injectCenterPortal() {
     // Row 5: Referral
     '<div style="margin-bottom:12px"><label style="' + lbl + '">\u0110\u01A0N V\u1ECA GI\u1EDAI THI\u1EC6U</label>' +
     '<input id="cpRegRef" style="' + inp + '" placeholder="T\u00EAn ng\u01B0\u1EDDi/\u0111\u01A1n v\u1ECB gi\u1EDBi thi\u1EC7u (n\u1EBFu c\u00F3)"></div>' +
+
+    // ═══ KYC SECTION ═══
+    '<div style="border:1px solid rgba(0,200,150,.15);border-radius:12px;padding:16px;margin-bottom:14px;background:rgba(0,200,150,.03)">' +
+    '<div style="font-size:12px;font-weight:700;color:#00C896;margin-bottom:10px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:1px">' +
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' +
+    'X\u00C1C MINH DANH T\u00CDNH (KYC)</div>' +
+    '<div style="font-size:11px;color:rgba(248,242,224,.4);margin-bottom:12px;line-height:1.5">' +
+    'Theo quy \u0111\u1ECBnh ph\u00E1p lu\u1EADt, ch\u1EE7 c\u01A1 s\u1EDF c\u1EA7n x\u00E1c minh CCCD v\u00E0 t\u00E0i kho\u1EA3n ng\u00E2n h\u00E0ng ch\u00EDnh ch\u1EE7. Th\u00F4ng tin b\u1EA3o m\u1EADt tuy\u1EC7t \u0111\u1ED1i.</div>' +
+
+    // CCCD Number + Full Name on CCCD
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">' +
+    '<div><label style="' + lbl + '">S\u1ED0 CCCD / CMND *</label>' +
+    '<input id="cpRegCccd" style="' + inp + '" placeholder="012345678901" maxlength="12"></div>' +
+    '<div><label style="' + lbl + '">H\u1ECC T\u00CAN TR\u00CAN CCCD *</label>' +
+    '<input id="cpRegCccdName" style="' + inp + '" placeholder="Tr\u00F9ng v\u1EDBi CCCD"></div></div>' +
+
+    // DOB + Gender
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">' +
+    '<div><label style="' + lbl + '">NG\u00C0Y SINH *</label>' +
+    '<input id="cpRegDob" type="date" style="' + inp + '"></div>' +
+    '<div><label style="' + lbl + '">GI\u1EDAI T\u00CDNH</label>' +
+    '<select id="cpRegGender" style="' + inp + ';cursor:pointer;-webkit-appearance:none">' +
+    '<option value="male">Nam</option><option value="female">N\u1EEF</option><option value="other">Kh\u00E1c</option>' +
+    '</select></div></div>' +
+
+    // CCCD Photos
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">' +
+    '<div><label style="' + lbl + '">\u1EA2NH CCCD M\u1EB6T TR\u01AF\u1EDAC *</label>' +
+    '<label id="cpCccdFrontLabel" style="display:flex;align-items:center;justify-content:center;gap:6px;' + inp + ';cursor:pointer;text-align:center;color:rgba(248,242,224,.4);font-size:11px;padding:14px 10px;border-style:dashed">' +
+    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>' +
+    'Ch\u1ECDn \u1EA3nh...<input type="file" id="cpCccdFront" accept="image/*" style="display:none" onchange="window._kycFileLabel(this,\'cpCccdFrontLabel\')"></label></div>' +
+    '<div><label style="' + lbl + '">\u1EA2NH CCCD M\u1EB6T SAU *</label>' +
+    '<label id="cpCccdBackLabel" style="display:flex;align-items:center;justify-content:center;gap:6px;' + inp + ';cursor:pointer;text-align:center;color:rgba(248,242,224,.4);font-size:11px;padding:14px 10px;border-style:dashed">' +
+    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>' +
+    'Ch\u1ECDn \u1EA3nh...<input type="file" id="cpCccdBack" accept="image/*" style="display:none" onchange="window._kycFileLabel(this,\'cpCccdBackLabel\')"></label></div></div>' +
+
+    // Bank Info
+    '<div style="border-top:1px solid rgba(0,200,150,.1);padding-top:10px;margin-top:4px">' +
+    '<div style="font-size:11px;font-weight:600;color:#00C896;margin-bottom:8px;letter-spacing:1px">T\u00C0I KHO\u1EA2N NG\u00C2N H\u00C0NG CH\u00CDNH CH\u1EE6</div>' +
+
+    '<div style="margin-bottom:10px"><label style="' + lbl + '">NG\u00C2N H\u00C0NG *</label>' +
+    '<select id="cpRegBank" style="' + inp + ';cursor:pointer;-webkit-appearance:none">' +
+    '<option value="">Ch\u1ECDn ng\u00E2n h\u00E0ng...</option>' +
+    '<option>Vietcombank</option><option>Techcombank</option><option>BIDV</option>' +
+    '<option>VietinBank</option><option>MB Bank</option><option>ACB</option>' +
+    '<option>Sacombank</option><option>VPBank</option><option>TPBank</option>' +
+    '<option>HDBank</option><option>OCB</option><option>SHB</option>' +
+    '<option>MSB</option><option>Agribank</option><option>Kh\u00E1c</option>' +
+    '</select></div>' +
+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">' +
+    '<div><label style="' + lbl + '">S\u1ED0 T\u00C0I KHO\u1EA2N *</label>' +
+    '<input id="cpRegBankNo" style="' + inp + '" placeholder="S\u1ED1 t\u00E0i kho\u1EA3n"></div>' +
+    '<div><label style="' + lbl + '">CH\u1EE6 T\u00C0I KHO\u1EA2N *</label>' +
+    '<input id="cpRegBankName" style="' + inp + '" placeholder="Tr\u00F9ng v\u1EDBi CCCD"></div></div>' +
+
+    '<div style="font-size:10px;color:rgba(248,242,224,.3);line-height:1.5;font-style:italic">' +
+    '\u26A0 T\u00EAn ch\u1EE7 TK ng\u00E2n h\u00E0ng ph\u1EA3i tr\u00F9ng v\u1EDBi h\u1ECD t\u00EAn tr\u00EAn CCCD. ' +
+    'M\u1ED7i email/S\u0110T ch\u1EC9 \u0111\u01B0\u1EE3c \u0111\u0103ng k\u00FD 1 t\u00E0i kho\u1EA3n duy nh\u1EA5t.</div>' +
+    '</div></div>' +
 
     // Row 6: Type + Capacity
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">' +
@@ -219,33 +292,63 @@ window._centerRegister = function() {
   var pwd2 = document.getElementById('cpRegPwd2').value;
   var terms = document.getElementById('cpRegTerms').checked;
 
-  // Validate
+  // KYC fields
+  var cccd = (document.getElementById('cpRegCccd').value || '').trim().replace(/\s/g,'');
+  var cccdName = (document.getElementById('cpRegCccdName').value || '').trim();
+  var dob = (document.getElementById('cpRegDob').value || '').trim();
+  var gender = document.getElementById('cpRegGender').value;
+  var bankName = document.getElementById('cpRegBank').value;
+  var bankNo = (document.getElementById('cpRegBankNo').value || '').trim();
+  var bankHolder = (document.getElementById('cpRegBankName').value || '').trim();
+  var cccdFrontFile = document.getElementById('cpCccdFront').files[0];
+  var cccdBackFile = document.getElementById('cpCccdBack').files[0];
+
+  // Validate basic
   if(!name) { showCPError(t('Vui l\u00F2ng nh\u1EADp h\u1ECD t\u00EAn','Please enter your name')); return; }
   if(!phone) { showCPError(t('Vui l\u00F2ng nh\u1EADp s\u1ED1 \u0111i\u1EC7n tho\u1EA1i','Please enter phone number')); return; }
   if(!email || !email.includes('@')) { showCPError(t('Email kh\u00F4ng h\u1EE3p l\u1EC7','Invalid email address')); return; }
   if(!centerName) { showCPError(t('Vui l\u00F2ng nh\u1EADp t\u00EAn c\u01A1 s\u1EDF','Please enter center name')); return; }
   if(!city) { showCPError(t('Vui l\u00F2ng ch\u1ECDn th\u00E0nh ph\u1ED1','Please select city')); return; }
   if(!addr) { showCPError(t('Vui l\u00F2ng nh\u1EADp \u0111\u1ECBa ch\u1EC9','Please enter address')); return; }
+
+  // Validate KYC
+  if(!cccd || cccd.length < 9) { showCPError(t('Vui l\u00F2ng nh\u1EADp s\u1ED1 CCCD h\u1EE3p l\u1EC7 (9-12 s\u1ED1)','Please enter valid ID number (9-12 digits)')); return; }
+  if(!cccdName) { showCPError(t('Vui l\u00F2ng nh\u1EADp h\u1ECD t\u00EAn tr\u00EAn CCCD','Please enter name on ID card')); return; }
+  if(!dob) { showCPError(t('Vui l\u00F2ng ch\u1ECDn ng\u00E0y sinh','Please select date of birth')); return; }
+  if(!cccdFrontFile) { showCPError(t('Vui l\u00F2ng t\u1EA3i \u1EA3nh CCCD m\u1EB7t tr\u01B0\u1EDBc','Please upload front of ID card')); return; }
+  if(!cccdBackFile) { showCPError(t('Vui l\u00F2ng t\u1EA3i \u1EA3nh CCCD m\u1EB7t sau','Please upload back of ID card')); return; }
+  if(!bankName) { showCPError(t('Vui l\u00F2ng ch\u1ECDn ng\u00E2n h\u00E0ng','Please select bank')); return; }
+  if(!bankNo) { showCPError(t('Vui l\u00F2ng nh\u1EADp s\u1ED1 t\u00E0i kho\u1EA3n ng\u00E2n h\u00E0ng','Please enter bank account number')); return; }
+  if(!bankHolder) { showCPError(t('Vui l\u00F2ng nh\u1EADp t\u00EAn ch\u1EE7 t\u00E0i kho\u1EA3n','Please enter account holder name')); return; }
+
+  // Validate bank holder matches CCCD name
+  if(bankHolder.toUpperCase().replace(/\s+/g,' ') !== cccdName.toUpperCase().replace(/\s+/g,' ')) {
+    showCPError(t('T\u00EAn ch\u1EE7 TK ng\u00E2n h\u00E0ng ph\u1EA3i tr\u00F9ng v\u1EDBi h\u1ECD t\u00EAn tr\u00EAn CCCD','Bank account holder name must match ID card name'));
+    return;
+  }
+
   if(!pwd || pwd.length < 8) { showCPError(t('M\u1EADt kh\u1EA9u t\u1ED1i thi\u1EC3u 8 k\u00FD t\u1EF1','Password must be at least 8 characters')); return; }
   if(pwd !== pwd2) { showCPError(t('M\u1EADt kh\u1EA9u x\u00E1c nh\u1EADn kh\u00F4ng kh\u1EDBp','Passwords do not match')); return; }
   if(!terms) { showCPError(t('Vui l\u00F2ng \u0111\u1ED3ng \u00FD \u0111i\u1EC1u kho\u1EA3n','Please accept the terms')); return; }
 
-  // Check duplicate
+  // Check duplicate — 1 email/phone = 1 account only
   var existing = JSON.parse(localStorage.getItem('anima_center_accounts') || '[]');
-  var dupEmail = existing.some(function(a) { return a.email === email; });
-  var dupPhone = existing.some(function(a) { return a.phone === phone; });
-  if(dupEmail) { showCPError(t('Email \u0111\u00E3 \u0111\u01B0\u1EE3c s\u1EED d\u1EE5ng','Email already registered')); return; }
-  if(dupPhone) { showCPError(t('S\u1ED1 \u0111i\u1EC7n tho\u1EA1i \u0111\u00E3 \u0111\u01B0\u1EE3c s\u1EED d\u1EE5ng','Phone already registered')); return; }
+  var dupEmail = existing.some(function(a) { return a.email.toLowerCase() === email.toLowerCase(); });
+  var dupPhone = existing.some(function(a) { return a.phone.replace(/\s/g,'') === phone.replace(/\s/g,''); });
+  var dupCccd = existing.some(function(a) { return a.cccd === cccd; });
+  if(dupEmail) { showCPError(t('Email \u0111\u00E3 \u0111\u01B0\u1EE3c \u0111\u0103ng k\u00FD. M\u1ED7i email ch\u1EC9 \u0111\u01B0\u1EE3c 1 t\u00E0i kho\u1EA3n.','Email already registered. Only 1 account per email.')); return; }
+  if(dupPhone) { showCPError(t('S\u0110T \u0111\u00E3 \u0111\u01B0\u1EE3c \u0111\u0103ng k\u00FD. M\u1ED7i S\u0110T ch\u1EC9 \u0111\u01B0\u1EE3c 1 t\u00E0i kho\u1EA3n.','Phone already registered. Only 1 account per phone.')); return; }
+  if(dupCccd) { showCPError(t('S\u1ED1 CCCD \u0111\u00E3 \u0111\u01B0\u1EE3c s\u1EED d\u1EE5ng cho t\u00E0i kho\u1EA3n kh\u00E1c.','This ID number is already registered to another account.')); return; }
 
   // Generate Center ID
-  var maxNum = 8; // Start after hardcoded CTR008
+  var maxNum = 0;
   existing.forEach(function(a) {
     var n = parseInt(a.id.replace('CTR',''));
     if(n > maxNum) maxNum = n;
   });
   var newId = 'CTR' + String(maxNum + 1).padStart(3, '0');
 
-  // Create account
+  // Create account with KYC
   var newAccount = {
     id: newId,
     pwd: pwd,
@@ -261,57 +364,113 @@ window._centerRegister = function() {
     capacity: cap,
     referral: referral,
     role: 'center_manager',
-    status: 'pending',
+    status: 'pending_kyc',
+    // KYC Data
+    cccd: cccd,
+    cccdName: cccdName,
+    dob: dob,
+    gender: gender,
+    bankName: bankName,
+    bankNo: bankNo,
+    bankHolder: bankHolder,
+    kycStatus: 'pending',
+    kycSubmittedAt: new Date().toISOString(),
     createdAt: new Date().toISOString()
   };
 
-  // Save to localStorage
-  existing.push(newAccount);
-  localStorage.setItem('anima_center_accounts', JSON.stringify(existing));
+  // Save CCCD images as base64 (async, then save)
+  var saveAccount = function(frontImg, backImg) {
+    newAccount.cccdFrontImg = frontImg || '';
+    newAccount.cccdBackImg = backImg || '';
+    existing.push(newAccount);
+    localStorage.setItem('anima_center_accounts', JSON.stringify(existing));
+    CENTER_ACCOUNTS.push(newAccount);
 
-  // Also add to CENTER_ACCOUNTS array for immediate login
-  CENTER_ACCOUNTS.push(newAccount);
+    // Sync KYC to admin
+    if(window.AnimaSync) {
+      AnimaSync.push('kyc_requests', {
+        centerId: newId,
+        centerName: centerName,
+        name: cccdName,
+        cccd: cccd,
+        dob: dob,
+        bankName: bankName,
+        bankNo: bankNo,
+        bankHolder: bankHolder,
+        email: email,
+        phone: phone,
+        status: 'pending',
+        submittedAt: new Date().toISOString()
+      });
+      AnimaSync.push('activities', {
+        type: 'kyc_new',
+        vi: centerName + ' (' + name + ') g\u1EEDi y\u00EAu c\u1EA7u KYC x\u00E1c minh',
+        en: centerName + ' (' + name + ') submitted KYC verification',
+        ago: 0
+      });
+    }
+
+    finishRegistration(newId);
+  };
+
+  // Convert images and save
+  fileToBase64(cccdFrontFile, function(front) {
+    fileToBase64(cccdBackFile, function(back) {
+      saveAccount(front, back);
+    });
+  });
+  return; // async - finishRegistration will handle the rest
+}
+
+function finishRegistration(newId) {
+  var suc = document.getElementById('cpSuccess');
+  var existing = JSON.parse(localStorage.getItem('anima_center_accounts') || '[]');
+  var acc = existing.find(function(a) { return a.id === newId; });
+  if(!acc) return;
 
   // Add center to sync store
   if(window.AnimaSync) {
     var centers = AnimaSync.get('centers', []);
     centers.push({
       _id: newId,
-      name: centerName,
-      nameEn: centerName,
-      city: city,
-      cityEn: city,
-      address: addr,
-      status: 'pending',
-      manager: name,
-      phone: phone,
-      type: type,
-      capacity: cap
+      name: acc.centerName,
+      nameEn: acc.centerName,
+      city: acc.city,
+      cityEn: acc.city,
+      address: acc.address,
+      status: 'pending_kyc',
+      manager: acc.name,
+      phone: acc.phone,
+      type: acc.type,
+      capacity: acc.capacity
     });
     AnimaSync.set('centers', centers);
 
-    // Add activity
     AnimaSync.push('activities', {
       type: 'center_new',
-      vi: 'C\u01A1 s\u1EDF m\u1EDBi \u0111\u0103ng k\u00FD: ' + centerName + ' (' + city + ')',
-      en: 'New center registered: ' + centerName + ' (' + city + ')',
+      vi: 'C\u01A1 s\u1EDF m\u1EDBi \u0111\u0103ng k\u00FD: ' + acc.centerName + ' (' + acc.city + ') \u2014 Ch\u1EDD KYC',
+      en: 'New center registered: ' + acc.centerName + ' (' + acc.city + ') \u2014 Pending KYC',
       centerId: newId,
       ago: 0
     });
   }
 
-  // Show success
+  // Show success with KYC note
   suc.style.display = 'block';
   suc.innerHTML = '<strong>' + t('\u0110\u0103ng k\u00FD th\u00E0nh c\u00F4ng!','Registration successful!') + '</strong><br>' +
-    t('Center ID c\u1EE7a b\u1EA1n: ','Your Center ID: ') + '<strong style="color:#F8F2E0">' + newId + '</strong><br>' +
-    '<span style="font-size:11px;opacity:.7">' + t('Tr\u1EA1ng th\u00E1i: Ch\u1EDD duy\u1EC7t b\u1EDFi Admin. B\u1EA1n c\u00F3 th\u1EC3 \u0111\u0103ng nh\u1EADp ngay.','Status: Pending admin approval. You can login now.') + '</span>';
+    t('Center ID: ','Center ID: ') + '<strong style="color:#F8F2E0">' + newId + '</strong><br>' +
+    '<span style="font-size:11px;opacity:.7">' +
+    t('KYC \u0111ang ch\u1EDD x\u00E1c minh. \u0110\u0103ng nh\u1EADp b\u1EB1ng ID/email/S\u0110T + m\u1EADt kh\u1EA9u.','KYC pending verification. Login with ID/email/phone + password.') +
+    '</span>';
 
   // Clear form
-  ['cpRegName','cpRegPhone','cpRegEmail','cpRegCenter','cpRegAddr','cpRegRef','cpRegPwd','cpRegPwd2'].forEach(function(id) {
+  ['cpRegName','cpRegPhone','cpRegEmail','cpRegCenter','cpRegAddr','cpRegRef','cpRegPwd','cpRegPwd2',
+   'cpRegCccd','cpRegCccdName','cpRegDob','cpRegBankNo','cpRegBankName'].forEach(function(id) {
     var el = document.getElementById(id);
     if(el) el.value = '';
   });
   document.getElementById('cpRegCity').selectedIndex = 0;
+  document.getElementById('cpRegBank').selectedIndex = 0;
   document.getElementById('cpRegTerms').checked = false;
 
   // Auto switch to login after 3s
@@ -326,31 +485,58 @@ function showCPError(msg) {
   var err = document.getElementById('cpError');
   err.style.display = 'block';
   err.textContent = msg;
-  // Scroll error into view
   err.scrollIntoView({ behavior:'smooth', block:'center' });
 }
 
+// KYC file upload label helper
+window._kycFileLabel = function(input, labelId) {
+  var label = document.getElementById(labelId);
+  if(input.files && input.files[0]) {
+    var fn = input.files[0].name;
+    if(fn.length > 20) fn = fn.substring(0, 17) + '...';
+    label.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00C896" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> ' + fn;
+    label.style.color = '#00C896';
+    label.style.borderColor = 'rgba(0,200,150,.4)';
+    label.appendChild(input);
+  }
+};
+
+// Convert file to base64 for localStorage storage
+function fileToBase64(file, cb) {
+  if(!file) { cb(null); return; }
+  var reader = new FileReader();
+  reader.onload = function() { cb(reader.result); };
+  reader.readAsDataURL(file);
+}
+
 window._centerLogin = function() {
-  var id = document.getElementById('cpIdInput').value.trim().toUpperCase();
+  var input = document.getElementById('cpIdInput').value.trim();
   var pwd = document.getElementById('cpPwdInput').value;
   var err = document.getElementById('cpError');
 
-  if(!id || !pwd) {
+  if(!input || !pwd) {
     err.style.display = 'block';
     err.textContent = t('Vui l\u00F2ng nh\u1EADp \u0111\u1EA7y \u0111\u1EE7 th\u00F4ng tin', 'Please fill in all fields');
     return;
   }
 
+  var inputUpper = input.toUpperCase();
+  var inputLower = input.toLowerCase();
   var account = null;
-  for(var i = 0; i < CENTER_ACCOUNTS.length; i++) {
-    if(CENTER_ACCOUNTS[i].id === id && CENTER_ACCOUNTS[i].pwd === pwd) {
-      account = CENTER_ACCOUNTS[i]; break;
+  /* Search in reverse so newest registered accounts match first */
+  for(var i = CENTER_ACCOUNTS.length - 1; i >= 0; i--) {
+    var a = CENTER_ACCOUNTS[i];
+    var matchId = a.id === inputUpper;
+    var matchEmail = a.email && a.email.toLowerCase() === inputLower;
+    var matchPhone = a.phone && a.phone.replace(/\s/g,'') === input.replace(/\s/g,'');
+    if((matchId || matchEmail || matchPhone) && a.pwd === pwd) {
+      account = a; break;
     }
   }
 
   if(!account) {
     err.style.display = 'block';
-    err.textContent = t('Sai Center ID ho\u1EB7c m\u1EADt kh\u1EA9u', 'Invalid Center ID or password');
+    err.textContent = t('Sai th\u00F4ng tin \u0111\u0103ng nh\u1EADp ho\u1EB7c m\u1EADt kh\u1EA9u', 'Invalid credentials or password');
     return;
   }
 
@@ -358,7 +544,7 @@ window._centerLogin = function() {
   cUser = account;
   localStorage.setItem('anima_center_user', JSON.stringify(account));
   /* Save center credentials for auto-fill */
-  localStorage.setItem('anima_saved_center', JSON.stringify({id:id, pwd:btoa(pwd), ts:Date.now()}));
+  localStorage.setItem('anima_saved_center', JSON.stringify({id:account.id, pwd:btoa(pwd), ts:Date.now()}));
   _closeCenterPortal();
   openCenterDashboard();
   if(typeof showToast === 'function') showToast(t('Ch\u00E0o m\u1EEBng ' + account.name + '!', 'Welcome ' + account.name + '!'), '#00C896');
