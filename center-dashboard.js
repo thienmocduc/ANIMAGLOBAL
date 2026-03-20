@@ -11,18 +11,19 @@
 // ── Center Accounts ──
 var CENTER_ACCOUNTS = [
   {
-    id:'CTR001',
+    id:'CTR-HN',
     pwd:'Anima@2026',
     name:'Cao Tu\u00E2n',
     phone:'0913156676',
     email:'doanhnhancaotuan@gmail.com',
-    centerId:'CTR001',
-    centerName:'Anima Care Thanh Li\u1EC7t',
-    centerNameEn:'Anima Care Thanh Liet',
+    centerId:'CTR-HN',
+    centerName:'Anima Care H\u00E0 N\u1ED9i',
+    centerNameEn:'Anima Care Hanoi',
     city:'H\u00E0 N\u1ED9i',
     address:'286 Nguy\u1EC5n Xi\u1EC3n, Thanh Li\u1EC7t',
     type:'Full',
-    capacity:30,
+    tier:1,
+    capacity:50,
     role:'center_manager',
     status:'active',
     kycStatus:'verified',
@@ -36,6 +37,73 @@ var CENTER_ACCOUNTS = [
 var cLang = 'vi';
 var cUser = null;
 var cPage = 'c-dash';
+
+// ══════════════════════════════════════════════════
+// 34 PROVINCE CENTERS (Level 1 - Exclusive Territory)
+// ══════════════════════════════════════════════════
+var PROVINCE_CENTERS = [
+  { _id:'CTR-HN',  name:'Anima Care H\u00E0 N\u1ED9i',        nameEn:'Anima Care Hanoi',          city:'H\u00E0 N\u1ED9i',       cityEn:'Hanoi',         region:'north', tier:1 },
+  { _id:'CTR-HCM', name:'Anima Care TP.HCM',         nameEn:'Anima Care HCMC',           city:'TP.HCM',        cityEn:'Ho Chi Minh',   region:'south', tier:1 },
+  { _id:'CTR-DN',  name:'Anima Care \u0110\u00E0 N\u1EB5ng',       nameEn:'Anima Care Da Nang',        city:'\u0110\u00E0 N\u1EB5ng',      cityEn:'Da Nang',       region:'central', tier:1 },
+  { _id:'CTR-HP',  name:'Anima Care H\u1EA3i Ph\u00F2ng',      nameEn:'Anima Care Hai Phong',      city:'H\u1EA3i Ph\u00F2ng',     cityEn:'Hai Phong',     region:'north', tier:1 },
+  { _id:'CTR-CT',  name:'Anima Care C\u1EA7n Th\u01A1',       nameEn:'Anima Care Can Tho',        city:'C\u1EA7n Th\u01A1',      cityEn:'Can Tho',       region:'south', tier:1 },
+  { _id:'CTR-HUE', name:'Anima Care Hu\u1EBF',          nameEn:'Anima Care Hue',            city:'Hu\u1EBF',         cityEn:'Hue',           region:'central', tier:1 },
+  { _id:'CTR-NT',  name:'Anima Care Nha Trang',      nameEn:'Anima Care Nha Trang',      city:'Nha Trang',     cityEn:'Nha Trang',     region:'central', tier:1 },
+  { _id:'CTR-VT',  name:'Anima Care V\u0169ng T\u00E0u',       nameEn:'Anima Care Vung Tau',       city:'V\u0169ng T\u00E0u',      cityEn:'Vung Tau',      region:'south', tier:1 },
+  { _id:'CTR-QN',  name:'Anima Care Qu\u1EA3ng Ninh',     nameEn:'Anima Care Quang Ninh',     city:'Qu\u1EA3ng Ninh',    cityEn:'Quang Ninh',    region:'north', tier:1 },
+  { _id:'CTR-BD',  name:'Anima Care B\u00ECnh D\u01B0\u01A1ng',    nameEn:'Anima Care Binh Duong',     city:'B\u00ECnh D\u01B0\u01A1ng',   cityEn:'Binh Duong',    region:'south', tier:1 },
+  { _id:'CTR-DN2', name:'Anima Care \u0110\u1ED3ng Nai',       nameEn:'Anima Care Dong Nai',       city:'\u0110\u1ED3ng Nai',      cityEn:'Dong Nai',      region:'south', tier:1 },
+  { _id:'CTR-TH',  name:'Anima Care Thanh H\u00F3a',      nameEn:'Anima Care Thanh Hoa',      city:'Thanh H\u00F3a',     cityEn:'Thanh Hoa',     region:'north', tier:1 },
+  { _id:'CTR-NA',  name:'Anima Care Ngh\u1EC7 An',        nameEn:'Anima Care Nghe An',        city:'Ngh\u1EC7 An',       cityEn:'Nghe An',       region:'central', tier:1 },
+  { _id:'CTR-BN',  name:'Anima Care B\u1EAFc Ninh',       nameEn:'Anima Care Bac Ninh',       city:'B\u1EAFc Ninh',      cityEn:'Bac Ninh',      region:'north', tier:1 },
+  { _id:'CTR-HD',  name:'Anima Care H\u1EA3i D\u01B0\u01A1ng',     nameEn:'Anima Care Hai Duong',      city:'H\u1EA3i D\u01B0\u01A1ng',    cityEn:'Hai Duong',     region:'north', tier:1 },
+  { _id:'CTR-LA',  name:'Anima Care Long An',         nameEn:'Anima Care Long An',        city:'Long An',       cityEn:'Long An',       region:'south', tier:1 },
+  { _id:'CTR-QNA', name:'Anima Care Qu\u1EA3ng Nam',      nameEn:'Anima Care Quang Nam',      city:'Qu\u1EA3ng Nam',     cityEn:'Quang Nam',     region:'central', tier:1 },
+  { _id:'CTR-KH',  name:'Anima Care Kh\u00E1nh H\u00F2a',     nameEn:'Anima Care Khanh Hoa',      city:'Kh\u00E1nh H\u00F2a',    cityEn:'Khanh Hoa',     region:'central', tier:1 },
+  { _id:'CTR-GL',  name:'Anima Care Gia Lai',         nameEn:'Anima Care Gia Lai',        city:'Gia Lai',       cityEn:'Gia Lai',       region:'central', tier:1 },
+  { _id:'CTR-DL',  name:'Anima Care \u0110\u00E0 L\u1EA1t',        nameEn:'Anima Care Da Lat',         city:'\u0110\u00E0 L\u1EA1t',       cityEn:'Da Lat',        region:'central', tier:1 },
+  { _id:'CTR-AG',  name:'Anima Care An Giang',        nameEn:'Anima Care An Giang',       city:'An Giang',      cityEn:'An Giang',      region:'south', tier:1 },
+  { _id:'CTR-TG',  name:'Anima Care Ti\u1EC1n Giang',     nameEn:'Anima Care Tien Giang',     city:'Ti\u1EC1n Giang',    cityEn:'Tien Giang',    region:'south', tier:1 },
+  { _id:'CTR-BT',  name:'Anima Care B\u1EBFn Tre',        nameEn:'Anima Care Ben Tre',        city:'B\u1EBFn Tre',       cityEn:'Ben Tre',       region:'south', tier:1 },
+  { _id:'CTR-TB',  name:'Anima Care Th\u00E1i B\u00ECnh',      nameEn:'Anima Care Thai Binh',      city:'Th\u00E1i B\u00ECnh',     cityEn:'Thai Binh',     region:'north', tier:1 },
+  { _id:'CTR-NB',  name:'Anima Care Ninh B\u00ECnh',      nameEn:'Anima Care Ninh Binh',      city:'Ninh B\u00ECnh',     cityEn:'Ninh Binh',     region:'north', tier:1 },
+  { _id:'CTR-PY',  name:'Anima Care Ph\u00FA Y\u00EAn',       nameEn:'Anima Care Phu Yen',        city:'Ph\u00FA Y\u00EAn',      cityEn:'Phu Yen',       region:'central', tier:1 },
+  { _id:'CTR-BP',  name:'Anima Care B\u00ECnh Ph\u01B0\u1EDBc',    nameEn:'Anima Care Binh Phuoc',     city:'B\u00ECnh Ph\u01B0\u1EDBc',   cityEn:'Binh Phuoc',    region:'south', tier:1 },
+  { _id:'CTR-TN',  name:'Anima Care T\u00E2y Ninh',       nameEn:'Anima Care Tay Ninh',       city:'T\u00E2y Ninh',      cityEn:'Tay Ninh',      region:'south', tier:1 },
+  { _id:'CTR-VL',  name:'Anima Care V\u0129nh Long',      nameEn:'Anima Care Vinh Long',      city:'V\u0129nh Long',     cityEn:'Vinh Long',     region:'south', tier:1 },
+  { _id:'CTR-VP',  name:'Anima Care V\u0129nh Ph\u00FAc',      nameEn:'Anima Care Vinh Phuc',      city:'V\u0129nh Ph\u00FAc',     cityEn:'Vinh Phuc',     region:'north', tier:1 },
+  { _id:'CTR-LS',  name:'Anima Care L\u1EA1ng S\u01A1n',       nameEn:'Anima Care Lang Son',       city:'L\u1EA1ng S\u01A1n',      cityEn:'Lang Son',      region:'north', tier:1 },
+  { _id:'CTR-PT',  name:'Anima Care Ph\u00FA Th\u1ECD',       nameEn:'Anima Care Phu Tho',        city:'Ph\u00FA Th\u1ECD',      cityEn:'Phu Tho',       region:'north', tier:1 },
+  { _id:'CTR-BTH', name:'Anima Care B\u00ECnh Thu\u1EADn',     nameEn:'Anima Care Binh Thuan',     city:'B\u00ECnh Thu\u1EADn',    cityEn:'Binh Thuan',    region:'central', tier:1 },
+  { _id:'CTR-DK',  name:'Anima Care \u0110\u1EAFk L\u1EAFk',       nameEn:'Anima Care Dak Lak',        city:'\u0110\u1EAFk L\u1EAFk',      cityEn:'Dak Lak',       region:'central', tier:1 }
+];
+
+// Initialize province centers into AnimaSync on load
+function initProvinceCenters() {
+  if(!window.AnimaSync) return;
+  var existing = AnimaSync.get('centers', []);
+  var changed = false;
+  PROVINCE_CENTERS.forEach(function(pc) {
+    var found = existing.some(function(e) { return e._id === pc._id; });
+    if(!found) {
+      /* Check if there's a registered account for this province */
+      var hasAccount = CENTER_ACCOUNTS.some(function(a) { return a.centerId === pc._id; });
+      existing.push({
+        _id: pc._id, name: pc.name, nameEn: pc.nameEn,
+        city: pc.city, cityEn: pc.cityEn, region: pc.region,
+        tier: 1, parentId: null,
+        address: '', phone: '', manager: '',
+        type: 'Full', capacity: 50,
+        status: hasAccount ? 'active' : 'available',
+        subCenters: [],
+        commissionRate: { product: 0.25, service: 0.40 },
+        createdAt: '2026-03-01T00:00:00.000Z'
+      });
+      changed = true;
+    }
+  });
+  if(changed) AnimaSync.set('centers', existing);
+}
 
 // ── Product Catalog (Marketplace) ──
 var PRODUCTS = [
@@ -671,9 +739,15 @@ function renderDashboard() {
     if(oMonth === lastMonth) { commissionData.lastMonth += total; }
   });
 
+  // Get center tier & sub-centers
+  var myCenterData = (sync ? sync.get('centers', []) : []).find(function(c) { return c._id === cid; }) || {};
+  var myTier = myCenterData.tier || (cUser.tier || 1);
+  var mySubCenters = (sync ? sync.get('centers', []) : []).filter(function(c) { return c.parentId === cid; });
+
   // Build pages
   var pages = {
     'c-dash': buildDashPage(),
+    'c-network': buildNetworkPage(),
     'c-marketplace': buildMarketplacePage(),
     'c-revenue': buildRevenuePage(),
     'c-bookings': buildBookingsPage(),
@@ -800,6 +874,100 @@ function renderDashboard() {
     }
     h += '</div></div>';
     h += '</div></div>';
+    return h;
+  }
+
+  // ══════════ NETWORK PAGE (Sub-centers) ══════════
+  function buildNetworkPage() {
+    var h = '<div class="pg" id="pg-c-network">';
+    h += '<div class="pg-hd"><div class="pg-title">' + t('M\u1EA1ng L\u01B0\u1EDBi C\u01A1 S\u1EDF','Center Network') + '</div>';
+    h += '<div class="pg-sub">' + t('C\u01A1 s\u1EDF c\u1EA5p ' + myTier + ' \u2014 ' + cUser.city + ' \u2014 \u0110\u1ED9c quy\u1EC1n khu v\u1EF1c','Tier ' + myTier + ' \u2014 ' + cUser.city + ' \u2014 Exclusive territory') + '</div></div>';
+
+    // Tier badge
+    h += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap">';
+    h += '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.2);border-radius:20px;padding:6px 14px">';
+    h += '<span style="font-size:12px;font-weight:600;color:#00E5A8">' + t('C\u1EA5p ' + myTier + ' \u2014 ','Tier ' + myTier + ' \u2014 ') + cUser.city + '</span></div>';
+    if(myTier === 1) {
+      h += '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:20px;padding:6px 14px">';
+      h += '<span style="font-size:12px;font-weight:600;color:#F59E0B">' + t('\u0110\u01B0\u1EE3c m\u1EDF c\u01A1 s\u1EDF c\u1EA5p 2','Can open Level 2 centers') + '</span></div>';
+    }
+    h += '</div>';
+
+    // Sub-center stats
+    h += '<div class="kpi-g" style="margin-bottom:18px">';
+    h += kpiCard('\uD83C\uDFE2', t('C\u01A1 s\u1EDF c\u1EA5p 2','Level 2 Centers'), mySubCenters.length, '#7B5FFF', t(mySubCenters.filter(function(s){return s.status==="active";}).length + ' ho\u1EA1t \u0111\u1ED9ng', mySubCenters.filter(function(s){return s.status==="active";}).length + ' active'));
+    var subRevenue = 0; var subComm = 0;
+    mySubCenters.forEach(function(sc) {
+      var scOrders = allCenterOrders.filter(function(o){return o.centerId===sc._id;});
+      scOrders.forEach(function(o){ subRevenue += (o.total||0); subComm += Math.round((o.total||0)*0.05); });
+    });
+    h += kpiCard('\uD83D\uDCB0', t('Doanh thu m\u1EA1ng l\u01B0\u1EDBi','Network Revenue'), money(subRevenue), '#3B82F6', t('T\u1EEB c\u01A1 s\u1EDF c\u1EA5p 2','From L2 centers'));
+    h += kpiCard('\uD83D\uDCB3', t('Override Commission','Override Commission'), money(subComm), '#00C896', t('5% t\u1EEB c\u1EA5p 2','5% from L2'));
+    h += kpiCard('\uD83D\uDCCA', t('T\u1ED5ng m\u1EA1ng l\u01B0\u1EDBi','Total Network'), (mySubCenters.length + 1), '#F59E0B', t('c\u01A1 s\u1EDF trong khu v\u1EF1c','centers in territory'));
+    h += '</div>';
+
+    // Create new sub-center button (only for tier 1)
+    if(myTier === 1) {
+      h += '<div style="margin-bottom:18px">';
+      h += '<button class="btn btn-p" onclick="window._cCreateSubCenter()" style="padding:12px 24px;font-size:14px">';
+      h += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+      h += t('M\u1EDF C\u01A1 S\u1EDF C\u1EA5p 2 M\u1EDBi','Open New Level 2 Center') + '</button></div>';
+    }
+
+    // Sub-centers list
+    h += '<div class="c"><div class="ch"><span class="ct">' + t('Danh S\u00E1ch C\u01A1 S\u1EDF C\u1EA5p 2','Level 2 Centers') + '</span><span class="cs">' + mySubCenters.length + '</span></div>';
+    h += '<div class="cb">';
+    if(mySubCenters.length === 0) {
+      h += '<div style="text-align:center;padding:30px;color:rgba(248,242,224,.3)">';
+      h += '<div style="font-size:28px;margin-bottom:10px">\uD83C\uDFE2</div>';
+      h += t('Ch\u01B0a c\u00F3 c\u01A1 s\u1EDF c\u1EA5p 2 n\u00E0o. B\u1EA5m "M\u1EDF C\u01A1 S\u1EDF C\u1EA5p 2 M\u1EDBi" \u0111\u1EC3 m\u1EDF r\u1ED9ng m\u1EA1ng l\u01B0\u1EDBi.','No Level 2 centers yet. Click "Open New Level 2 Center" to expand your network.');
+      h += '</div>';
+    } else {
+      h += '<div class="tw"><table class="dt"><thead><tr>';
+      h += '<th>ID</th><th>' + t('T\u00EAn','Name') + '</th><th>' + t('\u0110\u1ECBa ch\u1EC9','Address') + '</th>';
+      h += '<th>' + t('Qu\u1EA3n l\u00FD','Manager') + '</th><th>' + t('Tr\u1EA1ng th\u00E1i','Status') + '</th>';
+      h += '<th>' + t('Doanh thu','Revenue') + '</th>';
+      h += '</tr></thead><tbody>';
+      mySubCenters.forEach(function(sc) {
+        var scOrders = allCenterOrders.filter(function(o){return o.centerId===sc._id;});
+        var scRev = scOrders.reduce(function(s,o){return s+(o.total||0);},0);
+        var stCls = sc.status==='active' ? 'g' : (sc.status==='pending_kyc'?'a':'b');
+        var stTxt = sc.status==='active' ? t('Ho\u1EA1t \u0111\u1ED9ng','Active') : (sc.status==='pending_kyc' ? t('Ch\u1EDD KYC','Pending KYC') : t(sc.status,sc.status));
+        h += '<tr>';
+        h += '<td class="td-mo">' + sc._id + '</td>';
+        h += '<td>' + sc.name + '</td>';
+        h += '<td class="td-mo">' + (sc.address||'') + '</td>';
+        h += '<td>' + (sc.manager||t('Ch\u01B0a c\u00F3','N/A')) + '</td>';
+        h += '<td><span class="bx ' + stCls + '"><span class="bx-dot"></span>' + stTxt + '</span></td>';
+        h += '<td class="td-mo">' + money(scRev) + '</td>';
+        h += '</tr>';
+      });
+      h += '</tbody></table></div>';
+    }
+    h += '</div></div>';
+
+    // Province centers map (show all 34)
+    h += '<div class="c" style="margin-top:14px"><div class="ch"><span class="ct">' + t('B\u1EA3n \u0110\u1ED3 34 T\u1EC9nh Th\u00E0nh','34 Province Map') + '</span><span class="cs">' + PROVINCE_CENTERS.length + ' ' + t('t\u1EC9nh','provinces') + '</span></div>';
+    h += '<div class="cb"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px">';
+    var allCenters = sync ? sync.get('centers', []) : [];
+    PROVINCE_CENTERS.forEach(function(pc) {
+      var c = allCenters.find(function(ac){return ac._id===pc._id;}) || pc;
+      var isMine = pc._id === cid;
+      var isActive = c.status === 'active';
+      var isAvailable = c.status === 'available';
+      var borderColor = isMine ? 'rgba(0,200,150,.5)' : (isActive ? 'rgba(0,200,150,.2)' : 'rgba(248,242,224,.06)');
+      var bgColor = isMine ? 'rgba(0,200,150,.06)' : (isActive ? 'rgba(0,200,150,.02)' : 'transparent');
+      h += '<div style="background:' + bgColor + ';border:1px solid ' + borderColor + ';border-radius:10px;padding:10px 12px;position:relative">';
+      h += '<div style="font-size:12px;font-weight:600;color:' + (isMine?'#00E5A8':(isActive?'#F8F2E0':'rgba(248,242,224,.35)')) + '">' + t(pc.city, pc.cityEn) + '</div>';
+      h += '<div style="font-size:9px;color:rgba(248,242,224,.25);font-family:\'Roboto Mono\',monospace;margin-top:2px">' + pc._id + '</div>';
+      if(isMine) h += '<div style="position:absolute;top:8px;right:8px;width:6px;height:6px;border-radius:50%;background:#00C896;box-shadow:0 0 0 2px rgba(0,200,150,.2)"></div>';
+      else if(isActive) h += '<div style="font-size:9px;color:#00C896;margin-top:3px">' + t('\u0110ang ho\u1EA1t \u0111\u1ED9ng','Active') + '</div>';
+      else h += '<div style="font-size:9px;color:rgba(245,158,11,.6);margin-top:3px">' + t('C\u00F2n tr\u1ED1ng','Available') + '</div>';
+      h += '</div>';
+    });
+    h += '</div></div></div>';
+
+    h += '</div>';
     return h;
   }
 
@@ -957,6 +1125,7 @@ function renderDashboard() {
   // Sidebar nav items
   var navItems = [
     { id:'c-dash', icon:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>', vi:'Dashboard', en:'Dashboard' },
+    { id:'c-network', icon:'<circle cx="12" cy="5" r="3"/><line x1="12" y1="8" x2="12" y2="14"/><circle cx="6" cy="19" r="3"/><circle cx="18" cy="19" r="3"/><line x1="12" y1="14" x2="6" y2="16"/><line x1="12" y1="14" x2="18" y2="16"/>', vi:'M\u1EA1ng L\u01B0\u1EDBi', en:'Network', badge: mySubCenters.length || null },
     { id:'c-marketplace', icon:'<path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>', vi:'Marketplace', en:'Marketplace' },
     { id:'c-revenue', icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>', vi:'Doanh Thu', en:'Revenue', badge: commissionData.pendingCommission > 0 ? money(commissionData.pendingCommission) : null },
     { id:'c-bookings', icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>', vi:'L\u1ECBch H\u1EB9n', en:'Bookings', badge: pendingBookings || null },
@@ -1162,7 +1331,7 @@ window._cNav = function(pageId, el) {
   // Breadcrumb
   var bc = document.getElementById('cBcPage');
   if(bc) {
-    var names = { 'c-dash':'Dashboard', 'c-marketplace':'Marketplace', 'c-revenue':t('Doanh Thu','Revenue'), 'c-bookings':t('L\u1ECBch H\u1EB9n','Bookings'), 'c-orders':t('\u0110\u01A1n H\u00E0ng','Orders'), 'c-customers':t('Kh\u00E1ch H\u00E0ng','Customers'), 'c-inventory':t('Kho H\u00E0ng','Inventory'), 'c-settings':t('C\u00E0i \u0110\u1EB7t','Settings') };
+    var names = { 'c-dash':'Dashboard', 'c-network':t('M\u1EA1ng L\u01B0\u1EDBi','Network'), 'c-marketplace':'Marketplace', 'c-revenue':t('Doanh Thu','Revenue'), 'c-bookings':t('L\u1ECBch H\u1EB9n','Bookings'), 'c-orders':t('\u0110\u01A1n H\u00E0ng','Orders'), 'c-customers':t('Kh\u00E1ch H\u00E0ng','Customers'), 'c-inventory':t('Kho H\u00E0ng','Inventory'), 'c-settings':t('C\u00E0i \u0110\u1EB7t','Settings') };
     bc.textContent = names[pageId] || pageId;
   }
 };
@@ -1231,6 +1400,55 @@ window._cAddCustomer = function() {
   if(typeof showToast === 'function') showToast(t('\u0110\u00E3 th\u00EAm kh\u00E1ch h\u00E0ng!','Customer added!'), '#00C896');
 };
 
+// ── Create Sub-Center (Level 2) ──
+window._cCreateSubCenter = function() {
+  if(!cUser || !window.AnimaSync) return;
+  var name = prompt(t('T\u00EAn c\u01A1 s\u1EDF c\u1EA5p 2:','Level 2 center name:'));
+  if(!name) return;
+  var address = prompt(t('\u0110\u1ECBa ch\u1EC9:','Address:'));
+  if(!address) return;
+  var manager = prompt(t('T\u00EAn qu\u1EA3n l\u00FD:','Manager name:'));
+  var phone = prompt(t('S\u0110T qu\u1EA3n l\u00FD:','Manager phone:'));
+
+  var centers = AnimaSync.get('centers', []);
+  var subCount = centers.filter(function(c) { return c.parentId === cUser.centerId; }).length;
+  var newId = cUser.centerId + '-L2-' + String(subCount + 1).padStart(2, '0');
+
+  var subCenter = {
+    _id: newId,
+    name: name,
+    nameEn: name,
+    city: cUser.city,
+    cityEn: cUser.city,
+    region: '',
+    tier: 2,
+    parentId: cUser.centerId,
+    address: address,
+    phone: phone || '',
+    manager: manager || '',
+    type: 'Lite',
+    capacity: 15,
+    status: 'active',
+    commissionRate: { product: 0.20, service: 0.30 },
+    createdAt: new Date().toISOString()
+  };
+
+  centers.push(subCenter);
+  AnimaSync.set('centers', centers);
+
+  AnimaSync.push('activities', {
+    type: 'center_new',
+    vi: 'C\u01A1 s\u1EDF c\u1EA5p 2 m\u1EDBi: ' + name + ' (' + cUser.city + ')',
+    en: 'New L2 center: ' + name + ' (' + cUser.city + ')',
+    centerId: newId,
+    parentId: cUser.centerId,
+    ago: 0
+  });
+
+  renderDashboard();
+  if(typeof showToast === 'function') showToast(t('\u0110\u00E3 t\u1EA1o c\u01A1 s\u1EDF c\u1EA5p 2: ','Created L2 center: ') + name, '#00C896');
+};
+
 // ── Realtime Sync Listeners ──
 function setupSyncListeners() {
   if(!window.AnimaSync) return;
@@ -1272,6 +1490,7 @@ function checkCenterSession() {
 
 // ── Init ──
 function init() {
+  initProvinceCenters();
   injectCenterPortal();
   addCenterButton();
   checkCenterSession();

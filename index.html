@@ -4178,19 +4178,12 @@ document.body.style.overflow='';
         <div style="font-family:var(--fb);font-size:13px;font-weight:600;color:var(--t3);margin-bottom:5px;letter-spacing:.5px" data-vi="Địa Chỉ Giao Hàng *" data-en="Delivery Address *">Địa Chỉ Giao Hàng *</div>
         <input id="ord-addr" type="text" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/TP" style="width:100%;background:rgba(0,0,0,.3);border:0.5px solid rgba(0,200,150,0.2);border-radius:10px;padding:11px 14px;font-family:var(--fb);font-size:13.5px;color:var(--t1);outline:none;transition:border-color .2s;box-sizing:border-box" onfocus="this.style.borderColor='rgba(0,200,150,0.5)'" onblur="this.style.borderColor='rgba(0,200,150,0.2)'">
       </div>
-      <div id="ord-center-wrap" style="display:none">
-        <div style="font-family:var(--fb);font-size:13px;font-weight:600;color:var(--t3);margin-bottom:5px;letter-spacing:.5px" data-vi="Khu Vực Mong Muốn" data-en="Preferred Area">Khu Vực Mong Muốn</div>
+      <div id="ord-center-wrap">
+        <div style="font-family:var(--fb);font-size:13px;font-weight:600;color:var(--t3);margin-bottom:5px;letter-spacing:.5px" data-vi="Chọn Cơ Sở / Tỉnh Thành" data-en="Select Center / Province">Chọn Cơ Sở / Tỉnh Thành</div>
         <select id="ord-center" style="width:100%;background:rgba(0,0,0,.3);border:0.5px solid rgba(0,200,150,0.2);border-radius:10px;padding:11px 14px;font-family:var(--fb);font-size:13.5px;color:var(--t1);outline:none;box-sizing:border-box">
-          <option value="" data-vi="— Chọn khu vực —" data-en="— Select area —">— Chọn khu vực —</option>
-          <option data-vi="Hà Nội — Hoàn Kiếm" data-en="Hanoi — Hoan Kiem">Hà Nội — Hoàn Kiếm</option>
-          <option data-vi="Hà Nội — Cầu Giấy" data-en="Hanoi — Cau Giay">Hà Nội — Cầu Giấy</option>
-          <option data-vi="Hà Nội — Đống Đa" data-en="Hanoi — Dong Da">Hà Nội — Đống Đa</option>
-          <option data-vi="TP.HCM — Quận 1" data-en="HCMC — District 1">TP.HCM — Quận 1</option>
-          <option data-vi="TP.HCM — Quận 3" data-en="HCMC — District 3">TP.HCM — Quận 3</option>
-          <option data-vi="TP.HCM — Bình Thạnh" data-en="HCMC — Binh Thanh">TP.HCM — Bình Thạnh</option>
-          <option data-vi="Đà Nẵng" data-en="Da Nang">Đà Nẵng</option>
-          <option data-vi="Khu vực khác" data-en="Other area">Khu vực khác</option>
+          <option value="">— Chọn cơ sở gần bạn —</option>
         </select>
+        <div style="font-size:11px;color:rgba(248,242,224,.3);margin-top:4px" data-vi="Đơn hàng sẽ được xử lý bởi cơ sở độc quyền tại tỉnh/thành phố bạn chọn" data-en="Order will be handled by the exclusive center in your selected province">Đơn hàng sẽ được xử lý bởi cơ sở độc quyền tại tỉnh/thành phố bạn chọn</div>
       </div>
       <div>
         <div style="font-family:var(--fb);font-size:13px;font-weight:600;color:var(--t3);margin-bottom:5px;letter-spacing:.5px" data-vi="Ghi Chú (tuỳ chọn)" data-en="Notes (optional)">Ghi Chú (tuỳ chọn)</div>
@@ -4370,10 +4363,28 @@ document.getElementById('ord-name').textContent=item.name;
 document.getElementById('ord-price').textContent=item.price;
 var isService=item.service||false;
 document.getElementById('ord-addr-wrap').style.display=isService?'none':'block';
-document.getElementById('ord-center-wrap').style.display=isService?'block':'none';
 ['ord-name-inp','ord-phone','ord-addr','ord-note'].forEach(function(id){
 var el=document.getElementById(id);if(el)el.value='';
 });
+/* Populate center dropdown from AnimaSync province centers */
+var sel=document.getElementById('ord-center');
+if(sel&&sel.options.length<=1){
+  var centers=[];
+  if(window.AnimaSync) centers=AnimaSync.get('centers',[]).filter(function(c){return c.tier===1;});
+  if(centers.length===0){
+    /* Fallback: use hardcoded province list */
+    var provs=['H\u00E0 N\u1ED9i','TP.HCM','\u0110\u00E0 N\u1EB5ng','H\u1EA3i Ph\u00F2ng','C\u1EA7n Th\u01A1','Hu\u1EBF','Nha Trang','V\u0169ng T\u00E0u','Qu\u1EA3ng Ninh','B\u00ECnh D\u01B0\u01A1ng','\u0110\u1ED3ng Nai','Thanh H\u00F3a','Ngh\u1EC7 An','B\u1EAFc Ninh','H\u1EA3i D\u01B0\u01A1ng','Long An','Qu\u1EA3ng Nam','Kh\u00E1nh H\u00F2a','Gia Lai','\u0110\u00E0 L\u1EA1t','An Giang','Ti\u1EC1n Giang','B\u1EBFn Tre','Th\u00E1i B\u00ECnh','Ninh B\u00ECnh','Ph\u00FA Y\u00EAn','B\u00ECnh Ph\u01B0\u1EDBc','T\u00E2y Ninh','V\u0129nh Long','V\u0129nh Ph\u00FAc','L\u1EA1ng S\u01A1n','Ph\u00FA Th\u1ECD','B\u00ECnh Thu\u1EADn','\u0110\u1EAFk L\u1EAFk'];
+    provs.forEach(function(p){var o=document.createElement('option');o.value=p;o.textContent=p;sel.appendChild(o);});
+  } else {
+    centers.sort(function(a,b){return(a.city||'').localeCompare(b.city||'');});
+    centers.forEach(function(c){
+      var o=document.createElement('option');
+      o.value=c._id;
+      o.textContent=c.city+(c.status==='active'?' \u2714':' \u2014 '+'\u0110ang tuy\u1EC3n');
+      sel.appendChild(o);
+    });
+  }
+}
 var modal=document.getElementById('orderModal');
 modal.style.visibility='visible';modal.style.opacity='1';
 document.body.style.overflow='hidden';
@@ -4426,15 +4437,23 @@ return;
 /* ══ SYNC TO ADMIN ══ */
 var orderId='ORD-'+Date.now().toString(36).toUpperCase();
 var orderCity=addr?addr.split(',').pop().trim():'Online';
-/* Auto-assign to nearest center for commission */
-var assignedCenter='';var commRate=0.25;
+/* Assign center: use dropdown selection first, fallback to city matching */
+var assignedCenter=center||'';var commRate=0.25;
+var parentCenter=''; /* for L2 → L1 cascade */
 if(window.AnimaSync){
   var centers=AnimaSync.get('centers',[]);
-  var cAccts=[];try{cAccts=JSON.parse(localStorage.getItem('anima_center_accounts')||'[]');}catch(e){}
-  /* Match by city */
-  var matched=centers.find(function(c){return orderCity&&c.city&&orderCity.toLowerCase().indexOf(c.city.toLowerCase())!==-1;});
-  if(!matched){matched=cAccts.find(function(c){return orderCity&&c.city&&orderCity.toLowerCase().indexOf(c.city.toLowerCase())!==-1;});}
-  if(matched) assignedCenter=matched._id||matched.id||matched.centerId||'';
+  if(!assignedCenter){
+    /* Fallback: match by city from address */
+    var matched=centers.find(function(c){return orderCity&&c.city&&orderCity.toLowerCase().indexOf(c.city.toLowerCase())!==-1;});
+    if(matched) assignedCenter=matched._id||'';
+  }
+  /* Check if assigned center is L2 → find parent L1 for cascade */
+  var assignedData=centers.find(function(c){return c._id===assignedCenter;});
+  if(assignedData&&assignedData.tier===2&&assignedData.parentId){
+    parentCenter=assignedData.parentId;
+  }
+  /* Use center's city for orderCity if we have it */
+  if(assignedData&&assignedData.city) orderCity=assignedData.city;
 }
 var isService=(_currentOrder.sku||'').indexOf('SVC')===0;
 commRate=isService?0.40:0.25;
@@ -4447,7 +4466,7 @@ var orderData={
   amount:_currentOrder.price,total:total,qty:_currentOrder.qty||1,
   type:isService?'service':'product',
   channel:'Website',method:_selectedPayment==='bank'?'Bank Transfer':_selectedPayment==='momo'?'MoMo/ZaloPay':'COD',paymentMethod:_selectedPayment,
-  city:orderCity,centerId:assignedCenter,commissionRate:commRate,commission:Math.round(total*commRate),
+  city:orderCity,centerId:assignedCenter,parentCenterId:parentCenter,commissionRate:commRate,commission:Math.round(total*commRate),overrideCommission:parentCenter?Math.round(total*0.05):0,
   status:'pending',date:new Date().toISOString().split('T')[0],
   createdAt:new Date().toISOString()
 };
