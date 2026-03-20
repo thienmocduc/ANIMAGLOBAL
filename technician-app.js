@@ -1333,19 +1333,7 @@ function setupTechSync() {
 // ADD NAV BUTTON + AUTO-RESTORE
 // ═══════════════════════════════════════════
 function addTechButton() {
-  var navRight = document.querySelector('.nav-right');
-  if(!navRight || document.getElementById('navTechBtn')) return;
-  var adminBtn = document.getElementById('navCenterBtn') || document.getElementById('navAdminBtn');
-  var btn = document.createElement('button');
-  btn.id = 'navTechBtn';
-  btn.title = 'Technician Portal';
-  btn.style.cssText = 'background:rgba(123,95,255,.08);border:0.5px solid rgba(123,95,255,.25);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#9B82FF;transition:background .2s;flex-shrink:0;margin-left:4px';
-  btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M12 11v4m-2-2h4"/></svg>';
-  btn.onmouseover = function() { this.style.background = 'rgba(123,95,255,.2)'; };
-  btn.onmouseout = function() { this.style.background = 'rgba(123,95,255,.08)'; };
-  btn.onclick = function() { window._openTechPortal(); };
-  if(adminBtn) navRight.insertBefore(btn, adminBtn);
-  else navRight.appendChild(btn);
+  // Portal access is now in user dropdown menu, no separate nav button needed
 }
 
 // ═══════════════════════════════════════════
