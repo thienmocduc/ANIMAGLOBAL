@@ -37,6 +37,32 @@ var cLang = 'vi';
 var cUser = null;
 var cPage = 'c-dash';
 
+// ── Product Catalog (Marketplace) ──
+var PRODUCTS = [
+  { sku:'ANM-119', name:'ANIMA 119', nameEn:'ANIMA 119', cat:'supplement', price:1590000, commission:0.25, img:'', desc:'Th\u1EF1c th\u1EC3 ph\u00E2n t\u1EED s\u1ED1ng - H\u1ED9i t\u1EE5 32 th\u1EA3o d\u01B0\u1EE3c qu\u00FD', descEn:'Living molecular food - 32 precious herbs' },
+  { sku:'ANM-SKN', name:'ANIMA Skin Care', nameEn:'ANIMA Skin Care', cat:'skincare', price:890000, commission:0.25, img:'', desc:'Serum ch\u1ED1ng l\u00E3o h\u00F3a c\u00F4ng ngh\u1EC7 ph\u00E2n t\u1EED', descEn:'Anti-aging molecular technology serum' },
+  { sku:'ANM-JNT', name:'ANIMA Joint Pro', nameEn:'ANIMA Joint Pro', cat:'supplement', price:1190000, commission:0.25, img:'', desc:'H\u1ED7 tr\u1EE3 x\u01B0\u01A1ng kh\u1EDBp - Collagen peptide', descEn:'Joint support - Collagen peptide' },
+  { sku:'ANM-DTX', name:'ANIMA Detox', nameEn:'ANIMA Detox', cat:'supplement', price:690000, commission:0.25, img:'', desc:'Gi\u1EA3i \u0111\u1ED9c t\u1EBF b\u00E0o - Th\u1EA3i \u0111\u1ED9c t\u1EA7ng s\u00E2u', descEn:'Cell detox - Deep toxin cleanse' },
+  { sku:'ANM-IMM', name:'ANIMA Immune+', nameEn:'ANIMA Immune+', cat:'supplement', price:990000, commission:0.25, img:'', desc:'T\u0103ng c\u01B0\u1EDDng mi\u1EC5n d\u1ECBch t\u1EF1 nhi\u00EAn', descEn:'Natural immune booster' },
+  { sku:'ANM-SLP', name:'ANIMA Sleep', nameEn:'ANIMA Sleep', cat:'supplement', price:590000, commission:0.25, img:'', desc:'H\u1ED7 tr\u1EE3 gi\u1EA5c ng\u1EE7 s\u00E2u - Ph\u1EE5c h\u1ED3i th\u1EA7n kinh', descEn:'Deep sleep support - Neural recovery' }
+];
+
+var SERVICES = [
+  { sku:'SVC-ENG', name:'Tr\u1ECB li\u1EC7u N\u0103ng l\u01B0\u1EE3ng', nameEn:'Energy Therapy', cat:'therapy', price:500000, commission:0.40, desc:'Li\u1EC7u tr\u00ECnh kh\u01A1i th\u00F4ng kinh m\u1EA1ch', descEn:'Meridian unblocking session' },
+  { sku:'SVC-DTX', name:'Gi\u1EA3i \u0111\u1ED9c C\u01A1 th\u1EC3', nameEn:'Body Detox', cat:'therapy', price:800000, commission:0.40, desc:'Gi\u1EA3i \u0111\u1ED9c to\u00E0n di\u1EC7n qua da', descEn:'Full body skin detox' },
+  { sku:'SVC-CON', name:'T\u01B0 v\u1EA5n S\u1EE9c kh\u1ECFe', nameEn:'Health Consult', cat:'consult', price:300000, commission:0.40, desc:'Kh\u00E1m t\u01B0 v\u1EA5n chuy\u00EAn s\u00E2u', descEn:'In-depth health consultation' },
+  { sku:'SVC-ACU', name:'Ch\u00E2m c\u1EE9u Ph\u00E2n t\u1EED', nameEn:'Molecular Acupuncture', cat:'therapy', price:600000, commission:0.40, desc:'K\u1EBFt h\u1EE3p ch\u00E2m c\u1EE9u + c\u00F4ng ngh\u1EC7 sinh h\u1ECDc', descEn:'Acupuncture + biotech combination' },
+  { sku:'SVC-FIT', name:'Fitness Therapy', nameEn:'Fitness Therapy', cat:'fitness', price:400000, commission:0.35, desc:'V\u1EADn \u0111\u1ED9ng tr\u1ECB li\u1EC7u c\u00E1 nh\u00E2n', descEn:'Personal therapeutic fitness' }
+];
+
+// Commission rates by territory type
+var COMMISSION_RATES = {
+  product_exclusive: 0.25,   // 25% for products in exclusive territory
+  service_exclusive: 0.40,   // 40% for services in exclusive territory
+  product_shared: 0.15,      // 15% if territory shared
+  service_shared: 0.25       // 25% if territory shared
+};
+
 // Load registered accounts from localStorage
 try {
   var saved = JSON.parse(localStorage.getItem('anima_center_accounts') || '[]');
@@ -614,9 +640,42 @@ function renderDashboard() {
 
   function money(v) { return v.toLocaleString('vi-VN') + '\u0111'; }
 
+  // ── Commission calculations ──
+  var completedOrders = myOrders.filter(function(o) { return o.status === 'completed' || o.status === 'delivered'; });
+  var allCenterOrders = myOrders; // all orders attributed to this center
+  var commissionData = {
+    totalSales: 0, totalCommission: 0, pendingCommission: 0, paidCommission: 0,
+    productSales: 0, serviceSales: 0, productComm: 0, serviceComm: 0,
+    thisMonth: 0, lastMonth: 0, thisMonthComm: 0
+  };
+  var now = new Date();
+  var thisMonth = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  var lastM = new Date(now.getFullYear(), now.getMonth()-1, 1);
+  var lastMonth = lastM.getFullYear() + '-' + String(lastM.getMonth()+1).padStart(2,'0');
+
+  allCenterOrders.forEach(function(o) {
+    var total = o.total || 0;
+    var commRate = o.commissionRate || (o.type === 'service' ? COMMISSION_RATES.service_exclusive : COMMISSION_RATES.product_exclusive);
+    var comm = Math.round(total * commRate);
+    commissionData.totalSales += total;
+    commissionData.totalCommission += comm;
+    if(o.status === 'completed' || o.status === 'delivered') {
+      commissionData.paidCommission += comm;
+    } else {
+      commissionData.pendingCommission += comm;
+    }
+    if(o.type === 'service') { commissionData.serviceSales += total; commissionData.serviceComm += comm; }
+    else { commissionData.productSales += total; commissionData.productComm += comm; }
+    var oMonth = (o.createdAt || o.date || '').substr(0,7);
+    if(oMonth === thisMonth) { commissionData.thisMonth += total; commissionData.thisMonthComm += comm; }
+    if(oMonth === lastMonth) { commissionData.lastMonth += total; }
+  });
+
   // Build pages
   var pages = {
     'c-dash': buildDashPage(),
+    'c-marketplace': buildMarketplacePage(),
+    'c-revenue': buildRevenuePage(),
     'c-bookings': buildBookingsPage(),
     'c-orders': buildOrdersPage(),
     'c-customers': buildCustomersPage(),
@@ -631,10 +690,10 @@ function renderDashboard() {
 
     // KPI Cards
     h += '<div class="kpi-g">';
-    h += kpiCard('\uD83D\uDCC5', t('L\u1ECBch h\u1EB9n h\u00F4m nay','Today Appointments'), todayBookings, 'var(--g1)', t('+' + pendingBookings + ' ch\u1EDD duy\u1EC7t', pendingBookings + ' pending'));
-    h += kpiCard('\uD83D\uDC65', t('Kh\u00E1ch h\u00E0ng','Customers'), myCustomers.length, 'var(--pu1)', t('T\u1ED5ng t\u1EA1i c\u01A1 s\u1EDF','Total at center'));
-    h += kpiCard('\uD83D\uDCB0', t('Doanh thu','Revenue'), money(totalRevenue), 'var(--blue)', t(myOrders.length + ' \u0111\u01A1n h\u00E0ng', myOrders.length + ' orders'));
-    h += kpiCard('\uD83D\uDCE6', t('\u0110\u01A1n h\u00E0ng','Orders'), myOrders.length, 'var(--amber)', t(pendingOrders + ' \u0111ang x\u1EED l\u00FD', pendingOrders + ' processing'));
+    h += kpiCard('\uD83D\uDCB0', t('Doanh thu','Revenue'), money(commissionData.totalSales), '#3B82F6', t('Th\u00E1ng n\u00E0y: ' + money(commissionData.thisMonth), 'This month: ' + money(commissionData.thisMonth)));
+    h += kpiCard('\uD83D\uDCB3', t('Hoa h\u1ED3ng','Commission'), money(commissionData.totalCommission), '#00C896', t(money(commissionData.pendingCommission) + ' ch\u1EDD thanh to\u00E1n', money(commissionData.pendingCommission) + ' pending'));
+    h += kpiCard('\uD83D\uDCE6', t('\u0110\u01A1n h\u00E0ng','Orders'), myOrders.length, '#F59E0B', t(pendingOrders + ' \u0111ang x\u1EED l\u00FD', pendingOrders + ' processing'));
+    h += kpiCard('\uD83D\uDCC5', t('L\u1ECBch h\u1EB9n','Bookings'), todayBookings, '#7B5FFF', t('+' + pendingBookings + ' ch\u1EDD duy\u1EC7t', pendingBookings + ' pending'));
     h += '</div>';
 
     // Recent bookings table
@@ -744,6 +803,151 @@ function renderDashboard() {
     return h;
   }
 
+  // ══════════ MARKETPLACE PAGE ══════════
+  function buildMarketplacePage() {
+    var h = '<div class="pg" id="pg-c-marketplace">';
+    h += '<div class="pg-hd"><div class="pg-title">' + t('Marketplace','Marketplace') + '</div>';
+    h += '<div class="pg-sub">' + t('S\u1EA3n ph\u1EA9m & d\u1ECBch v\u1EE5 \u0111\u1ED9c quy\u1EC1n khu v\u1EF1c ' + cUser.city, 'Exclusive products & services for ' + cUser.city + ' region') + '</div></div>';
+
+    // Territory badge
+    h += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap">';
+    h += '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.2);border-radius:20px;padding:6px 14px">';
+    h += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00C896" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+    h += '<span style="font-size:12px;font-weight:600;color:#00E5A8">' + t('\u0110\u1ED9c quy\u1EC1n: ','Exclusive: ') + cUser.city + '</span></div>';
+    h += '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:20px;padding:6px 14px">';
+    h += '<span style="font-size:12px;font-weight:600;color:#60A5FA">' + t('Commission S\u1EA3n ph\u1EA9m: 25% \u00B7 D\u1ECBch v\u1EE5: 40%','Product Commission: 25% \u00B7 Service: 40%') + '</span></div>';
+    h += '</div>';
+
+    // Products section
+    h += '<div style="margin-bottom:8px"><div style="font-size:14px;font-weight:600;color:#F8F2E0;margin-bottom:12px;display:flex;align-items:center;gap:8px">';
+    h += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00C896" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>';
+    h += t('S\u1EA3n Ph\u1EA9m','Products') + ' <span style="font-size:11px;color:rgba(248,242,224,.3);font-weight:400">(' + PRODUCTS.length + ')</span></div>';
+    h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:20px">';
+    PRODUCTS.forEach(function(p) {
+      var commAmt = Math.round(p.price * p.commission);
+      h += '<div class="c" style="cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor=\'rgba(0,200,150,.4)\'" onmouseout="this.style.borderColor=\'rgba(0,200,150,.12)\'">';
+      h += '<div style="padding:14px">';
+      h += '<div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#005A42,#00C896);display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:18px">\uD83D\uDC8A</div>';
+      h += '<div style="font-size:13px;font-weight:600;color:#F8F2E0;margin-bottom:2px">' + t(p.name, p.nameEn) + '</div>';
+      h += '<div style="font-size:10px;color:rgba(248,242,224,.35);margin-bottom:8px;line-height:1.4">' + t(p.desc, p.descEn) + '</div>';
+      h += '<div style="display:flex;justify-content:space-between;align-items:flex-end">';
+      h += '<div><div style="font-size:15px;font-weight:700;color:#F8F2E0">' + money(p.price) + '</div>';
+      h += '<div style="font-size:9px;color:rgba(248,242,224,.3);font-family:\'Roboto Mono\',monospace">' + p.sku + '</div></div>';
+      h += '<div style="text-align:right"><div style="font-size:11px;font-weight:600;color:#00E5A8">+' + money(commAmt) + '</div>';
+      h += '<div style="font-size:8px;color:rgba(0,200,150,.5);font-family:\'Roboto Mono\',monospace">COMMISSION ' + Math.round(p.commission*100) + '%</div></div>';
+      h += '</div></div></div>';
+    });
+    h += '</div></div>';
+
+    // Services section
+    h += '<div><div style="font-size:14px;font-weight:600;color:#F8F2E0;margin-bottom:12px;display:flex;align-items:center;gap:8px">';
+    h += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7B5FFF" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>';
+    h += t('D\u1ECBch V\u1EE5 Tr\u1ECB Li\u1EC7u','Treatment Services') + ' <span style="font-size:11px;color:rgba(248,242,224,.3);font-weight:400">(' + SERVICES.length + ')</span></div>';
+    h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">';
+    SERVICES.forEach(function(s) {
+      var commAmt = Math.round(s.price * s.commission);
+      h += '<div class="c" style="cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor=\'rgba(123,95,255,.4)\'" onmouseout="this.style.borderColor=\'rgba(0,200,150,.12)\'">';
+      h += '<div style="padding:14px">';
+      h += '<div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#4A3AFF,#7B5FFF);display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:18px">\u2728</div>';
+      h += '<div style="font-size:13px;font-weight:600;color:#F8F2E0;margin-bottom:2px">' + t(s.name, s.nameEn) + '</div>';
+      h += '<div style="font-size:10px;color:rgba(248,242,224,.35);margin-bottom:8px;line-height:1.4">' + t(s.desc, s.descEn) + '</div>';
+      h += '<div style="display:flex;justify-content:space-between;align-items:flex-end">';
+      h += '<div><div style="font-size:15px;font-weight:700;color:#F8F2E0">' + money(s.price) + '</div>';
+      h += '<div style="font-size:9px;color:rgba(248,242,224,.3);font-family:\'Roboto Mono\',monospace">' + s.sku + '</div></div>';
+      h += '<div style="text-align:right"><div style="font-size:11px;font-weight:600;color:#9B82FF">+' + money(commAmt) + '</div>';
+      h += '<div style="font-size:8px;color:rgba(123,95,255,.5);font-family:\'Roboto Mono\',monospace">COMMISSION ' + Math.round(s.commission*100) + '%</div></div>';
+      h += '</div></div></div>';
+    });
+    h += '</div></div>';
+
+    h += '</div>';
+    return h;
+  }
+
+  // ══════════ REVENUE / COMMISSION PAGE ══════════
+  function buildRevenuePage() {
+    var h = '<div class="pg" id="pg-c-revenue">';
+    h += '<div class="pg-hd"><div class="pg-title">' + t('Doanh Thu & Hoa H\u1ED3ng','Revenue & Commission') + '</div>';
+    h += '<div class="pg-sub">' + t('\u0110\u1ED9c quy\u1EC1n khu v\u1EF1c: ','Exclusive territory: ') + cUser.city + ' \u2014 ' + cUser.centerName + '</div></div>';
+
+    // Summary KPI row
+    h += '<div class="kpi-g" style="margin-bottom:18px">';
+    h += kpiCard('\uD83D\uDCB0', t('T\u1ED5ng doanh thu','Total Sales'), money(commissionData.totalSales), '#3B82F6', t(allCenterOrders.length + ' \u0111\u01A1n', allCenterOrders.length + ' orders'));
+    h += kpiCard('\uD83D\uDCB3', t('T\u1ED5ng hoa h\u1ED3ng','Total Commission'), money(commissionData.totalCommission), '#00C896', t(Math.round(commissionData.totalSales ? commissionData.totalCommission/commissionData.totalSales*100 : 0) + '% trung b\u00ECnh', Math.round(commissionData.totalSales ? commissionData.totalCommission/commissionData.totalSales*100 : 0) + '% average'));
+    h += kpiCard('\u2705', t('\u0110\u00E3 thanh to\u00E1n','Paid Out'), money(commissionData.paidCommission), '#22C55E', t('\u0110\u01A1n ho\u00E0n th\u00E0nh','Completed orders'));
+    h += kpiCard('\u23F3', t('Ch\u1EDD thanh to\u00E1n','Pending'), money(commissionData.pendingCommission), '#F59E0B', t('\u0110ang x\u1EED l\u00FD','Processing'));
+    h += '</div>';
+
+    // Commission breakdown cards
+    h += '<div class="g2 mb4">';
+
+    // Product commission card
+    h += '<div class="c"><div class="ch"><span class="ct">' + t('Hoa H\u1ED3ng S\u1EA3n Ph\u1EA9m','Product Commission') + '</span><span class="bx g">25%</span></div>';
+    h += '<div class="cb">';
+    h += '<div style="display:flex;justify-content:space-between;margin-bottom:12px">';
+    h += '<div><div style="font-size:10px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px;font-family:\'Roboto Mono\',monospace;margin-bottom:4px">' + t('DOANH S\u1ED0','SALES') + '</div>';
+    h += '<div style="font-size:20px;font-weight:700;color:#F8F2E0">' + money(commissionData.productSales) + '</div></div>';
+    h += '<div style="text-align:right"><div style="font-size:10px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px;font-family:\'Roboto Mono\',monospace;margin-bottom:4px">' + t('HOA H\u1ED2NG','COMMISSION') + '</div>';
+    h += '<div style="font-size:20px;font-weight:700;color:#00E5A8">' + money(commissionData.productComm) + '</div></div></div>';
+    // Progress bar
+    var pctProd = commissionData.totalCommission ? Math.round(commissionData.productComm / commissionData.totalCommission * 100) : 0;
+    h += '<div style="background:rgba(0,200,150,.06);border-radius:6px;height:8px;overflow:hidden;margin-bottom:6px"><div style="height:100%;background:linear-gradient(90deg,#005A42,#00C896);border-radius:6px;width:' + pctProd + '%"></div></div>';
+    h += '<div style="font-size:10px;color:rgba(248,242,224,.3)">' + pctProd + '% ' + t('t\u1ED5ng hoa h\u1ED3ng','of total commission') + '</div>';
+    h += '</div></div>';
+
+    // Service commission card
+    h += '<div class="c"><div class="ch"><span class="ct">' + t('Hoa H\u1ED3ng D\u1ECBch V\u1EE5','Service Commission') + '</span><span class="bx p">40%</span></div>';
+    h += '<div class="cb">';
+    h += '<div style="display:flex;justify-content:space-between;margin-bottom:12px">';
+    h += '<div><div style="font-size:10px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px;font-family:\'Roboto Mono\',monospace;margin-bottom:4px">' + t('DOANH S\u1ED0','SALES') + '</div>';
+    h += '<div style="font-size:20px;font-weight:700;color:#F8F2E0">' + money(commissionData.serviceSales) + '</div></div>';
+    h += '<div style="text-align:right"><div style="font-size:10px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px;font-family:\'Roboto Mono\',monospace;margin-bottom:4px">' + t('HOA H\u1ED2NG','COMMISSION') + '</div>';
+    h += '<div style="font-size:20px;font-weight:700;color:#9B82FF">' + money(commissionData.serviceComm) + '</div></div></div>';
+    var pctSvc = commissionData.totalCommission ? Math.round(commissionData.serviceComm / commissionData.totalCommission * 100) : 0;
+    h += '<div style="background:rgba(123,95,255,.06);border-radius:6px;height:8px;overflow:hidden;margin-bottom:6px"><div style="height:100%;background:linear-gradient(90deg,#4A3AFF,#9B82FF);border-radius:6px;width:' + pctSvc + '%"></div></div>';
+    h += '<div style="font-size:10px;color:rgba(248,242,224,.3)">' + pctSvc + '% ' + t('t\u1ED5ng hoa h\u1ED3ng','of total commission') + '</div>';
+    h += '</div></div>';
+
+    h += '</div>'; // g2
+
+    // Commission history table
+    h += '<div class="c"><div class="ch"><span class="ct">' + t('L\u1ECBch S\u1EED Hoa H\u1ED3ng','Commission History') + '</span><span class="cs">' + allCenterOrders.length + ' ' + t('\u0111\u01A1n','orders') + '</span></div>';
+    h += '<div class="cb"><div class="tw"><table class="dt"><thead><tr>';
+    h += '<th>ID</th><th>' + t('S\u1EA3n ph\u1EA9m/DV','Product/Service') + '</th><th>' + t('Doanh s\u1ED1','Amount') + '</th>';
+    h += '<th>%</th><th>' + t('Hoa h\u1ED3ng','Commission') + '</th><th>' + t('Tr\u1EA1ng th\u00E1i','Status') + '</th>';
+    h += '</tr></thead><tbody>';
+    allCenterOrders.slice().reverse().forEach(function(o) {
+      var commRate = o.commissionRate || (o.type === 'service' ? COMMISSION_RATES.service_exclusive : COMMISSION_RATES.product_exclusive);
+      var comm = Math.round((o.total || 0) * commRate);
+      var isPaid = o.status === 'completed' || o.status === 'delivered';
+      h += '<tr><td class="td-mo">' + (o._id||'') + '</td>';
+      h += '<td>' + (o.product||o.service||'') + '</td>';
+      h += '<td class="td-mo">' + money(o.total||0) + '</td>';
+      h += '<td class="td-mo">' + Math.round(commRate*100) + '%</td>';
+      h += '<td style="font-weight:600;color:' + (isPaid?'#00E5A8':'#F59E0B') + '">' + money(comm) + '</td>';
+      h += '<td>' + (isPaid ? '<span class="bx g"><span class="bx-dot"></span>' + t('\u0110\u00E3 tr\u1EA3','Paid') + '</span>' : '<span class="bx a"><span class="bx-dot"></span>' + t('Ch\u1EDD','Pending') + '</span>') + '</td>';
+      h += '</tr>';
+    });
+    if(allCenterOrders.length === 0) {
+      h += '<tr><td colspan="6" style="text-align:center;padding:30px;color:rgba(248,242,224,.3)">' + t('Ch\u01B0a c\u00F3 \u0111\u01A1n h\u00E0ng n\u00E0o. Khi kh\u00E1ch h\u00E0ng \u0111\u1EB7t mua s\u1EA3n ph\u1EA9m/d\u1ECBch v\u1EE5 t\u1EA1i khu v\u1EF1c c\u1EE7a b\u1EA1n, hoa h\u1ED3ng s\u1EBD t\u1EF1 \u0111\u1ED9ng \u0111\u01B0\u1EE3c t\u00EDnh.','No orders yet. When customers order products/services in your territory, commission will be calculated automatically.') + '</td></tr>';
+    }
+    h += '</tbody></table></div></div></div>';
+
+    // Territory info
+    h += '<div class="c" style="margin-top:12px"><div class="ch"><span class="ct">' + t('Th\u00F4ng Tin Khu V\u1EF1c \u0110\u1ED9c Quy\u1EC1n','Exclusive Territory Info') + '</span></div>';
+    h += '<div class="cb"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">';
+    h += '<div><div style="font-size:10px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px;font-family:\'Roboto Mono\',monospace;margin-bottom:4px">' + t('KHU V\u1EF0C','TERRITORY') + '</div>';
+    h += '<div style="font-size:14px;font-weight:600;color:#F8F2E0">' + cUser.city + '</div></div>';
+    h += '<div><div style="font-size:10px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px;font-family:\'Roboto Mono\',monospace;margin-bottom:4px">' + t('LO\u1EA0I','TYPE') + '</div>';
+    h += '<div style="font-size:14px;font-weight:600;color:#00E5A8">' + t('\u0110\u1ED9c quy\u1EC1n','Exclusive') + '</div></div>';
+    h += '<div><div style="font-size:10px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px;font-family:\'Roboto Mono\',monospace;margin-bottom:4px">' + t('T\u1EEB NG\u00C0Y','SINCE') + '</div>';
+    h += '<div style="font-size:14px;font-weight:600;color:#F8F2E0">' + (cUser.createdAt ? cUser.createdAt.substr(0,10) : '2026-03-01') + '</div></div>';
+    h += '</div></div></div>';
+
+    h += '</div>';
+    return h;
+  }
+
   function kpiCard(icon, label, value, color, sub) {
     return '<div class="kpi"><div class="kpi-ic" style="background:' + color + '22;color:' + color + '">' + icon + '</div>' +
       '<div class="kpi-l">' + label + '</div><div class="kpi-v">' + value + '</div>' +
@@ -753,8 +957,10 @@ function renderDashboard() {
   // Sidebar nav items
   var navItems = [
     { id:'c-dash', icon:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>', vi:'Dashboard', en:'Dashboard' },
-    { id:'c-bookings', icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>', vi:'L\u1ECBch H\u1EB9n', en:'Bookings', badge: pendingBookings },
-    { id:'c-orders', icon:'<path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>', vi:'\u0110\u01A1n H\u00E0ng', en:'Orders', badge: pendingOrders, badgeCls:'r' },
+    { id:'c-marketplace', icon:'<path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>', vi:'Marketplace', en:'Marketplace' },
+    { id:'c-revenue', icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>', vi:'Doanh Thu', en:'Revenue', badge: commissionData.pendingCommission > 0 ? money(commissionData.pendingCommission) : null },
+    { id:'c-bookings', icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>', vi:'L\u1ECBch H\u1EB9n', en:'Bookings', badge: pendingBookings || null },
+    { id:'c-orders', icon:'<path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>', vi:'\u0110\u01A1n H\u00E0ng', en:'Orders', badge: pendingOrders || null, badgeCls:'r' },
     { id:'c-customers', icon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>', vi:'Kh\u00E1ch H\u00E0ng', en:'Customers' },
     { id:'c-inventory', icon:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>', vi:'Kho H\u00E0ng', en:'Inventory' },
     { id:'c-settings', icon:'<circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M2 12h2M20 12h2"/>', vi:'C\u00E0i \u0110\u1EB7t', en:'Settings' }
@@ -800,7 +1006,7 @@ function renderDashboard() {
 
   // Topbar
   html += '<div class="top" style="height:50px;border-bottom:0.5px solid rgba(0,200,150,.06);display:flex;align-items:center;padding:0 22px;gap:14px;background:#030608;flex-shrink:0">';
-  html += '<button class="adm-mob-toggle" style="display:none;background:none;border:none;color:#F8F2E0;cursor:pointer;padding:8px" onclick="document.querySelector(\'#centerDashboard .sb\').classList.toggle(\'mob-open\');document.getElementById(\'cMobOverlay\').classList.toggle(\'show\')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>';
+  html += '<button class="adm-mob-toggle" style="display:none;background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.25);color:#00E5A8;cursor:pointer;padding:8px 10px;border-radius:8px;flex-shrink:0" onclick="document.querySelector(\'#centerDashboard .sb\').classList.toggle(\'mob-open\');document.getElementById(\'cMobOverlay\').classList.toggle(\'show\')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>';
   html += '<div style="flex:1;font-size:12.5px;color:rgba(248,242,224,.42)">' + t(cUser.centerName, cUser.centerNameEn) + ' <span style="color:rgba(248,242,224,.22);font-size:10px">\u203A</span> <span style="color:#F8F2E0;font-weight:500" id="cBcPage">Dashboard</span></div>';
   html += '<div class="lang-sw" style="display:flex;background:#0A1218;border:0.5px solid rgba(0,200,150,.12);border-radius:7px;overflow:hidden">';
   html += '<button class="lang-btn' + (cLang==='vi' ? ' on' : '') + '" style="padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;color:' + (cLang==='vi'?'#00E5A8':'rgba(248,242,224,.22)') + ';background:' + (cLang==='vi'?'rgba(0,200,150,.12)':'transparent') + ';border:none" onclick="window._cSetLang(\'vi\')">VI</button>';
@@ -915,8 +1121,23 @@ function renderDashboard() {
     + '</style>' + html;
   }
 
-  // Mobile responsive
-  html += '<style>@media(max-width:768px){#centerDashboard .app{grid-template-columns:1fr!important}#centerDashboard .sb{position:fixed!important;left:-260px!important;top:0!important;bottom:0!important;width:240px!important;z-index:100!important;transition:left .3s!important;background:#060C0F!important;box-shadow:4px 0 20px rgba(0,0,0,.6)}#centerDashboard .sb.mob-open{left:0!important}#centerDashboard .adm-mob-toggle{display:flex!important}#centerDashboard #cMobOverlay.show{display:block!important}#centerDashboard .top{padding:0 10px 0 4px!important}#centerDashboard .kpi-g{grid-template-columns:1fr 1fr!important}#centerDashboard .g2,#centerDashboard .g23{grid-template-columns:1fr!important}#centerDashboard .dt{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}}</style>';
+  // Mobile responsive + tablet
+  html += '<style>'
+  + '@media(max-width:1024px){#centerDashboard .kpi-g{grid-template-columns:1fr 1fr!important}#centerDashboard .g2,#centerDashboard .g23{grid-template-columns:1fr!important}}'
+  + '@media(max-width:768px){'
+  + '#centerDashboard .app{grid-template-columns:1fr!important}'
+  + '#centerDashboard .sb{position:fixed!important;left:-260px!important;top:0!important;bottom:0!important;width:250px!important;min-width:250px!important;z-index:100!important;transition:left .3s ease!important;background:#060C0F!important;box-shadow:4px 0 30px rgba(0,0,0,.7)}'
+  + '#centerDashboard .sb.mob-open{left:0!important}'
+  + '#centerDashboard .adm-mob-toggle{display:flex!important}'
+  + '#centerDashboard #cMobOverlay.show{display:block!important}'
+  + '#centerDashboard .top{padding:0 12px 0 4px!important}'
+  + '#centerDashboard .kpi-g{grid-template-columns:1fr 1fr!important}'
+  + '#centerDashboard .g2,#centerDashboard .g23{grid-template-columns:1fr!important}'
+  + '#centerDashboard .dt{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}'
+  + '#centerDashboard .pg{padding:14px 12px!important}'
+  + '}'
+  + '@media(max-width:400px){#centerDashboard .kpi-g{grid-template-columns:1fr!important}}'
+  + '</style>';
 
   dash.innerHTML = html;
 }
@@ -924,6 +1145,11 @@ function renderDashboard() {
 // ── Navigation ──
 window._cNav = function(pageId, el) {
   cPage = pageId;
+  // Close mobile sidebar
+  var sb = document.querySelector('#centerDashboard .sb');
+  if(sb) sb.classList.remove('mob-open');
+  var overlay = document.getElementById('cMobOverlay');
+  if(overlay) overlay.classList.remove('show');
   // Update sidebar
   var items = document.querySelectorAll('#centerDashboard .sb-i');
   items.forEach(function(item) { item.classList.remove('on'); });
@@ -936,7 +1162,7 @@ window._cNav = function(pageId, el) {
   // Breadcrumb
   var bc = document.getElementById('cBcPage');
   if(bc) {
-    var names = { 'c-dash':'Dashboard', 'c-bookings':t('L\u1ECBch H\u1EB9n','Bookings'), 'c-orders':t('\u0110\u01A1n H\u00E0ng','Orders'), 'c-customers':t('Kh\u00E1ch H\u00E0ng','Customers'), 'c-inventory':t('Kho H\u00E0ng','Inventory'), 'c-settings':t('C\u00E0i \u0110\u1EB7t','Settings') };
+    var names = { 'c-dash':'Dashboard', 'c-marketplace':'Marketplace', 'c-revenue':t('Doanh Thu','Revenue'), 'c-bookings':t('L\u1ECBch H\u1EB9n','Bookings'), 'c-orders':t('\u0110\u01A1n H\u00E0ng','Orders'), 'c-customers':t('Kh\u00E1ch H\u00E0ng','Customers'), 'c-inventory':t('Kho H\u00E0ng','Inventory'), 'c-settings':t('C\u00E0i \u0110\u1EB7t','Settings') };
     bc.textContent = names[pageId] || pageId;
   }
 };
