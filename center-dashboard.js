@@ -655,6 +655,7 @@ function openCenterDashboard() {
   dash.style.display = 'block';
   document.body.style.overflow = 'hidden';
   renderDashboard();
+  loadPolicyFields();
   setupSyncListeners();
 }
 
@@ -1028,6 +1029,73 @@ function renderDashboard() {
     });
     h += '</div></div>';
 
+    // ── Policy Settings Section ──
+    h += '<div style="margin-top:24px;border-top:1px solid rgba(123,95,255,.12);padding-top:20px">';
+    h += '<div style="font-size:16px;font-weight:700;color:#F8F2E0;margin-bottom:4px;display:flex;align-items:center;gap:10px">';
+    h += '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B5FFF" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>';
+    h += t('Ch\u00EDnh S\u00E1ch Marketplace','Marketplace Policy') + '</div>';
+    h += '<div style="font-size:12px;color:rgba(248,242,224,.35);margin-bottom:16px">' + t('T\u00F9y ch\u1EC9nh ch\u00EDnh s\u00E1ch b\u00E1n h\u00E0ng v\u00E0 d\u1ECBch v\u1EE5 cho c\u01A1 s\u1EDF c\u1EE7a b\u1EA1n','Customize sales and service policies for your center') + '</div>';
+
+    // Load saved policies
+    h += '<div id="policySettings" class="g2" style="gap:12px">';
+
+    // Card 1: Pricing Policy
+    h += '<div class="c"><div class="ch"><span class="ct">' + t('Ch\u00EDnh s\u00E1ch gi\u00E1','Pricing Policy') + '</span></div><div class="cb">';
+    h += '<div class="fg"><div class="fl">' + t('\u0110\u01A1n h\u00E0ng t\u1ED1i thi\u1EC3u','Minimum Order') + '</div>';
+    h += '<input id="polMinOrder" class="fi" type="number" value="0" min="0" step="50000" placeholder="0 = ' + t('kh\u00F4ng gi\u1EDBi h\u1EA1n','no limit') + '" style="font-family:\'Roboto Mono\',monospace"></div>';
+    h += '<div class="fg"><div class="fl">' + t('Ph\u00ED v\u1EADn chuy\u1EC3n (\u0111)','Shipping Fee (VND)') + '</div>';
+    h += '<input id="polShipFee" class="fi" type="number" value="30000" min="0" step="5000" style="font-family:\'Roboto Mono\',monospace"></div>';
+    h += '<div class="fg"><div class="fl">' + t('Mi\u1EC5n ph\u00ED ship t\u1EEB','Free Shipping From') + '</div>';
+    h += '<input id="polFreeShip" class="fi" type="number" value="500000" min="0" step="50000" style="font-family:\'Roboto Mono\',monospace"></div>';
+    h += '</div></div>';
+
+    // Card 2: Return & Refund
+    h += '<div class="c"><div class="ch"><span class="ct">' + t('\u0110\u1ED5i tr\u1EA3 & Ho\u00E0n ti\u1EC1n','Return & Refund') + '</span></div><div class="cb">';
+    h += '<div class="fg" style="display:flex;align-items:center;justify-content:space-between">';
+    h += '<div class="fl" style="margin-bottom:0">' + t('Cho ph\u00E9p \u0111\u1ED5i tr\u1EA3','Allow Returns') + '</div>';
+    h += '<label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">';
+    h += '<input id="polAllowReturn" type="checkbox" checked style="opacity:0;width:0;height:0">';
+    h += '<span class="pol-tog" style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,200,150,.3);border-radius:12px;transition:.3s"></span></label></div>';
+    h += '<div class="fg"><div class="fl">' + t('Th\u1EDDi h\u1EA1n \u0111\u1ED5i tr\u1EA3 (ng\u00E0y)','Return Period (days)') + '</div>';
+    h += '<input id="polReturnDays" class="fi" type="number" value="7" min="0" max="30" style="font-family:\'Roboto Mono\',monospace"></div>';
+    h += '<div class="fg"><div class="fl">' + t('L\u00FD do \u0111\u1ED5i tr\u1EA3','Return Reasons') + '</div>';
+    h += '<select id="polReturnReason" class="fi" style="padding:10px 14px">';
+    h += '<option value="any">' + t('M\u1ECDi l\u00FD do','Any reason') + '</option>';
+    h += '<option value="defect">' + t('Ch\u1EC9 l\u1ED7i s\u1EA3n ph\u1EA9m','Defective only') + '</option>';
+    h += '<option value="none">' + t('Kh\u00F4ng \u0111\u1ED5i tr\u1EA3','No returns') + '</option>';
+    h += '</select></div>';
+    h += '</div></div>';
+
+    // Card 3: Service Booking
+    h += '<div class="c"><div class="ch"><span class="ct">' + t('\u0110\u1EB7t l\u1ECBch d\u1ECBch v\u1EE5','Service Booking') + '</span></div><div class="cb">';
+    h += '<div class="fg"><div class="fl">' + t('Gi\u1EDD m\u1EDF c\u1EEDa','Opening Hours') + '</div>';
+    h += '<div style="display:flex;gap:8px;align-items:center"><input id="polOpenHr" class="fi" type="time" value="08:00" style="flex:1"><span style="color:rgba(248,242,224,.3)">-</span><input id="polCloseHr" class="fi" type="time" value="20:00" style="flex:1"></div></div>';
+    h += '<div class="fg"><div class="fl">' + t('\u0110\u1EB7t tr\u01B0\u1EDBc (ng\u00E0y)','Advance Booking (days)') + '</div>';
+    h += '<input id="polAdvBook" class="fi" type="number" value="1" min="0" max="30" style="font-family:\'Roboto Mono\',monospace"></div>';
+    h += '<div class="fg"><div class="fl">' + t('S\u1ED1 KH t\u1ED1i \u0111a / ng\u00E0y','Max Clients / Day') + '</div>';
+    h += '<input id="polMaxClients" class="fi" type="number" value="20" min="1" max="100" style="font-family:\'Roboto Mono\',monospace"></div>';
+    h += '</div></div>';
+
+    // Card 4: Promotion & Discount
+    h += '<div class="c"><div class="ch"><span class="ct">' + t('Khuy\u1EBFn m\u00E3i','Promotions') + '</span></div><div class="cb">';
+    h += '<div class="fg"><div class="fl">' + t('Gi\u1EA3m gi\u00E1 chung (%)','General Discount (%)') + '</div>';
+    h += '<input id="polDiscount" class="fi" type="number" value="0" min="0" max="50" style="font-family:\'Roboto Mono\',monospace"></div>';
+    h += '<div class="fg"><div class="fl">' + t('M\u00E3 gi\u1EA3m gi\u00E1 (n\u1EBFu c\u00F3)','Promo Code (optional)') + '</div>';
+    h += '<input id="polPromoCode" class="fi" type="text" placeholder="VD: ANIMACARE10" style="text-transform:uppercase;font-family:\'Roboto Mono\',monospace"></div>';
+    h += '<div class="fg"><div class="fl">' + t('Gi\u00E1 tr\u1ECB m\u00E3 gi\u1EA3m (%)','Promo Discount (%)') + '</div>';
+    h += '<input id="polPromoVal" class="fi" type="number" value="0" min="0" max="50" style="font-family:\'Roboto Mono\',monospace"></div>';
+    h += '</div></div>';
+
+    h += '</div>'; // end g2 policySettings
+
+    // Save button
+    h += '<button onclick="_cSavePolicy()" class="btn btn-p" style="margin-top:16px;width:100%;padding:14px;font-size:14px;font-weight:700;letter-spacing:.5px">';
+    h += '<span style="display:flex;align-items:center;justify-content:center;gap:8px">';
+    h += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>';
+    h += t('L\u01AFU CH\u00CDNH S\u00C1CH','SAVE POLICY') + '</span></button>';
+
+    h += '</div>'; // end policy section
+
     h += '</div>';
     return h;
   }
@@ -1306,6 +1374,9 @@ function renderDashboard() {
   + '#centerDashboard .pg{padding:14px 12px!important}'
   + '}'
   + '@media(max-width:400px){#centerDashboard .kpi-g{grid-template-columns:1fr!important}}'
+  + '#centerDashboard input[type=checkbox]:checked+.pol-tog{background:#00C896!important}'
+  + '#centerDashboard input[type=checkbox]+.pol-tog::before{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;left:3px;top:3px;transition:.3s}'
+  + '#centerDashboard input[type=checkbox]:checked+.pol-tog::before{transform:translateX(20px)}'
   + '</style>';
 
   dash.innerHTML = html;
@@ -1334,12 +1405,14 @@ window._cNav = function(pageId, el) {
     var names = { 'c-dash':'Dashboard', 'c-network':t('M\u1EA1ng L\u01B0\u1EDBi','Network'), 'c-marketplace':'Marketplace', 'c-revenue':t('Doanh Thu','Revenue'), 'c-bookings':t('L\u1ECBch H\u1EB9n','Bookings'), 'c-orders':t('\u0110\u01A1n H\u00E0ng','Orders'), 'c-customers':t('Kh\u00E1ch H\u00E0ng','Customers'), 'c-inventory':t('Kho H\u00E0ng','Inventory'), 'c-settings':t('C\u00E0i \u0110\u1EB7t','Settings') };
     bc.textContent = names[pageId] || pageId;
   }
+  if(pageId === 'c-marketplace') setTimeout(loadPolicyFields, 50);
 };
 
 // ── Language toggle ──
 window._cSetLang = function(l) {
   cLang = l;
   renderDashboard();
+  setTimeout(loadPolicyFields, 50);
 };
 
 // ── CRUD Actions (sync with admin) ──
@@ -1448,6 +1521,55 @@ window._cCreateSubCenter = function() {
   renderDashboard();
   if(typeof showToast === 'function') showToast(t('\u0110\u00E3 t\u1EA1o c\u01A1 s\u1EDF c\u1EA5p 2: ','Created L2 center: ') + name, '#00C896');
 };
+
+// ── Policy Save / Load ──
+window._cSavePolicy = function() {
+  if(!cUser || !window.AnimaSync) return;
+  var pol = {
+    minOrder: parseInt(document.getElementById('polMinOrder').value) || 0,
+    shipFee: parseInt(document.getElementById('polShipFee').value) || 0,
+    freeShipFrom: parseInt(document.getElementById('polFreeShip').value) || 0,
+    allowReturn: document.getElementById('polAllowReturn').checked,
+    returnDays: parseInt(document.getElementById('polReturnDays').value) || 7,
+    returnReason: document.getElementById('polReturnReason').value || 'any',
+    openHour: document.getElementById('polOpenHr').value || '08:00',
+    closeHour: document.getElementById('polCloseHr').value || '20:00',
+    advanceBookDays: parseInt(document.getElementById('polAdvBook').value) || 1,
+    maxClientsPerDay: parseInt(document.getElementById('polMaxClients').value) || 20,
+    discount: parseInt(document.getElementById('polDiscount').value) || 0,
+    promoCode: (document.getElementById('polPromoCode').value || '').toUpperCase().trim(),
+    promoDiscount: parseInt(document.getElementById('polPromoVal').value) || 0,
+    updatedAt: new Date().toISOString()
+  };
+
+  // Save to AnimaSync per center
+  var policies = AnimaSync.get('center_policies', {});
+  policies[cUser.centerId] = pol;
+  AnimaSync.set('center_policies', policies);
+
+  if(typeof showToast === 'function') showToast(t('\u0110\u00E3 l\u01B0u ch\u00EDnh s\u00E1ch Marketplace','Marketplace policy saved'), '#00C896');
+};
+
+function loadPolicyFields() {
+  if(!cUser || !window.AnimaSync) return;
+  var policies = AnimaSync.get('center_policies', {});
+  var pol = policies[cUser.centerId];
+  if(!pol) return;
+  var el = function(id) { return document.getElementById(id); };
+  if(el('polMinOrder')) el('polMinOrder').value = pol.minOrder || 0;
+  if(el('polShipFee')) el('polShipFee').value = pol.shipFee || 0;
+  if(el('polFreeShip')) el('polFreeShip').value = pol.freeShipFrom || 0;
+  if(el('polAllowReturn')) el('polAllowReturn').checked = pol.allowReturn !== false;
+  if(el('polReturnDays')) el('polReturnDays').value = pol.returnDays || 7;
+  if(el('polReturnReason')) el('polReturnReason').value = pol.returnReason || 'any';
+  if(el('polOpenHr')) el('polOpenHr').value = pol.openHour || '08:00';
+  if(el('polCloseHr')) el('polCloseHr').value = pol.closeHour || '20:00';
+  if(el('polAdvBook')) el('polAdvBook').value = pol.advanceBookDays || 1;
+  if(el('polMaxClients')) el('polMaxClients').value = pol.maxClientsPerDay || 20;
+  if(el('polDiscount')) el('polDiscount').value = pol.discount || 0;
+  if(el('polPromoCode')) el('polPromoCode').value = pol.promoCode || '';
+  if(el('polPromoVal')) el('polPromoVal').value = pol.promoDiscount || 0;
+}
 
 // ── Realtime Sync Listeners ──
 function setupSyncListeners() {

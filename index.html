@@ -11637,39 +11637,6 @@ updateCartUI();
         </button>
       </div>
 
-      <!-- Affiliate / Membership -->
-      <div style="background:rgba(245,158,11,.03);border:1px solid rgba(245,158,11,.12);border-radius:16px;padding:24px;margin-top:20px">
-        <div style="font-size:14px;font-weight:700;color:#F59E0B;margin-bottom:16px;display:flex;align-items:center;gap:8px">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-          <span data-vi="Chương trình Affiliate" data-en="Affiliate Program">Chương trình Affiliate</span>
-        </div>
-        <div id="profAffInfo" style="display:flex;flex-direction:column;gap:12px">
-          <div style="background:rgba(0,0,0,.3);border-radius:12px;padding:16px;text-align:center">
-            <div style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px" data-vi="Mã giới thiệu của bạn" data-en="Your Referral Code">Mã giới thiệu của bạn</div>
-            <div id="profAffCode" style="font-size:22px;font-weight:700;color:#F59E0B;font-family:'Roboto Mono',monospace;letter-spacing:3px;margin-bottom:8px">---</div>
-            <button onclick="copyAffCode()" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:8px 20px;color:#F59E0B;font-size:12px;font-weight:600;cursor:pointer" data-vi="Sao chép mã" data-en="Copy Code">Sao chép mã</button>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-            <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:14px;text-align:center">
-              <div id="profAffRefers" style="font-size:20px;font-weight:700;color:#00E5A8">0</div>
-              <div style="font-size:10px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:.5px" data-vi="Người GT" data-en="Referrals">Người GT</div>
-            </div>
-            <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:14px;text-align:center">
-              <div id="profAffEarned" style="font-size:20px;font-weight:700;color:#F59E0B">0</div>
-              <div style="font-size:10px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:.5px" data-vi="Hoa hồng" data-en="Commission">Hoa hồng</div>
-            </div>
-            <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:14px;text-align:center">
-              <div id="profAffLevel" style="font-size:20px;font-weight:700;color:#9B82FF">F0</div>
-              <div style="font-size:10px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:.5px" data-vi="Cấp bậc" data-en="Level">Cấp bậc</div>
-            </div>
-          </div>
-          <div style="font-size:12px;color:rgba(248,242,224,.35);line-height:1.6;padding:10px 0" data-vi="Chia sẻ mã giới thiệu để nhận hoa hồng khi bạn bè mua hàng. Cấp bậc tăng theo số người giới thiệu: F0 (0-4), F1 (5-19), F2 (20-49), F3 (50+)." data-en="Share your referral code to earn commission when friends purchase. Level up by referrals: F0 (0-4), F1 (5-19), F2 (20-49), F3 (50+).">Chia sẻ mã giới thiệu để nhận hoa hồng khi bạn bè mua hàng. Cấp bậc tăng theo số người giới thiệu: F0 (0-4), F1 (5-19), F2 (20-49), F3 (50+).</div>
-          <button onclick="shareAffLink()" style="width:100%;padding:13px;background:linear-gradient(135deg,#B8860B,#F59E0B);border:none;border-radius:10px;font-size:14px;font-weight:700;color:#000;cursor:pointer;letter-spacing:.5px;display:flex;align-items:center;justify-content:center;gap:8px">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-            <span data-vi="CHIA SẺ LINK GIỚI THIỆU" data-en="SHARE REFERRAL LINK">CHIA SẺ LINK GIỚI THIỆU</span>
-          </button>
-        </div>
-      </div>
     </div>
 
     <!-- TAB: Health -->
@@ -12112,29 +12079,6 @@ function initAffiliate(){
     affData.code=(u.id||'USR').substring(0,8).toUpperCase();
     affData.referrals=0;affData.earned=0;affData.level='F0';
     localStorage.setItem('anima_affiliate',JSON.stringify(affData));
-  }
-  var codeEl=document.getElementById('profAffCode');if(codeEl)codeEl.textContent=affData.code||'---';
-  var refEl=document.getElementById('profAffRefers');if(refEl)refEl.textContent=affData.referrals||0;
-  var earnEl=document.getElementById('profAffEarned');if(earnEl)earnEl.textContent=((affData.earned||0)/1000)+'K';
-  var lvlEl=document.getElementById('profAffLevel');if(lvlEl)lvlEl.textContent=affData.level||'F0';
-}
-function copyAffCode(){
-  var code=(document.getElementById('profAffCode')||{}).textContent||'';
-  if(code&&code!=='---'){
-    navigator.clipboard.writeText(code).then(function(){
-      if(typeof showToast==='function')showToast('Đã sao chép: '+code,'#F59E0B');
-    }).catch(function(){prompt('Copy mã:',code)});
-  }
-}
-function shareAffLink(){
-  var code=(document.getElementById('profAffCode')||{}).textContent||'';
-  var url='https://animacare.global?ref='+code;
-  if(navigator.share){
-    navigator.share({title:'Anima Care Global',text:'Dùng mã '+code+' để nhận ưu đãi!',url:url});
-  }else{
-    navigator.clipboard.writeText(url).then(function(){
-      if(typeof showToast==='function')showToast('Đã copy link giới thiệu!','#F59E0B');
-    }).catch(function(){prompt('Link:',url)});
   }
 }
 /* ═══ Health Profile Helpers ═══ */
