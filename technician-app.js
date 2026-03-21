@@ -924,10 +924,10 @@ function renderTechDash() {
 
   else if(tPage === 't-profile') {
     // ═══════════════════════════════════════════
-    // PROFESSIONAL KTV DASHBOARD
+    // KTV DASHBOARD — VERTICAL COLUMN LAYOUT
     // ═══════════════════════════════════════════
 
-    // ── Gather all data ──
+    // ── Data ──
     var incData = JSON.parse(localStorage.getItem('anima_ktv_income_' + tUser.id) || '{}');
     if(!incData.totalEarned) incData.totalEarned = 0;
     if(!incData.withdrawn) incData.withdrawn = 0;
@@ -935,171 +935,160 @@ function renderTechDash() {
     if(!incData.pendingWithdrawals) incData.pendingWithdrawals = [];
     var pBalance = incData.totalEarned - incData.withdrawn - incData.pendingAmount;
     if(pBalance < 0) pBalance = 0;
-
-    // Income from completed sessions
     var pNow = new Date();
     var pThisMonth = pNow.getFullYear() + '-' + String(pNow.getMonth()+1).padStart(2,'0');
-    var pMonthIncome = 0, pAutoTotal = 0;
-    var pMonthlyMap = {};
+    var pLastMonth = pNow.getMonth()===0 ? (pNow.getFullYear()-1)+'-12' : pNow.getFullYear()+'-'+String(pNow.getMonth()).padStart(2,'0');
+    var pMonthIncome=0, pLastMonthIncome=0, pAutoTotal=0, pMonthlyMap={};
     var myCompleted = completed || [];
-    myCompleted.forEach(function(b) {
-      var amt = b.ktvPay || b.commission || 150000;
-      pAutoTotal += amt;
-      var d = (b.completedAt || b.date || '').substring(0,7) || pThisMonth;
-      if(!pMonthlyMap[d]) pMonthlyMap[d] = 0;
-      pMonthlyMap[d] += amt;
-      if(d === pThisMonth) pMonthIncome += amt;
+    myCompleted.forEach(function(b){
+      var amt=b.ktvPay||b.commission||150000; pAutoTotal+=amt;
+      var d=(b.completedAt||b.date||'').substring(0,7)||pThisMonth;
+      if(!pMonthlyMap[d]) pMonthlyMap[d]=0; pMonthlyMap[d]+=amt;
+      if(d===pThisMonth) pMonthIncome+=amt;
+      if(d===pLastMonth) pLastMonthIncome+=amt;
     });
-    if(pAutoTotal > incData.totalEarned) { incData.totalEarned = pAutoTotal; pBalance = pAutoTotal - incData.withdrawn - incData.pendingAmount; if(pBalance<0) pBalance=0; }
+    if(pAutoTotal>incData.totalEarned){incData.totalEarned=pAutoTotal;pBalance=pAutoTotal-incData.withdrawn-incData.pendingAmount;if(pBalance<0)pBalance=0;}
+    var pClients=allClients||[];
+    var totalCustomers=pClients.length;
+    var returningCustomers=pClients.filter(function(c){return(c.sessions||[]).length>=2;}).length;
+    var returnRate=totalCustomers>0?Math.round(returningCustomers/totalCustomers*100):0;
+    var newThisMonth=pClients.filter(function(c){return(c.createdAt||'').substring(0,7)===pThisMonth;}).length;
+    var ktvOrders=sync?sync.get('orders',[]).filter(function(o){return o.ktvId===tUser.id&&(o.status==='completed'||o.status==='delivered');}):[];
+    var productComm=0; ktvOrders.forEach(function(o){productComm+=Math.round((o.total||0)*0.05);});
+    var affData=JSON.parse(localStorage.getItem('anima_ktv_affiliate_'+tUser.id)||'{}');
+    if(!affData.code){affData.code=tUser.id.replace(/[^A-Z0-9]/gi,'').substring(0,6).toUpperCase();affData.referrals=0;affData.earned=0;}
+    var affiliateComm=affData.earned||0;
+    var serviceComm=incData.totalEarned;
+    var totalAllComm=serviceComm+productComm+affiliateComm;
+    var growthPct=pLastMonthIncome>0?Math.round((pMonthIncome-pLastMonthIncome)/pLastMonthIncome*100):pMonthIncome>0?100:0;
+    var completionRate=myBookings.length>0?Math.round(myCompleted.length/myBookings.length*100):0;
+    var satisfaction=Math.min(100,Math.round((tUser.rating||4.8)/5*100));
 
-    // Customer stats
-    var pClients = allClients || [];
-    var totalCustomers = pClients.length;
-    var returningCustomers = pClients.filter(function(c){ return (c.sessions||[]).length >= 2; }).length;
-    var returnRate = totalCustomers > 0 ? Math.round((returningCustomers / totalCustomers) * 100) : 0;
-    var newThisMonth = pClients.filter(function(c){ return (c.createdAt||'').substring(0,7) === pThisMonth; }).length;
-
-    // Product commission (orders by this KTV)
-    var ktvOrders = sync ? sync.get('orders', []).filter(function(o){ return o.ktvId === tUser.id && (o.status==='completed'||o.status==='delivered'); }) : [];
-    var productComm = 0;
-    ktvOrders.forEach(function(o){ productComm += Math.round((o.total||0) * 0.05); });
-
-    // Affiliate data
-    var affData = JSON.parse(localStorage.getItem('anima_ktv_affiliate_' + tUser.id) || '{}');
-    if(!affData.code) { affData.code = tUser.id.replace(/[^A-Z0-9]/gi,'').substring(0,6).toUpperCase(); affData.referrals = 0; affData.earned = 0; }
-    var affiliateComm = affData.earned || 0;
-
-    // Commission totals
-    var serviceComm = incData.totalEarned;
-    var totalAllComm = serviceComm + productComm + affiliateComm;
-
-    // ── 1. Header ──
-    html += '<div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">';
-    html += '<div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#5B3FDF,#7B5FFF);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0">' + initials + '</div>';
-    html += '<div style="flex:1;min-width:0"><div style="font-size:18px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + tUser.name + '</div>';
-    html += '<div style="font-size:11px;color:#9B82FF;margin-top:2px">' + tUser.id + ' \u00B7 ' + (tUser.specialty || 'KTV') + '</div>';
-    html += '<div style="font-size:10px;color:rgba(248,242,224,.35);margin-top:1px">' + tUser.centerName + '</div></div>';
-    html += '<div style="text-align:right"><div style="font-size:22px;font-weight:700;color:#F59E0B">\u2605 ' + (tUser.rating||'4.8') + '</div>';
-    html += '<div style="font-size:9px;color:rgba(248,242,224,.35)">Rating</div></div>';
-    html += '</div>';
-
-    // ── 2. Balance Card ──
-    html += '<div style="background:linear-gradient(135deg,#1A0F3C,#0D1B2A);border:1px solid rgba(123,95,255,.25);border-radius:16px;padding:20px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">';
-    html += '<div><div style="font-size:10px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px">' + t('S\u1ED1 d\u01B0 kh\u1EA3 d\u1EE5ng','Available Balance') + '</div>';
-    html += '<div style="font-size:28px;font-weight:700;color:#00E5A8;font-family:\'Roboto Mono\',monospace">' + formatVND(pBalance) + '</div></div>';
-    html += '<button onclick="window._incomeSubTab=\'withdraw\';window._tNav(\'t-income\')" style="padding:10px 20px;border:none;border-radius:10px;background:linear-gradient(135deg,#5B3FDF,#7B5FFF);color:#fff;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap">' + t('R\u00FAt ti\u1EC1n','Withdraw') + '</button>';
-    html += '</div>';
-
-    // ── 3. KPI Cards (2x2) ──
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">';
-    var pKpis = [
-      {label:t('T\u1ED5ng thu nh\u1EADp','Total Earned'),val:formatVND(totalAllComm),color:'#00E5A8',icon:'M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6'},
-      {label:t('Th\u00E1ng n\u00E0y','This Month'),val:formatVND(pMonthIncome),color:'#4DA6FF',icon:'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'},
-      {label:t('T\u1ED5ng kh\u00E1ch h\u00E0ng','Total Clients'),val:totalCustomers+'',color:'#9B82FF',icon:'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 7a4 4 0 108 0 4 4 0 00-8 0M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75'},
-      {label:t('T\u1EF7 l\u1EC7 quay l\u1EA1i','Return Rate'),val:returnRate+'%',color:'#F59E0B',icon:'M1 4v6h6M23 20v-6h-6M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15'}
-    ];
-    pKpis.forEach(function(k){
-      html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.12);border-radius:12px;padding:12px">';
-      html += '<div style="display:flex;align-items:center;gap:5px;margin-bottom:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="' + k.color + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="' + k.icon + '"/></svg><span style="font-size:9px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:.8px">' + k.label + '</span></div>';
-      html += '<div style="font-size:20px;font-weight:700;color:' + k.color + ';font-family:\'Roboto Mono\',monospace">' + k.val + '</div>';
-      html += '</div>';
-    });
-    html += '</div>';
-
-    // ── 4. Commission Breakdown ──
-    html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:14px;margin-bottom:14px">';
-    html += '<div style="font-size:13px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9B82FF" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>' + t('Ngu\u1ED3n Hoa H\u1ED3ng','Commission Sources') + '</div>';
-
-    var commSources = [
-      {label:t('D\u1ECBch v\u1EE5 (150k/phi\u00EAn)','Service (150k/session)'),val:serviceComm,color:'#00E5A8',grad:'linear-gradient(90deg,#005A42,#00E5A8)'},
-      {label:t('S\u1EA3n ph\u1EA9m (5%)','Product (5%)'),val:productComm,color:'#9B82FF',grad:'linear-gradient(90deg,#4A3AFF,#9B82FF)'},
-      {label:t('Affiliate (gi\u1EDBi thi\u1EC7u)','Affiliate (referral)'),val:affiliateComm,color:'#4DA6FF',grad:'linear-gradient(90deg,#2563EB,#60A5FA)'}
-    ];
-    var maxComm = Math.max(serviceComm, productComm, affiliateComm, 1);
-    commSources.forEach(function(cs){
-      var pct = totalAllComm > 0 ? Math.round(cs.val / totalAllComm * 100) : 0;
-      html += '<div style="margin-bottom:10px">';
-      html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
-      html += '<span style="font-size:11px;color:rgba(248,242,224,.6)">' + cs.label + '</span>';
-      html += '<span style="font-size:12px;font-weight:700;color:' + cs.color + ';font-family:\'Roboto Mono\',monospace">' + formatVND(cs.val) + '</span></div>';
-      html += '<div style="background:rgba(255,255,255,.04);border-radius:6px;height:6px;overflow:hidden"><div style="height:100%;background:' + cs.grad + ';border-radius:6px;width:' + pct + '%;transition:width .3s"></div></div>';
-      html += '<div style="font-size:9px;color:rgba(248,242,224,.25);margin-top:2px">' + pct + '% ' + t('t\u1ED5ng','total') + '</div>';
-      html += '</div>';
-    });
-    html += '</div>';
-
-    // ── 5. Customer Stats ──
-    html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px">';
-    var cStats = [
-      {label:t('Kh\u00E1ch m\u1EDBi','New'),val:newThisMonth,color:'#00E5A8'},
-      {label:t('Ho\u00E0n th\u00E0nh','Done'),val:myCompleted.length,color:'#9B82FF'},
-      {label:t('Quay l\u1EA1i','Return'),val:returningCustomers,color:'#4DA6FF'},
-      {label:'Sessions',val:(tUser.sessions||myCompleted.length),color:'#F59E0B'}
-    ];
-    cStats.forEach(function(s){
-      html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.08);border-radius:10px;padding:10px 6px;text-align:center">';
-      html += '<div style="font-size:18px;font-weight:700;color:' + s.color + '">' + s.val + '</div>';
-      html += '<div style="font-size:8px;color:rgba(248,242,224,.35);text-transform:uppercase;letter-spacing:.5px;margin-top:2px">' + s.label + '</div>';
-      html += '</div>';
-    });
-    html += '</div>';
-
-    // ── 6. Monthly Chart ──
-    html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:14px;margin-bottom:14px">';
-    html += '<div style="font-size:12px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9B82FF" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>' + t('Bi\u1EC3u \u0111\u1ED3 thu nh\u1EADp','Income Chart') + '</div>';
-    var pMonths = [];
-    for(var pmi=5; pmi>=0; pmi--) {
-      var pmd = new Date(pNow.getFullYear(), pNow.getMonth()-pmi, 1);
-      var pmk = pmd.getFullYear() + '-' + String(pmd.getMonth()+1).padStart(2,'0');
-      pMonths.push({key:pmk, label:String(pmd.getMonth()+1).padStart(2,'0'), val:pMonthlyMap[pmk]||0});
+    // ── SVG Gauge helper ──
+    function gauge(pct,color,size,label,val){
+      var r=(size-8)/2, c=Math.PI*2*r, dash=c*pct/100, gap=c-dash;
+      return '<div style="text-align:center;position:relative;width:'+size+'px;height:'+size+'px;margin:0 auto">' +
+        '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" style="transform:rotate(-90deg)">' +
+        '<circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+r+'" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="6"/>' +
+        '<circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="6" stroke-linecap="round" stroke-dasharray="'+dash+' '+gap+'"/></svg>' +
+        '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">' +
+        '<div style="font-size:16px;font-weight:700;color:'+color+';font-family:\'Roboto Mono\',monospace">'+val+'</div>' +
+        '<div style="font-size:8px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:.5px;margin-top:1px">'+label+'</div></div></div>';
     }
-    var pMaxVal = Math.max.apply(null, pMonths.map(function(m){return m.val;})) || 1;
-    html += '<div style="display:flex;align-items:flex-end;gap:6px;height:80px">';
+
+    // ══════ LAYOUT ══════
+
+    // ── Header Card ──
+    html += '<div style="background:linear-gradient(135deg,#0F0825,#0D1B2A);border:1px solid rgba(123,95,255,.2);border-radius:16px;padding:18px;margin-bottom:12px">';
+    html += '<div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">';
+    html += '<div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#5B3FDF,#7B5FFF);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;flex-shrink:0">' + initials + '</div>';
+    html += '<div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:700">' + tUser.name + '</div>';
+    html += '<div style="font-size:10px;color:#9B82FF;margin-top:2px">' + (tUser.specialty||'KTV') + ' \u00B7 ' + tUser.centerName + '</div></div>';
+    html += '<div style="text-align:center"><div style="font-size:20px;font-weight:700;color:#F59E0B">\u2605 '+(tUser.rating||'4.8')+'</div><div style="font-size:8px;color:rgba(248,242,224,.3)">Rating</div></div>';
+    html += '</div>';
+    // Balance inline
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,200,150,.04);border:1px solid rgba(0,200,150,.12);border-radius:12px;padding:14px 16px">';
+    html += '<div><div style="font-size:9px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1.5px">' + t('S\u1ED1 d\u01B0','Balance') + '</div>';
+    html += '<div style="font-size:22px;font-weight:700;color:#00E5A8;font-family:\'Roboto Mono\',monospace;margin-top:2px">' + formatVND(pBalance) + '</div></div>';
+    html += '<button onclick="window._incomeSubTab=\'withdraw\';window._tNav(\'t-income\')" style="padding:10px 18px;border:none;border-radius:10px;background:linear-gradient(135deg,#005A42,#00C896);color:#000;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.5px">' + t('R\u00FAt ti\u1EC1n','Withdraw') + '</button>';
+    html += '</div></div>';
+
+    // ── Performance Gauges ──
+    html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.1);border-radius:14px;padding:16px;margin-bottom:12px">';
+    html += '<div style="font-size:11px;font-weight:700;color:rgba(248,242,224,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px">' + t('\u0110o L\u01B0\u1EDDng Hi\u1EC7u Su\u1EA5t','Performance Metrics') + '</div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">';
+    html += '<div>' + gauge(completionRate,'#00E5A8',80,t('Ho\u00E0n th\u00E0nh','Complete'),completionRate+'%') + '</div>';
+    html += '<div>' + gauge(satisfaction,'#F59E0B',80,t('H\u00E0i l\u00F2ng','Satisfy'),satisfaction+'%') + '</div>';
+    html += '<div>' + gauge(returnRate,'#9B82FF',80,t('Quay l\u1EA1i','Return'),returnRate+'%') + '</div>';
+    html += '</div></div>';
+
+    // ── Revenue Stats (vertical cards) ──
+    html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.1);border-radius:14px;padding:16px;margin-bottom:12px">';
+    html += '<div style="font-size:11px;font-weight:700;color:rgba(248,242,224,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">' + t('Th\u1ED1ng K\u00EA Doanh Thu','Revenue Statistics') + '</div>';
+    // Revenue rows
+    var revRows = [
+      {label:t('T\u1ED5ng thu nh\u1EADp','Total Earned'),val:formatVND(totalAllComm),color:'#00E5A8',sub:''},
+      {label:t('Th\u00E1ng n\u00E0y','This Month'),val:formatVND(pMonthIncome),color:'#4DA6FF',sub:growthPct>=0?'\u25B2 '+growthPct+'%':'\u25BC '+Math.abs(growthPct)+'%'},
+      {label:t('D\u1ECBch v\u1EE5 (150k/phi\u00EAn)','Service (150k/session)'),val:formatVND(serviceComm),color:'#7B5FFF',sub:myCompleted.length+' '+t('phi\u00EAn','sessions')},
+      {label:t('S\u1EA3n ph\u1EA9m (5%)','Product (5%)'),val:formatVND(productComm),color:'#F59E0B',sub:ktvOrders.length+' '+t('\u0111\u01A1n','orders')},
+      {label:t('Affiliate','Affiliate'),val:formatVND(affiliateComm),color:'#4DA6FF',sub:(affData.referrals||0)+' '+t('ng\u01B0\u1EDDi','refs')}
+    ];
+    revRows.forEach(function(r){
+      html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(123,95,255,.05)">';
+      html += '<div><div style="font-size:12px;color:rgba(248,242,224,.7)">' + r.label + '</div>';
+      if(r.sub) html += '<div style="font-size:9px;color:' + (r.sub.indexOf('\u25B2')!==-1?'#00E5A8':r.sub.indexOf('\u25BC')!==-1?'#FF4D6D':'rgba(248,242,224,.3)') + ';margin-top:1px">' + r.sub + '</div>';
+      html += '</div>';
+      html += '<div style="font-size:15px;font-weight:700;color:' + r.color + ';font-family:\'Roboto Mono\',monospace">' + r.val + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+
+    // ── Monthly Income Chart ──
+    html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.1);border-radius:14px;padding:16px;margin-bottom:12px">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
+    html += '<div style="font-size:11px;font-weight:700;color:rgba(248,242,224,.5);text-transform:uppercase;letter-spacing:1.5px">' + t('Bi\u1EC3u \u0110\u1ED3 Thu Nh\u1EADp','Income Chart') + '</div>';
+    html += '<div style="font-size:9px;color:rgba(248,242,224,.3)">' + t('6 th\u00E1ng g\u1EA7n nh\u1EA5t','Last 6 months') + '</div></div>';
+    var pMonths=[];
+    for(var pmi=5;pmi>=0;pmi--){
+      var pmd=new Date(pNow.getFullYear(),pNow.getMonth()-pmi,1);
+      var pmk=pmd.getFullYear()+'-'+String(pmd.getMonth()+1).padStart(2,'0');
+      var mNames=['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12'];
+      pMonths.push({key:pmk,label:mNames[pmd.getMonth()],val:pMonthlyMap[pmk]||0});
+    }
+    var pMaxVal=Math.max.apply(null,pMonths.map(function(m){return m.val;}))||1;
+    html += '<div style="display:flex;align-items:flex-end;gap:8px;height:100px;padding-bottom:4px">';
     pMonths.forEach(function(m){
-      var barH = Math.max(4, (m.val/pMaxVal)*65);
-      var isCur = m.key === pThisMonth;
-      html += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">';
-      html += '<div style="font-size:7px;color:rgba(248,242,224,.3);font-family:\'Roboto Mono\',monospace">' + (m.val > 0 ? formatShortVND(m.val) : '-') + '</div>';
-      html += '<div style="width:100%;height:' + barH + 'px;border-radius:4px 4px 0 0;background:' + (isCur?'linear-gradient(180deg,#7B5FFF,#5B3FDF)':'rgba(123,95,255,.15)') + '"></div>';
-      html += '<div style="font-size:8px;color:rgba(248,242,224,.25)">' + 'T' + m.label + '</div>';
+      var barH=Math.max(6,(m.val/pMaxVal)*80);
+      var isCur=m.key===pThisMonth;
+      html += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">';
+      html += '<div style="font-size:8px;color:rgba(248,242,224,.35);font-family:\'Roboto Mono\',monospace">'+(m.val>0?formatShortVND(m.val):'\u00B7')+'</div>';
+      html += '<div style="width:100%;height:'+barH+'px;border-radius:6px 6px 2px 2px;background:'+(isCur?'linear-gradient(180deg,#00E5A8,#005A42)':'linear-gradient(180deg,rgba(123,95,255,.25),rgba(123,95,255,.08))')+'"></div>';
+      html += '<div style="font-size:9px;font-weight:'+(isCur?'700':'400')+';color:'+(isCur?'#00E5A8':'rgba(248,242,224,.3)')+'">'+m.label+'</div>';
       html += '</div>';
     });
     html += '</div></div>';
 
-    // ── 7. Affiliate Section ──
-    html += '<div style="background:linear-gradient(135deg,rgba(37,99,235,.08),rgba(96,165,250,.04));border:1px solid rgba(77,166,255,.2);border-radius:14px;padding:14px;margin-bottom:14px">';
-    html += '<div style="font-size:13px;font-weight:600;margin-bottom:12px;color:#4DA6FF;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>' + t('Ch\u01B0\u01A1ng Tr\u00ECnh Affiliate','Affiliate Program') + '</div>';
-
-    // Referral code
-    html += '<div style="display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.3);border:1px solid rgba(77,166,255,.15);border-radius:10px;padding:10px 14px;margin-bottom:10px">';
-    html += '<div style="flex:1"><div style="font-size:9px;color:rgba(248,242,224,.35);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">' + t('M\u00E3 gi\u1EDBi thi\u1EC7u','Referral Code') + '</div>';
-    html += '<div style="font-size:18px;font-weight:700;color:#4DA6FF;font-family:\'Roboto Mono\',monospace;letter-spacing:3px">' + affData.code + '</div></div>';
-    html += '<button onclick="navigator.clipboard.writeText(\'' + affData.code + '\');if(typeof showToast===\'function\')showToast(\'' + t('\u0110\u00E3 copy!','Copied!') + '\',\'#4DA6FF\')" style="padding:8px 14px;border:1px solid rgba(77,166,255,.2);border-radius:8px;background:rgba(77,166,255,.08);color:#4DA6FF;font-size:11px;font-weight:600;cursor:pointer">' + t('Copy','Copy') + '</button>';
-    html += '</div>';
-
-    // Affiliate stats
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">';
-    html += '<div style="background:rgba(0,0,0,.2);border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:700;color:#4DA6FF">' + (affData.referrals||0) + '</div><div style="font-size:9px;color:rgba(248,242,224,.35)">' + t('Ng\u01B0\u1EDDi \u0111\u00E3 GT','Referrals') + '</div></div>';
-    html += '<div style="background:rgba(0,0,0,.2);border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:700;color:#00E5A8;font-family:\'Roboto Mono\',monospace">' + formatVND(affiliateComm) + '</div><div style="font-size:9px;color:rgba(248,242,224,.35)">' + t('Thu nh\u1EADp affiliate','Aff. Earnings') + '</div></div>';
-    html += '</div>';
-
-    // Share button
-    html += '<button onclick="var url=\'https://animacare.global?ref=' + affData.code + '\';if(navigator.share)navigator.share({title:\'Anima Care\',url:url});else{navigator.clipboard.writeText(url);if(typeof showToast===\'function\')showToast(\'' + t('\u0110\u00E3 copy link!','Link copied!') + '\',\'#4DA6FF\')}" style="width:100%;padding:10px;border:1px solid rgba(77,166,255,.2);border-radius:8px;background:rgba(77,166,255,.06);color:#4DA6FF;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>' + t('Chia s\u1EBB link gi\u1EDBi thi\u1EC7u','Share Referral Link') + '</button>';
-    html += '</div>';
-
-    // ── 8. Info Card (compact) ──
-    html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.1);border-radius:12px;padding:12px;margin-bottom:14px">';
-    html += '<div style="font-size:11px;font-weight:600;color:rgba(248,242,224,.5);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">' + t('Th\u00F4ng tin c\u00E1 nh\u00E2n','Personal Info') + '</div>';
-    var pFields = [
-      [t('\u0110i\u1EC7n tho\u1EA1i','Phone'), tUser.phone],
-      ['Email', tUser.email],
-      [t('Chuy\u00EAn m\u00F4n','Specialty'), tUser.specialty||'KTV'],
-      [t('C\u01A1 s\u1EDF','Center'), tUser.centerName]
+    // ── Customer Overview ──
+    html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.1);border-radius:14px;padding:16px;margin-bottom:12px">';
+    html += '<div style="font-size:11px;font-weight:700;color:rgba(248,242,224,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">' + t('Kh\u00E1ch H\u00E0ng','Customers') + '</div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+    var custCards=[
+      {label:t('T\u1ED5ng kh\u00E1ch','Total'),val:totalCustomers,color:'#9B82FF',icon:'\uD83D\uDC65'},
+      {label:t('Kh\u00E1ch m\u1EDBi','New'),val:newThisMonth,color:'#00E5A8',icon:'\uD83C\uDD95'},
+      {label:t('Quay l\u1EA1i','Returning'),val:returningCustomers,color:'#4DA6FF',icon:'\uD83D\uDD04'},
+      {label:t('Ho\u00E0n th\u00E0nh','Completed'),val:myCompleted.length,color:'#F59E0B',icon:'\u2705'}
     ];
-    pFields.forEach(function(f) {
-      html += '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(123,95,255,.04)">';
-      html += '<div style="font-size:10px;color:rgba(248,242,224,.35);text-transform:uppercase;letter-spacing:.8px;font-family:\'Roboto Mono\',monospace">' + f[0] + '</div>';
-      html += '<div style="font-size:12px;font-weight:500;text-align:right;max-width:60%">' + f[1] + '</div></div>';
+    custCards.forEach(function(c){
+      html += '<div style="background:rgba(0,0,0,.2);border:1px solid rgba(123,95,255,.06);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px">';
+      html += '<div style="font-size:20px">' + c.icon + '</div>';
+      html += '<div><div style="font-size:18px;font-weight:700;color:'+c.color+'">' + c.val + '</div>';
+      html += '<div style="font-size:9px;color:rgba(248,242,224,.35)">' + c.label + '</div></div>';
+      html += '</div>';
+    });
+    html += '</div></div>';
+
+    // ── Affiliate Card ──
+    html += '<div style="background:linear-gradient(135deg,rgba(37,99,235,.06),#0A1218);border:1px solid rgba(77,166,255,.15);border-radius:14px;padding:16px;margin-bottom:12px">';
+    html += '<div style="font-size:11px;font-weight:700;color:#4DA6FF;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">' + t('Ch\u01B0\u01A1ng Tr\u00ECnh Affiliate','Affiliate Program') + '</div>';
+    html += '<div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.3);border:1px solid rgba(77,166,255,.12);border-radius:10px;padding:12px;margin-bottom:10px">';
+    html += '<div style="flex:1"><div style="font-size:8px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px">' + t('M\u00E3 GT','Code') + '</div>';
+    html += '<div style="font-size:20px;font-weight:700;color:#4DA6FF;font-family:\'Roboto Mono\',monospace;letter-spacing:4px">' + affData.code + '</div></div>';
+    html += '<button onclick="navigator.clipboard.writeText(\''+affData.code+'\');if(typeof showToast===\'function\')showToast(\''+t('\u0110\u00E3 copy!','Copied!')+'\',\'#4DA6FF\')" style="padding:8px 16px;border:1px solid rgba(77,166,255,.2);border-radius:8px;background:rgba(77,166,255,.08);color:#4DA6FF;font-size:11px;font-weight:600;cursor:pointer">Copy</button>';
+    html += '</div>';
+    html += '<div style="display:flex;gap:8px">';
+    html += '<div style="flex:1;background:rgba(0,0,0,.2);border-radius:8px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:700;color:#4DA6FF">'+(affData.referrals||0)+'</div><div style="font-size:8px;color:rgba(248,242,224,.3)">'+t('Ng\u01B0\u1EDDi GT','Refs')+'</div></div>';
+    html += '<div style="flex:1;background:rgba(0,0,0,.2);border-radius:8px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:700;color:#00E5A8;font-family:\'Roboto Mono\',monospace">'+formatVND(affiliateComm)+'</div><div style="font-size:8px;color:rgba(248,242,224,.3)">'+t('Hoa h\u1ED3ng','Earned')+'</div></div>';
+    html += '</div>';
+    html += '<button onclick="var u=\'https://animacare.global?ref='+affData.code+'\';if(navigator.share)navigator.share({title:\'Anima Care\',url:u});else{navigator.clipboard.writeText(u);if(typeof showToast===\'function\')showToast(\''+t('\u0110\u00E3 copy!','Copied!')+'\',\'#4DA6FF\')}" style="width:100%;margin-top:10px;padding:10px;border:1px solid rgba(77,166,255,.15);border-radius:8px;background:rgba(77,166,255,.05);color:#4DA6FF;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>'+t('Chia s\u1EBB','Share')+'</button>';
+    html += '</div>';
+
+    // ── Personal Info ──
+    html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.08);border-radius:14px;padding:16px;margin-bottom:14px">';
+    html += '<div style="font-size:11px;font-weight:700;color:rgba(248,242,224,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px">' + t('Th\u00F4ng Tin C\u00E1 Nh\u00E2n','Personal Info') + '</div>';
+    [[t('H\u1ECD t\u00EAn','Name'),tUser.name],[t('SĐT','Phone'),tUser.phone],['Email',tUser.email],[t('Chuy\u00EAn m\u00F4n','Spec'),tUser.specialty||'KTV'],[t('C\u01A1 s\u1EDF','Center'),tUser.centerName]].forEach(function(f){
+      html += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(123,95,255,.04)">';
+      html += '<div style="font-size:10px;color:rgba(248,242,224,.35);text-transform:uppercase;letter-spacing:.8px">' + f[0] + '</div>';
+      html += '<div style="font-size:12px;font-weight:500;text-align:right;max-width:60%;color:rgba(248,242,224,.8)">' + f[1] + '</div></div>';
     });
     html += '</div>';
   }

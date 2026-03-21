@@ -11633,6 +11633,7 @@ updateCartUI();
       <button class="prof-tab on" onclick="switchProfTab('info',this)" style="flex:1;padding:12px 0;background:transparent;border:none;border-bottom:2px solid #00C896;font-family:'Roboto',sans-serif;font-size:13px;font-weight:600;color:#00C896;cursor:pointer;transition:all .2s" data-vi="Thông Tin" data-en="Info">Thông Tin</button>
       <button class="prof-tab" onclick="switchProfTab('health',this)" style="flex:1;padding:12px 0;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;font-size:13px;font-weight:600;color:rgba(248,242,224,.4);cursor:pointer;transition:all .2s" data-vi="Sức Khỏe" data-en="Health">Sức Khỏe</button>
       <button class="prof-tab" onclick="switchProfTab('orders',this)" style="flex:1;padding:12px 0;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;font-size:13px;font-weight:600;color:rgba(248,242,224,.4);cursor:pointer;transition:all .2s" data-vi="Đơn Hàng" data-en="Orders">Đơn Hàng</button>
+      <button class="prof-tab" onclick="switchProfTab('dashboard',this)" style="flex:1;padding:12px 0;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;font-size:13px;font-weight:600;color:rgba(248,242,224,.4);cursor:pointer;transition:all .2s" data-vi="Dashboard" data-en="Dashboard">Dashboard</button>
       <button class="prof-tab" onclick="switchProfTab('settings',this)" style="flex:1;padding:12px 0;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;font-size:13px;font-weight:600;color:rgba(248,242,224,.4);cursor:pointer;transition:all .2s" data-vi="Cài Đặt" data-en="Settings">Cài Đặt</button>
     </div>
 
@@ -11984,6 +11985,9 @@ updateCartUI();
       </button>
     </div>
 
+    <!-- TAB: Dashboard -->
+    <div id="profTabDashboard" class="prof-panel" style="display:none"></div>
+
   </div>
 </div>
 
@@ -12019,6 +12023,159 @@ function switchProfTab(tab,btn){
   if(panel)panel.style.display='block';
   if(btn){btn.style.borderBottomColor='#00C896';btn.style.color='#00C896';btn.classList.add('on');}
   if(tab==='orders')renderOrderHistory();
+  if(tab==='dashboard')renderUserDashboard();
+}
+
+function renderUserDashboard(){
+  var el=document.getElementById('profTabDashboard');if(!el)return;
+  var l=typeof lang!=='undefined'?lang:'vi';
+  var _t=function(v,e){return l==='en'?e:v;};
+  var _fmt=function(n){if(!n)return '0\u0111';return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.')+'\u0111';};
+  var _fmtS=function(n){if(n>=1000000)return Math.round(n/1000000)+'tr';if(n>=1000)return Math.round(n/1000)+'k';return n+'\u0111';};
+
+  // Data
+  var orders=JSON.parse(localStorage.getItem('anima_orders')||'[]');
+  var completedOrders=orders.filter(function(o){return o.status==='completed'||o.status==='delivered';});
+  var now=new Date();
+  var thisMonth=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  var lastMonth=now.getMonth()===0?(now.getFullYear()-1)+'-12':now.getFullYear()+'-'+String(now.getMonth()).padStart(2,'0');
+
+  // Commission
+  var productComm=0,serviceComm=0,monthComm=0,lastMonthComm=0,monthlyMap={};
+  completedOrders.forEach(function(o){
+    var total=parseInt(String(o.total||'0').replace(/[^\d]/g,''),10)||0;
+    var comm=o.type==='service'?Math.round(total*0.08):Math.round(total*0.05);
+    if(o.type==='service')serviceComm+=comm; else productComm+=comm;
+    var d=(o.createdAt||o.date||'').substring(0,7)||thisMonth;
+    if(!monthlyMap[d])monthlyMap[d]=0;monthlyMap[d]+=comm;
+    if(d===thisMonth)monthComm+=comm;
+    if(d===lastMonth)lastMonthComm+=comm;
+  });
+  var affData=JSON.parse(localStorage.getItem('anima_affiliate')||'{}');
+  var affiliateComm=affData.earned||0;
+  var totalComm=productComm+serviceComm+affiliateComm;
+  var incData=JSON.parse(localStorage.getItem('anima_user_income')||'{}');
+  if(!incData.withdrawn)incData.withdrawn=0;
+  if(!incData.pendingAmount)incData.pendingAmount=0;
+  var balance=totalComm-incData.withdrawn-incData.pendingAmount;
+  if(balance<0)balance=0;
+  var growthPct=lastMonthComm>0?Math.round((monthComm-lastMonthComm)/lastMonthComm*100):monthComm>0?100:0;
+
+  // Customer stats
+  var custNames={};
+  var custThisMonth={};
+  orders.forEach(function(o){
+    var n=(o.customerName||o.name||'').trim();if(!n)return;
+    if(!custNames[n])custNames[n]=0;custNames[n]++;
+    var d=(o.createdAt||o.date||'').substring(0,7);
+    if(d===thisMonth&&!custThisMonth[n])custThisMonth[n]=1;
+  });
+  var totalCust=Object.keys(custNames).length;
+  var returning=0;for(var k in custNames)if(custNames[k]>=2)returning++;
+  var returnRate=totalCust>0?Math.round(returning/totalCust*100):0;
+  var newCust=Object.keys(custThisMonth).length;
+  var completionRate=orders.length>0?Math.round(completedOrders.length/orders.length*100):0;
+
+  // SVG Gauge
+  function gauge(pct,color,sz,lbl,val){
+    var r=(sz-8)/2,c=Math.PI*2*r,d=c*pct/100,g=c-d;
+    return '<div style="text-align:center;position:relative;width:'+sz+'px;height:'+sz+'px;margin:0 auto">'+
+    '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 '+sz+' '+sz+'" style="transform:rotate(-90deg)">'+
+    '<circle cx="'+(sz/2)+'" cy="'+(sz/2)+'" r="'+r+'" fill="none" stroke="rgba(0,200,150,.08)" stroke-width="5"/>'+
+    '<circle cx="'+(sz/2)+'" cy="'+(sz/2)+'" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="5" stroke-linecap="round" stroke-dasharray="'+d+' '+g+'"/></svg>'+
+    '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">'+
+    '<div style="font-size:15px;font-weight:700;color:'+color+'">'+val+'</div>'+
+    '<div style="font-size:7px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:.5px;margin-top:1px">'+lbl+'</div></div></div>';
+  }
+
+  var h='';
+
+  // ── Balance Card ──
+  h+='<div style="background:linear-gradient(135deg,rgba(0,90,66,.12),rgba(0,200,150,.04));border:1px solid rgba(0,200,150,.15);border-radius:16px;padding:18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">';
+  h+='<div><div style="font-size:9px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1.5px">'+_t('S\u1ED1 d\u01B0 hoa h\u1ED3ng','Commission Balance')+'</div>';
+  h+='<div style="font-size:24px;font-weight:700;color:var(--g2,#00E5A8);font-family:\'Roboto Mono\',monospace;margin-top:4px">'+_fmt(balance)+'</div></div>';
+  h+='<div style="text-align:right"><div style="font-size:9px;color:rgba(248,242,224,.3)">'+_t('T\u1ED5ng','Total')+'</div>';
+  h+='<div style="font-size:16px;font-weight:600;color:var(--t1,#F8F2E0)">'+_fmt(totalComm)+'</div></div>';
+  h+='</div>';
+
+  // ── Performance Gauges ──
+  h+='<div style="background:var(--dark3,#0A1218);border:1px solid rgba(0,200,150,.1);border-radius:14px;padding:16px;margin-bottom:14px">';
+  h+='<div style="font-size:10px;font-weight:700;color:rgba(248,242,224,.45);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px">'+_t('\u0110o L\u01B0\u1EDDng Hi\u1EC7u Su\u1EA5t','Performance')+'</div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">';
+  h+=gauge(completionRate,'#00C896',76,_t('Ho\u00E0n th\u00E0nh','Done'),completionRate+'%');
+  h+=gauge(returnRate,'var(--pu2,#9B82FF)',76,_t('Quay l\u1EA1i','Return'),returnRate+'%');
+  h+=gauge(Math.min(100,completedOrders.length*10),'#F59E0B',76,_t('\u0110\u01A1n h\u00E0ng','Orders'),completedOrders.length+'');
+  h+='</div></div>';
+
+  // ── Revenue Stats ──
+  h+='<div style="background:var(--dark3,#0A1218);border:1px solid rgba(0,200,150,.1);border-radius:14px;padding:16px;margin-bottom:14px">';
+  h+='<div style="font-size:10px;font-weight:700;color:rgba(248,242,224,.45);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">'+_t('Th\u1ED1ng K\u00EA Doanh Thu','Revenue Stats')+'</div>';
+  var revRows=[
+    {l:_t('T\u1ED5ng hoa h\u1ED3ng','Total Commission'),v:_fmt(totalComm),c:'var(--g2,#00E5A8)',s:''},
+    {l:_t('Th\u00E1ng n\u00E0y','This Month'),v:_fmt(monthComm),c:'#4DA6FF',s:growthPct>=0?'\u25B2 '+growthPct+'%':'\u25BC '+Math.abs(growthPct)+'%'},
+    {l:_t('S\u1EA3n ph\u1EA9m (5%)','Product (5%)'),v:_fmt(productComm),c:'var(--pu2,#9B82FF)',s:''},
+    {l:_t('D\u1ECBch v\u1EE5 (8%)','Service (8%)'),v:_fmt(serviceComm),c:'#F59E0B',s:''},
+    {l:_t('Affiliate','Affiliate'),v:_fmt(affiliateComm),c:'#4DA6FF',s:(affData.referrals||0)+' '+_t('ng\u01B0\u1EDDi','refs')}
+  ];
+  revRows.forEach(function(r){
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(0,200,150,.05)">';
+    h+='<div><div style="font-size:12px;color:rgba(248,242,224,.65)">'+r.l+'</div>';
+    if(r.s)h+='<div style="font-size:9px;color:'+(r.s.indexOf('\u25B2')!==-1?'#00C896':'#FF4D6D')+';margin-top:1px">'+r.s+'</div>';
+    h+='</div><div style="font-size:14px;font-weight:700;color:'+r.c+';font-family:\'Roboto Mono\',monospace">'+r.v+'</div></div>';
+  });
+  h+='</div>';
+
+  // ── Monthly Chart ──
+  h+='<div style="background:var(--dark3,#0A1218);border:1px solid rgba(0,200,150,.1);border-radius:14px;padding:16px;margin-bottom:14px">';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
+  h+='<div style="font-size:10px;font-weight:700;color:rgba(248,242,224,.45);text-transform:uppercase;letter-spacing:1.5px">'+_t('Bi\u1EC3u \u0110\u1ED3','Chart')+'</div>';
+  h+='<div style="font-size:9px;color:rgba(248,242,224,.25)">'+_t('6 th\u00E1ng','6 months')+'</div></div>';
+  var ms=[];
+  for(var i=5;i>=0;i--){
+    var md=new Date(now.getFullYear(),now.getMonth()-i,1);
+    var mk=md.getFullYear()+'-'+String(md.getMonth()+1).padStart(2,'0');
+    var mn=['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12'];
+    ms.push({k:mk,l:mn[md.getMonth()],v:monthlyMap[mk]||0});
+  }
+  var mx=Math.max.apply(null,ms.map(function(m){return m.v;}))||1;
+  h+='<div style="display:flex;align-items:flex-end;gap:8px;height:90px">';
+  ms.forEach(function(m){
+    var bh=Math.max(6,(m.v/mx)*72);var cur=m.k===thisMonth;
+    h+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">';
+    h+='<div style="font-size:8px;color:rgba(248,242,224,.3);font-family:\'Roboto Mono\',monospace">'+(m.v>0?_fmtS(m.v):'\u00B7')+'</div>';
+    h+='<div style="width:100%;height:'+bh+'px;border-radius:6px 6px 2px 2px;background:'+(cur?'linear-gradient(180deg,#00C896,#005A42)':'linear-gradient(180deg,rgba(0,200,150,.2),rgba(0,200,150,.06))')+'"></div>';
+    h+='<div style="font-size:9px;font-weight:'+(cur?'700':'400')+';color:'+(cur?'var(--g1,#00C896)':'rgba(248,242,224,.3)')+'">'+m.l+'</div></div>';
+  });
+  h+='</div></div>';
+
+  // ── Customer Stats ──
+  h+='<div style="background:var(--dark3,#0A1218);border:1px solid rgba(0,200,150,.1);border-radius:14px;padding:16px;margin-bottom:14px">';
+  h+='<div style="font-size:10px;font-weight:700;color:rgba(248,242,224,.45);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">'+_t('Kh\u00E1ch H\u00E0ng','Customers')+'</div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+  [{l:_t('T\u1ED5ng','Total'),v:totalCust,c:'var(--g2,#00E5A8)',i:'\uD83D\uDC65'},{l:_t('M\u1EDBi','New'),v:newCust,c:'#4DA6FF',i:'\uD83C\uDD95'},{l:_t('Quay l\u1EA1i','Return'),v:returning,c:'var(--pu2,#9B82FF)',i:'\uD83D\uDD04'},{l:_t('\u0110\u01A1n xong','Done'),v:completedOrders.length,c:'#F59E0B',i:'\u2705'}].forEach(function(c){
+    h+='<div style="background:rgba(0,0,0,.15);border:1px solid rgba(0,200,150,.06);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px">';
+    h+='<div style="font-size:20px">'+c.i+'</div><div><div style="font-size:18px;font-weight:700;color:'+c.c+'">'+c.v+'</div>';
+    h+='<div style="font-size:9px;color:rgba(248,242,224,.35)">'+c.l+'</div></div></div>';
+  });
+  h+='</div></div>';
+
+  // ── Affiliate ──
+  h+='<div style="background:var(--dark3,#0A1218);border:1px solid rgba(0,200,150,.1);border-radius:14px;padding:16px">';
+  h+='<div style="font-size:10px;font-weight:700;color:rgba(248,242,224,.45);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">Affiliate</div>';
+  if(!affData.code){affData.code=(currentUser&&currentUser.id?currentUser.id:'USR').substring(0,8).toUpperCase();affData.referrals=0;affData.earned=0;}
+  h+='<div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border:1px solid rgba(0,200,150,.1);border-radius:10px;padding:12px;margin-bottom:10px">';
+  h+='<div style="flex:1"><div style="font-size:8px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px">'+_t('M\u00E3 GT','Code')+'</div>';
+  h+='<div style="font-size:18px;font-weight:700;color:var(--g2,#00E5A8);font-family:\'Roboto Mono\',monospace;letter-spacing:3px">'+(affData.code||'---')+'</div></div>';
+  h+='<button onclick="navigator.clipboard.writeText(\''+(affData.code||'')+'\');if(typeof showToast===\'function\')showToast(\'Copied!\',\'#00C896\')" style="padding:8px 14px;border:1px solid rgba(0,200,150,.15);border-radius:8px;background:rgba(0,200,150,.06);color:var(--g1,#00C896);font-size:11px;font-weight:600;cursor:pointer">Copy</button>';
+  h+='</div>';
+  h+='<div style="display:flex;gap:8px">';
+  h+='<div style="flex:1;background:rgba(0,0,0,.15);border-radius:8px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:700;color:var(--g2,#00E5A8)">'+(affData.referrals||0)+'</div><div style="font-size:8px;color:rgba(248,242,224,.3)">'+_t('Ng\u01B0\u1EDDi GT','Refs')+'</div></div>';
+  h+='<div style="flex:1;background:rgba(0,0,0,.15);border-radius:8px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:700;color:var(--g2,#00E5A8);font-family:\'Roboto Mono\',monospace">'+_fmt(affiliateComm)+'</div><div style="font-size:8px;color:rgba(248,242,224,.3)">'+_t('Hoa h\u1ED3ng','Earned')+'</div></div>';
+  h+='</div>';
+  h+='<button onclick="var u=\'https://animacare.global?ref='+(affData.code||'')+'\';if(navigator.share)navigator.share({title:\'Anima Care\',url:u});else{navigator.clipboard.writeText(u);if(typeof showToast===\'function\')showToast(\'Copied!\',\'#00C896\')}" style="width:100%;margin-top:10px;padding:10px;border:1px solid rgba(0,200,150,.12);border-radius:8px;background:rgba(0,200,150,.04);color:var(--g1,#00C896);font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>'+_t('Chia s\u1EBB link','Share Link')+'</button>';
+  h+='</div>';
+
+  el.innerHTML=h;
 }
 
 function loadProfileData(u){
