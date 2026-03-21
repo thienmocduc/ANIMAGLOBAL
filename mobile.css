@@ -58,10 +58,11 @@ img,video{max-width:100%;height:auto}
 
 /* ══════════ MOBILE ≤768px ══════════ */
 @media(max-width:768px){
-  /* Nav */
+  /* Nav — hamburger sát góc phải (inside nav-right) */
   .mobile-menu-btn{display:flex!important}
   .nav-center.nav-center{display:none!important}
   .nav-right .nav-cta{display:none!important}
+  .nav-right{margin-left:auto!important;gap:8px!important}
   nav#mainNav{padding:0 12px!important;height:52px!important}
   .nav-logo-img{height:26px!important}
   .lang-toggle{transform:scale(.85);transform-origin:right center}
