@@ -7653,7 +7653,6 @@ document.body.style.overflow='';
         <label style="font-family:var(--fb);font-size:13px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:6px" data-vi="Mật Khẩu" data-en="Password">Mật Khẩu</label>
         <div style="position:relative">
           <input id="loginPwd" type="password" placeholder="••••••••" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.3);border:0.5px solid rgba(0,200,150,0.2);border-radius:10px;padding:12px 40px 12px 14px;font-family:var(--fb);font-size:15px;color:var(--t1);outline:none;transition:border-color .2s" onfocus="this.style.borderColor='rgba(0,200,150,0.5)'" onblur="this.style.borderColor='rgba(0,200,150,0.2)'">
-          <button onclick="togglePwd('loginPwd')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--t3)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
         </div>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
@@ -7681,7 +7680,7 @@ document.body.style.overflow='';
         <div><label style="font-family:var(--fb);font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:4px">Email</label><input type="email" id="regEmail" placeholder="email@example.com" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.3);border:0.5px solid rgba(0,200,150,0.2);border-radius:8px;padding:9px 10px;font-family:var(--fb);font-size:14px;color:var(--t1);outline:none" onfocus="this.style.borderColor='rgba(0,200,150,0.5)'" onblur="this.style.borderColor='rgba(0,200,150,0.2)'"></div>
         <div>
           <label style="font-family:var(--fb);font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:4px" data-vi="Mật Khẩu" data-en="Password">Mật Khẩu</label>
-          <div style="position:relative"><input id="regPwd" type="password" placeholder="Min 8 ký tự" data-placeholder-vi="Min 8 ký tự" data-placeholder-en="Min 8 chars" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.3);border:0.5px solid rgba(0,200,150,0.2);border-radius:8px;padding:9px 36px 9px 10px;font-family:var(--fb);font-size:14px;color:var(--t1);outline:none" onfocus="this.style.borderColor='rgba(0,200,150,0.5)'" onblur="this.style.borderColor='rgba(0,200,150,0.2)'" oninput="checkPwdStrength(this.value)"><button onclick="togglePwd('regPwd')" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--t3)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+          <div style="position:relative"><input id="regPwd" type="password" placeholder="Min 8 ký tự" data-placeholder-vi="Min 8 ký tự" data-placeholder-en="Min 8 chars" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.3);border:0.5px solid rgba(0,200,150,0.2);border-radius:8px;padding:9px 36px 9px 10px;font-family:var(--fb);font-size:14px;color:var(--t1);outline:none" onfocus="this.style.borderColor='rgba(0,200,150,0.5)'" onblur="this.style.borderColor='rgba(0,200,150,0.2)'" oninput="checkPwdStrength(this.value)"></div>
           <div id="pwdBars" style="display:flex;gap:2px;margin-top:4px"><div style="flex:1;height:2px;border-radius:2px;background:rgba(255,255,255,.1)"></div><div style="flex:1;height:2px;border-radius:2px;background:rgba(255,255,255,.1)"></div><div style="flex:1;height:2px;border-radius:2px;background:rgba(255,255,255,.1)"></div><div style="flex:1;height:2px;border-radius:2px;background:rgba(255,255,255,.1)"></div></div>
         </div>
       </div>
@@ -7726,7 +7725,31 @@ var l=lang||'vi';
 document.getElementById('authModalTitle').innerHTML=isL?(l==='vi'?'Chào Mừng Trở Lại':'Welcome Back'):(l==='vi'?'Tạo Tài Khoản Mới':'Create New Account');
 document.getElementById('authModalSub').innerHTML=isL?(l==='vi'?'Đăng nhập để tiếp tục hành trình sức sống':'Sign in to continue your vitality journey'):(l==='vi'?'Bắt đầu hành trình phục hưng sức sống ngay hôm nay':'Start your vitality revival journey today');
 }
-function togglePwd(id){var e=document.getElementById(id);e.type=e.type==='password'?'text':'password';}
+function togglePwd(id){var e=document.getElementById(id);if(!e)return;var wasP=e.type==='password';e.type=wasP?'text':'password';var btn=e.parentElement.querySelector('.pwd-eye-btn');if(btn){btn.innerHTML=wasP?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';}}
+/* Auto-add eye toggle to all password inputs */
+(function(){
+var eyeSvg='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+function enhancePwdInput(inp){
+  if(inp.dataset.eyeAdded) return;
+  inp.dataset.eyeAdded='1';
+  var parent=inp.parentElement;
+  if(!parent) return;
+  var ps=getComputedStyle(parent).position;
+  if(ps!=='relative'&&ps!=='absolute'&&ps!=='fixed') parent.style.position='relative';
+  var btn=document.createElement('button');
+  btn.className='pwd-eye-btn';
+  btn.type='button';
+  btn.style.cssText='position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(248,242,224,.4);padding:4px;z-index:2;display:flex;align-items:center';
+  btn.innerHTML=eyeSvg;
+  btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();togglePwd(inp.id||'');if(!inp.id){var wasP=inp.type==='password';inp.type=wasP?'text':'password';btn.innerHTML=wasP?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>':eyeSvg;}});
+  inp.style.paddingRight='38px';
+  parent.appendChild(btn);
+}
+function scanAll(){document.querySelectorAll('input[type="password"]').forEach(enhancePwdInput);}
+scanAll();
+var obs=new MutationObserver(function(muts){var found=false;muts.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType===1){if(n.tagName==='INPUT'&&n.type==='password')found=true;else if(n.querySelectorAll){var q=n.querySelectorAll('input[type="password"]');if(q.length)found=true;}}});});if(found)setTimeout(scanAll,50);});
+obs.observe(document.body,{childList:true,subtree:true});
+})();
 function checkPwdStrength(v){var bars=document.getElementById('pwdBars').children;var s=0;if(v.length>=8)s++;if(/[A-Z]/.test(v))s++;if(/[0-9]/.test(v))s++;if(/[^A-Za-z0-9]/.test(v))s++;var c=['#FF4444','#FF8800','#FFD000','var(--g1)'];for(var i=0;i<4;i++){bars[i].style.background=i<s?c[s-1]:'rgba(255,255,255,.1)';}}
 function showToast(msg,color){var t=document.getElementById('authToast');document.getElementById('authToastMsg').textContent=msg;document.getElementById('authToastMsg').style.color=color||'var(--g2)';t.style.transform='translateX(-50%) translateY(0)';setTimeout(function(){t.style.transform='translateX(-50%) translateY(80px)';},3000);}
 function handleLogin(){
@@ -9374,7 +9397,6 @@ setTimeout(closeNotifyModal,3500);
           <div style="position:relative">
             <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
             <input id="adminPwdInput" type="password" placeholder="..." style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:0.5px solid rgba(0,200,150,0.15);border-radius:12px;padding:14px 46px 14px 42px;font-family:var(--fb);font-size:16px;color:var(--t1);outline:none;transition:all .25s" onfocus="this.style.borderColor='rgba(0,200,150,0.5)';this.style.boxShadow='0 0 20px rgba(0,200,150,0.08)'" onblur="this.style.borderColor='rgba(0,200,150,0.15)';this.style.boxShadow='none'">
-            <button onclick="togglePwd('adminPwdInput')" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--t3);padding:4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
           </div>
         </div>
 
