@@ -89,6 +89,22 @@ main::-webkit-scrollbar,
 .med-disclaimer strong{color:rgba(232,168,51,0.85)}
 .claim-note{font-size:10px;color:rgba(220,232,255,0.35);font-style:italic;display:block;margin-top:2px}
 </style>
+
+<style id="mobileCSS">/* All mobile CSS in mobile.css */</style>
+<script>
+/* Mobile fix: remove inline styles that block CSS overrides */
+if(window.innerWidth<=768){
+  window.addEventListener('load',function(){
+    document.querySelectorAll('.eco-desc').forEach(function(el){el.removeAttribute('style');});
+    document.querySelectorAll('.eco-card').forEach(function(el){el.removeAttribute('style');});
+  });
+  new MutationObserver(function(){
+    if(window.innerWidth<=768){
+      document.querySelectorAll('.eco-desc[style]').forEach(function(el){el.removeAttribute('style');});
+    }
+  }).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
+}
+</script>
 </head>
 <body>
 

@@ -71,13 +71,13 @@ img,video{max-width:100%;height:auto}
 
   /* Intro */
   section.intro-section{padding:24px 10px!important}
-  .intro-headline.intro-headline{font-size:22px!important;line-height:1.4!important}
-  .intro-eyebrow{font-size:10px!important;letter-spacing:1px!important}
-  .intro-quote{font-size:13px!important;padding:0 4px!important}
+  .intro-headline.intro-headline{font-size:28px!important;line-height:1.25!important}
+  .intro-eyebrow{font-size:12px!important;letter-spacing:2px!important}
+  .intro-quote{font-size:16px!important;padding:0 4px!important;line-height:1.75!important}
   .intro-stats.intro-stats{grid-template-columns:repeat(2,1fr)!important;gap:0!important;border-radius:14px!important}
-  .intro-stats .is-card{padding:18px 8px!important}
-  .intro-stats .is-num{font-size:24px!important}
-  .intro-stats .is-lbl{font-size:11px!important;line-height:1.3!important}
+  .intro-stats .is-card{padding:20px 10px!important}
+  .intro-stats .is-num{font-size:26px!important}
+  .intro-stats .is-lbl{font-size:14px!important;line-height:1.4!important}
   .intro-pillars.intro-pillars{grid-template-columns:1fr!important;gap:12px!important}
   .intro-pillars .eco-card,.intro-pillars .ip-card{
     padding:20px 16px!important;text-align:left!important;
@@ -94,9 +94,9 @@ img,video{max-width:100%;height:auto}
     display:flex!important;flex-direction:column!important;align-items:center!important;
   }
   .eco-ico{width:48px!important;height:48px!important;min-width:48px!important}
-  .eco-ttl{font-size:17px!important}
-  .eco-sub{font-size:11px!important}
-  .eco-desc{font-size:13px!important;-webkit-line-clamp:unset!important;display:block!important;overflow:visible!important}
+  .eco-ttl{font-size:18px!important}
+  .eco-sub{font-size:13px!important}
+  .eco-desc{font-size:15px!important;-webkit-line-clamp:3!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;overflow:hidden!important}
 
   /* IPO Overlay — full mobile responsive */
   #ipoOverlay .ip-wrap{padding:20px 14px 40px!important}
@@ -148,11 +148,20 @@ img,video{max-width:100%;height:auto}
   /* Modals */
   #adminPortal>div{width:95vw!important;max-width:400px!important;padding:20px!important}
 
-  /* Font floors */
-  [style*="font-size:8px"],[style*="font-size:9px"]{font-size:11px!important}
+  /* Font floors — đảm bảo đọc được cho người có tuổi */
+  [style*="font-size:8px"],[style*="font-size:9px"]{font-size:12px!important}
+  [style*="font-size:10px"]{font-size:12px!important}
+  [style*="font-size:11px"]{font-size:13px!important}
   [style*="font-size:48px"]{font-size:28px!important}
   [style*="font-size:56px"]{font-size:30px!important}
   [style*="font-size:64px"]{font-size:32px!important}
+  .sec-ttl{font-size:26px!important;line-height:1.25!important}
+  .sec-sub{font-size:16px!important;line-height:1.7!important}
+  .step-ttl{font-size:18px!important}
+  .step-desc{font-size:15px!important}
+  .step-tag{font-size:14px!important}
+  .ip-name{font-size:18px!important}
+  .ip-sub{font-size:15px!important}
 
   /* Cart sidebar full width */
   #cartSidebar{width:100vw!important;max-width:100vw!important}
@@ -168,11 +177,12 @@ img,video{max-width:100%;height:auto}
   .nav-logo-img{height:22px!important}
   section{padding:20px 10px!important}
   section.hero{min-height:40vh!important}
-  .intro-headline.intro-headline{font-size:19px!important}
+  .intro-headline.intro-headline{font-size:24px!important;line-height:1.3!important}
+  .intro-quote{font-size:15px!important}
   .intro-stats.intro-stats{grid-template-columns:repeat(2,1fr)!important}
-  .intro-stats .is-num{font-size:22px!important}
-  .intro-stats .is-lbl{font-size:10px!important}
-  .intro-stats .is-card{padding:14px 6px!important}
+  .intro-stats .is-num{font-size:24px!important}
+  .intro-stats .is-lbl{font-size:13px!important}
+  .intro-stats .is-card{padding:16px 8px!important}
   footer .fg.fg{text-align:left!important}
   /* IPO even smaller */
   #ipoOverlay .ip-wrap{padding:16px 10px 30px!important}
