@@ -82,11 +82,16 @@ img,video{max-width:100%;height:auto}
   .intro-stats .is-card{padding:20px 10px!important}
   .intro-stats .is-num{font-size:26px!important}
   .intro-stats .is-lbl{font-size:14px!important;line-height:1.4!important}
-  .intro-pillars.intro-pillars{grid-template-columns:1fr!important;gap:12px!important}
+  /* Pillars: ô nhỏ ít chữ → 2 cột song song */
+  .intro-pillars.intro-pillars{grid-template-columns:1fr 1fr!important;gap:8px!important}
   .intro-pillars .eco-card,.intro-pillars .ip-card{
-    padding:20px 16px!important;text-align:left!important;
-    display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+    padding:14px 10px!important;text-align:center!important;
+    display:flex!important;flex-direction:column!important;align-items:center!important;
+    border-radius:12px!important;
   }
+  .intro-pillars .ip-ico,.intro-pillars .eco-ico{width:32px!important;height:32px!important;margin-bottom:6px!important}
+  .intro-pillars .ip-name,.intro-pillars .eco-ttl{font-size:14px!important;margin-bottom:2px!important}
+  .intro-pillars .ip-sub,.intro-pillars .eco-sub{font-size:11px!important;line-height:1.3!important}
   .intro-btns.intro-btns{flex-direction:column!important;gap:10px!important;padding:0 10px!important}
   .intro-btns a,.intro-btns button{width:100%!important;text-align:center!important;padding:14px!important}
   .intro-ambient-l,.intro-ambient-r{display:none!important}
@@ -114,8 +119,9 @@ img,video{max-width:100%;height:auto}
   #ipoOverlay .ip-hero p{font-size:14px!important;padding:0!important}
   #ipoOverlay .ip-hero em{font-size:26px!important}
   #ipoOverlay .ip-h2{font-size:22px!important}
-  #ipoOverlay .ip-val-grid{grid-template-columns:1fr!important;gap:12px!important}
-  #ipoOverlay .ip-val-card{padding:18px 12px!important}
+  /* Val cards: ô nhỏ số + nhãn → 2 cột */
+  #ipoOverlay .ip-val-grid{grid-template-columns:1fr 1fr!important;gap:8px!important}
+  #ipoOverlay .ip-val-card{padding:14px 10px!important;border-radius:12px!important}
   #ipoOverlay .ip-bench-grid{grid-template-columns:1fr 1fr!important;gap:10px!important}
   #ipoOverlay .ip-cap-row{
     grid-template-columns:1fr!important;gap:4px!important;
@@ -142,9 +148,9 @@ img,video{max-width:100%;height:auto}
   /* Store grid - 1 col */
   .st-grid.st-grid{grid-template-columns:1fr!important;gap:12px!important}
 
-  /* Footer - 1 col */
-  footer .fg.fg{grid-template-columns:1fr!important;gap:20px!important;text-align:center!important}
-  footer{padding:24px 16px 30px!important}
+  /* Footer: ô ít chữ → 2 cột */
+  footer .fg.fg{grid-template-columns:1fr 1fr!important;gap:16px!important;text-align:left!important}
+  footer{padding:24px 10px 30px!important}
 
   /* Overlays padding — sát viền */
   [id$="Overlay"] [style*="padding:0 48px"]{padding:0 10px!important}
