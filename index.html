@@ -12537,5 +12537,180 @@ overlayIds.forEach(function(id){
 });
 })();
 </script>
+
+<!-- ═══ ANIMA CARE AI CHATBOT ═══ -->
+<div id="acBot">
+  <button id="acBotBtn" onclick="acBotToggle()" style="position:fixed;bottom:24px;right:24px;z-index:800;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#005A42,#00C896);border:none;cursor:pointer;box-shadow:0 6px 24px rgba(0,200,150,.35);display:flex;align-items:center;justify-content:center;transition:transform .2s" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+    <svg id="acBotIcOpen" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    <svg id="acBotIcClose" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" style="display:none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <div id="acBotPanel" style="display:none;position:fixed;bottom:90px;right:24px;z-index:800;width:380px;max-width:calc(100vw - 32px);height:520px;max-height:calc(100vh - 120px);background:#0A1218;border:1px solid rgba(0,200,150,.2);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.7);display:none;flex-direction:column;overflow:hidden">
+    <div style="padding:16px 18px;background:linear-gradient(135deg,#0A1218,#0F1E2A);border-bottom:1px solid rgba(0,200,150,.12);display:flex;align-items:center;gap:10px;flex-shrink:0">
+      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#005A42,#00C896);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><path d="M12 2a4 4 0 014 4v2a4 4 0 01-8 0V6a4 4 0 014-4z"/><path d="M6 12a6 6 0 0012 0"/><path d="M12 18v4"/></svg>
+      </div>
+      <div style="flex:1"><div style="font-size:14px;font-weight:700;color:#F8F2E0">Anima Care AI</div><div style="font-size:10px;color:rgba(248,242,224,.4)">Trợ lý tư vấn sức khỏe</div></div>
+      <div id="acBotStatus" style="width:8px;height:8px;border-radius:50%;background:#00C896;box-shadow:0 0 6px #00C896"></div>
+    </div>
+    <div id="acBotMsgs" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none;-ms-overflow-style:none"></div>
+    <div style="padding:12px 14px;border-top:1px solid rgba(0,200,150,.08);display:flex;gap:8px;flex-shrink:0;background:#080E14">
+      <input id="acBotInput" type="text" placeholder="Hỏi về sản phẩm, dịch vụ..." style="flex:1;background:rgba(0,200,150,.04);border:1px solid rgba(0,200,150,.12);border-radius:12px;padding:10px 14px;font-size:13px;color:#F8F2E0;outline:none;font-family:'Roboto',sans-serif" onfocus="this.style.borderColor='rgba(0,200,150,.3)'" onblur="this.style.borderColor='rgba(0,200,150,.12)'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();acBotSend()}">
+      <button onclick="acBotSend()" style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#005A42,#00C896);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+// ═══ ANIMA CARE AI CHATBOT ENGINE ═══
+var ACBOT_KEY = ''; // User sets via acBotSetKey()
+var acBotHistory = [];
+var acBotOpen = false;
+
+var SYSTEM_PROMPT = 'B\u1EA1n l\u00E0 tr\u1EE3 l\u00FD AI c\u1EE7a Anima Care Global. CH\u1EC8 tr\u1EA3 l\u1EDDi v\u1EC1 h\u1EC7 sinh th\u00E1i Anima Care. T\u1EEB ch\u1ED1i m\u1ECDi c\u00E2u h\u1ECFi kh\u00F4ng li\u00EAn quan.\n\n'
++'D\u1EEE LI\u1EC6U:\n'
++'C\u00D4NG TY: Anima Care Global JSC. \u0110\u1ECBa ch\u1EC9: 286 Nguy\u1EC5n Xi\u1EC3n, Thanh Li\u1EC7t, H\u00E0 N\u1ED9i. S\u0110T: 0913 156 676. Web: animacare.global\n\n'
++'4 TR\u1EE4 C\u1ED8T:\n'
++'1. ANIMA 119: Th\u1EF1c th\u1EC3 ph\u00E2n t\u1EED s\u1ED1ng - \u0111\u00F4ng d\u01B0\u1EE3c l\u00EAn men 3 t\u1EA7ng t\u1EEB 32 th\u1EA3o d\u01B0\u1EE3c qu\u00FD. H\u1ED7 tr\u1EE3 kh\u01A1i th\u00F4ng kinh l\u1EA1c, t\u00E1i l\u1EADp t\u1EBF b\u00E0o, th\u1EA3i \u0111\u1ED9c s\u00E2u, t\u0103ng mi\u1EC5n d\u1ECBch.\n'
++'2. ANIMA CARE: Chu\u1ED7i c\u01A1 s\u1EDF ch\u1EEFa l\u00E0nh v\u1EADt l\u00FD (Franchise Lite & Full). 34 c\u01A1 s\u1EDF \u0111\u1ED9c quy\u1EC1n t\u1EA1i 34 t\u1EC9nh VN.\n'
++'3. ANIMA TECH: N\u1EC1n t\u1EA3ng c\u00F4ng ngh\u1EC7 O2O, app \u0111\u1EB7t l\u1ECBch, CRM, chuỗi cung ứng.\n'
++'4. ANIMA AI: AI scan l\u01B0\u1EE1i ch\u1EA9n \u0111o\u00E1n th\u1EC3 t\u1EA1ng (96.4%), khai v\u1EA5n \u0110\u00F4ng Y t\u1EF1 \u0111\u1ED9ng.\n\n'
++'S\u1EA2N PH\u1EA8M:\n'
++'- Anima 119 - 1 H\u1ED9p (10 g\u00F3i): 1.868.000\u0111\n'
++'- Anima 119 - 3 H\u1ED9p (30 g\u00F3i): 5.604.000\u0111\n'
++'- Anima 119 - 12 H\u1ED9p (120 g\u00F3i): 22.416.000\u0111\n\n'
++'D\u1ECACH V\u1EE4:\n'
++'- Khai V\u1EA5n AI (30ph): 350.000\u0111\n'
++'- Th\u1EA3o M\u1ED9c Nhi\u1EC7t (90ph): 850.000\u0111\n'
++'- B\u1ED3n Ng\u00E2m Th\u1EA3o M\u1ED9c (60ph): 650.000\u0111\n'
++'- Ch\u00E2m C\u1EE9u Chu\u1EA9n (60ph): 750.000\u0111\n'
++'- Massage Kinh L\u1EA1c (90ph): 950.000\u0111\n'
++'- X\u00F4ng H\u01A1i Th\u1EA3o M\u1ED9c (45ph): 550.000\u0111\n'
++'- Li\u1EC7u Tr\u00ECnh To\u00E0n Ph\u1EA7n (180ph): 2.500.000\u0111\n\n'
++'QUY T\u1EAEC:\n'
++'- Tr\u1EA3 l\u1EDDi b\u1EB1ng ti\u1EBFng Vi\u1EC7t, ng\u1EAFn g\u1ECDn (t\u1ED1i \u0111a 100 t\u1EEB).\n'
++'- CH\u1EC8 tr\u1EA3 l\u1EDDi v\u1EC1 Anima Care. N\u1EBFu c\u00E2u h\u1ECFi kh\u00F4ng li\u00EAn quan, n\u00F3i: "T\u00F4i ch\u1EC9 h\u1ED7 tr\u1EE3 th\u00F4ng tin v\u1EC1 Anima Care. B\u1EA1n c\u00F3 mu\u1ED1n h\u1ECFi v\u1EC1 s\u1EA3n ph\u1EA9m ho\u1EB7c d\u1ECBch v\u1EE5 kh\u00F4ng?"\n'
++'- Kh\u00F4ng b\u1ECBa \u0111\u1EB7t th\u00F4ng tin. N\u1EBFu kh\u00F4ng bi\u1EBFt, h\u01B0\u1EDBng d\u1EABn g\u1ECDi 0913 156 676.';
+
+window.acBotToggle = function(){
+  var p=document.getElementById('acBotPanel');
+  var ic1=document.getElementById('acBotIcOpen');
+  var ic2=document.getElementById('acBotIcClose');
+  acBotOpen=!acBotOpen;
+  p.style.display=acBotOpen?'flex':'none';
+  ic1.style.display=acBotOpen?'none':'block';
+  ic2.style.display=acBotOpen?'block':'none';
+  if(acBotOpen && acBotHistory.length===0) acBotGreet();
+};
+
+function acBotGreet(){
+  addMsg('bot','Xin ch\u00E0o! T\u00F4i l\u00E0 tr\u1EE3 l\u00FD AI c\u1EE7a Anima Care \uD83C\uDF3F\nH\u00E3y h\u1ECFi t\u00F4i v\u1EC1 s\u1EA3n ph\u1EA9m Anima 119, d\u1ECBch v\u1EE5 ch\u1EEFa l\u00E0nh, ho\u1EB7c h\u1EC7 sinh th\u00E1i Anima Care!');
+  if(!ACBOT_KEY){
+    addMsg('bot','\u26A0\uFE0F \u0110\u1EC3 s\u1EED d\u1EE5ng chatbot, vui l\u00F2ng nh\u1EADp OpenAI API key b\u00EAn d\u01B0\u1EDBi:');
+    addKeyInput();
+  }
+}
+
+function addKeyInput(){
+  var m=document.getElementById('acBotMsgs');
+  var d=document.createElement('div');
+  d.style.cssText='display:flex;gap:6px;padding:0 4px';
+  d.innerHTML='<input id="acBotKeyInp" type="password" placeholder="sk-..." style="flex:1;background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.15);border-radius:8px;padding:8px 10px;font-size:11px;color:#F8F2E0;outline:none;font-family:monospace">'
+    +'<button onclick="acBotSetKey()" style="padding:8px 12px;border:none;border-radius:8px;background:#00C896;color:#000;font-size:11px;font-weight:700;cursor:pointer">OK</button>';
+  m.appendChild(d);
+  m.scrollTop=m.scrollHeight;
+}
+
+window.acBotSetKey = function(){
+  var inp=document.getElementById('acBotKeyInp');
+  if(!inp)return;
+  var k=inp.value.trim();
+  if(!k||!k.startsWith('sk-')){addMsg('bot','Key kh\u00F4ng h\u1EE3p l\u1EC7. Vui l\u00F2ng nh\u1EADp \u0111\u00FAng API key (b\u1EAFt \u0111\u1EA7u b\u1EB1ng sk-).');return;}
+  ACBOT_KEY=k;
+  localStorage.setItem('anima_bot_key',k);
+  inp.parentElement.remove();
+  addMsg('bot','\u2705 \u0110\u00E3 k\u1EBFt n\u1ED1i! B\u1EA1n c\u00F3 th\u1EC3 h\u1ECFi t\u00F4i b\u1EA5t c\u1EE9 \u0111i\u1EC1u g\u00EC v\u1EC1 Anima Care.');
+};
+
+function addMsg(role,text){
+  var m=document.getElementById('acBotMsgs');
+  var d=document.createElement('div');
+  var isBot=role==='bot';
+  d.style.cssText='max-width:85%;padding:10px 14px;border-radius:'+(isBot?'2px 14px 14px 14px':'14px 2px 14px 14px')+';font-size:13px;line-height:1.6;word-break:break-word;white-space:pre-wrap;'
+    +(isBot?'background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.1);color:#F8F2E0;align-self:flex-start':'background:linear-gradient(135deg,#005A42,#00896A);color:#F8F2E0;align-self:flex-end');
+  d.textContent=text;
+  m.appendChild(d);
+  m.scrollTop=m.scrollHeight;
+}
+
+function addTyping(){
+  var m=document.getElementById('acBotMsgs');
+  var d=document.createElement('div');
+  d.id='acBotTyping';
+  d.style.cssText='align-self:flex-start;padding:10px 18px;border-radius:2px 14px 14px 14px;background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.1);display:flex;gap:4px';
+  d.innerHTML='<div style="width:6px;height:6px;border-radius:50%;background:#00C896;animation:acDot 1s infinite .0s"></div><div style="width:6px;height:6px;border-radius:50%;background:#00C896;animation:acDot 1s infinite .2s"></div><div style="width:6px;height:6px;border-radius:50%;background:#00C896;animation:acDot 1s infinite .4s"></div>';
+  m.appendChild(d);
+  m.scrollTop=m.scrollHeight;
+}
+function removeTyping(){var t=document.getElementById('acBotTyping');if(t)t.remove();}
+
+window.acBotSend = async function(){
+  var inp=document.getElementById('acBotInput');
+  var q=(inp.value||'').trim();
+  if(!q)return;
+  inp.value='';
+
+  if(!ACBOT_KEY){
+    addMsg('bot','\u26A0\uFE0F Vui l\u00F2ng nh\u1EADp API key tr\u01B0\u1EDBc.');
+    if(!document.getElementById('acBotKeyInp'))addKeyInput();
+    return;
+  }
+
+  addMsg('user',q);
+  acBotHistory.push({role:'user',content:q});
+  // Keep only last 6 messages
+  if(acBotHistory.length>6) acBotHistory=acBotHistory.slice(-6);
+
+  addTyping();
+  inp.disabled=true;
+
+  try{
+    var messages=[{role:'system',content:SYSTEM_PROMPT}].concat(acBotHistory);
+    var res=await fetch('https://api.openai.com/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+ACBOT_KEY},
+      body:JSON.stringify({model:'gpt-4o-mini',messages:messages,max_tokens:300,temperature:0.3})
+    });
+    var data=await res.json();
+    removeTyping();
+    if(data.error){
+      addMsg('bot','\u274C L\u1ED7i: '+(data.error.message||'API error').substring(0,100));
+      if(data.error.code==='invalid_api_key'){ACBOT_KEY='';localStorage.removeItem('anima_bot_key');addMsg('bot','API key kh\u00F4ng h\u1EE3p l\u1EC7. Vui l\u00F2ng nh\u1EADp l\u1EA1i:');addKeyInput();}
+    } else {
+      var reply=data.choices[0].message.content.trim();
+      addMsg('bot',reply);
+      acBotHistory.push({role:'assistant',content:reply});
+      if(acBotHistory.length>6) acBotHistory=acBotHistory.slice(-6);
+    }
+  }catch(e){
+    removeTyping();
+    addMsg('bot','\u274C Kh\u00F4ng th\u1EC3 k\u1EBFt n\u1ED1i. Vui l\u00F2ng th\u1EED l\u1EA1i.');
+  }
+  inp.disabled=false;
+  inp.focus();
+};
+
+// Load saved key
+var savedKey=localStorage.getItem('anima_bot_key');
+if(savedKey) ACBOT_KEY=savedKey;
+
+// Typing animation CSS
+var st=document.createElement('style');
+st.textContent='@keyframes acDot{0%,80%,100%{opacity:.3;transform:scale(.8)}40%{opacity:1;transform:scale(1.1)}}#acBotMsgs::-webkit-scrollbar{display:none}@media(max-width:480px){#acBotPanel{right:8px!important;bottom:80px!important;width:calc(100vw - 16px)!important;height:calc(100vh - 100px)!important;border-radius:16px!important}}';
+document.head.appendChild(st);
+})();
+</script>
 </body>
 </html>
