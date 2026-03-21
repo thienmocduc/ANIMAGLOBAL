@@ -25,14 +25,18 @@ img,video{max-width:100%;height:auto}
 }
 .mobile-nav-overlay.show{display:flex;opacity:1}
 .mobile-nav-overlay a,.mobile-nav-overlay .dropdown-label{
-  color:#F8F2E0;font-size:18px;font-weight:500;padding:14px 24px;
+  color:#F8F2E0;font-size:18px;font-weight:500;padding:16px 24px;
   text-decoration:none;text-align:center;width:100%;
   border-bottom:1px solid rgba(0,200,150,.08);
+}
+.mobile-nav-overlay .dropdown-label{
+  color:#00C896;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:6px;
 }
 .mobile-nav-overlay a:active{color:#00C896}
 .mobile-nav-overlay .mob-sub{display:none;flex-direction:column;background:rgba(0,200,150,.04)}
 .mobile-nav-overlay .mob-sub.open{display:flex}
-.mobile-nav-overlay .mob-sub a{font-size:15px;color:rgba(248,242,224,.6);padding:10px 40px}
+.mobile-nav-overlay .mob-sub a{font-size:16px;color:rgba(248,242,224,.7);padding:12px 40px;font-weight:400}
 .mobile-nav-overlay .mobile-lang{display:flex;gap:8px;margin-top:20px}
 .mobile-nav-overlay .mobile-lang button{
   padding:8px 20px;border-radius:20px;border:1px solid rgba(0,200,150,.3);
@@ -62,15 +66,15 @@ img,video{max-width:100%;height:auto}
   .nav-logo-img{height:26px!important}
   .lang-toggle{transform:scale(.85);transform-origin:right center}
 
-  /* Global */
-  section{padding:30px 16px!important}
+  /* Global — cards sát viền màn hình */
+  section{padding:24px 8px!important}
   input,select,textarea{font-size:16px!important}
 
   /* Hero */
   section.hero{min-height:50vh!important}
 
   /* Intro */
-  section.intro-section{padding:24px 10px!important}
+  section.intro-section{padding:24px 8px!important}
   .intro-headline.intro-headline{font-size:28px!important;line-height:1.25!important}
   .intro-eyebrow{font-size:12px!important;letter-spacing:2px!important}
   .intro-quote{font-size:16px!important;padding:0 4px!important;line-height:1.75!important}
@@ -87,29 +91,35 @@ img,video{max-width:100%;height:auto}
   .intro-btns a,.intro-btns button{width:100%!important;text-align:center!important;padding:14px!important}
   .intro-ambient-l,.intro-ambient-r{display:none!important}
 
-  /* Ecosystem - full width cards */
-  .eco-grid.eco-grid{grid-template-columns:1fr!important;gap:12px!important}
+  /* Ecosystem - full width cards sát viền */
+  .eco-grid.eco-grid{grid-template-columns:1fr!important;gap:10px!important}
   .eco-card.eco-card{
-    padding:22px 18px!important;text-align:center!important;
+    padding:22px 14px!important;text-align:center!important;
     display:flex!important;flex-direction:column!important;align-items:center!important;
+    border-radius:14px!important;
   }
   .eco-ico{width:48px!important;height:48px!important;min-width:48px!important}
   .eco-ttl{font-size:18px!important}
   .eco-sub{font-size:13px!important}
   .eco-desc{font-size:15px!important;-webkit-line-clamp:3!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;overflow:hidden!important}
 
+  /* IPO section on main page — stack vertically */
+  .ipo-grid.ipo-grid{grid-template-columns:1fr!important;gap:16px!important}
+  .ipo-right{border-radius:14px!important;padding:20px 12px!important}
+  .ipo-nums{grid-template-columns:1fr 1fr!important}
+
   /* IPO Overlay — full mobile responsive */
-  #ipoOverlay .ip-wrap{padding:20px 14px 40px!important}
-  #ipoOverlay .ip-hero h2{font-size:28px!important;line-height:1.3!important}
+  #ipoOverlay .ip-wrap{padding:16px 8px 40px!important}
+  #ipoOverlay .ip-hero h2{font-size:26px!important;line-height:1.3!important}
   #ipoOverlay .ip-hero p{font-size:14px!important;padding:0!important}
-  #ipoOverlay .ip-hero em{font-size:28px!important}
+  #ipoOverlay .ip-hero em{font-size:26px!important}
   #ipoOverlay .ip-h2{font-size:22px!important}
   #ipoOverlay .ip-val-grid{grid-template-columns:1fr!important;gap:12px!important}
-  #ipoOverlay .ip-val-card{padding:18px 14px!important}
+  #ipoOverlay .ip-val-card{padding:18px 12px!important}
   #ipoOverlay .ip-bench-grid{grid-template-columns:1fr 1fr!important;gap:10px!important}
   #ipoOverlay .ip-cap-row{
     grid-template-columns:1fr!important;gap:4px!important;
-    padding:10px 14px!important;text-align:left!important;
+    padding:10px 12px!important;text-align:left!important;
   }
   #ipoOverlay .ip-capital{font-size:12px!important}
   #ipoOverlay .ip-tl-item{flex-direction:column!important;gap:8px!important}
@@ -118,16 +128,16 @@ img,video{max-width:100%;height:auto}
   #ipoOverlay .ip-kpi-grid{grid-template-columns:repeat(2,1fr)!important;gap:8px!important}
   #ipoOverlay [style*="font-size:48px"]{font-size:26px!important}
   #ipoOverlay [style*="font-size:36px"]{font-size:22px!important}
-  #ipoOverlay [style*="padding:72px"]{padding:20px 14px!important}
-  #ipoOverlay [style*="padding:0 72px"]{padding:0 14px!important}
+  #ipoOverlay [style*="padding:72px"]{padding:16px 8px!important}
+  #ipoOverlay [style*="padding:0 72px"]{padding:0 8px!important}
 
-  /* Steps - 1 col */
+  /* Steps - 1 col full width */
   .steps-grid.steps-grid{grid-template-columns:1fr!important;gap:10px!important}
-  .step-card{padding:16px!important}
+  .step-card{padding:18px 14px!important;border-radius:14px!important}
 
-  /* Tech - 1 col */
+  /* Tech - 1 col full width */
   .tech-grid.tech-grid{grid-template-columns:1fr!important;gap:10px!important}
-  .tech-card{padding:14px!important}
+  .tech-card{padding:20px 14px!important;border-radius:14px!important}
 
   /* Store grid - 1 col */
   .st-grid.st-grid{grid-template-columns:1fr!important;gap:12px!important}
@@ -136,11 +146,16 @@ img,video{max-width:100%;height:auto}
   footer .fg.fg{grid-template-columns:1fr!important;gap:20px!important;text-align:center!important}
   footer{padding:24px 16px 30px!important}
 
-  /* Overlays padding */
-  [id$="Overlay"] [style*="padding:0 48px"]{padding:0 16px!important}
-  [id$="Overlay"] [style*="padding:48px"]{padding:20px 16px!important}
-  [id$="Overlay"] [style*="padding:60px"]{padding:24px 16px!important}
-  [id$="Overlay"] [style*="padding:80px"]{padding:24px 16px!important}
+  /* Overlays padding — sát viền */
+  [id$="Overlay"] [style*="padding:0 48px"]{padding:0 10px!important}
+  [id$="Overlay"] [style*="padding:48px"]{padding:16px 10px!important}
+  [id$="Overlay"] [style*="padding:60px"]{padding:20px 10px!important}
+  [id$="Overlay"] [style*="padding:80px"]{padding:20px 10px!important}
+  [id$="Overlay"] [style*="padding:0 72px"]{padding:0 10px!important}
+  [id$="Overlay"] [style*="padding:72px"]{padding:16px 10px!important}
+  [id$="Overlay"] [style*="max-width:1240px"]{max-width:100%!important}
+  [id$="Overlay"] [style*="max-width:1100px"]{max-width:100%!important}
+  [id$="Overlay"] [style*="max-width:900px"]{max-width:100%!important}
 
   /* Tables scroll */
   table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
@@ -175,8 +190,10 @@ img,video{max-width:100%;height:auto}
 @media(max-width:480px){
   nav#mainNav{padding:0 8px!important;height:48px!important}
   .nav-logo-img{height:22px!important}
-  section{padding:20px 10px!important}
+  section{padding:16px 6px!important}
   section.hero{min-height:40vh!important}
+  .sec-wrap{padding:16px 6px!important}
+  .intro-wrap{padding:20px 6px!important}
   .intro-headline.intro-headline{font-size:24px!important;line-height:1.3!important}
   .intro-quote{font-size:15px!important}
   .intro-stats.intro-stats{grid-template-columns:repeat(2,1fr)!important}

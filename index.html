@@ -11189,20 +11189,57 @@ navigator.serviceWorker.register('/sw.js').catch(function(){});
 
 <div class="mobile-nav-overlay" id="mobileNavOverlay">
 <a href="#" onclick="scrollToSection('hero');closeMobileMenu()" data-vi="Trang chủ" data-en="Home">Trang chủ</a>
-<a href="#" onclick="scrollToSection('intro');closeMobileMenu()" data-vi="Về chúng tôi" data-en="About Us">Về chúng tôi</a>
+
+<div>
+<div class="dropdown-label" onclick="this.nextElementSibling.classList.toggle('open')" data-vi="Về Chúng Tôi ▾" data-en="About ▾">Về Chúng Tôi ▾</div>
+<div class="mob-sub">
+<a href="#" onclick="if(typeof openGovernance==='function')openGovernance();closeMobileMenu()" data-vi="Hồ Sơ Công Ty" data-en="Company Profile">Hồ Sơ Công Ty</a>
+<a href="#" onclick="if(typeof openMission==='function')openMission();closeMobileMenu()" data-vi="Sứ Mệnh & Tầm Nhìn" data-en="Mission & Vision">Sứ Mệnh & Tầm Nhìn</a>
+<a href="#" onclick="if(typeof openGovernance==='function')openGovernance();closeMobileMenu()" data-vi="Ban Lãnh Đạo" data-en="Leadership">Ban Lãnh Đạo</a>
+<a href="#" onclick="if(typeof openGovernance==='function')openGovernance();closeMobileMenu()" data-vi="Cấu Trúc Pháp Lý" data-en="Legal Structure">Cấu Trúc Pháp Lý</a>
+</div>
+</div>
+
+<div>
+<div class="dropdown-label" onclick="this.nextElementSibling.classList.toggle('open')" data-vi="Hệ Sinh Thái ▾" data-en="Ecosystem ▾">Hệ Sinh Thái ▾</div>
+<div class="mob-sub">
+<a href="#" onclick="if(typeof openA119==='function')openA119();closeMobileMenu()" data-vi="Anima 119" data-en="Anima 119">Anima 119</a>
+<a href="#" onclick="if(typeof openAnimaCare==='function')openAnimaCare();closeMobileMenu()" data-vi="Anima Care" data-en="Anima Care">Anima Care</a>
+<a href="#" onclick="if(typeof openAnimaTech==='function')openAnimaTech();closeMobileMenu()" data-vi="Anima Tech" data-en="Anima Tech">Anima Tech</a>
+<a href="#" onclick="if(typeof openAAI==='function')openAAI();closeMobileMenu()" data-vi="Anima AI" data-en="Anima AI">Anima AI</a>
+</div>
+</div>
+
 <div>
 <div class="dropdown-label" onclick="this.nextElementSibling.classList.toggle('open')" data-vi="Dịch Vụ ▾" data-en="Services ▾">Dịch Vụ ▾</div>
 <div class="mob-sub">
-<a href="#" onclick="closeMobileMenu()" data-vi="Khám Tổng Quát" data-en="General Checkup">Khám Tổng Quát</a>
-<a href="#" onclick="closeMobileMenu()" data-vi="Spa & Grooming" data-en="Spa & Grooming">Spa & Grooming</a>
+<a href="#" onclick="if(typeof openKhaiVan==='function')openKhaiVan();closeMobileMenu()" data-vi="Bước 1 — Khai Vấn" data-en="Step 1 — Assessment">Bước 1 — Khai Vấn</a>
+<a href="#" onclick="if(typeof openA119==='function')openA119();closeMobileMenu()" data-vi="Bước 2 — Anima 119" data-en="Step 2 — Anima 119">Bước 2 — Anima 119</a>
+<a href="#" onclick="if(typeof openS3==='function')openS3();closeMobileMenu()" data-vi="Bước 3 — Thảo Mộc Nhiệt" data-en="Step 3 — Herbal Heat">Bước 3 — Thảo Mộc Nhiệt</a>
+<a href="#" onclick="if(typeof openFranchise==='function')openFranchise();closeMobileMenu()" data-vi="Nhượng Quyền" data-en="Franchise">Nhượng Quyền</a>
+<a href="#" onclick="if(typeof openTraining==='function')openTraining();closeMobileMenu()" data-vi="Đào Tạo & Chứng Chỉ" data-en="Training">Đào Tạo & Chứng Chỉ</a>
 </div>
 </div>
-<a href="#" onclick="scrollToSection('ecosystem');closeMobileMenu()" data-vi="Hệ Sinh Thái" data-en="Ecosystem">Hệ Sinh Thái</a>
-<a href="#" onclick="scrollToSection('technology');closeMobileMenu()" data-vi="Công Nghệ" data-en="Technology">Công Nghệ</a>
-<a href="#" onclick="scrollToSection('investor');closeMobileMenu()" data-vi="Nhà Đầu Tư" data-en="Investors">Nhà Đầu Tư</a>
-<a href="#" onclick="if(typeof openAdminPortal==='function')openAdminPortal();closeMobileMenu()">Admin</a>
-<a href="#" onclick="openProfile();closeMobileMenu()" data-vi="Thông tin cá nhân" data-en="My Profile">Thông tin cá nhân</a>
+
+<div>
+<div class="dropdown-label" onclick="this.nextElementSibling.classList.toggle('open')" data-vi="Công Nghệ ▾" data-en="Technology ▾">Công Nghệ ▾</div>
+<div class="mob-sub">
+<a href="#" onclick="if(typeof openFerm==='function')openFerm();closeMobileMenu()" data-vi="Lên Men 3 Tầng" data-en="3-Layer Fermentation">Lên Men 3 Tầng</a>
+<a href="#" onclick="if(typeof openAAI==='function')openAAI();closeMobileMenu()" data-vi="Anima AI Engine" data-en="Anima AI Engine">Anima AI Engine</a>
+<a href="#" onclick="if(typeof openO2O==='function')openO2O();closeMobileMenu()" data-vi="Nền Tảng O2O" data-en="O2O Platform">Nền Tảng O2O</a>
+</div>
+</div>
+
+<div>
+<div class="dropdown-label" onclick="this.nextElementSibling.classList.toggle('open')" data-vi="Nhà Đầu Tư ▾" data-en="Investors ▾">Nhà Đầu Tư ▾</div>
+<div class="mob-sub">
+<a href="#" onclick="if(typeof openIPO==='function')openIPO();closeMobileMenu()" data-vi="Lộ Trình IPO" data-en="IPO Roadmap">Lộ Trình IPO</a>
+<a href="#" onclick="scrollToSection('investor');closeMobileMenu()" data-vi="Tổng Quan Đầu Tư" data-en="Investment Overview">Tổng Quan Đầu Tư</a>
+</div>
+</div>
+
 <a href="#" onclick="if(typeof openStore==='function')openStore();closeMobileMenu()" data-vi="Cửa Hàng" data-en="Store">Cửa Hàng</a>
+<a href="#" onclick="openProfile();closeMobileMenu()" data-vi="Thông tin cá nhân" data-en="My Profile">Thông tin cá nhân</a>
 <div class="mobile-lang">
 <button onclick="if(typeof setLang==='function')setLang('vi')" id="mobLangVI" class="active">VI</button>
 <button onclick="if(typeof setLang==='function')setLang('en')" id="mobLangEN">EN</button>
