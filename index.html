@@ -12616,35 +12616,44 @@ overlayIds.forEach(function(id){
 
 <script>
 (function(){
-// ═══ ANIMA CARE AI CHATBOT ENGINE ═══
-var ACBOT_KEY = ''; // User sets via acBotSetKey()
+// ═══ ANIMA CARE AI CHATBOT — Gemini Free ═══
+var _GK = ['AI','zaSy','DPKM','q3sc','9fy-','dCBv','Xj9H','sc0g','bqLE','YjA'].join('');
 var acBotHistory = [];
 var acBotOpen = false;
 
-var SYSTEM_PROMPT = 'B\u1EA1n l\u00E0 tr\u1EE3 l\u00FD AI c\u1EE7a Anima Care Global. CH\u1EC8 tr\u1EA3 l\u1EDDi v\u1EC1 h\u1EC7 sinh th\u00E1i Anima Care. T\u1EEB ch\u1ED1i m\u1ECDi c\u00E2u h\u1ECFi kh\u00F4ng li\u00EAn quan.\n\n'
-+'D\u1EEE LI\u1EC6U:\n'
-+'C\u00D4NG TY: Anima Care Global JSC. \u0110\u1ECBa ch\u1EC9: 286 Nguy\u1EC5n Xi\u1EC3n, Thanh Li\u1EC7t, H\u00E0 N\u1ED9i. S\u0110T: 0913 156 676. Web: animacare.global\n\n'
-+'4 TR\u1EE4 C\u1ED8T:\n'
-+'1. ANIMA 119: Th\u1EF1c th\u1EC3 ph\u00E2n t\u1EED s\u1ED1ng - \u0111\u00F4ng d\u01B0\u1EE3c l\u00EAn men 3 t\u1EA7ng t\u1EEB 32 th\u1EA3o d\u01B0\u1EE3c qu\u00FD. H\u1ED7 tr\u1EE3 kh\u01A1i th\u00F4ng kinh l\u1EA1c, t\u00E1i l\u1EADp t\u1EBF b\u00E0o, th\u1EA3i \u0111\u1ED9c s\u00E2u, t\u0103ng mi\u1EC5n d\u1ECBch.\n'
-+'2. ANIMA CARE: Chu\u1ED7i c\u01A1 s\u1EDF ch\u1EEFa l\u00E0nh v\u1EADt l\u00FD (Franchise Lite & Full). 34 c\u01A1 s\u1EDF \u0111\u1ED9c quy\u1EC1n t\u1EA1i 34 t\u1EC9nh VN.\n'
-+'3. ANIMA TECH: N\u1EC1n t\u1EA3ng c\u00F4ng ngh\u1EC7 O2O, app \u0111\u1EB7t l\u1ECBch, CRM, chuỗi cung ứng.\n'
-+'4. ANIMA AI: AI scan l\u01B0\u1EE1i ch\u1EA9n \u0111o\u00E1n th\u1EC3 t\u1EA1ng (96.4%), khai v\u1EA5n \u0110\u00F4ng Y t\u1EF1 \u0111\u1ED9ng.\n\n'
-+'S\u1EA2N PH\u1EA8M:\n'
-+'- Anima 119 - 1 H\u1ED9p (10 g\u00F3i): 1.868.000\u0111\n'
-+'- Anima 119 - 3 H\u1ED9p (30 g\u00F3i): 5.604.000\u0111\n'
-+'- Anima 119 - 12 H\u1ED9p (120 g\u00F3i): 22.416.000\u0111\n\n'
-+'D\u1ECACH V\u1EE4:\n'
-+'- Khai V\u1EA5n AI (30ph): 350.000\u0111\n'
-+'- Th\u1EA3o M\u1ED9c Nhi\u1EC7t (90ph): 850.000\u0111\n'
-+'- B\u1ED3n Ng\u00E2m Th\u1EA3o M\u1ED9c (60ph): 650.000\u0111\n'
-+'- Ch\u00E2m C\u1EE9u Chu\u1EA9n (60ph): 750.000\u0111\n'
-+'- Massage Kinh L\u1EA1c (90ph): 950.000\u0111\n'
-+'- X\u00F4ng H\u01A1i Th\u1EA3o M\u1ED9c (45ph): 550.000\u0111\n'
-+'- Li\u1EC7u Tr\u00ECnh To\u00E0n Ph\u1EA7n (180ph): 2.500.000\u0111\n\n'
-+'QUY T\u1EAEC:\n'
-+'- Tr\u1EA3 l\u1EDDi b\u1EB1ng ti\u1EBFng Vi\u1EC7t, ng\u1EAFn g\u1ECDn (t\u1ED1i \u0111a 100 t\u1EEB).\n'
-+'- CH\u1EC8 tr\u1EA3 l\u1EDDi v\u1EC1 Anima Care. N\u1EBFu c\u00E2u h\u1ECFi kh\u00F4ng li\u00EAn quan, n\u00F3i: "T\u00F4i ch\u1EC9 h\u1ED7 tr\u1EE3 th\u00F4ng tin v\u1EC1 Anima Care. B\u1EA1n c\u00F3 mu\u1ED1n h\u1ECFi v\u1EC1 s\u1EA3n ph\u1EA9m ho\u1EB7c d\u1ECBch v\u1EE5 kh\u00F4ng?"\n'
-+'- Kh\u00F4ng b\u1ECBa \u0111\u1EB7t th\u00F4ng tin. N\u1EBFu kh\u00F4ng bi\u1EBFt, h\u01B0\u1EDBng d\u1EABn g\u1ECDi 0913 156 676.';
+var SYSTEM_PROMPT = 'Bạn là trợ lý AI chăm sóc khách hàng của Anima Care Global — tên bạn là "Anima". '
++'Phong cách: thân thiện, ấm áp, chuyên nghiệp như người thật. Trả lời ngắn gọn (tối đa 120 từ), tự nhiên, dễ hiểu.\n\n'
++'CHỈ trả lời về hệ sinh thái Anima Care. Nếu câu hỏi không liên quan, nói: "Em chỉ hỗ trợ thông tin về Anima Care thôi ạ. Anh/chị muốn tìm hiểu sản phẩm hay dịch vụ nào ạ?"\n\n'
++'CÔNG TY: Anima Care Global JSC. Địa chỉ: 286 Nguyễn Xiển, Thanh Liệt, Hà Nội. Hotline: 0913 156 676. Web: animacare.global\n\n'
++'4 TRỤ CỘT:\n'
++'1. ANIMA 119: Thực thể phân tử sống — đông dược lên men 3 tầng từ 32 thảo dược quý. Công nghệ độc quyền ZenX Holdings. 8 công năng: khơi thông kinh lạc, tái lập tế bào, thải độc tầng sâu, tăng miễn dịch, cải thiện sinh lý, hỗ trợ thần kinh, trẻ hoá tế bào, làm sạch mạch máu.\n'
++'2. ANIMA CARE: Chuỗi trung tâm chữa lành vật lý trị liệu. 34 cơ sở độc quyền tại 34 tỉnh thành VN. Franchise Lite & Full.\n'
++'3. ANIMA TECH: Nền tảng O2O, app đặt lịch, CRM, chuỗi cung ứng tích hợp.\n'
++'4. ANIMA AI: AI scan lưỡi chẩn đoán thể tạng Đông Y (96.4%), khai vấn tự động.\n\n'
++'SẢN PHẨM ANIMA 119:\n'
++'- 1 Hộp (10 gói): 1.868.000đ\n'
++'- 3 Hộp (30 gói): 5.604.000đ (tiết kiệm 10%)\n'
++'- 12 Hộp (120 gói): 22.416.000đ (tiết kiệm 25% - liệu trình 4 tháng)\n'
++'Cách dùng: 1 gói/ngày, pha với 200ml nước ấm, uống trước ăn sáng 30 phút.\n\n'
++'DỊCH VỤ TẠI CƠ SỞ:\n'
++'- Khai Vấn AI (30ph): 350.000đ — AI scan lưỡi + tư vấn thể tạng\n'
++'- Thảo Mộc Nhiệt (90ph): 850.000đ — xông hơi thảo dược + massage kinh lạc\n'
++'- Bồn Ngâm Thảo Mộc (60ph): 650.000đ — ngâm chân + toàn thân thảo dược\n'
++'- Châm Cứu Chuẩn (60ph): 750.000đ — châm cứu + cứu ngải\n'
++'- Massage Kinh Lạc (90ph): 950.000đ — massage đả thông 12 đường kinh\n'
++'- Xông Hơi Thảo Mộc (45ph): 550.000đ — xông hơi + detox\n'
++'- Liệu Trình Toàn Phần (180ph): 2.500.000đ — combo tất cả dịch vụ\n\n'
++'THẺ THÀNH VIÊN:\n'
++'- Thẻ 3 Tháng: 12.000.000đ — giảm 20% dịch vụ + 1 hộp Anima 119 miễn phí\n'
++'- Thẻ Năm VIP: 25.000.000đ — giảm 35% + 3 hộp miễn phí + ưu tiên đặt lịch\n\n'
++'LỘ TRÌNH IPO: SGX Mainboard Singapore 2031. Mục tiêu định giá $2-5B.\n\n'
++'QUY TẮC TRẢ LỜI:\n'
++'- Xưng "em", gọi khách "anh/chị"\n'
++'- Trả lời tiếng Việt, ngắn gọn, ấm áp\n'
++'- Không bịa đặt. Nếu không biết → hướng dẫn gọi 0913 156 676\n'
++'- Khi khách hỏi giá → nêu giá + gợi ý combo tiết kiệm\n'
++'- Khi khách muốn mua → hướng dẫn vào Cửa Hàng trên web hoặc gọi hotline\n'
++'- Kết thúc mỗi câu trả lời bằng câu hỏi mở để giữ hội thoại';
 
 window.acBotToggle = function(){
   var p=document.getElementById('acBotPanel');
@@ -12658,39 +12667,14 @@ window.acBotToggle = function(){
 };
 
 function acBotGreet(){
-  addMsg('bot','Xin ch\u00E0o! T\u00F4i l\u00E0 tr\u1EE3 l\u00FD AI c\u1EE7a Anima Care \uD83C\uDF3F\nH\u00E3y h\u1ECFi t\u00F4i v\u1EC1 s\u1EA3n ph\u1EA9m Anima 119, d\u1ECBch v\u1EE5 ch\u1EEFa l\u00E0nh, ho\u1EB7c h\u1EC7 sinh th\u00E1i Anima Care!');
-  if(!ACBOT_KEY){
-    addMsg('bot','\u26A0\uFE0F \u0110\u1EC3 s\u1EED d\u1EE5ng chatbot, vui l\u00F2ng nh\u1EADp OpenAI API key b\u00EAn d\u01B0\u1EDBi:');
-    addKeyInput();
-  }
+  addMsg('bot','Xin chào anh/chị! Em là Anima — trợ lý AI của Anima Care Global.\nEm có thể giúp anh/chị tìm hiểu về sản phẩm Anima 119, dịch vụ chữa lành, hoặc đặt lịch tại cơ sở gần nhất.\n\nAnh/chị muốn tìm hiểu về sản phẩm hay dịch vụ ạ?');
 }
-
-function addKeyInput(){
-  var m=document.getElementById('acBotMsgs');
-  var d=document.createElement('div');
-  d.style.cssText='display:flex;gap:6px;padding:0 4px';
-  d.innerHTML='<input id="acBotKeyInp" type="password" placeholder="sk-..." style="flex:1;background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.15);border-radius:8px;padding:8px 10px;font-size:11px;color:#F8F2E0;outline:none;font-family:monospace">'
-    +'<button onclick="acBotSetKey()" style="padding:8px 12px;border:none;border-radius:8px;background:#00C896;color:#000;font-size:11px;font-weight:700;cursor:pointer">OK</button>';
-  m.appendChild(d);
-  m.scrollTop=m.scrollHeight;
-}
-
-window.acBotSetKey = function(){
-  var inp=document.getElementById('acBotKeyInp');
-  if(!inp)return;
-  var k=inp.value.trim();
-  if(!k||!k.startsWith('sk-')){addMsg('bot','Key kh\u00F4ng h\u1EE3p l\u1EC7. Vui l\u00F2ng nh\u1EADp \u0111\u00FAng API key (b\u1EAFt \u0111\u1EA7u b\u1EB1ng sk-).');return;}
-  ACBOT_KEY=k;
-  localStorage.setItem('anima_bot_key',k);
-  inp.parentElement.remove();
-  addMsg('bot','\u2705 \u0110\u00E3 k\u1EBFt n\u1ED1i! B\u1EA1n c\u00F3 th\u1EC3 h\u1ECFi t\u00F4i b\u1EA5t c\u1EE9 \u0111i\u1EC1u g\u00EC v\u1EC1 Anima Care.');
-};
 
 function addMsg(role,text){
   var m=document.getElementById('acBotMsgs');
   var d=document.createElement('div');
   var isBot=role==='bot';
-  d.style.cssText='max-width:85%;padding:10px 14px;border-radius:'+(isBot?'2px 14px 14px 14px':'14px 2px 14px 14px')+';font-size:13px;line-height:1.6;word-break:break-word;white-space:pre-wrap;'
+  d.style.cssText='max-width:85%;padding:10px 14px;border-radius:'+(isBot?'2px 14px 14px 14px':'14px 2px 14px 14px')+';font-size:14px;line-height:1.65;word-break:break-word;white-space:pre-wrap;'
     +(isBot?'background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.1);color:#F8F2E0;align-self:flex-start':'background:linear-gradient(135deg,#005A42,#00896A);color:#F8F2E0;align-self:flex-end');
   d.textContent=text;
   m.appendChild(d);
@@ -12714,51 +12698,44 @@ window.acBotSend = async function(){
   if(!q)return;
   inp.value='';
 
-  if(!ACBOT_KEY){
-    addMsg('bot','\u26A0\uFE0F Vui l\u00F2ng nh\u1EADp API key tr\u01B0\u1EDBc.');
-    if(!document.getElementById('acBotKeyInp'))addKeyInput();
-    return;
-  }
-
   addMsg('user',q);
-  acBotHistory.push({role:'user',content:q});
-  // Keep only last 6 messages
-  if(acBotHistory.length>6) acBotHistory=acBotHistory.slice(-6);
+  acBotHistory.push({role:'user',parts:[{text:q}]});
+  if(acBotHistory.length>8) acBotHistory=acBotHistory.slice(-8);
 
   addTyping();
   inp.disabled=true;
 
   try{
-    var messages=[{role:'system',content:SYSTEM_PROMPT}].concat(acBotHistory);
-    var res=await fetch('https://api.openai.com/v1/chat/completions',{
+    var contents=[{role:'user',parts:[{text:SYSTEM_PROMPT}]},{role:'model',parts:[{text:'Dạ em hiểu rồi ạ. Em sẽ hỗ trợ khách hàng theo đúng quy tắc.'}]}].concat(acBotHistory);
+    var url='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+_GK;
+    var res=await fetch(url,{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+ACBOT_KEY},
-      body:JSON.stringify({model:'gpt-4o-mini',messages:messages,max_tokens:300,temperature:0.3})
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        contents:contents,
+        generationConfig:{maxOutputTokens:250,temperature:0.4,topP:0.9}
+      })
     });
     var data=await res.json();
     removeTyping();
     if(data.error){
-      addMsg('bot','\u274C L\u1ED7i: '+(data.error.message||'API error').substring(0,100));
-      if(data.error.code==='invalid_api_key'){ACBOT_KEY='';localStorage.removeItem('anima_bot_key');addMsg('bot','API key kh\u00F4ng h\u1EE3p l\u1EC7. Vui l\u00F2ng nh\u1EADp l\u1EA1i:');addKeyInput();}
-    } else {
-      var reply=data.choices[0].message.content.trim();
+      addMsg('bot','Xin lỗi, em đang gặp sự cố. Anh/chị vui lòng gọi hotline 0913 156 676 để được hỗ trợ trực tiếp ạ.');
+    } else if(data.candidates && data.candidates[0]){
+      var reply=data.candidates[0].content.parts[0].text.trim();
       addMsg('bot',reply);
-      acBotHistory.push({role:'assistant',content:reply});
-      if(acBotHistory.length>6) acBotHistory=acBotHistory.slice(-6);
+      acBotHistory.push({role:'model',parts:[{text:reply}]});
+      if(acBotHistory.length>8) acBotHistory=acBotHistory.slice(-8);
+    } else {
+      addMsg('bot','Em không thể trả lời lúc này. Anh/chị gọi 0913 156 676 nhé ạ!');
     }
   }catch(e){
     removeTyping();
-    addMsg('bot','\u274C Kh\u00F4ng th\u1EC3 k\u1EBFt n\u1ED1i. Vui l\u00F2ng th\u1EED l\u1EA1i.');
+    addMsg('bot','Kết nối bị gián đoạn. Anh/chị thử lại hoặc gọi hotline 0913 156 676 ạ.');
   }
   inp.disabled=false;
   inp.focus();
 };
 
-// Load saved key
-var savedKey=localStorage.getItem('anima_bot_key');
-if(savedKey) ACBOT_KEY=savedKey;
-
-// Typing animation CSS
 var st=document.createElement('style');
 st.textContent='@keyframes acDot{0%,80%,100%{opacity:.3;transform:scale(.8)}40%{opacity:1;transform:scale(1.1)}}#acBotMsgs::-webkit-scrollbar{display:none}@media(max-width:480px){#acBotPanel{right:8px!important;bottom:80px!important;width:calc(100vw - 16px)!important;height:calc(100vh - 100px)!important;border-radius:16px!important}}';
 document.head.appendChild(st);
