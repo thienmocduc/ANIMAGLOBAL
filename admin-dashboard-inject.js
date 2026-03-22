@@ -480,14 +480,95 @@ function renderPets(){
 
 // ── Orders Page ──────────────────────────────────────────
 function renderOrders(){
-  var html='<div class="adm-card"><div class="adm-card-header"><span class="adm-card-title" data-vi="T\u1EA5t c\u1EA3 \u0111\u01A1n h\u00E0ng" data-en="All Orders">T\u1EA5t c\u1EA3 \u0111\u01A1n h\u00E0ng</span></div>';
-  html+='<div class="adm-table-wrap"><table class="adm-table"><thead><tr><th>ID</th><th data-vi="Kh\u00E1ch h\u00E0ng" data-en="Customer">Kh\u00E1ch h\u00E0ng</th><th data-vi="S\u1EA3n ph\u1EA9m" data-en="Items">SP</th><th data-vi="T\u1ED5ng ti\u1EC1n" data-en="Total">T\u1ED5ng ti\u1EC1n</th><th data-vi="Ng\u00E0y" data-en="Date">Ng\u00E0y</th><th data-vi="Thanh to\u00E1n" data-en="Payment">Thanh to\u00E1n</th><th data-vi="Tr\u1EA1ng th\u00E1i" data-en="Status">Tr\u1EA1ng th\u00E1i</th></tr></thead><tbody>';
-  DEMO.orders.forEach(function(o){
-    html+='<tr><td style="color:#7B5FFF;font-weight:600">'+o.id+'</td><td>'+o.customer+'</td><td style="text-align:center">'+o.items+'</td><td>'+formatVND(o.total)+'</td><td>'+o.date+'</td><td>'+statusBadge(o.payment)+'</td><td>'+statusBadge(o.status)+'</td></tr>';
+  var content=document.getElementById('admPageContent');
+  content.innerHTML='<div style="text-align:center;padding:40px;color:#607870">Loading orders...</div>';
+
+  // Load from Supabase + localStorage fallback
+  var supaOrders = window.AnimaOrders ? AnimaOrders.getAll({limit:200}) : Promise.resolve([]);
+  var localOrders = [];
+  try{localOrders=JSON.parse(localStorage.getItem('anima_orders')||'[]');}catch(e){}
+
+  supaOrders.then(function(dbOrders){
+    dbOrders = dbOrders || [];
+    // Merge: DB orders + local orders not in DB
+    var dbCodes = dbOrders.map(function(o){return o.order_code;});
+    var extraLocal = localOrders.filter(function(o){return dbCodes.indexOf(o._id||o.id)===-1;});
+
+    var allOrders = dbOrders.map(function(o){
+      var items = [];
+      try{items=typeof o.items==='string'?JSON.parse(o.items):o.items||[];}catch(e){}
+      return {
+        id:o.order_code, customer:o.customer_name, phone:o.customer_phone,
+        product:items.length>0?items[0].name:'', total:o.total_amount||0,
+        date:o.created_at?new Date(o.created_at).toLocaleDateString('vi-VN'):'',
+        payment:o.payment_method||'cod', status:o.order_status||'pending',
+        center:o.center_name||'', _dbId:o.id, _source:'supabase'
+      };
+    }).concat(extraLocal.map(function(o){
+      return {
+        id:o._id||o.id, customer:o.customer||o.name, phone:o.phone||'',
+        product:o.product||'', total:o.total||0,
+        date:o.date||'', payment:o.paymentMethod||o.method||'cod',
+        status:o.status||'pending', center:o.centerId||'', _source:'local'
+      };
+    }));
+
+    var html='<div class="adm-card"><div class="adm-card-header"><span class="adm-card-title" data-vi="T\u1EA5t c\u1EA3 \u0111\u01A1n h\u00E0ng" data-en="All Orders">T\u1EA5t c\u1EA3 \u0111\u01A1n h\u00E0ng ('+allOrders.length+')</span>';
+    html+='<button class="adm-btn adm-btn-secondary" onclick="admNav(document.querySelector(\'[data-page=orders]\'),\'orders\')">\u21BB</button></div>';
+    html+='<div class="adm-table-wrap"><table class="adm-table"><thead><tr>';
+    html+='<th>M\u00E3 \u0111\u01A1n</th><th>Kh\u00E1ch h\u00E0ng</th><th>S\u0110T</th><th>S\u1EA3n ph\u1EA9m</th><th>T\u1ED5ng ti\u1EC1n</th><th>Ng\u00E0y</th><th>Thanh to\u00E1n</th><th>Tr\u1EA1ng th\u00E1i</th>';
+    html+='</tr></thead><tbody>';
+
+    if(allOrders.length===0){
+      html+='<tr><td colspan="8" style="text-align:center;padding:30px;color:#607870">Ch\u01B0a c\u00F3 \u0111\u01A1n h\u00E0ng n\u00E0o</td></tr>';
+    } else {
+      allOrders.forEach(function(o){
+        var payLabels={cod:'COD',bank:'Chuy\u1EC3n kho\u1EA3n',momo:'MoMo'};
+        var statusColors={pending:'yellow',confirmed:'blue',processing:'purple',shipped:'blue',delivered:'green',cancelled:'red'};
+        var statusLabels={pending:'Ch\u1EDD x\u1EED l\u00FD',confirmed:'X\u00E1c nh\u1EADn',processing:'\u0110ang x\u1EED l\u00FD',shipped:'\u0110ang giao',delivered:'\u0110\u00E3 giao',cancelled:'H\u1EE7y'};
+        html+='<tr>';
+        html+='<td style="color:#7B5FFF;font-weight:600;font-size:12px;font-family:monospace">'+o.id+'</td>';
+        html+='<td style="font-weight:600;color:#E8F8F4">'+o.customer+'</td>';
+        html+='<td style="color:#00C896">'+(o.phone||'\u2014')+'</td>';
+        html+='<td style="font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis">'+(o.product||'\u2014')+'</td>';
+        html+='<td style="font-weight:600;color:#FFB800">'+formatVND(o.total)+'</td>';
+        html+='<td style="font-size:12px;color:#607870;white-space:nowrap">'+o.date+'</td>';
+        html+='<td><span class="adm-badge adm-badge-blue">'+(payLabels[o.payment]||o.payment)+'</span></td>';
+        html+='<td>';
+        if(o._dbId){
+          html+='<select onchange="ordUpdateStatus(\''+o._dbId+'\',this.value)" style="font-size:11px;background:#0A1218;color:#B8D8D0;border:1px solid rgba(0,200,150,0.2);border-radius:6px;padding:3px 6px">';
+          ['pending','confirmed','processing','shipped','delivered','cancelled'].forEach(function(s){
+            html+='<option value="'+s+'"'+(o.status===s?' selected':'')+'>'+(statusLabels[s]||s)+'</option>';
+          });
+          html+='</select>';
+        } else {
+          html+='<span class="adm-badge adm-badge-'+(statusColors[o.status]||'yellow')+'">'+(statusLabels[o.status]||o.status)+'</span>';
+          html+=' <span style="font-size:9px;color:#607870">(local)</span>';
+        }
+        html+='</td></tr>';
+      });
+    }
+    html+='</tbody></table></div></div>';
+    content.innerHTML=html;
+    if(typeof applyTranslations==='function') applyTranslations();
+  }).catch(function(e){
+    // Fallback to DEMO data if Supabase fails
+    var html='<div class="adm-card"><div class="adm-card-header"><span class="adm-card-title">All Orders (Demo)</span></div>';
+    html+='<div class="adm-table-wrap"><table class="adm-table"><thead><tr><th>ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Date</th><th>Payment</th><th>Status</th></tr></thead><tbody>';
+    DEMO.orders.forEach(function(o){
+      html+='<tr><td style="color:#7B5FFF;font-weight:600">'+o.id+'</td><td>'+o.customer+'</td><td style="text-align:center">'+o.items+'</td><td>'+formatVND(o.total)+'</td><td>'+o.date+'</td><td>'+statusBadge(o.payment)+'</td><td>'+statusBadge(o.status)+'</td></tr>';
+    });
+    html+='</tbody></table></div></div>';
+    content.innerHTML=html;
   });
-  html+='</tbody></table></div></div>';
-  document.getElementById('admPageContent').innerHTML=html;
 }
+
+window.ordUpdateStatus=function(id,status){
+  if(!window.AnimaOrders) return;
+  AnimaOrders.updateStatus(id,status).then(function(){
+    admNav(document.querySelector('[data-page=orders]'),'orders');
+  });
+};
 
 // ── Inventory Page ───────────────────────────────────────
 function renderInventory(){
