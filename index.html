@@ -12753,6 +12753,7 @@ overlayIds.forEach(function(id){
 (function(){
 // ═══ ANIMA CARE AI CHATBOT — Gemini Free ═══
 var _GK = ['AI','zaSy','Alus','Bwt-','y3m2','Q5XO','7Hcj','nNRT','IftC','sHIkM'].join('');
+var _MODEL = 'gemini-2.5-flash-lite';
 var acBotHistory = [];
 var acBotOpen = false;
 
@@ -12842,7 +12843,7 @@ window.acBotSend = async function(){
 
   try{
     var contents=[{role:'user',parts:[{text:SYSTEM_PROMPT}]},{role:'model',parts:[{text:'Dạ em hiểu rồi ạ. Em sẽ hỗ trợ khách hàng theo đúng quy tắc.'}]}].concat(acBotHistory);
-    var url='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+_GK;
+    var url='https://generativelanguage.googleapis.com/v1beta/models/'+_MODEL+':generateContent?key='+_GK;
     var res=await fetch(url,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -12854,6 +12855,7 @@ window.acBotSend = async function(){
     var data=await res.json();
     removeTyping();
     if(data.error){
+      console.warn('Anima Bot error:',data.error);
       addMsg('bot','Xin lỗi, em đang gặp sự cố. Anh/chị vui lòng gọi hotline 0913 156 676 để được hỗ trợ trực tiếp ạ.');
     } else if(data.candidates && data.candidates[0]){
       var reply=data.candidates[0].content.parts[0].text.trim();
