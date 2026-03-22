@@ -144,6 +144,10 @@ const dashboardBlock = `
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
       <span data-vi="\u0110\u01A1n h\u00E0ng" data-en="Orders">Orders</span>
     </div>
+    <div class="adm-nav-item" data-page="crm" onclick="admNav(this,'crm')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      <span data-vi="CRM Leads" data-en="CRM Leads">CRM Leads</span>
+    </div>
     <div class="adm-nav-item" data-page="inventory" onclick="admNav(this,'inventory')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27,6.96 12,12.01 20.73,6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
       <span data-vi="Kho h\u00E0ng" data-en="Inventory">Inventory</span>
@@ -332,6 +336,7 @@ document.getElementById('admModal').addEventListener('click',function(e){
 // ── Page Renderer ────────────────────────────────────────
 function renderPage(page){
   var titles={
+    crm:{vi:'CRM Leads',en:'CRM Leads'},
     dashboard:{vi:'B\u1EA3ng \u0111i\u1EC1u khi\u1EC3n',en:'Dashboard'},
     analytics:{vi:'Ph\u00E2n t\u00EDch',en:'Analytics'},
     bookings:{vi:'Qu\u1EA3n l\u00FD l\u1ECBch h\u1EB9n',en:'Manage Bookings'},
@@ -351,6 +356,7 @@ function renderPage(page){
   titleEl.setAttribute('data-en',t.en);
 
   var renderers={
+    crm:renderCRM,
     dashboard:renderDashboard,analytics:renderAnalytics,bookings:renderBookings,
     customers:renderCustomers,pets:renderPets,orders:renderOrders,
     inventory:renderInventory,centers:renderCenters,staff:renderStaff,
@@ -535,6 +541,225 @@ function renderAudit(){
   html+='</tbody></table></div></div>';
   document.getElementById('admPageContent').innerHTML=html;
 }
+
+// ═══════════════════════════════════════════
+// CRM LEADS PAGE — Full Supabase Integration
+// ═══════════════════════════════════════════
+function renderCRM(){
+  var content=document.getElementById('admPageContent');
+  content.innerHTML='<div style="text-align:center;padding:40px;color:#607870">Loading CRM data...</div>';
+
+  if(!window.AnimaCRM){
+    content.innerHTML='<div class="adm-card"><div style="padding:40px;text-align:center;color:#FF7070">Supabase client not loaded. Please refresh the page.</div></div>';
+    return;
+  }
+
+  Promise.all([
+    AnimaCRM.getLeads(),
+    AnimaCRM.getStats()
+  ]).then(function(results){
+    var leads=results[0]||[];
+    var stats=results[1]||{};
+    var html='';
+
+    // KPIs
+    html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px">';
+    var kpis=[
+      {label:'T\u1ED5ng Leads',value:stats.totalLeads||0,color:'#00C896'},
+      {label:'M\u1EDBi',value:stats.newLeads||0,color:'#00BFFF'},
+      {label:'\u0110\u00E3 li\u00EAn h\u1EC7',value:stats.contactedLeads||0,color:'#FFB800'},
+      {label:'Ch\u1EA5t l\u01B0\u1EE3ng',value:stats.qualifiedLeads||0,color:'#9B82FF'},
+      {label:'Th\u00E0nh c\u00F4ng',value:stats.wonLeads||0,color:'#00E676'},
+      {label:'\u0110\u01A1n h\u00E0ng',value:stats.totalOrders||0,color:'#FF6B9D'}
+    ];
+    kpis.forEach(function(k){
+      html+='<div style="background:rgba(0,200,150,0.03);border:1px solid rgba(0,200,150,0.1);border-radius:12px;padding:16px;text-align:center">';
+      html+='<div style="font-size:28px;font-weight:700;color:'+k.color+'">'+k.value+'</div>';
+      html+='<div style="font-size:12px;color:#607870;margin-top:4px">'+k.label+'</div>';
+      html+='</div>';
+    });
+    html+='</div>';
+
+    // Action bar
+    html+='<div class="adm-card" style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:12px 16px">';
+    html+='<div style="display:flex;gap:6px;flex-wrap:wrap">';
+    html+='<button class="adm-btn adm-btn-primary" onclick="crmAddLead()" style="font-size:13px">+ Th\u00EAm Lead</button>';
+    html+='<button class="adm-btn adm-btn-secondary" onclick="admNav(document.querySelector(\'[data-page=crm]\'),\'crm\')" style="font-size:13px">\u21BB L\u00E0m m\u1EDBi</button>';
+    html+='</div>';
+    html+='<div style="font-size:12px;color:#607870">T\u1ED5ng: '+leads.length+' leads | Doanh thu: '+(stats.totalRevenue?stats.totalRevenue.toLocaleString():'0')+'\u0111</div>';
+    html+='</div></div>';
+
+    // Pipeline view
+    html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:16px">';
+    var statuses=[
+      {key:'new',label:'M\u1EDBi',color:'#00BFFF',icon:'\u25CF'},
+      {key:'contacted',label:'\u0110\u00E3 li\u00EAn h\u1EC7',color:'#FFB800',icon:'\u260E'},
+      {key:'qualified',label:'Ch\u1EA5t l\u01B0\u1EE3ng',color:'#9B82FF',icon:'\u2605'},
+      {key:'proposal',label:'\u0110\u1EC1 xu\u1EA5t',color:'#FF6B9D',icon:'\u270D'},
+      {key:'won',label:'Th\u00E0nh c\u00F4ng',color:'#00E676',icon:'\u2714'},
+      {key:'lost',label:'M\u1EA5t',color:'#FF5252',icon:'\u2716'}
+    ];
+    statuses.forEach(function(s){
+      var count=leads.filter(function(l){return l.status===s.key;}).length;
+      html+='<div onclick="crmFilterStatus(\''+s.key+'\')" style="background:rgba(0,200,150,0.03);border:1px solid rgba(0,200,150,0.1);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor=\''+s.color+'\'" onmouseout="this.style.borderColor=\'rgba(0,200,150,0.1)\'">';
+      html+='<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;color:'+s.color+';font-weight:600">'+s.icon+' '+s.label+'</span><span style="font-size:20px;font-weight:700;color:'+s.color+'">'+count+'</span></div>';
+      html+='</div>';
+    });
+    html+='</div>';
+
+    // Leads table
+    html+='<div class="adm-card"><div class="adm-card-header"><span class="adm-card-title">Danh s\u00E1ch Leads</span></div>';
+    html+='<div class="adm-table-wrap"><table class="adm-table"><thead><tr>';
+    html+='<th>T\u00EAn</th><th>S\u0110T</th><th>Email</th><th>Ngu\u1ED3n</th><th>Tr\u1EA1ng th\u00E1i</th><th>Ng\u00E0y</th><th>Thao t\u00E1c</th>';
+    html+='</tr></thead><tbody>';
+
+    if(leads.length===0){
+      html+='<tr><td colspan="7" style="text-align:center;padding:30px;color:#607870">Ch\u01B0a c\u00F3 lead n\u00E0o. H\u00E3y \u0111\u1EB7t \u0111\u01A1n ho\u1EB7c g\u1EEDi li\u00EAn h\u1EC7 \u0111\u1EC3 t\u1EA1o lead \u0111\u1EA7u ti\u00EAn!</td></tr>';
+    } else {
+      leads.forEach(function(l){
+        var statusColors={new:'blue',contacted:'yellow',qualified:'purple',proposal:'pink',won:'green',lost:'red'};
+        var statusLabels={new:'M\u1EDBi',contacted:'\u0110\u00E3 LH',qualified:'Ch\u1EA5t l\u01B0\u1EE3ng',proposal:'\u0110\u1EC1 xu\u1EA5t',won:'Th\u00E0nh c\u00F4ng',lost:'M\u1EA5t'};
+        var date=l.created_at?new Date(l.created_at).toLocaleDateString('vi-VN'):'';
+        html+='<tr>';
+        html+='<td style="font-weight:600;color:#E8F8F4;cursor:pointer" onclick="crmViewLead(\''+l.id+'\')">'+l.name+'</td>';
+        html+='<td style="color:#00C896">'+(l.phone||'—')+'</td>';
+        html+='<td style="font-size:12px;color:#607870">'+(l.email||'—')+'</td>';
+        html+='<td><span style="font-size:11px;color:#9B82FF;background:rgba(155,130,255,0.08);padding:2px 8px;border-radius:6px">'+(l.source||'web')+'</span></td>';
+        html+='<td><span class="adm-badge adm-badge-'+(statusColors[l.status]||'blue')+'">'+(statusLabels[l.status]||l.status)+'</span></td>';
+        html+='<td style="font-size:12px;color:#607870;white-space:nowrap">'+date+'</td>';
+        html+='<td style="display:flex;gap:4px">';
+        html+='<select onchange="crmUpdateStatus(\''+l.id+'\',this.value)" style="font-size:11px;background:#0A1218;color:#B8D8D0;border:1px solid rgba(0,200,150,0.2);border-radius:6px;padding:3px 6px">';
+        statuses.forEach(function(s){html+='<option value="'+s.key+'"'+(l.status===s.key?' selected':'')+'>'+s.label+'</option>';});
+        html+='</select>';
+        html+='<button onclick="crmDeleteLead(\''+l.id+'\')" style="font-size:11px;background:rgba(255,82,82,0.08);border:1px solid rgba(255,82,82,0.2);color:#FF5252;border-radius:6px;padding:3px 8px;cursor:pointer">X</button>';
+        html+='</td></tr>';
+      });
+    }
+    html+='</tbody></table></div></div>';
+
+    content.innerHTML=html;
+    if(typeof applyTranslations==='function') applyTranslations();
+  }).catch(function(e){
+    content.innerHTML='<div class="adm-card"><div style="padding:30px;text-align:center;color:#FF7070">L\u1ED7i t\u1EA3i d\u1EEF li\u1EC7u: '+e.message+'</div></div>';
+  });
+}
+
+// CRM Actions
+window.crmUpdateStatus=function(id,status){
+  if(!window.AnimaCRM) return;
+  AnimaCRM.updateLead(id,{status:status}).then(function(){
+    admNav(document.querySelector('[data-page=crm]'),'crm');
+  });
+};
+
+window.crmDeleteLead=function(id){
+  if(!confirm('X\u00F3a lead n\u00E0y?')) return;
+  if(!window.AnimaCRM) return;
+  AnimaCRM.deleteLead(id).then(function(){
+    admNav(document.querySelector('[data-page=crm]'),'crm');
+  });
+};
+
+window.crmAddLead=function(){
+  var html='<div style="display:flex;flex-direction:column;gap:12px;min-width:300px">';
+  html+='<h3 style="color:#00C896;margin:0">Th\u00EAm Lead M\u1EDBi</h3>';
+  html+='<input id="crmNewName" placeholder="T\u00EAn kh\u00E1ch h\u00E0ng *" style="padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,200,150,0.2);border-radius:8px;color:#E8F8F4;font-size:14px">';
+  html+='<input id="crmNewPhone" placeholder="S\u1ED1 \u0111i\u1EC7n tho\u1EA1i" style="padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,200,150,0.2);border-radius:8px;color:#E8F8F4;font-size:14px">';
+  html+='<input id="crmNewEmail" placeholder="Email" style="padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,200,150,0.2);border-radius:8px;color:#E8F8F4;font-size:14px">';
+  html+='<select id="crmNewSource" style="padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,200,150,0.2);border-radius:8px;color:#E8F8F4;font-size:14px">';
+  html+='<option value="manual">Nh\u1EADp tay</option><option value="phone">G\u1ECDi \u0111i\u1EC7n</option><option value="referral">Gi\u1EDBi thi\u1EC7u</option><option value="social">MXH</option><option value="website_order">Web Order</option><option value="website_contact">Web Contact</option>';
+  html+='</select>';
+  html+='<textarea id="crmNewNotes" placeholder="Ghi ch\u00FA..." rows="2" style="padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,200,150,0.2);border-radius:8px;color:#E8F8F4;font-size:14px;resize:none"></textarea>';
+  html+='<button onclick="crmSaveNewLead()" class="adm-btn adm-btn-primary" style="padding:12px">L\u01B0u Lead</button>';
+  html+='</div>';
+  admShowModal(html);
+};
+
+window.crmSaveNewLead=function(){
+  var name=document.getElementById('crmNewName').value.trim();
+  if(!name){alert('Vui l\u00F2ng nh\u1EADp t\u00EAn!');return;}
+  AnimaCRM.createLead({
+    name:name,
+    phone:document.getElementById('crmNewPhone').value.trim(),
+    email:document.getElementById('crmNewEmail').value.trim(),
+    source:document.getElementById('crmNewSource').value,
+    notes:document.getElementById('crmNewNotes').value.trim(),
+    status:'new'
+  }).then(function(){
+    document.getElementById('admModal').classList.remove('show');
+    admNav(document.querySelector('[data-page=crm]'),'crm');
+  }).catch(function(e){alert('L\u1ED7i: '+e.message);});
+};
+
+window.crmViewLead=function(id){
+  AnimaCRM.getLead(id).then(function(lead){
+    if(!lead) return;
+    AnimaCRM.getActivities(id).then(function(activities){
+      var html='<div style="min-width:350px">';
+      html+='<h3 style="color:#00C896;margin:0 0 16px">'+lead.name+'</h3>';
+      html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">';
+      html+='<div style="font-size:13px"><span style="color:#607870">S\u0110T:</span> <span style="color:#00C896">'+(lead.phone||'\u2014')+'</span></div>';
+      html+='<div style="font-size:13px"><span style="color:#607870">Email:</span> <span style="color:#E8F8F4">'+(lead.email||'\u2014')+'</span></div>';
+      html+='<div style="font-size:13px"><span style="color:#607870">Ngu\u1ED3n:</span> <span style="color:#9B82FF">'+(lead.source||'web')+'</span></div>';
+      html+='<div style="font-size:13px"><span style="color:#607870">Ng\u00E0y:</span> <span style="color:#E8F8F4">'+new Date(lead.created_at).toLocaleDateString('vi-VN')+'</span></div>';
+      html+='</div>';
+      if(lead.notes) html+='<div style="background:rgba(0,200,150,0.04);border:1px solid rgba(0,200,150,0.1);border-radius:8px;padding:10px 14px;font-size:13px;color:#B8D8D0;margin-bottom:16px">'+lead.notes+'</div>';
+
+      // Add activity form
+      html+='<div style="margin-bottom:12px"><div style="font-size:12px;font-weight:600;color:#607870;margin-bottom:6px">Th\u00EAm ghi ch\u00FA</div>';
+      html+='<div style="display:flex;gap:6px"><select id="crmActType" style="padding:8px;background:#0A1218;color:#B8D8D0;border:1px solid rgba(0,200,150,0.2);border-radius:6px;font-size:12px"><option value="note">Ghi ch\u00FA</option><option value="call">G\u1ECDi \u0111i\u1EC7n</option><option value="email">Email</option><option value="meeting">H\u1EB9n g\u1EB7p</option></select>';
+      html+='<input id="crmActContent" placeholder="N\u1ED9i dung..." style="flex:1;padding:8px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,200,150,0.2);border-radius:6px;color:#E8F8F4;font-size:12px">';
+      html+='<button onclick="crmAddActivity(\''+id+'\')" style="padding:8px 12px;background:rgba(0,200,150,0.1);border:1px solid rgba(0,200,150,0.2);border-radius:6px;color:#00C896;cursor:pointer;font-size:12px">+</button></div></div>';
+
+      // Activity log
+      if(activities&&activities.length>0){
+        html+='<div style="font-size:12px;font-weight:600;color:#607870;margin-bottom:6px">L\u1ECBch s\u1EED</div>';
+        activities.forEach(function(a){
+          var typeColors={note:'#607870',call:'#00BFFF',email:'#FFB800',meeting:'#9B82FF',order:'#00E676',chat:'#FF6B9D'};
+          html+='<div style="display:flex;gap:8px;padding:6px 0;border-bottom:1px solid rgba(0,200,150,0.05);font-size:12px">';
+          html+='<span style="color:'+(typeColors[a.type]||'#607870')+';min-width:60px;font-weight:600">'+a.type+'</span>';
+          html+='<span style="color:#B8D8D0;flex:1">'+(a.content||'')+'</span>';
+          html+='<span style="color:#607870;white-space:nowrap">'+new Date(a.created_at).toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+'</span>';
+          html+='</div>';
+        });
+      }
+      html+='</div>';
+      admShowModal(html);
+    });
+  });
+};
+
+window.crmAddActivity=function(leadId){
+  var type=document.getElementById('crmActType').value;
+  var content=document.getElementById('crmActContent').value.trim();
+  if(!content) return;
+  AnimaCRM.addActivity({lead_id:leadId,type:type,content:content,created_by:'admin'}).then(function(){
+    crmViewLead(leadId);
+  });
+};
+
+window.crmFilterStatus=function(status){
+  if(!window.AnimaCRM) return;
+  AnimaCRM.getLeads({filter:'status=eq.'+status}).then(function(leads){
+    // Re-render just the table
+    var tbody=document.querySelector('#admPageContent .adm-table tbody');
+    if(!tbody) return;
+    var html='';
+    leads.forEach(function(l){
+      var statusColors={new:'blue',contacted:'yellow',qualified:'purple',proposal:'pink',won:'green',lost:'red'};
+      var statusLabels={new:'M\u1EDBi',contacted:'\u0110\u00E3 LH',qualified:'Ch\u1EA5t l\u01B0\u1EE3ng',proposal:'\u0110\u1EC1 xu\u1EA5t',won:'Th\u00E0nh c\u00F4ng',lost:'M\u1EA5t'};
+      var date=l.created_at?new Date(l.created_at).toLocaleDateString('vi-VN'):'';
+      html+='<tr><td style="font-weight:600;color:#E8F8F4;cursor:pointer" onclick="crmViewLead(\''+l.id+'\')">'+l.name+'</td>';
+      html+='<td style="color:#00C896">'+(l.phone||'\u2014')+'</td>';
+      html+='<td style="font-size:12px;color:#607870">'+(l.email||'\u2014')+'</td>';
+      html+='<td><span style="font-size:11px;color:#9B82FF;background:rgba(155,130,255,0.08);padding:2px 8px;border-radius:6px">'+(l.source||'web')+'</span></td>';
+      html+='<td><span class="adm-badge adm-badge-'+(statusColors[l.status]||'blue')+'">'+(statusLabels[l.status]||l.status)+'</span></td>';
+      html+='<td style="font-size:12px;color:#607870">'+date+'</td>';
+      html+='<td><button onclick="crmViewLead(\''+l.id+'\')" style="font-size:11px;background:rgba(0,200,150,0.08);border:1px solid rgba(0,200,150,0.2);color:#00C896;border-radius:6px;padding:3px 8px;cursor:pointer">Xem</button></td></tr>';
+    });
+    tbody.innerHTML=html||'<tr><td colspan="7" style="text-align:center;padding:20px;color:#607870">Kh\u00F4ng c\u00F3 lead</td></tr>';
+  });
+};
 
 // ── Auto-open dashboard if logged in ─────────────────────
 function checkAdminSession(){
