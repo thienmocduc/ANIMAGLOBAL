@@ -52,8 +52,8 @@ const dashboardBlock = `
 .adm-card-title{font-size:16px;font-weight:600;color:#E8F8F4;}
 .adm-table-wrap{overflow-x:auto;}
 .adm-table{width:100%;border-collapse:collapse;font-size:13px;}
-.adm-table th{text-align:left;padding:12px 16px;color:#607870;font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:.5px;border-bottom:1px solid rgba(0,200,150,0.08);}
-.adm-table td{padding:12px 16px;border-bottom:1px solid rgba(0,200,150,0.04);color:#B8D8D0;}
+.adm-table th{text-align:left;padding:8px 10px;color:#607870;font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.5px;border-bottom:1px solid rgba(0,200,150,0.08);}
+.adm-table td{padding:8px 10px;border-bottom:1px solid rgba(0,200,150,0.04);color:#B8D8D0;font-size:12px;}
 .adm-table tr:hover td{background:rgba(0,200,150,0.02);}
 .adm-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
 .adm-badge-green{background:rgba(0,200,150,0.12);color:#00C896;}
@@ -643,8 +643,8 @@ function renderCRM(){
     var stats=results[1]||{};
     var html='';
 
-    // KPIs
-    html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px">';
+    // KPIs — compact
+    html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:14px">';
     var kpis=[
       {label:'T\u1ED5ng Leads',value:stats.totalLeads||0,color:'#00C896'},
       {label:'M\u1EDBi',value:stats.newLeads||0,color:'#00BFFF'},
@@ -654,9 +654,9 @@ function renderCRM(){
       {label:'\u0110\u01A1n h\u00E0ng',value:stats.totalOrders||0,color:'#FF6B9D'}
     ];
     kpis.forEach(function(k){
-      html+='<div style="background:rgba(0,200,150,0.03);border:1px solid rgba(0,200,150,0.1);border-radius:12px;padding:16px;text-align:center">';
-      html+='<div style="font-size:28px;font-weight:700;color:'+k.color+'">'+k.value+'</div>';
-      html+='<div style="font-size:12px;color:#607870;margin-top:4px">'+k.label+'</div>';
+      html+='<div style="background:rgba(0,200,150,0.03);border:1px solid rgba(0,200,150,0.1);border-radius:10px;padding:10px 8px;text-align:center">';
+      html+='<div style="font-size:20px;font-weight:700;color:'+k.color+'">'+k.value+'</div>';
+      html+='<div style="font-size:10px;color:#607870;margin-top:2px">'+k.label+'</div>';
       html+='</div>';
     });
     html+='</div>';
@@ -664,14 +664,14 @@ function renderCRM(){
     // Action bar
     html+='<div class="adm-card" style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:12px 16px">';
     html+='<div style="display:flex;gap:6px;flex-wrap:wrap">';
-    html+='<button class="adm-btn adm-btn-primary" onclick="crmAddLead()" style="font-size:13px">+ Th\u00EAm Lead</button>';
-    html+='<button class="adm-btn adm-btn-secondary" onclick="admNav(document.querySelector(\'[data-page=crm]\'),\'crm\')" style="font-size:13px">\u21BB L\u00E0m m\u1EDBi</button>';
+    html+='<button class="adm-btn adm-btn-primary" onclick="crmAddLead()" style="font-size:11px;padding:6px 12px">+ Th\u00EAm Lead</button>';
+    html+='<button class="adm-btn adm-btn-secondary" onclick="admNav(document.querySelector(\'[data-page=crm]\'),\'crm\')" style="font-size:11px;padding:6px 12px">\u21BB L\u00E0m m\u1EDBi</button>';
     html+='</div>';
     html+='<div style="font-size:12px;color:#607870">T\u1ED5ng: '+leads.length+' leads | Doanh thu: '+(stats.totalRevenue?stats.totalRevenue.toLocaleString():'0')+'\u0111</div>';
     html+='</div></div>';
 
-    // Pipeline view
-    html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:16px">';
+    // Pipeline view — compact
+    html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px">';
     var statuses=[
       {key:'new',label:'M\u1EDBi',color:'#00BFFF',icon:'\u25CF'},
       {key:'contacted',label:'\u0110\u00E3 li\u00EAn h\u1EC7',color:'#FFB800',icon:'\u260E'},
@@ -682,8 +682,8 @@ function renderCRM(){
     ];
     statuses.forEach(function(s){
       var count=leads.filter(function(l){return l.status===s.key;}).length;
-      html+='<div onclick="crmFilterStatus(\''+s.key+'\')" style="background:rgba(0,200,150,0.03);border:1px solid rgba(0,200,150,0.1);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor=\''+s.color+'\'" onmouseout="this.style.borderColor=\'rgba(0,200,150,0.1)\'">';
-      html+='<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;color:'+s.color+';font-weight:600">'+s.icon+' '+s.label+'</span><span style="font-size:20px;font-weight:700;color:'+s.color+'">'+count+'</span></div>';
+      html+='<div onclick="crmFilterStatus(\''+s.key+'\')" style="background:rgba(0,200,150,0.03);border:1px solid rgba(0,200,150,0.1);border-radius:8px;padding:8px 10px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor=\''+s.color+'\'" onmouseout="this.style.borderColor=\'rgba(0,200,150,0.1)\'">';
+      html+='<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;color:'+s.color+';font-weight:600">'+s.icon+' '+s.label+'</span><span style="font-size:16px;font-weight:700;color:'+s.color+'">'+count+'</span></div>';
       html+='</div>';
     });
     html+='</div>';
