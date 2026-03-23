@@ -162,7 +162,46 @@ img,video{max-width:100%;height:auto}
   [id$="Overlay"] [style*="padding:72px"]{padding:16px 10px!important}
   [id$="Overlay"] [style*="max-width:1240px"]{max-width:100%!important}
   [id$="Overlay"] [style*="max-width:1100px"]{max-width:100%!important}
+  [id$="Overlay"] [style*="max-width:1080px"]{max-width:100%!important}
+  [id$="Overlay"] [style*="max-width:1060px"]{max-width:100%!important}
   [id$="Overlay"] [style*="max-width:900px"]{max-width:100%!important}
+
+  /* ANIMA CARE overlay (acareOverlay) */
+  #acareOverlay .ac-wrap{padding:20px 10px 30px!important;max-width:100%!important}
+  #acareOverlay [style*="repeat(4"]{grid-template-columns:1fr!important}
+  #acareOverlay [style*="repeat(3"]{grid-template-columns:1fr!important}
+  #acareOverlay [style*="repeat(2"]{grid-template-columns:1fr!important}
+  #acareOverlay [style*="gap:32px"]{gap:12px!important}
+  #acareOverlay [style*="gap:24px"]{gap:10px!important}
+  #acareOverlay [style*="font-size:48px"]{font-size:26px!important}
+  #acareOverlay [style*="font-size:36px"]{font-size:22px!important}
+  #acareOverlay [style*="font-size:32px"]{font-size:20px!important}
+
+  /* ANIMA TECH overlay (atOverlay) */
+  #atOverlay [style*="72px"]{padding-left:10px!important;padding-right:10px!important}
+  #atOverlay [style*="max-width:1240px"]{max-width:100%!important;padding:20px 10px!important}
+  #atOverlay [style*="repeat(4"]{grid-template-columns:1fr 1fr!important}
+  #atOverlay [style*="repeat(3"]{grid-template-columns:1fr!important}
+  #atOverlay [style*="gap:32px"]{gap:12px!important}
+  #atOverlay [style*="gap:24px"]{gap:10px!important}
+  #atOverlay [style*="font-size:48px"]{font-size:26px!important}
+  #atOverlay [style*="font-size:36px"]{font-size:22px!important}
+
+  /* ANIMA AI overlay (aaiOverlay) */
+  #aaiOverlay .ai-wrap{padding:20px 10px 30px!important;max-width:100%!important}
+  #aaiOverlay [style*="repeat(4"]{grid-template-columns:1fr 1fr!important}
+  #aaiOverlay [style*="repeat(3"]{grid-template-columns:1fr!important}
+  #aaiOverlay [style*="repeat(2"]{grid-template-columns:1fr!important}
+  #aaiOverlay [style*="gap:32px"]{gap:12px!important}
+  #aaiOverlay [style*="gap:24px"]{gap:10px!important}
+  #aaiOverlay [style*="font-size:48px"]{font-size:26px!important}
+  #aaiOverlay [style*="font-size:36px"]{font-size:22px!important}
+
+  /* All overlays — force grids to single/double column */
+  [id$="Overlay"] [style*="grid-template-columns:repeat(4"]{grid-template-columns:1fr 1fr!important}
+  [id$="Overlay"] [style*="grid-template-columns:repeat(3"]{grid-template-columns:1fr!important}
+  [id$="Overlay"] [style*="grid-template-columns:1fr 1fr 1fr 1fr"]{grid-template-columns:1fr 1fr!important}
+  [id$="Overlay"] [style*="grid-template-columns:1fr 1fr 1fr"]{grid-template-columns:1fr!important}
 
   /* Tables scroll */
   table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap}
@@ -214,6 +253,13 @@ img,video{max-width:100%;height:auto}
   #ipoOverlay .ip-hero em{font-size:24px!important}
   #ipoOverlay .ip-bench-grid{grid-template-columns:1fr!important}
   #ipoOverlay .ip-kpi-grid{grid-template-columns:1fr!important}
+
+  /* All overlays — tighter padding on small phones */
+  #acareOverlay .ac-wrap{padding:16px 6px 20px!important}
+  #atOverlay [style*="max-width:1240px"]{padding:16px 6px!important}
+  #aaiOverlay .ai-wrap{padding:16px 6px 20px!important}
+  [id$="Overlay"] [style*="grid-template-columns:repeat(4"]{grid-template-columns:1fr!important}
+  [id$="Overlay"] [style*="grid-template-columns:repeat(2"]{grid-template-columns:1fr!important}
 }
 
 /* ══════════ ADMIN DASHBOARD ══════════ */
