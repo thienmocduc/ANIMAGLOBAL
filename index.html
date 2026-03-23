@@ -11285,6 +11285,19 @@ document.getElementById('adminDashboard').style.display='none';
 document.body.style.overflow='';
 localStorage.removeItem('anima_admin_user');
 };
+/* Auto-logout admin khi đóng tab / thoát app / xoá tab */
+window.addEventListener('beforeunload',function(){localStorage.removeItem('anima_admin_user');});
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState==='hidden'){
+    /* Dùng sessionStorage flag — khi quay lại nếu tab mới thì admin đã logout */
+    sessionStorage.setItem('anima_admin_active','1');
+  }
+  if(document.visibilityState==='visible' && !sessionStorage.getItem('anima_admin_active')){
+    localStorage.removeItem('anima_admin_user');
+    var d=document.getElementById('adminDashboard');
+    if(d && d.style.display!=='none') closeAdminDashboard();
+  }
+});
 
 // ── Sync Bridge: Listen for center updates and refresh admin tables ──
 if(window.AnimaSync){
