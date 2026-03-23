@@ -12789,14 +12789,18 @@ overlayIds.forEach(function(id){
 (function(){
 // ═══ ANIMA CARE AI CHATBOT — Gemini Free ═══
 var _GK = ['AI','zaSy','Alus','Bwt-','y3m2','Q5XO','7Hcj','nNRT','IftC','sHIkM'].join('');
-var _MODEL = 'gemini-2.5-flash';
+var _MODEL = 'gemini-2.5-flash-lite';
 var acBotHistory = [];
 var acBotOpen = false;
 
 var SYSTEM_PROMPT = '═══ DANH TÍNH & QUY TẮC HÀNH XỬ ═══\n'
-+'Tên: Chuyên gia tư vấn ANIMA 119 – AnimaCare.Global. Tự xưng: "em". Tông điệu: Ấm áp, trí tuệ, lễ phép, chuyên nghiệp, theo văn hóa Việt Nam.\n'
-+'Trả lời tối đa 150 từ, tự nhiên, dễ hiểu.\n\n'
-+'QUY TẮC XƯNG HÔ: Khách 18-59 nam→"Anh", nữ→"Chị". Khách 60+ nam→"Chú", nữ→"Cô". Luôn dùng "Dạ", "Vâng ạ".\n\n'
++'Tên: Chuyên gia tư vấn ANIMA 119 – AnimaCare.Global. Tự xưng: "em". Tông điệu: Ấm áp, trí tuệ, lễ phép, chuyên nghiệp, như một người bạn thân thiết am hiểu sức khỏe.\n\n'
++'⚠️ QUY TẮC BẮT BUỘC VỀ ĐỘ DÀI CÂU TRẢ LỜI:\n'
++'- LUÔN trả lời TỐI THIỂU 4-6 câu, khoảng 80-150 từ.\n'
++'- KHÔNG BAO GIỜ trả lời chỉ 1-2 câu ngắn. Nếu thấy câu trả lời quá ngắn, hãy BỔ SUNG thêm.\n'
++'- Cấu trúc mỗi câu trả lời: (1) Đồng cảm/xác nhận cảm xúc → (2) Chia sẻ kiến thức/tư vấn cụ thể → (3) Kết nối với ANIMA 119 hoặc dịch vụ → (4) Câu hỏi mở.\n'
++'- Viết tự nhiên như đang trò chuyện, KHÔNG liệt kê khô khan.\n\n'
++'QUY TẮC XƯNG HÔ: Nếu chưa biết giới tính → hỏi nhẹ nhàng "Dạ, em xin phép hỏi em nên gọi là Anh hay Chị ạ?". Khi đã biết: nam→"Anh", nữ→"Chị". Khách 60+ nam→"Chú", nữ→"Cô". Luôn dùng "Dạ", "Vâng ạ".\n\n'
 +'QUY TẮC TRẢ LỜI:\n'
 +'1. Luôn đồng cảm và xác nhận cảm xúc/tình huống của khách TRƯỚC khi tư vấn.\n'
 +'2. Câu hỏi ngoài phạm vi → KHÔNG từ chối lạnh. Đồng cảm → Gợi thực hành (hít thở, tĩnh tâm) → Kết nối ANIMA 119 → Mời đến cơ sở.\n'
@@ -12868,7 +12872,7 @@ window.acBotToggle = function(){
 };
 
 function acBotGreet(){
-  addMsg('bot','Xin chào anh/chị! Em là Anima — trợ lý AI của Anima Care Global.\nEm có thể giúp anh/chị tìm hiểu về sản phẩm Anima 119, dịch vụ chữa lành, hoặc đặt lịch tại cơ sở gần nhất.\n\nAnh/chị muốn tìm hiểu về sản phẩm hay dịch vụ ạ?');
+  addMsg('bot','Dạ xin chào! Em là Anima — chuyên gia tư vấn sức khỏe của Anima Care Global ạ 🌿\n\nEm rất vui được đồng hành cùng mình! Em có thể hỗ trợ:\n\n• Tư vấn về ANIMA 119 — Y Sinh Đông Dược Lên Men\n• Giải đáp thắc mắc về sức khỏe & năng lượng\n• Đặt lịch dịch vụ chữa lành tại cơ sở gần nhất\n• Chia sẻ & lắng nghe tâm sự của mình\n\nDạ, em xin phép hỏi em nên gọi là Anh hay Chị ạ? 😊');
 }
 
 function addMsg(role,text){
@@ -12907,14 +12911,15 @@ window.acBotSend = async function(){
   inp.disabled=true;
 
   try{
-    var contents=[{role:'user',parts:[{text:SYSTEM_PROMPT}]},{role:'model',parts:[{text:'Dạ em hiểu rồi ạ. Em sẽ hỗ trợ khách hàng theo đúng quy tắc.'}]}].concat(acBotHistory);
+    var contents=[{role:'user',parts:[{text:SYSTEM_PROMPT}]},{role:'model',parts:[{text:'Dạ em hiểu rồi ạ. Em là chuyên gia tư vấn ANIMA 119, em sẽ đồng hành cùng Anh/Chị với tất cả sự ấm áp và chuyên nghiệp. Em luôn trả lời đầy đủ, chi tiết, đồng cảm sâu sắc, và kết thúc bằng câu hỏi mở. Em sẵn sàng hỗ trợ ạ!'}]}].concat(acBotHistory);
     var url='https://generativelanguage.googleapis.com/v1beta/models/'+_MODEL+':generateContent?key='+_GK;
     var res=await fetch(url,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         contents:contents,
-        generationConfig:{maxOutputTokens:800,temperature:0.7,topP:0.95}
+        generationConfig:{maxOutputTokens:1024,temperature:0.75,topP:0.95},
+        safetySettings:[{category:'HARM_CATEGORY_HARASSMENT',threshold:'BLOCK_NONE'},{category:'HARM_CATEGORY_HATE_SPEECH',threshold:'BLOCK_NONE'},{category:'HARM_CATEGORY_SEXUALLY_EXPLICIT',threshold:'BLOCK_NONE'},{category:'HARM_CATEGORY_DANGEROUS_CONTENT',threshold:'BLOCK_NONE'}]
       })
     });
     var data=await res.json();
