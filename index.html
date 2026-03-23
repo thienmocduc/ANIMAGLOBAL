@@ -12914,7 +12914,7 @@ window.acBotSend = async function(){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         contents:contents,
-        generationConfig:{maxOutputTokens:250,temperature:0.4,topP:0.9}
+        generationConfig:{maxOutputTokens:800,temperature:0.7,topP:0.95}
       })
     });
     var data=await res.json();
