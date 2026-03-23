@@ -12764,8 +12764,7 @@ overlayIds.forEach(function(id){
 <!-- ═══ ANIMA CARE AI CHATBOT ═══ -->
 <div id="acBot">
   <button id="acBotBtn" onclick="acBotToggle()" style="position:fixed;bottom:24px;right:24px;z-index:800;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#005A42,#00C896);border:none;cursor:pointer;box-shadow:0 6px 24px rgba(0,200,150,.35);display:flex;align-items:center;justify-content:center;transition:transform .2s" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
-    <svg id="acBotIcOpen" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-    <svg id="acBotIcClose" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" style="display:none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
   </button>
   <div id="acBotPanel" style="display:none;position:fixed;bottom:90px;right:24px;z-index:800;width:380px;max-width:calc(100vw - 32px);height:520px;max-height:calc(100vh - 120px);background:#0A1218;border:1px solid rgba(0,200,150,.2);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.7);display:none;flex-direction:column;overflow:hidden">
     <div style="padding:16px 18px;background:linear-gradient(135deg,#0A1218,#0F1E2A);border-bottom:1px solid rgba(0,200,150,.12);display:flex;align-items:center;gap:10px;flex-shrink:0">
@@ -12824,12 +12823,8 @@ var SYSTEM_PROMPT = 'Bạn là "Anima" — chuyên gia tâm lý và sức khỏe
 
 window.acBotToggle = function(){
   var p=document.getElementById('acBotPanel');
-  var ic1=document.getElementById('acBotIcOpen');
-  var ic2=document.getElementById('acBotIcClose');
   acBotOpen=!acBotOpen;
   p.style.display=acBotOpen?'flex':'none';
-  ic1.style.display=acBotOpen?'none':'block';
-  ic2.style.display=acBotOpen?'block':'none';
   if(acBotOpen && acBotHistory.length===0) acBotGreet();
 };
 
