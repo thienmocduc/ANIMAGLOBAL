@@ -11968,15 +11968,25 @@ updateCartUI();
 
     <!-- SIDEBAR -->
     <aside id="profSidebar" style="background:#060C0F;border-right:1px solid rgba(0,200,150,.08);display:flex;flex-direction:column;overflow-y:auto;padding:0">
-      <!-- Avatar — compact row -->
+      <!-- Back to home + Close -->
+      <div style="padding:8px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,200,150,.08)">
+        <div onclick="closeProfile()" style="display:flex;align-items:center;gap:4px;cursor:pointer;color:#00C896;font-size:12px;font-weight:600">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Trang chủ
+        </div>
+        <button onclick="closeProfile()" style="width:28px;height:28px;border-radius:6px;background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.15);cursor:pointer;display:flex;align-items:center;justify-content:center">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FF4D6D" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <!-- Avatar — inline compact -->
       <div style="padding:10px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(0,200,150,.06)">
-        <div id="profAvatar" style="width:36px;height:36px;min-width:36px;border-radius:50%;background:linear-gradient(135deg,#005A42,#00C896);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#000;border:2px solid rgba(0,200,150,.3);overflow:hidden">
+        <div id="profAvatar" style="width:32px;height:32px;min-width:32px;border-radius:50%;background:linear-gradient(135deg,#005A42,#00C896);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#000;border:2px solid rgba(0,200,150,.3);overflow:hidden">
           <span id="profAvatarText">U</span>
           <img id="profAvatarImg" style="width:100%;height:100%;object-fit:cover;display:none" referrerpolicy="no-referrer">
         </div>
         <div style="flex:1;min-width:0">
-          <div id="profDisplayName" style="font-size:12px;font-weight:700;color:#F8F2E0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
-          <div id="profEmail" style="font-size:10px;color:rgba(248,242,224,.3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+          <div id="profDisplayName" style="font-size:12px;font-weight:600;color:#F8F2E0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+          <div id="profEmail" style="font-size:9px;color:rgba(248,242,224,.3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
           <div id="profProvider" style="margin-top:2px;display:inline-flex;align-items:center;gap:2px;padding:1px 5px;border-radius:8px;font-size:8px;font-weight:600"></div>
         </div>
       </div>
