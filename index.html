@@ -8057,11 +8057,10 @@ avatar='<img src="'+currentUser.picture+'" style="width:30px;height:30px;border-
 avatar='<div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--g-dark),var(--g1));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#000">'+initials+'</div>';
 }
 btn.innerHTML=avatar;
-btn.removeAttribute('onclick');
+btn.setAttribute('onclick','event.stopPropagation();toggleUserMenu()');
 btn.removeAttribute('onmouseover');
 btn.removeAttribute('onmouseout');
 btn.style.cssText='background:transparent;border:none;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex-shrink:0;-webkit-tap-highlight-color:transparent';
-btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();toggleUserMenu();},{passive:false});
 /* Create user dropdown if not exists */
 if(!document.getElementById('userDropMenu')){
 var dd=document.createElement('div');dd.id='userDropMenu';
