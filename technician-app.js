@@ -263,31 +263,34 @@ function renderTechDash() {
   var statusColors = { online:'#00C896', busy:'#F59E0B', offline:'#607870' };
   var statusLabels = { online:{ vi:'Tr\u1EF1c tuy\u1EBFn', en:'Online' }, busy:{ vi:'\u0110ang b\u1EADn', en:'Busy' }, offline:{ vi:'Ngo\u1EA1i tuy\u1EBFn', en:'Offline' } };
 
-  var html = '<div style="display:flex;flex-direction:column;height:100vh;background:#030608;color:#F8F2E0;font-family:\'Roboto\',sans-serif">';
+  var html = '<div style="display:grid;grid-template-columns:200px 1fr;height:100vh;background:#030608;color:#F8F2E0;font-family:\'Roboto\',sans-serif">';
 
-  // ── Top Bar ──
-  html += '<div style="display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(123,95,255,.12);gap:12px;flex-shrink:0">';
-  html += '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#5B3FDF,#7B5FFF);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff">' + initials + '</div>';
-  html += '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + tUser.name + '</div>';
-  html += '<div style="font-size:10px;color:rgba(248,242,224,.42)">' + tUser.id + ' \u00B7 ' + tUser.centerName + '</div></div>';
-
-  // Status toggle
-  html += '<div style="display:flex;align-items:center;gap:6px">';
-  html += '<div id="tStatusDot" style="width:8px;height:8px;border-radius:50%;background:' + statusColors[tUser.status||'online'] + ';box-shadow:0 0 6px ' + statusColors[tUser.status||'online'] + '"></div>';
-  html += '<select id="tStatusSel" onchange="window._tSetStatus(this.value)" style="background:#0A1218;border:1px solid rgba(123,95,255,.2);border-radius:6px;padding:4px 8px;color:#F8F2E0;font-size:11px;cursor:pointer;outline:none">';
+  // ── SIDEBAR ──
+  html += '<aside style="background:#060C0F;border-right:1px solid rgba(123,95,255,.08);display:flex;flex-direction:column;overflow-y:auto;padding:0">';
+  // Back + Close
+  html += '<div style="padding:8px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(123,95,255,.08)">';
+  html += '<div onclick="window._closeTechDash()" style="display:flex;align-items:center;gap:4px;cursor:pointer;color:#9B82FF;font-size:12px;font-weight:600">';
+  html += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>';
+  html += t('Trang ch\u1EE7','Home') + '</div>';
+  html += '<button onclick="window._closeTechDash()" style="width:28px;height:28px;border-radius:6px;background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.15);cursor:pointer;display:flex;align-items:center;justify-content:center">';
+  html += '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FF4D6D" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';
+  // Avatar
+  html += '<div style="padding:10px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(123,95,255,.06)">';
+  html += '<div style="width:32px;height:32px;min-width:32px;border-radius:50%;background:linear-gradient(135deg,#5B3FDF,#7B5FFF);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff">' + initials + '</div>';
+  html += '<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + tUser.name + '</div>';
+  html += '<div style="font-size:9px;color:rgba(248,242,224,.3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + tUser.id + ' \u00B7 ' + tUser.centerName + '</div>';
+  // Status
+  html += '<div style="margin-top:3px;display:flex;align-items:center;gap:4px">';
+  html += '<div style="width:6px;height:6px;border-radius:50%;background:' + statusColors[tUser.status||'online'] + '"></div>';
+  html += '<select onchange="window._tSetStatus(this.value)" style="background:transparent;border:none;color:' + statusColors[tUser.status||'online'] + ';font-size:9px;font-weight:600;cursor:pointer;outline:none;padding:0">';
   ['online','busy','offline'].forEach(function(s) {
     html += '<option value="' + s + '"' + (tUser.status===s?' selected':'') + '>' + (tLang==='vi'?statusLabels[s].vi:statusLabels[s].en) + '</option>';
   });
-  html += '</select></div>';
-  html += '<button onclick="window._closeTechDash()" style="background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.15);border-radius:8px;padding:6px 12px;color:#FF4D6D;font-size:11px;font-weight:600;cursor:pointer">' + t('Tho\u00E1t','Logout') + '</button>';
-  html += '</div>';
+  html += '</select></div></div></div>';
 
-  // ── Bottom Nav ──
-  // Count clients needing data
+  // ── Sidebar Nav Items ──
   var allClients = sync ? sync.get('crm_clients', []).filter(function(c) { return c.ktvId === tUser.id; }) : [];
   var incompleteClients = allClients.filter(function(c) { return !c.dataComplete; });
-
-  // Calculate income data for badge
   var ktvIncome = JSON.parse(localStorage.getItem('anima_ktv_income_' + tUser.id) || '{}');
   var pendingWithdraw = (ktvIncome.pendingWithdrawals || []).filter(function(w){return w.status==='pending';}).length;
 
@@ -299,8 +302,26 @@ function renderTechDash() {
     { id:'t-profile', icon:'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2', vi:'C\u00E1 nh\u00E2n', en:'Profile' }
   ];
 
-  // ── Page Content ──
-  html += '<div style="flex:1;overflow-y:auto;padding:16px">';
+  html += '<div style="flex:1;padding:6px;display:flex;flex-direction:column;gap:1px">';
+  tabs.forEach(function(tab) {
+    var active = tPage === tab.id;
+    html += '<div onclick="window._tNav(\'' + tab.id + '\')" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:' + (active?'#9B82FF':'rgba(248,242,224,.55)') + ';background:' + (active?'rgba(123,95,255,.1)':'transparent') + ';transition:all .15s;position:relative">';
+    html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (active?'2':'1.5') + '" stroke-linecap="round" stroke-linejoin="round"><path d="' + tab.icon + '"/></svg>';
+    html += '<span>' + t(tab.vi, tab.en) + '</span>';
+    if(tab.badge > 0) html += '<span style="margin-left:auto;background:#FF4D6D;color:#fff;font-size:9px;font-weight:700;border-radius:10px;padding:1px 6px;min-width:16px;text-align:center">' + tab.badge + '</span>';
+    html += '</div>';
+  });
+  html += '</div>';
+  // Logout
+  html += '<div style="padding:8px;border-top:1px solid rgba(123,95,255,.06)">';
+  html += '<div onclick="window._closeTechDash()" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:#FF4D6D">';
+  html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>';
+  html += '<span>' + t('\u0110\u0103ng Xu\u1EA5t','Sign Out') + '</span></div></div>';
+  html += '</aside>';
+
+  // ── MAIN CONTENT ──
+  html += '<main style="flex:1;overflow-y:auto;padding:20px;-webkit-overflow-scrolling:touch">';
+  html += '<div style="max-width:700px">';
 
   // QUEUE PAGE
   if(tPage === 't-queue') {
@@ -1094,23 +1115,13 @@ function renderTechDash() {
   }
 
   html += '</div>'; // page content
+  html += '</div></main>'; // max-width + main
+  html += '</div>'; // grid layout
 
-  // ── Bottom Nav ──
-  html += '<div style="display:flex;border-top:1px solid rgba(123,95,255,.12);background:#060C0F;flex-shrink:0">';
-  tabs.forEach(function(tab) {
-    var active = tPage === tab.id;
-    html += '<button onclick="window._tNav(\'' + tab.id + '\')" style="flex:1;padding:10px 4px 8px;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:' + (active?'#9B82FF':'rgba(248,242,224,.32)') + ';position:relative">';
-    html += '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (active?'2':'1.5') + '" stroke-linecap="round" stroke-linejoin="round"><path d="' + tab.icon + '"/></svg>';
-    html += '<span style="font-size:10px;font-weight:' + (active?'600':'400') + '">' + t(tab.vi, tab.en) + '</span>';
-    if(tab.badge > 0) html += '<div style="position:absolute;top:4px;right:calc(50% - 16px);background:#FF4D6D;color:#fff;font-size:8px;font-weight:700;border-radius:10px;padding:1px 5px;min-width:14px;text-align:center">' + tab.badge + '</div>';
-    html += '</button>';
-  });
-  html += '</div>';
-
-  html += '</div>';
-
-  // Mobile-first responsive
-  html += '<style>#techDashboard{font-family:"Roboto",sans-serif}#techDashboard *{box-sizing:border-box;margin:0;padding:0}#techDashboard select{-webkit-appearance:none}#techDashboard *::-webkit-scrollbar,#techPortal *::-webkit-scrollbar{display:none!important;width:0!important}#techDashboard,#techDashboard *,#techPortal,#techPortal *{scrollbar-width:none!important;-ms-overflow-style:none!important}</style>';
+  // Responsive styles
+  html += '<style>#techDashboard{font-family:"Roboto",sans-serif}#techDashboard *{box-sizing:border-box;margin:0;padding:0}#techDashboard select{-webkit-appearance:none}#techDashboard *::-webkit-scrollbar,#techPortal *::-webkit-scrollbar{display:none!important;width:0!important}#techDashboard,#techDashboard *,#techPortal,#techPortal *{scrollbar-width:none!important;-ms-overflow-style:none!important}'
+  +'@media(max-width:480px){#techDashboard>div{grid-template-columns:1fr!important}#techDashboard aside{flex-direction:row!important;overflow-x:auto!important;overflow-y:hidden!important;border-right:none!important;border-bottom:1px solid rgba(123,95,255,.08)!important;padding:0!important;height:auto!important}#techDashboard aside>div:first-child{display:none!important}#techDashboard aside>div:nth-child(2){display:none!important}#techDashboard aside>div:nth-child(3){flex-direction:row!important;padding:4px 8px!important;gap:4px!important;flex-wrap:nowrap!important}#techDashboard aside>div:nth-child(3)>div{white-space:nowrap!important;padding:8px 12px!important;font-size:11px!important;flex-shrink:0!important}#techDashboard aside>div:nth-child(3)>div span{display:none!important}#techDashboard aside>div:last-child{display:none!important}}'
+  +'</style>';
 
   d.innerHTML = html;
 }
