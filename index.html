@@ -12253,7 +12253,20 @@ function _pSection(title,content){return '<div style="background:rgba(0,200,150,
 function renderProfOverview(){
   var el=document.getElementById('profOverviewContent');if(!el)return;
   var u=currentUser||{};
+  /* Try Supabase count first, fallback localStorage */
   var orders=JSON.parse(localStorage.getItem('anima_orders')||'[]');
+  if(window.AnimaOrders){
+    var filter='';
+    if(u.phone)filter='customer_phone=eq.'+encodeURIComponent(u.phone);
+    else if(u.email)filter='customer_email=eq.'+encodeURIComponent(u.email);
+    AnimaOrders.getAll({limit:100,filter:filter}).then(function(db){
+      if(db&&db.length>orders.length){
+        /* Update overview with DB count */
+        var countEl=document.querySelector('#profOverviewContent [data-kpi=orders]');
+        if(countEl)countEl.textContent=db.length;
+      }
+    }).catch(function(){});
+  }
   var scans=JSON.parse(localStorage.getItem('anima_tongue_scans')||'[]');
   var pkgs=JSON.parse(localStorage.getItem('anima_user_packages')||'[]');
   var notifs=JSON.parse(localStorage.getItem('anima_notifications')||'[]');
@@ -12264,7 +12277,7 @@ function renderProfOverview(){
   var h='';
   /* KPI Cards */
   h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">';
-  h+=_pCard('rgba(0,200,150,.04)',orders.length,'Đơn hàng','#00C896');
+  h+='<div style="background:rgba(0,200,150,.04);border:1px solid rgba(0,200,150,.1);border-radius:12px;padding:14px 12px;text-align:center"><div data-kpi="orders" style="font-size:22px;font-weight:700;color:#00C896">'+orders.length+'</div><div style="font-size:11px;color:rgba(248,242,224,.4);margin-top:3px">Đơn hàng</div></div>';
   h+=_pCard('rgba(155,130,255,.04)',sessionsLeft,'Buổi còn lại','#9B82FF');
   h+=_pCard('rgba(0,191,255,.04)',scans.length,'Lần tầm soát','#00BFFF');
   h+=_pCard('rgba(255,184,0,.04)',lastScan?lastScan.constitution||'—':'—','Thể tạng','#FFB800');
@@ -12299,25 +12312,73 @@ function renderProfOverview(){
   el.innerHTML=h;
 }
 
-/* Tab 2: Đơn Hàng */
+/* Tab 2: Đơn Hàng — Supabase first, fallback localStorage */
 function renderProfOrders(){
   var el=document.getElementById('profOrdersContent');if(!el)return;
-  var orders=JSON.parse(localStorage.getItem('anima_orders')||'[]').reverse();
-  if(!orders.length){el.innerHTML=_pEmpty('📦','Chưa có đơn hàng nào');return;}
-  var statusMap={pending:{l:'Chờ xác nhận',c:'yellow'},confirmed:{l:'Đã xác nhận',c:'blue'},shipped:{l:'Đang giao',c:'purple'},delivered:{l:'Đã giao',c:'green'},cancelled:{l:'Đã hủy',c:'red'}};
-  var h='';
-  orders.forEach(function(o){
-    var st=statusMap[o.status||'pending']||statusMap.pending;
-    var product=o.product||o.itemName||(o.items&&o.items[0]?o.items[0].name:'Sản phẩm');
-    var total=o.total||o.price||0;
-    var date=o.date?new Date(o.date).toLocaleDateString('vi-VN'):o.createdAt?new Date(o.createdAt).toLocaleDateString('vi-VN'):'';
-    h+='<div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:12px;padding:14px;margin-bottom:8px">';
-    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;color:rgba(248,242,224,.35);font-family:monospace">#'+(o.id||'').slice(-8)+'</span>'+_pBadge(st.l,st.c)+'</div>';
-    h+='<div style="font-size:14px;font-weight:600;color:#F8F2E0;margin-bottom:4px">'+product+'</div>';
-    h+='<div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(248,242,224,.4)"><span>'+date+'</span><span style="font-weight:600;color:#00C896">'+(typeof total==='number'?total.toLocaleString()+'đ':total)+'</span></div>';
-    h+='</div>';
-  });
-  el.innerHTML=h;
+  el.innerHTML='<div style="text-align:center;padding:20px;color:rgba(248,242,224,.3)">Đang tải đơn hàng...</div>';
+  var statusMap={pending:{l:'Chờ xác nhận',c:'yellow',icon:'⏳'},confirmed:{l:'Đã xác nhận',c:'blue',icon:'✓'},processing:{l:'Đang xử lý',c:'blue',icon:'⚙️'},shipped:{l:'Đang giao',c:'purple',icon:'🚚'},delivered:{l:'Đã giao',c:'green',icon:'✅'},cancelled:{l:'Đã hủy',c:'red',icon:'✕'}};
+  var payMap={unpaid:'Chưa TT',pending:'Chờ TT',paid:'Đã TT',refunded:'Hoàn tiền'};
+
+  function renderList(orders){
+    if(!orders.length){el.innerHTML=_pEmpty('📦','Chưa có đơn hàng nào');return;}
+    var h='<div style="font-size:12px;color:rgba(248,242,224,.3);margin-bottom:10px">'+orders.length+' đơn hàng</div>';
+    orders.forEach(function(o){
+      var st=statusMap[o.status||'pending']||statusMap.pending;
+      var product=o.product||(o.items&&o.items[0]?o.items[0].name:'Sản phẩm');
+      var total=o.total||0;
+      var date=o.date||'';
+      var tracking=o.tracking||'';
+      var payStatus=o.paymentStatus||'unpaid';
+      h+='<div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:12px;padding:14px;margin-bottom:8px">';
+      /* Header: order code + status badge */
+      h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:11px;color:rgba(248,242,224,.3);font-family:monospace">#'+(o.id||'').slice(-8)+'</span><div style="display:flex;gap:4px">'+_pBadge(st.l,st.c)+_pBadge(payMap[payStatus]||payStatus,payStatus==='paid'?'green':payStatus==='unpaid'?'red':'yellow')+'</div></div>';
+      /* Product + total */
+      h+='<div style="font-size:14px;font-weight:600;color:#F8F2E0;margin-bottom:4px">'+product+'</div>';
+      h+='<div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(248,242,224,.4)"><span>'+date+'</span><span style="font-weight:600;color:#00C896">'+(typeof total==='number'?total.toLocaleString()+'đ':total)+'</span></div>';
+      /* Tracking code if shipped */
+      if(tracking&&(o.status==='shipped'||o.status==='delivered')){
+        h+='<div style="margin-top:8px;padding:8px 10px;background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.15);border-radius:8px;font-size:12px;display:flex;align-items:center;gap:6px"><span>🚚</span><span style="color:rgba(248,242,224,.5)">Mã vận đơn:</span><span style="color:#60A5FA;font-weight:600;font-family:monospace">'+tracking+'</span></div>';
+      }
+      h+='</div>';
+    });
+    el.innerHTML=h;
+  }
+
+  /* Try Supabase first */
+  if(window.AnimaOrders){
+    var userPhone=currentUser?currentUser.phone||'':'';
+    var userEmail=currentUser?currentUser.email||'':'';
+    var filter='';
+    if(userPhone)filter='customer_phone=eq.'+encodeURIComponent(userPhone);
+    else if(userEmail)filter='customer_email=eq.'+encodeURIComponent(userEmail);
+    AnimaOrders.getAll({limit:50,filter:filter}).then(function(dbOrders){
+      var orders=(dbOrders||[]).map(function(o){
+        var items=[];try{items=typeof o.items==='string'?JSON.parse(o.items):o.items||[];}catch(e){}
+        return{id:o.order_code,product:items[0]?items[0].name:'',total:o.total_amount||0,
+          date:o.created_at?new Date(o.created_at).toLocaleDateString('vi-VN'):'',
+          status:o.order_status||'pending',paymentStatus:o.payment_status||'unpaid',
+          tracking:o.tracking_code||''};
+      });
+      /* Merge with localStorage orders not in DB */
+      var local=JSON.parse(localStorage.getItem('anima_orders')||'[]');
+      var dbIds=orders.map(function(o){return o.id;});
+      local.forEach(function(o){
+        if(dbIds.indexOf(o._id||o.id)===-1) orders.push({id:o._id||o.id,product:o.product||'',total:o.total||0,date:o.date||'',status:o.status||'pending',paymentStatus:'unpaid',tracking:''});
+      });
+      renderList(orders);
+    }).catch(function(){
+      /* Fallback: localStorage only */
+      var local=JSON.parse(localStorage.getItem('anima_orders')||'[]').reverse().map(function(o){
+        return{id:o._id||o.id,product:o.product||'',total:o.total||0,date:o.date||'',status:o.status||'pending',paymentStatus:'unpaid',tracking:''};
+      });
+      renderList(local);
+    });
+  } else {
+    var local=JSON.parse(localStorage.getItem('anima_orders')||'[]').reverse().map(function(o){
+      return{id:o._id||o.id,product:o.product||'',total:o.total||0,date:o.date||'',status:o.status||'pending',paymentStatus:'unpaid',tracking:''};
+    });
+    renderList(local);
+  }
 }
 
 /* Tab 3: Gói Dịch Vụ */
