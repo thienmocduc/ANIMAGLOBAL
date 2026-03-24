@@ -13188,11 +13188,11 @@ overlayIds.forEach(function(id){
   </div>
   <div id="acScanMsgs" style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none;-ms-overflow-style:none"></div>
   <div style="padding:10px 12px;border-top:1px solid rgba(155,130,255,.08);display:flex;gap:8px;flex-shrink:0;background:#080E14;align-items:center">
-    <input type="file" id="acTongueFile" accept="image/*" style="display:none" onchange="acProcessTongueImage(this)">
-    <label for="acTongueFile" onclick="if(typeof _tongueStep!=='undefined'&&_tongueStep>=1&&_tongueStep<=3){}else{event.preventDefault();acTongueScan()}" style="flex:1;padding:12px;background:linear-gradient(135deg,rgba(59,45,139,.3),rgba(155,130,255,.15));border:1px solid rgba(155,130,255,.25);border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:600;color:#9B82FF;transition:background .2s">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+    <input type="file" id="acTongueFile" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none" onchange="acProcessTongueImage(this)">
+    <button onclick="acScanCamClick()" type="button" style="flex:1;padding:14px;background:linear-gradient(135deg,rgba(59,45,139,.3),rgba(155,130,255,.15));border:1px solid rgba(155,130,255,.25);border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:600;color:#9B82FF;transition:background .2s">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
       📸 Chụp / Chọn ảnh lưỡi
-    </label>
+    </button>
   </div>
 </div>
 
@@ -13404,6 +13404,17 @@ function addScanTyping(){
   m.appendChild(d);m.scrollTop=m.scrollHeight;
 }
 function removeScanTyping(){var t=document.getElementById('acScanTyping');if(t)t.remove();}
+
+/* Camera button click handler — works on all devices including iPad */
+window.acScanCamClick = function(){
+  if(typeof _tongueStep!=='undefined' && _tongueStep>=1 && _tongueStep<=3){
+    /* Đang trong flow chụp 3 ảnh → mở file picker */
+    document.getElementById('acTongueFile').click();
+  } else {
+    /* Chưa bắt đầu → khởi tạo flow */
+    acTongueScan();
+  }
+};
 
 window.acTongueScan = function(){
   if(!currentUser){addScanMsg('bot','Anh/Chị vui lòng đăng nhập để sử dụng tính năng tầm soát lưỡi ạ.');return;}
