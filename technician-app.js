@@ -356,14 +356,30 @@ function renderTechDash() {
       html += '</div></div>';
     });
 
-    // Confirmed (my accepted)
+    // Confirmed (my accepted) — with Check-in/Timer
     if(confirmed.length > 0) {
       html += '<div style="font-size:15px;font-weight:600;margin:20px 0 10px;color:#00E5A8">' + t('\u0110\u00E3 nh\u1EADn (' + confirmed.length + ')','Accepted (' + confirmed.length + ')') + '</div>';
       confirmed.forEach(function(b) {
-        html += '<div style="background:#0A1218;border:1px solid rgba(0,200,150,.15);border-radius:12px;padding:14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">';
-        html += '<div><div style="font-weight:600">' + b.customer + '</div><div style="font-size:12px;color:rgba(248,242,224,.42)">' + b.service + ' \u00B7 ' + b.date + ' ' + (b.time||'') + '</div></div>';
-        html += '<button onclick="window._tComplete(\'' + b._id + '\')" style="background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.2);color:#00E5A8;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:600;cursor:pointer">' + t('Ho\u00E0n th\u00E0nh','Done') + '</button>';
+        var isCheckedIn = b.checkedInAt;
+        var elapsed = isCheckedIn ? Math.floor((Date.now() - new Date(b.checkedInAt).getTime())/60000) : 0;
+        var elapsedH = Math.floor(elapsed/60);
+        var elapsedM = elapsed % 60;
+        html += '<div style="background:#0A1218;border:1px solid rgba(0,200,150,.15);border-radius:14px;padding:16px;margin-bottom:10px">';
+        html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">';
+        html += '<div><div style="font-weight:600;font-size:14px">' + b.customer + '</div><div style="font-size:12px;color:rgba(248,242,224,.42)">' + b.service + ' \u00B7 ' + b.date + ' ' + (b.time||'') + '</div></div>';
+        if(isCheckedIn) {
+          html += '<div style="background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.2);border-radius:8px;padding:6px 10px;text-align:center">';
+          html += '<div style="font-size:9px;color:#00C896;font-weight:600;letter-spacing:1px;text-transform:uppercase">' + t('\u0110ang ph\u1EE5c v\u1EE5','In Session') + '</div>';
+          html += '<div style="font-size:18px;font-weight:700;color:#00E5A8;font-family:\'Roboto Mono\',monospace">' + (elapsedH>0?elapsedH+'h ':'') + elapsedM + 'm</div></div>';
+        }
         html += '</div>';
+        html += '<div style="display:flex;gap:8px">';
+        if(!isCheckedIn) {
+          html += '<button onclick="window._tCheckIn(\'' + b._id + '\')" style="flex:1;background:linear-gradient(135deg,#005A42,#00C896);color:#000;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:600;cursor:pointer">\uD83D\uDCCD ' + t('Check-in','Check-in') + '</button>';
+        } else {
+          html += '<button onclick="window._tComplete(\'' + b._id + '\')" style="flex:1;background:linear-gradient(135deg,#005A42,#00C896);color:#000;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:600;cursor:pointer">\u2714 ' + t('Ho\u00E0n th\u00E0nh & G\u1EE3i \u00FD SP','Complete & Suggest') + '</button>';
+        }
+        html += '</div></div>';
       });
     }
   }
@@ -1123,6 +1139,46 @@ function renderTechDash() {
       html += '<div style="font-size:12px;font-weight:500;text-align:right;max-width:60%;color:rgba(248,242,224,.8)">' + f[1] + '</div></div>';
     });
     html += '</div>';
+
+    // ── Leaderboard ──
+    html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.08);border-radius:14px;padding:16px;margin-bottom:14px">';
+    html += '<div style="font-size:11px;font-weight:700;color:rgba(248,242,224,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px">\uD83C\uDFC6 ' + t('B\u1EA3ng X\u1EBFp H\u1EA1ng KTV','KTV Leaderboard') + '</div>';
+    var allKtv = TECH_ACCOUNTS.filter(function(k){return k.centerId===tUser.centerId;});
+    allKtv.sort(function(a,b){return (b.sessions||0)-(a.sessions||0);});
+    allKtv.slice(0,5).forEach(function(k,i){
+      var isMe = k.id === tUser.id;
+      var medal = i===0?'\uD83E\uDD47':i===1?'\uD83E\uDD48':i===2?'\uD83E\uDD49':(i+1)+'';
+      html += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(123,95,255,.04);' + (isMe?'background:rgba(123,95,255,.06);border-radius:8px;padding:8px;margin:0 -8px':'') + '">';
+      html += '<div style="width:24px;text-align:center;font-size:14px">' + medal + '</div>';
+      html += '<div style="flex:1;font-size:12px;font-weight:' + (isMe?'700':'400') + ';color:' + (isMe?'#9B82FF':'rgba(248,242,224,.7)') + '">' + k.name + (isMe?' ('+t('B\u1EA1n','You')+')':'') + '</div>';
+      html += '<div style="font-size:11px;font-weight:600;color:#FFB800">' + (k.sessions||0) + ' ' + t('bu\u1ED5i','sessions') + '</div>';
+      html += '<div style="font-size:11px;color:#F59E0B">\u2605 ' + (k.rating||'0') + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+
+    // ── Product Recommendations ──
+    html += '<div style="background:#0A1218;border:1px solid rgba(0,200,150,.08);border-radius:14px;padding:16px;margin-bottom:14px">';
+    html += '<div style="font-size:11px;font-weight:700;color:rgba(248,242,224,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px">\uD83D\uDCE6 ' + t('G\u1EE3i \u00DD SP Cho Kh\u00E1ch','Product Suggestions') + '</div>';
+    html += '<div style="font-size:12px;color:rgba(248,242,224,.5);margin-bottom:12px">' + t('Sau bu\u1ED5i tr\u1ECB li\u1EC7u, g\u1EE3i \u00FD kh\u00E1ch s\u1EA3n ph\u1EA9m ph\u00F9 h\u1EE3p th\u1EC3 t\u1EA1ng','After session, suggest products matching constitution') + '</div>';
+    var products = [
+      {name:'ANIMA 119 — 1 H\u1ED9p 10 G\u00F3i',price:'1.868.000\u0111',comm:'15%',color:'#00C896'},
+      {name:'ANIMA 119 — 3 H\u1ED9p 30 G\u00F3i',price:'5.604.000\u0111',comm:'18%',color:'#00E676'},
+      {name:'ANIMA 119 — 12 H\u1ED9p Li\u1EC7u Tr\u00ECnh',price:'22.416.000\u0111',comm:'22%',color:'#FFB800'}
+    ];
+    products.forEach(function(p){
+      html += '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(0,200,150,.04)">';
+      html += '<div style="flex:1"><div style="font-size:13px;font-weight:500">' + p.name + '</div>';
+      html += '<div style="font-size:11px;color:rgba(248,242,224,.42)">' + p.price + '</div></div>';
+      html += '<div style="text-align:center"><div style="font-size:12px;font-weight:700;color:' + p.color + '">' + p.comm + '</div>';
+      html += '<div style="font-size:8px;color:rgba(248,242,224,.3)">' + t('hoa h\u1ED3ng','comm') + '</div></div>';
+      html += '</div>';
+    });
+    var ktvProductSales = JSON.parse(localStorage.getItem('anima_ktv_product_sales_'+tUser.id)||'{}');
+    html += '<div style="margin-top:10px;display:flex;gap:8px">';
+    html += '<div style="flex:1;background:rgba(0,200,150,.04);border-radius:8px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:700;color:#00C896">' + (ktvProductSales.totalSold||0) + '</div><div style="font-size:9px;color:rgba(248,242,224,.3)">' + t('SP \u0111\u00E3 b\u00E1n','Sold') + '</div></div>';
+    html += '<div style="flex:1;background:rgba(0,200,150,.04);border-radius:8px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:700;color:#FFB800">' + formatVND(ktvProductSales.totalComm||0) + '</div><div style="font-size:9px;color:rgba(248,242,224,.3)">' + t('Hoa h\u1ED3ng SP','Product Comm') + '</div></div>';
+    html += '</div></div>';
   }
 
   // ══════ REVIEWS PAGE ══════
@@ -1222,6 +1278,16 @@ window._tSetStatus = function(s) {
   tUser.status = s;
   localStorage.setItem('anima_tech_user', JSON.stringify(tUser));
   renderTechDash();
+};
+
+// ── Check-in ──
+window._tCheckIn = function(id) {
+  if(window.AnimaSync) {
+    AnimaSync.update('bookings', id, { checkedInAt: new Date().toISOString(), ktvCheckedIn: true });
+    AnimaSync.push('activities', { type:'checkin', vi:tUser.name + ' check-in phi\u00EAn ' + id, en:tUser.name + ' checked in ' + id, centerId:tUser.centerId, ago:0 });
+  }
+  renderTechDash();
+  if(typeof showToast === 'function') showToast(t('\u0110\u00E3 Check-in! Timer b\u1EAFt \u0111\u1EA7u.','Checked in! Timer started.'), '#00C896');
 };
 
 // ── Training ──
