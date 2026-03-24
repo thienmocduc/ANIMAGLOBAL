@@ -8061,8 +8061,10 @@ btn.removeAttribute('onclick');
 btn.removeAttribute('onmouseover');
 btn.removeAttribute('onmouseout');
 btn.style.cssText='background:transparent;border:none;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex-shrink:0;-webkit-tap-highlight-color:transparent';
-/* Use a single clean onclick — delay toggle to escape document click listener */
-btn.onclick=function(e){e.stopPropagation();e.preventDefault();setTimeout(toggleUserMenu,10);};
+/* Clean handler — works on iOS/iPad touch + desktop click */
+btn.onclick=null;
+btn.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();toggleUserMenu();},false);
+btn.addEventListener('touchend',function(e){e.stopPropagation();e.preventDefault();toggleUserMenu();},{passive:false});
 /* Create user dropdown if not exists */
 if(!document.getElementById('userDropMenu')){
 var dd=document.createElement('div');dd.id='userDropMenu';
