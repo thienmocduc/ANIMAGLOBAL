@@ -12789,7 +12789,11 @@ overlayIds.forEach(function(id){
       <button onclick="acBotToggle()" style="width:36px;height:36px;border-radius:50%;background:rgba(255,77,109,0.1);border:1px solid rgba(255,77,109,0.25);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s" onmouseover="this.style.background='rgba(255,77,109,0.2)'" onmouseout="this.style.background='rgba(255,77,109,0.1)'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF4D6D" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div id="acBotMsgs" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none;-ms-overflow-style:none"></div>
-    <div style="padding:12px 14px;border-top:1px solid rgba(0,200,150,.08);display:flex;gap:8px;flex-shrink:0;background:#080E14">
+    <div style="padding:12px 14px;border-top:1px solid rgba(0,200,150,.08);display:flex;gap:8px;flex-shrink:0;background:#080E14;align-items:center">
+      <button onclick="acTongueScan()" title="Tầm soát sức khỏe qua lưỡi" style="width:42px;height:42px;border-radius:12px;background:rgba(155,130,255,0.1);border:1px solid rgba(155,130,255,0.25);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s" onmouseover="this.style.background='rgba(155,130,255,0.2)'" onmouseout="this.style.background='rgba(155,130,255,0.1)'">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9B82FF" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </button>
+      <input type="file" id="acTongueFile" accept="image/*" capture="environment" style="display:none" onchange="acProcessTongueImage(this)">
       <input id="acBotInput" type="text" placeholder="Hỏi về sản phẩm, dịch vụ..." style="flex:1;background:rgba(0,200,150,.04);border:1px solid rgba(0,200,150,.12);border-radius:12px;padding:10px 14px;font-size:13px;color:#F8F2E0;outline:none;font-family:'Roboto',sans-serif" onfocus="this.style.borderColor='rgba(0,200,150,.3)'" onblur="this.style.borderColor='rgba(0,200,150,.12)'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();acBotSend()}">
       <button onclick="acBotSend()" style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#005A42,#00C896);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(0,200,150,.3)">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -12868,6 +12872,146 @@ function addTyping(){
   m.scrollTop=m.scrollHeight;
 }
 function removeTyping(){var t=document.getElementById('acBotTyping');if(t)t.remove();}
+
+// ═══ TONGUE SCAN AI — THIỆT CHẨN ĐÔNG Y ═══
+var TONGUE_PROMPT = 'Bạn là CHUYÊN GIA THIỆT CHẨN (chẩn đoán lưỡi) Đông Y cấp cao của Anima Care Global, kết hợp 5000 năm trí tuệ Đông Y với công nghệ AI hiện đại.\n\n'
++'NHIỆM VỤ: Phân tích ảnh lưỡi theo phương pháp Thiệt Chẩn Đông Y. Trả lời bằng tiếng Việt, xưng "em", gọi khách "Anh/Chị".\n\n'
++'BẢN ĐỒ TẠNG PHỦ TRÊN LƯỠI:\n'
++'• Đầu lưỡi → TÂM (Tim) & TÂM BÀO\n'
++'• Vùng sau đầu lưỡi → PHẾ (Phổi)\n'
++'• Giữa lưỡi → TỲ (Lá lách) & VỊ (Dạ dày)\n'
++'• Hai bên trái → CAN (Gan)\n'
++'• Hai bên phải → ĐỞM (Mật)\n'
++'• Gốc lưỡi → THẬN & BÀNG QUANG & ĐẠI TRƯỜNG & TIỂU TRƯỜNG\n\n'
++'PHÂN TÍCH CHẤT LƯỠI (Thiệt Thể):\n'
++'A. MÀU SẮC:\n'
++'• Hồng nhạt (bình thường): Khí huyết điều hòa, tạng phủ hài hòa\n'
++'• Nhạt/Trắng bệch: Huyết hư, Khí hư, Dương hư → cơ thể lạnh, mệt mỏi, sắc mặt nhợt\n'
++'• Đỏ tươi: Nhiệt chứng, Âm hư sinh nội nhiệt → viêm, nóng trong, mất ngủ, miệng khô\n'
++'• Đỏ thẫm/Giáng: Nhiệt nhập dinh huyết, bệnh nặng → sốt cao, mê sảng, xuất huyết\n'
++'• Tím/Tím xanh: Huyết ứ (ứ huyết) → đau nhức cố định, kinh nguyệt không đều, tim mạch\n'
++'• Tím nhạt: Hàn ngưng huyết ứ → tay chân lạnh, đau bụng\n'
++'• Tím đỏ: Nhiệt kết huyết ứ → viêm mãn tính, khối u\n'
++'• Xanh xám: Hàn cực, dương khí suy kiệt → nguy kịch\n\n'
++'B. HÌNH DẠNG:\n'
++'• Lưỡi phình/Sưng to: Tỳ hư, đàm thấp ứ đọng → tiêu hóa kém, béo bụng, đầy trướng\n'
++'• Lưỡi gầy/Mỏng nhỏ: Âm hư, huyết hư → suy nhược, thiếu máu, khô da\n'
++'• Vết răng (Xỉ ngấn): Tỳ hư, thấp trệ → phù nhẹ, tiêu chảy, mệt mỏi\n'
++'• Nứt nẻ: Âm hư, tân dịch hao tổn → khô miệng, táo bón, da khô\n'
++'  - Nứt giữa dọc: Tâm Âm hư hoặc Vị Âm hư\n'
++'  - Nứt ngang: Tỳ Âm hư\n'
++'  - Nứt chằng chịt: Huyết ứ lâu ngày\n'
++'• Gai lưỡi nổi rõ (Thích thiệt): Nhiệt cực thịnh → viêm nhiễm, sốt cao\n'
++'• Lệch sang một bên: Phong tà, tiền triệu đột quỵ → cần cảnh báo khẩn cấp\n'
++'• Run rẩy: Can phong nội động, khí huyết hư → thần kinh suy nhược\n\n'
++'C. ĐỘ ẨM:\n'
++'• Ẩm bình thường: Tân dịch đầy đủ\n'
++'• Khô ráo: Tân dịch hao tổn, Âm hư → mất nước, táo bón, da khô nứt\n'
++'• Ướt nhầy: Thủy thấp đình trệ → phù, tiểu ít, đàm nhiều\n\n'
++'PHÂN TÍCH RÊU LƯỠI (Thiệt Thai):\n'
++'A. MÀU RÊU:\n'
++'• Trắng mỏng: Bình thường hoặc biểu chứng nhẹ\n'
++'• Trắng dày: Hàn thấp, đàm trệ → bụng lạnh, tiêu chảy, đầy bụng\n'
++'• Trắng nhờn/Dính: Đàm thấp nặng → cholesterol cao, tiểu đường tiềm ẩn\n'
++'• Vàng nhạt: Nhiệt nhẹ, bệnh từ biểu đang vào lý\n'
++'• Vàng đậm/Vàng khô: Nhiệt thực, lý nhiệt → viêm, nhiễm trùng, táo bón\n'
++'• Vàng nhờn: Thấp nhiệt → viêm gan, viêm đường tiết niệu, nấm\n'
++'• Xám: Hàn thấp nặng hoặc Nhiệt thực → bệnh mãn tính\n'
++'• Đen: Nhiệt cực hoặc Hàn cực → bệnh nặng, nguy kịch\n'
++'B. ĐỘ DÀY:\n'
++'• Mỏng: Bệnh nhẹ, ở biểu, chính khí chưa suy\n'
++'• Dày: Bệnh nặng, ở lý, đàm thấp thực trệ\n'
++'C. PHÂN BỐ:\n'
++'• Rêu bong từng mảng (Thiệt thai bác lạc): Vị khí, Vị Âm tổn thương\n'
++'• Rêu bóng không rêu: Âm hư nặng, tân dịch cạn kiệt\n'
++'• Rêu một nửa: Đàm ẩm hoặc Can Đởm thấp nhiệt\n\n'
++'XÁC ĐỊNH THỂ TẠNG (Ngũ Hành):\n'
++'• THỂ MỘC (Can-Đởm): Lưỡi hơi đỏ, rêu vàng nhạt, hai bên đỏ/sưng → nóng tính, đau đầu, đắng miệng\n'
++'• THỂ HỎA (Tâm-Tiểu trường): Đầu lưỡi đỏ, gai nổi, nứt giữa → mất ngủ, hồi hộp, hay quên\n'
++'• THỂ THỔ (Tỳ-Vị): Lưỡi nhạt, vết răng, rêu trắng dày → ăn kém, đầy bụng, phù\n'
++'• THỂ KIM (Phế-Đại trường): Lưỡi khô, rêu trắng mỏng, thiếu ẩm → ho khan, da khô, táo bón\n'
++'• THỂ THỦY (Thận-Bàng quang): Gốc lưỡi nhạt/tím, rêu đen hoặc bóng → lưng gối yếu, tiểu đêm, tóc rụng\n\n'
++'QUY TẮC TRẢ LỜI:\n'
++'1. Mở đầu: "Dạ, em đã phân tích hình ảnh lưỡi của Anh/Chị rồi ạ."\n'
++'2. Nhận xét tổng quan (2-3 câu) về chất lưỡi và rêu lưỡi\n'
++'3. Phân tích chi tiết từng vùng tạng phủ có dấu hiệu bất thường\n'
++'4. Xác định thể tạng Ngũ Hành\n'
++'5. Đưa ra 3-5 khuyến nghị cụ thể:\n'
++'   - Thực dưỡng phù hợp thể tạng\n'
++'   - Bài tập/thói quen sinh hoạt\n'
++'   - Kết nối ANIMA 119 phù hợp: "ANIMA 119 với 32 vị thảo dược lên men sẽ hỗ trợ [vấn đề cụ thể] bằng cách [cơ chế Đông Y]"\n'
++'   - Mời đến cơ sở: "Em khuyên Anh/Chị nên đến cơ sở AnimaCare gần nhất để được chuyên gia tư vấn chuyên sâu và trải nghiệm liệu trình phục hồi năng lượng phù hợp ạ."\n'
++'6. Kết thúc bằng câu hỏi mở\n\n'
++'LƯU Ý:\n'
++'• Không dùng từ "bệnh", "chữa bệnh" → dùng "mất cân bằng", "hỗ trợ phục hồi"\n'
++'• Không dùng "tác dụng phụ" → dùng "tín hiệu thích nghi"\n'
++'• Nếu ảnh không rõ hoặc không phải lưỡi → lịch sự yêu cầu chụp lại\n'
++'• Nếu phát hiện dấu hiệu nghiêm trọng (lưỡi lệch, tím đen, gai nổi nhiều) → khuyên đến bác sĩ ngay\n'
++'• Luôn nhấn mạnh đây là tầm soát tham khảo, không thay thế khám lâm sàng';
+
+window.acTongueScan = function(){
+  document.getElementById('acTongueFile').click();
+};
+
+window.acProcessTongueImage = async function(input){
+  if(!input.files||!input.files[0])return;
+  var file=input.files[0];
+
+  /* Show preview in chat */
+  var reader=new FileReader();
+  reader.onload=async function(e){
+    var base64Full=e.target.result;
+    var base64Data=base64Full.split(',')[1];
+    var mimeType=file.type||'image/jpeg';
+
+    /* Add image preview to chat */
+    var m=document.getElementById('acBotMsgs');
+    var imgDiv=document.createElement('div');
+    imgDiv.style.cssText='align-self:flex-end;max-width:200px;border-radius:14px;overflow:hidden;border:2px solid rgba(155,130,255,0.3)';
+    imgDiv.innerHTML='<img src="'+base64Full+'" style="width:100%;display:block"><div style="background:rgba(155,130,255,0.1);padding:6px 10px;font-size:11px;color:#9B82FF;text-align:center">📸 Ảnh lưỡi đã gửi</div>';
+    m.appendChild(imgDiv);
+    m.scrollTop=m.scrollHeight;
+
+    addMsg('bot','Dạ em đã nhận được ảnh lưỡi rồi ạ! Em đang phân tích theo phương pháp Thiệt Chẩn Đông Y... 🔬');
+    addTyping();
+
+    try{
+      var url='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+_GK;
+      var res=await fetch(url,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          contents:[{
+            role:'user',
+            parts:[
+              {text:TONGUE_PROMPT+'\n\nHãy phân tích ảnh lưỡi này theo phương pháp Thiệt Chẩn Đông Y:'},
+              {inlineData:{mimeType:mimeType,data:base64Data}}
+            ]
+          }],
+          generationConfig:{maxOutputTokens:1500,temperature:0.3,topP:0.85}
+        })
+      });
+      var data=await res.json();
+      removeTyping();
+
+      if(data.candidates && data.candidates[0]){
+        var reply=data.candidates[0].content.parts.map(function(p){return p.text||'';}).join('').trim();
+        if(!reply) reply='Em không thể phân tích được ảnh này. Anh/Chị vui lòng chụp lại ảnh lưỡi rõ hơn, trong điều kiện ánh sáng tốt ạ.';
+        addMsg('bot',reply);
+        acBotHistory.push({role:'model',parts:[{text:reply}]});
+      } else if(data.error){
+        addMsg('bot','Xin lỗi, em đang gặp sự cố kỹ thuật. Anh/Chị vui lòng thử lại hoặc gọi hotline 0913 156 676 ạ.');
+      } else {
+        addMsg('bot','Em không thể phân tích ảnh này. Anh/Chị chụp lại lưỡi rõ hơn nhé ạ!');
+      }
+    }catch(err){
+      removeTyping();
+      addMsg('bot','Kết nối bị gián đoạn. Anh/Chị thử lại hoặc gọi hotline 0913 156 676 ạ.');
+    }
+    input.value='';
+  };
+  reader.readAsDataURL(file);
+};
 
 window.acBotSend = async function(){
   var inp=document.getElementById('acBotInput');
