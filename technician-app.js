@@ -309,6 +309,7 @@ function renderTechDash() {
     { id:'t-income', icon:'M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6', vi:'Thu nh\u1EADp', en:'Income', badge:pendingWithdraw },
     { id:'t-training', icon:'M12 14l9-5-9-5-9 5 9 5zM12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z', vi:'\u0110\u00E0o t\u1EA1o', en:'Training' },
     { id:'t-notifs', icon:'M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0', vi:'Th\u00F4ng b\u00E1o', en:'Notifs', badge:unreadNotifs },
+    { id:'t-affiliate', icon:'M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3', vi:'Affiliate', en:'Affiliate' },
     { id:'t-nearby', icon:'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z', vi:'Quanh \u0111\u00E2y', en:'Nearby' },
     { id:'t-profile', icon:'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2', vi:'C\u00E1 nh\u00E2n', en:'Profile' }
   ];
@@ -1115,20 +1116,7 @@ function renderTechDash() {
     });
     html += '</div></div>';
 
-    // ── Affiliate Card ──
-    html += '<div style="background:linear-gradient(135deg,rgba(37,99,235,.06),#0A1218);border:1px solid rgba(77,166,255,.15);border-radius:14px;padding:16px;margin-bottom:12px">';
-    html += '<div style="font-size:11px;font-weight:700;color:#4DA6FF;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">' + t('Ch\u01B0\u01A1ng Tr\u00ECnh Affiliate','Affiliate Program') + '</div>';
-    html += '<div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.3);border:1px solid rgba(77,166,255,.12);border-radius:10px;padding:12px;margin-bottom:10px">';
-    html += '<div style="flex:1"><div style="font-size:8px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px">' + t('M\u00E3 GT','Code') + '</div>';
-    html += '<div style="font-size:20px;font-weight:700;color:#4DA6FF;font-family:\'Roboto Mono\',monospace;letter-spacing:4px">' + affData.code + '</div></div>';
-    html += '<button onclick="navigator.clipboard.writeText(\''+affData.code+'\');if(typeof showToast===\'function\')showToast(\''+t('\u0110\u00E3 copy!','Copied!')+'\',\'#4DA6FF\')" style="padding:8px 16px;border:1px solid rgba(77,166,255,.2);border-radius:8px;background:rgba(77,166,255,.08);color:#4DA6FF;font-size:11px;font-weight:600;cursor:pointer">Copy</button>';
-    html += '</div>';
-    html += '<div style="display:flex;gap:8px">';
-    html += '<div style="flex:1;background:rgba(0,0,0,.2);border-radius:8px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:700;color:#4DA6FF">'+(affData.referrals||0)+'</div><div style="font-size:8px;color:rgba(248,242,224,.3)">'+t('Ng\u01B0\u1EDDi GT','Refs')+'</div></div>';
-    html += '<div style="flex:1;background:rgba(0,0,0,.2);border-radius:8px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:700;color:#00E5A8;font-family:\'Roboto Mono\',monospace">'+formatVND(affiliateComm)+'</div><div style="font-size:8px;color:rgba(248,242,224,.3)">'+t('Hoa h\u1ED3ng','Earned')+'</div></div>';
-    html += '</div>';
-    html += '<button onclick="var u=\'https://animacare.global?ref='+affData.code+'\';if(navigator.share)navigator.share({title:\'Anima Care\',url:u});else{navigator.clipboard.writeText(u);if(typeof showToast===\'function\')showToast(\''+t('\u0110\u00E3 copy!','Copied!')+'\',\'#4DA6FF\')}" style="width:100%;margin-top:10px;padding:10px;border:1px solid rgba(77,166,255,.15);border-radius:8px;background:rgba(77,166,255,.05);color:#4DA6FF;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>'+t('Chia s\u1EBB','Share')+'</button>';
-    html += '</div>';
+    // Affiliate moved to separate tab (t-affiliate)
 
     // ── Personal Info ──
     html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.08);border-radius:14px;padding:16px;margin-bottom:14px">';
@@ -1179,6 +1167,62 @@ function renderTechDash() {
     html += '<div style="flex:1;background:rgba(0,200,150,.04);border-radius:8px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:700;color:#00C896">' + (ktvProductSales.totalSold||0) + '</div><div style="font-size:9px;color:rgba(248,242,224,.3)">' + t('SP \u0111\u00E3 b\u00E1n','Sold') + '</div></div>';
     html += '<div style="flex:1;background:rgba(0,200,150,.04);border-radius:8px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:700;color:#FFB800">' + formatVND(ktvProductSales.totalComm||0) + '</div><div style="font-size:9px;color:rgba(248,242,224,.3)">' + t('Hoa h\u1ED3ng SP','Product Comm') + '</div></div>';
     html += '</div></div>';
+  }
+
+  // ══════ AFFILIATE PAGE ══════
+  else if(tPage === 't-affiliate') {
+    var affData=JSON.parse(localStorage.getItem('anima_ktv_affiliate_'+tUser.id)||'{}');
+    if(!affData.code){affData.code=tUser.id.replace(/[^A-Z0-9]/gi,'').substring(0,6).toUpperCase();affData.referrals=0;affData.earned=0;affData.history=[];}
+    var affiliateComm=affData.earned||0;
+    html += '<div style="font-size:18px;font-weight:600;margin-bottom:4px">' + t('Ch\u01B0\u01A1ng Tr\u00ECnh Affiliate','Affiliate Program') + '</div>';
+    html += '<div style="font-size:12px;color:rgba(248,242,224,.42);margin-bottom:16px">' + t('Gi\u1EDBi thi\u1EC7u kh\u00E1ch h\u00E0ng, nh\u1EADn hoa h\u1ED3ng tr\u1ECDn \u0111\u1EDDi','Refer customers, earn lifetime commission') + '</div>';
+    // Referral Code Card
+    html += '<div style="background:linear-gradient(135deg,rgba(37,99,235,.08),#0A1218);border:1px solid rgba(77,166,255,.2);border-radius:16px;padding:20px;margin-bottom:16px">';
+    html += '<div style="text-align:center;margin-bottom:16px"><div style="font-size:10px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px">' + t('M\u00E3 Gi\u1EDBi Thi\u1EC7u C\u1EE7a B\u1EA1n','Your Referral Code') + '</div>';
+    html += '<div style="font-size:32px;font-weight:700;color:#4DA6FF;font-family:\'Roboto Mono\',monospace;letter-spacing:6px">' + affData.code + '</div></div>';
+    html += '<div style="display:flex;gap:8px;justify-content:center">';
+    html += '<button onclick="navigator.clipboard.writeText(\''+affData.code+'\');if(typeof showToast===\'function\')showToast(\''+t('\u0110\u00E3 copy!','Copied!')+'\',\'#4DA6FF\')" style="padding:10px 20px;border:1px solid rgba(77,166,255,.25);border-radius:10px;background:rgba(77,166,255,.1);color:#4DA6FF;font-size:12px;font-weight:600;cursor:pointer">\uD83D\uDCCB ' + t('Copy M\u00E3','Copy Code') + '</button>';
+    html += '<button onclick="var u=\'https://animacare.global?ref='+affData.code+'\';if(navigator.share)navigator.share({title:\'Anima Care\',url:u});else{navigator.clipboard.writeText(u);if(typeof showToast===\'function\')showToast(\''+t('\u0110\u00E3 copy link!','Link copied!')+'\',\'#4DA6FF\')}" style="padding:10px 20px;border:1px solid rgba(0,200,150,.25);border-radius:10px;background:rgba(0,200,150,.1);color:#00C896;font-size:12px;font-weight:600;cursor:pointer">\uD83D\uDD17 ' + t('Chia S\u1EBB Link','Share Link') + '</button>';
+    html += '</div></div>';
+    // KPIs
+    html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">';
+    html += '<div style="background:#0A1218;border:1px solid rgba(77,166,255,.12);border-radius:12px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:700;color:#4DA6FF">'+(affData.referrals||0)+'</div><div style="font-size:10px;color:rgba(248,242,224,.35);margin-top:4px">'+t('Ng\u01B0\u1EDDi Gi\u1EDBi Thi\u1EC7u','Referrals')+'</div></div>';
+    html += '<div style="background:#0A1218;border:1px solid rgba(0,200,150,.12);border-radius:12px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:700;color:#00E5A8;font-family:\'Roboto Mono\',monospace">'+formatVND(affiliateComm)+'</div><div style="font-size:10px;color:rgba(248,242,224,.35);margin-top:4px">'+t('Hoa H\u1ED3ng','Commission')+'</div></div>';
+    html += '<div style="background:#0A1218;border:1px solid rgba(255,184,0,.12);border-radius:12px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:700;color:#FFB800">'+(affData.level||'F0')+'</div><div style="font-size:10px;color:rgba(248,242,224,.35);margin-top:4px">'+t('C\u1EA5p B\u1EADc','Level')+'</div></div>';
+    html += '</div>';
+    // Commission tiers
+    html += '<div style="background:#0A1218;border:1px solid rgba(77,166,255,.08);border-radius:14px;padding:16px;margin-bottom:16px">';
+    html += '<div style="font-size:12px;font-weight:700;color:#4DA6FF;margin-bottom:12px">' + t('B\u1EA3ng Hoa H\u1ED3ng','Commission Tiers') + '</div>';
+    var tiers = [
+      {level:'F0',desc:t('Gi\u1EDBi thi\u1EC7u tr\u1EF1c ti\u1EBFp','Direct referral'),rate:'10%',color:'#4DA6FF'},
+      {level:'F1',desc:t('Ng\u01B0\u1EDDi \u0111\u01B0\u1EE3c GT gi\u1EDBi thi\u1EC7u ti\u1EBFp','2nd level referral'),rate:'5%',color:'#00C896'},
+      {level:'F2',desc:t('C\u1EA5p 3','3rd level'),rate:'3%',color:'#FFB800'},
+      {level:'F3',desc:t('C\u1EA5p 4','4th level'),rate:'1%',color:'#9B82FF'}
+    ];
+    tiers.forEach(function(tier){
+      html += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(77,166,255,.04)">';
+      html += '<div style="width:36px;height:36px;border-radius:8px;background:'+tier.color+'15;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:'+tier.color+'">'+tier.level+'</div>';
+      html += '<div style="flex:1;font-size:12px;color:rgba(248,242,224,.6)">'+tier.desc+'</div>';
+      html += '<div style="font-size:14px;font-weight:700;color:'+tier.color+'">'+tier.rate+'</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    // Referral history
+    html += '<div style="background:#0A1218;border:1px solid rgba(77,166,255,.08);border-radius:14px;padding:16px">';
+    html += '<div style="font-size:12px;font-weight:700;color:rgba(248,242,224,.5);margin-bottom:12px">' + t('L\u1ECBch S\u1EED Gi\u1EDBi Thi\u1EC7u','Referral History') + '</div>';
+    var refHistory = affData.history || [];
+    if(refHistory.length === 0) {
+      html += '<div style="text-align:center;padding:24px;color:rgba(248,242,224,.25);font-size:12px">' + t('Ch\u01B0a c\u00F3 gi\u1EDBi thi\u1EC7u n\u00E0o. H\u00E3y chia s\u1EBB m\u00E3 gi\u1EDBi thi\u1EC7u!','No referrals yet. Share your code!') + '</div>';
+    }
+    refHistory.forEach(function(r){
+      html += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(77,166,255,.04)">';
+      html += '<div style="width:28px;height:28px;border-radius:50%;background:rgba(77,166,255,.1);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#4DA6FF">' + (r.name||'?')[0] + '</div>';
+      html += '<div style="flex:1"><div style="font-size:12px;font-weight:500">' + (r.name||t('Kh\u00E1ch','Customer')) + '</div>';
+      html += '<div style="font-size:10px;color:rgba(248,242,224,.3)">' + (r.date||'').split('T')[0] + '</div></div>';
+      html += '<div style="font-size:11px;font-weight:600;color:#00E5A8">+' + formatVND(r.commission||0) + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
   }
 
   // ══════ REVIEWS PAGE ══════
