@@ -7968,14 +7968,6 @@ function sendOTPEmail(email,otp,name){
 function completeRegistration(){
 /* Legacy — now handled by verifyOTP */
 }
-/* Sync to admin */
-if(window.AnimaSync){
-  AnimaSync.push('customers',{name:fullName,email:email,phone:phone,constitution:constitution,referral:referral,joinDate:new Date().toISOString().split('T')[0],status:'active'});
-  AnimaSync.push('activities',{type:'customer_new',vi:fullName+' vừa đăng ký tài khoản',en:fullName+' just registered',ago:0});
-}
-updateNavUser();closeAuth();
-showToast(lang==='vi'?'Tạo tài khoản thành công! Chào mừng '+first+' đến Anima':'Account created! Welcome '+first+' to Anima','var(--g2)');
-}
 function handleGoogleAuth(){
 /* Google Identity Services - One Tap / Button Sign-In */
 var CLIENT_ID='YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
