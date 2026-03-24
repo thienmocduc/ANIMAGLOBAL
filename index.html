@@ -8064,8 +8064,8 @@ avatar='<img src="'+currentUser.picture+'" style="width:30px;height:30px;border-
 }else{
 avatar='<div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--g-dark),var(--g1));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#000">'+initials+'</div>';
 }
-btn.innerHTML='<div style="position:relative;cursor:pointer" onclick="toggleUserMenu()">'+avatar+'</div>';
-btn.onclick=null;
+btn.innerHTML=avatar;
+btn.onclick=function(e){e.stopPropagation();toggleUserMenu();};
 /* Create user dropdown if not exists */
 if(!document.getElementById('userDropMenu')){
 var dd=document.createElement('div');dd.id='userDropMenu';
