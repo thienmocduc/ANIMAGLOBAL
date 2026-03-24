@@ -12608,15 +12608,17 @@ function loadProfileData(u){
   document.getElementById('profDob').value=prof.dob||'';
   document.getElementById('profGender').value=prof.gender||'';
   document.getElementById('profAddr').value=prof.addr||'';
-  document.getElementById('profHeight').value=prof.height||'';
-  document.getElementById('profWeight').value=prof.weight||'';
-  document.getElementById('profBlood').value=prof.blood||'';
-  if(document.getElementById('profBP'))document.getElementById('profBP').value=prof.bp||'';
-  document.getElementById('profAllergy').value=prof.allergy||'';
-  document.getElementById('profConditions').value=prof.conditions||'';
-  document.getElementById('profHealthNote').value=prof.healthNote||'';
-  if(document.getElementById('profMedications'))document.getElementById('profMedications').value=prof.medications||'';
-  if(document.getElementById('profPainLevel')){document.getElementById('profPainLevel').value=prof.painLevel||0;document.getElementById('profPainNum').textContent=prof.painLevel||0;}
+  /* Safe set — fields may not exist if Health tab was removed */
+  var _sf=function(id,v){var e=document.getElementById(id);if(e)e.value=v;};
+  _sf('profHeight',prof.height||'');
+  _sf('profWeight',prof.weight||'');
+  _sf('profBlood',prof.blood||'');
+  _sf('profBP',prof.bp||'');
+  _sf('profAllergy',prof.allergy||'');
+  _sf('profConditions',prof.conditions||'');
+  _sf('profHealthNote',prof.healthNote||'');
+  _sf('profMedications',prof.medications||'');
+  if(document.getElementById('profPainLevel')){document.getElementById('profPainLevel').value=prof.painLevel||0;if(document.getElementById('profPainNum'))document.getElementById('profPainNum').textContent=prof.painLevel||0;}
   /* Restore health levels */
   ['energy','sleep','stress'].forEach(function(k){
     var v=prof[k+'Level']||0;if(!v)return;
