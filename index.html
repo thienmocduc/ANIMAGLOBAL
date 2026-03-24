@@ -8061,10 +8061,11 @@ btn.removeAttribute('onclick');
 btn.removeAttribute('onmouseover');
 btn.removeAttribute('onmouseout');
 btn.style.cssText='background:transparent;border:none;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex-shrink:0;-webkit-tap-highlight-color:transparent';
-/* Clean handler — works on iOS/iPad touch + desktop click */
+/* Clean handler — debounce for touch+click on mobile */
 btn.onclick=null;
-btn.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();toggleUserMenu();},false);
-btn.addEventListener('touchend',function(e){e.stopPropagation();e.preventDefault();toggleUserMenu();},{passive:false});
+var _lastToggle=0;
+function _safeToggle(e){e.stopPropagation();e.preventDefault();var now=Date.now();if(now-_lastToggle<300)return;_lastToggle=now;toggleUserMenu();}
+btn.addEventListener('click',_safeToggle,false);
 /* Create user dropdown if not exists */
 if(!document.getElementById('userDropMenu')){
 var dd=document.createElement('div');dd.id='userDropMenu';
