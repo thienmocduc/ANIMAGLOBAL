@@ -12790,10 +12790,10 @@ overlayIds.forEach(function(id){
     </div>
     <div id="acBotMsgs" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none;-ms-overflow-style:none"></div>
     <div style="padding:12px 14px;border-top:1px solid rgba(0,200,150,.08);display:flex;gap:8px;flex-shrink:0;background:#080E14;align-items:center">
-      <button onclick="if(_tongueStep>=1&&_tongueStep<=3){document.getElementById('acTongueFile').click();}else{acTongueScan();}" title="Tầm soát sức khỏe qua lưỡi" style="width:42px;height:42px;border-radius:12px;background:rgba(155,130,255,0.1);border:1px solid rgba(155,130,255,0.25);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s" onmouseover="this.style.background='rgba(155,130,255,0.2)'" onmouseout="this.style.background='rgba(155,130,255,0.1)'">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9B82FF" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
-      </button>
       <input type="file" id="acTongueFile" accept="image/*" style="display:none" onchange="acProcessTongueImage(this)">
+      <label id="acTongueCamBtn" onclick="if(typeof _tongueStep!=='undefined'&&_tongueStep>=1&&_tongueStep<=3){/*label auto-triggers input*/}else{event.preventDefault();acTongueScan();}" for="acTongueFile" title="Tầm soát sức khỏe qua lưỡi" style="width:42px;height:42px;border-radius:12px;background:rgba(155,130,255,0.1);border:1px solid rgba(155,130,255,0.25);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9B82FF" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </label>
       <input id="acBotInput" type="text" placeholder="Hỏi về sản phẩm, dịch vụ..." style="flex:1;background:rgba(0,200,150,.04);border:1px solid rgba(0,200,150,.12);border-radius:12px;padding:10px 14px;font-size:13px;color:#F8F2E0;outline:none;font-family:'Roboto',sans-serif" onfocus="this.style.borderColor='rgba(0,200,150,.3)'" onblur="this.style.borderColor='rgba(0,200,150,.12)'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();acBotSend()}">
       <button onclick="acBotSend()" style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#005A42,#00C896);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(0,200,150,.3)">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -12843,11 +12843,16 @@ var SYSTEM_PROMPT = 'Bạn là "Anima" — chuyên gia tâm lý và sức khỏe
 +'"Dạ, em cần lưu ý rất quan trọng với Chị ạ: ANIMA 119 có công năng hoạt huyết mạnh, vì vậy phụ nữ đang mang thai cần tham khảo ý kiến chuyên gia hoặc bác sĩ Đông Y trước khi sử dụng. Sức khỏe của mẹ và bé là ưu tiên hàng đầu ạ. Em khuyên Chị nên đến cơ sở AnimaCare gần nhất hoặc gọi hotline 0913 156 676 để được bác sĩ tư vấn trực tiếp ạ."';
 
 window.acBotToggle = function(){
+  /* Gate: chỉ thành viên đã đăng nhập mới dùng chatbot */
+  if(!acBotOpen && typeof currentUser==='undefined' || (!acBotOpen && !currentUser)){
+    if(typeof openAuth==='function') openAuth('login');
+    return;
+  }
   var p=document.getElementById('acBotPanel');
   var btn=document.getElementById('acBotBtn');
   acBotOpen=!acBotOpen;
   p.style.display=acBotOpen?'flex':'none';
-  btn.style.display=acBotOpen?'none':'flex'; /* Ẩn nút tròn khi panel mở */
+  btn.style.display=acBotOpen?'none':'flex';
   if(acBotOpen && acBotHistory.length===0) acBotGreet();
 };
 
@@ -12963,6 +12968,7 @@ var TONGUE_LABELS = [
 ];
 
 window.acTongueScan = function(){
+  if(!currentUser){addMsg('bot','Anh/Chị vui lòng đăng nhập để sử dụng tính năng tầm soát lưỡi ạ.');return;}
   _tongueImages = [];
   _tongueStep = 0;
   addMsg('bot','🔬 **TẦNG SOÁT SỨC KHỎE QUA LƯỠI — Thiệt Chẩn Đông Y**\n\nĐể em phân tích chính xác nhất, Anh/Chị vui lòng chụp **3 ảnh lưỡi** theo hướng dẫn:\n\n📸 Ảnh 1/3: **Chính giữa** — Há miệng rộng, thè lưỡi thẳng\n📸 Ảnh 2/3: **Bên trái** — Nghiêng lưỡi lộ cạnh trái\n📸 Ảnh 3/3: **Bên phải** — Nghiêng lưỡi lộ cạnh phải\n\n💡 Mẹo: Chụp dưới ánh sáng tự nhiên, không dùng flash.\n\nBắt đầu nhé! Bấm 📸 để chụp ảnh **chính giữa** lưỡi ạ.');
@@ -13045,6 +13051,7 @@ window.acProcessTongueImage = async function(input){
 };
 
 window.acBotSend = async function(){
+  if(!currentUser){addMsg('bot','Anh/Chị vui lòng đăng nhập để sử dụng trợ lý AI ạ.');return;}
   var inp=document.getElementById('acBotInput');
   var q=(inp.value||'').trim();
   if(!q)return;
