@@ -11864,17 +11864,44 @@ updateCartUI();
       <div id="profProvider" style="margin-top:6px;display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px"></div>
     </div>
 
-    <!-- Tabs -->
-    <div style="display:flex;border-bottom:1px solid rgba(0,200,150,.1);margin-bottom:24px;gap:0">
-      <button class="prof-tab on" onclick="switchProfTab('info',this)" style="flex:1;padding:12px 0;background:transparent;border:none;border-bottom:2px solid #00C896;font-family:'Roboto',sans-serif;font-size:13px;font-weight:600;color:#00C896;cursor:pointer;transition:all .2s" data-vi="Thông Tin" data-en="Info">Thông Tin</button>
-      <button class="prof-tab" onclick="switchProfTab('health',this)" style="flex:1;padding:12px 0;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;font-size:13px;font-weight:600;color:rgba(248,242,224,.4);cursor:pointer;transition:all .2s" data-vi="Sức Khỏe" data-en="Health">Sức Khỏe</button>
-      <button class="prof-tab" onclick="switchProfTab('orders',this)" style="flex:1;padding:12px 0;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;font-size:13px;font-weight:600;color:rgba(248,242,224,.4);cursor:pointer;transition:all .2s" data-vi="Đơn Hàng" data-en="Orders">Đơn Hàng</button>
-      <button class="prof-tab" onclick="switchProfTab('dashboard',this)" style="flex:1;padding:12px 0;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;font-size:13px;font-weight:600;color:rgba(248,242,224,.4);cursor:pointer;transition:all .2s" data-vi="Dashboard" data-en="Dashboard">Dashboard</button>
-      <button class="prof-tab" onclick="switchProfTab('settings',this)" style="flex:1;padding:12px 0;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;font-size:13px;font-weight:600;color:rgba(248,242,224,.4);cursor:pointer;transition:all .2s" data-vi="Cài Đặt" data-en="Settings">Cài Đặt</button>
+    <!-- Tabs — 6 tabs mới -->
+    <div id="profTabBar" style="display:flex;border-bottom:1px solid rgba(0,200,150,.1);margin-bottom:20px;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none">
+      <button class="prof-tab on" onclick="switchProfTab('overview',this)" style="flex:0 0 auto;padding:11px 14px;background:transparent;border:none;border-bottom:2px solid #00C896;font-family:'Roboto',sans-serif;font-size:12px;font-weight:600;color:#00C896;cursor:pointer;transition:all .2s;white-space:nowrap">📊 Tổng Quan</button>
+      <button class="prof-tab" onclick="switchProfTab('orders',this)" style="flex:0 0 auto;padding:11px 14px;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;font-size:12px;font-weight:600;color:rgba(248,242,224,.4);cursor:pointer;transition:all .2s;white-space:nowrap">📦 Đơn Hàng</button>
+      <button class="prof-tab" onclick="switchProfTab('packages',this)" style="flex:0 0 auto;padding:11px 14px;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;font-size:12px;font-weight:600;color:rgba(248,242,224,.4);cursor:pointer;transition:all .2s;white-space:nowrap">🎫 Gói DV</button>
+      <button class="prof-tab" onclick="switchProfTab('scans',this)" style="flex:0 0 auto;padding:11px 14px;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;font-size:12px;font-weight:600;color:rgba(248,242,224,.4);cursor:pointer;transition:all .2s;white-space:nowrap">🔬 Tầm Soát</button>
+      <button class="prof-tab" onclick="switchProfTab('notifs',this)" style="flex:0 0 auto;padding:11px 14px;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;font-size:12px;font-weight:600;color:rgba(248,242,224,.4);cursor:pointer;transition:all .2s;white-space:nowrap" id="profNotifTab">🔔 Thông Báo</button>
+      <button class="prof-tab" onclick="switchProfTab('settings',this)" style="flex:0 0 auto;padding:11px 14px;background:transparent;border:none;border-bottom:2px solid transparent;font-family:'Roboto',sans-serif;font-size:12px;font-weight:600;color:rgba(248,242,224,.4);cursor:pointer;transition:all .2s;white-space:nowrap">⚙️ Cài Đặt</button>
     </div>
 
-    <!-- TAB: Info -->
-    <div id="profTabInfo" class="prof-panel">
+    <!-- ═══ TAB 1: TỔNG QUAN ═══ -->
+    <div id="profTabOverview" class="prof-panel">
+      <div id="profOverviewContent"></div>
+    </div>
+
+    <!-- ═══ TAB 2: ĐƠN HÀNG ═══ -->
+    <div id="profTabOrders" class="prof-panel" style="display:none">
+      <div id="profOrdersContent"></div>
+    </div>
+
+    <!-- ═══ TAB 3: GÓI DỊCH VỤ ═══ -->
+    <div id="profTabPackages" class="prof-panel" style="display:none">
+      <div id="profPackagesContent"></div>
+    </div>
+
+    <!-- ═══ TAB 4: TẦM SOÁT ═══ -->
+    <div id="profTabScans" class="prof-panel" style="display:none">
+      <div id="profScansContent"></div>
+    </div>
+
+    <!-- ═══ TAB 5: THÔNG BÁO ═══ -->
+    <div id="profTabNotifs" class="prof-panel" style="display:none">
+      <div id="profNotifsContent"></div>
+    </div>
+
+    <!-- ═══ TAB 6: CÀI ĐẶT (keep existing Info + Settings content) ═══ -->
+    <div id="profTabSettings" class="prof-panel" style="display:none">
+    <div id="profSettingsInfo" class="prof-panel">
       <div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.1);border-radius:16px;padding:24px">
         <div style="font-size:14px;font-weight:700;color:#00C896;margin-bottom:16px;display:flex;align-items:center;gap:8px">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -11951,9 +11978,8 @@ updateCartUI();
       </div>
 
     </div>
-
-    <!-- TAB: Health -->
-    <div id="profTabHealth" class="prof-panel" style="display:none">
+    <!-- Health fields moved into Settings tab -->
+    <div id="profTabHealth" style="display:none">
 
       <!-- BMI Card -->
       <div id="profBmiCard" style="background:linear-gradient(135deg,rgba(0,200,150,.06),rgba(0,200,150,.02));border:1px solid rgba(0,200,150,.15);border-radius:16px;padding:20px;margin-bottom:16px;display:none">
@@ -12142,23 +12168,8 @@ updateCartUI();
       </button>
     </div>
 
-    <!-- TAB: Orders -->
-    <div id="profTabOrders" class="prof-panel" style="display:none">
-      <div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.1);border-radius:16px;padding:24px">
-        <div style="font-size:14px;font-weight:700;color:#00C896;margin-bottom:16px;display:flex;align-items:center;gap:8px">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-          <span data-vi="Lịch sử đơn hàng" data-en="Order History">Lịch sử đơn hàng</span>
-        </div>
-        <div id="profOrderList"></div>
-        <div id="profOrderEmpty" style="text-align:center;padding:40px 0;color:rgba(248,242,224,.3)">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin-bottom:10px;opacity:.3"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
-          <div style="font-size:13px" data-vi="Chưa có đơn hàng nào" data-en="No orders yet">Chưa có đơn hàng nào</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB: Settings -->
-    <div id="profTabSettings" class="prof-panel" style="display:none">
+    <!-- Old orders tab removed — now in profTabOrders above -->
+    <!-- Settings content continues from profSettingsInfo above -->
       <!-- Notifications -->
       <div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.1);border-radius:16px;padding:24px;margin-bottom:16px">
         <div style="font-size:14px;font-weight:700;color:#00C896;margin-bottom:16px;display:flex;align-items:center;gap:8px">
@@ -12222,7 +12233,7 @@ updateCartUI();
     </div>
 
     <!-- TAB: Dashboard -->
-    <div id="profTabDashboard" class="prof-panel" style="display:none"></div>
+    </div><!-- /profTabSettings -->
 
   </div>
 </div>
@@ -12242,6 +12253,9 @@ function openProfile(){
   var ov=document.getElementById('profileOverlay');
   ov.style.visibility='visible';ov.style.opacity='1';
   document.body.style.overflow='hidden';
+  /* Default to Overview tab */
+  renderProfOverview();
+  updateNotifBadge();
 }
 
 function closeProfile(){
@@ -12251,16 +12265,215 @@ function closeProfile(){
 }
 
 function switchProfTab(tab,btn){
-  document.querySelectorAll('.prof-panel').forEach(function(p){p.style.display='none';});
-  document.querySelectorAll('.prof-tab').forEach(function(t){
+  document.querySelectorAll('#profileOverlay .prof-panel').forEach(function(p){p.style.display='none';});
+  document.querySelectorAll('#profileOverlay .prof-tab').forEach(function(t){
     t.style.borderBottomColor='transparent';t.style.color='rgba(248,242,224,.4)';t.classList.remove('on');
   });
-  var panel=document.getElementById('profTab'+tab.charAt(0).toUpperCase()+tab.slice(1));
+  var map={overview:'Overview',orders:'Orders',packages:'Packages',scans:'Scans',notifs:'Notifs',settings:'Settings'};
+  var panel=document.getElementById('profTab'+(map[tab]||tab.charAt(0).toUpperCase()+tab.slice(1)));
   if(panel)panel.style.display='block';
   if(btn){btn.style.borderBottomColor='#00C896';btn.style.color='#00C896';btn.classList.add('on');}
-  if(tab==='orders')renderOrderHistory();
-  if(tab==='dashboard')renderUserDashboard();
+  /* Render tab content */
+  if(tab==='overview')renderProfOverview();
+  if(tab==='orders')renderProfOrders();
+  if(tab==='packages')renderProfPackages();
+  if(tab==='scans')renderProfScans();
+  if(tab==='notifs')renderProfNotifs();
 }
+
+/* ═══ PROFILE TAB RENDERERS ═══ */
+function _pCard(bg,val,lbl,color){return '<div style="background:'+bg+';border:1px solid rgba(0,200,150,.1);border-radius:12px;padding:14px 12px;text-align:center"><div style="font-size:22px;font-weight:700;color:'+color+'">'+val+'</div><div style="font-size:11px;color:rgba(248,242,224,.4);margin-top:3px">'+lbl+'</div></div>';}
+function _pBadge(text,color){return '<span style="display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600;background:rgba('+(color==='green'?'0,200,150':color==='yellow'?'255,184,0':color==='blue'?'0,191,255':color==='red'?'255,77,109':'155,130,255')+',.12);color:'+(color==='green'?'#00C896':color==='yellow'?'#FFB800':color==='blue'?'#00BFFF':color==='red'?'#FF4D6D':'#9B82FF')+'">'+text+'</span>';}
+function _pEmpty(icon,text){return '<div style="text-align:center;padding:40px 0;color:rgba(248,242,224,.2)"><div style="font-size:36px;margin-bottom:8px;opacity:.4">'+icon+'</div><div style="font-size:13px">'+text+'</div></div>';}
+function _pSection(title,content){return '<div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.1);border-radius:14px;padding:16px;margin-bottom:12px"><div style="font-size:13px;font-weight:700;color:#00C896;margin-bottom:12px">'+title+'</div>'+content+'</div>';}
+
+/* Tab 1: Tổng Quan */
+function renderProfOverview(){
+  var el=document.getElementById('profOverviewContent');if(!el)return;
+  var u=currentUser||{};
+  var orders=JSON.parse(localStorage.getItem('anima_orders')||'[]');
+  var scans=JSON.parse(localStorage.getItem('anima_tongue_scans')||'[]');
+  var pkgs=JSON.parse(localStorage.getItem('anima_user_packages')||'[]');
+  var notifs=JSON.parse(localStorage.getItem('anima_notifications')||'[]');
+  var unread=notifs.filter(function(n){return !n.read;}).length;
+  var sessionsLeft=0;pkgs.forEach(function(p){sessionsLeft+=(p.totalSessions||0)-(p.usedSessions||0);});
+  var lastScan=scans.length?scans[scans.length-1]:null;
+
+  var h='';
+  /* KPI Cards */
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">';
+  h+=_pCard('rgba(0,200,150,.04)',orders.length,'Đơn hàng','#00C896');
+  h+=_pCard('rgba(155,130,255,.04)',sessionsLeft,'Buổi còn lại','#9B82FF');
+  h+=_pCard('rgba(0,191,255,.04)',scans.length,'Lần tầm soát','#00BFFF');
+  h+=_pCard('rgba(255,184,0,.04)',lastScan?lastScan.constitution||'—':'—','Thể tạng','#FFB800');
+  h+='</div>';
+
+  /* Quick Actions */
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">';
+  h+='<button onclick="closeProfile();if(typeof openStore===\'function\')openStore()" style="padding:12px 8px;background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.15);border-radius:10px;cursor:pointer;text-align:center;color:#00C896;font-size:12px;font-weight:600">🛒 Mua hàng</button>';
+  h+='<button onclick="closeProfile();if(typeof openBooking===\'function\')openBooking()" style="padding:12px 8px;background:rgba(155,130,255,.06);border:1px solid rgba(155,130,255,.15);border-radius:10px;cursor:pointer;text-align:center;color:#9B82FF;font-size:12px;font-weight:600">📅 Đặt lịch</button>';
+  h+='<button onclick="closeProfile();acBotToggle();setTimeout(acTongueScan,500)" style="padding:12px 8px;background:rgba(0,191,255,.06);border:1px solid rgba(0,191,255,.15);border-radius:10px;cursor:pointer;text-align:center;color:#00BFFF;font-size:12px;font-weight:600">🔬 Tầm soát</button>';
+  h+='</div>';
+
+  /* Recent Activity */
+  var activities=[];
+  orders.slice(-3).reverse().forEach(function(o){activities.push({icon:'📦',text:'Đơn #'+(o.id||'').slice(-6)+' — '+(o.product||o.items&&o.items[0]&&o.items[0].name||''),time:o.date||o.createdAt});});
+  scans.slice(-2).reverse().forEach(function(s){activities.push({icon:'🔬',text:'Tầm soát — '+(s.constitution||'Đang phân tích'),time:s.date});});
+  if(activities.length){
+    var actH='';
+    activities.slice(0,5).forEach(function(a){
+      var d=a.time?new Date(a.time).toLocaleDateString('vi-VN'):'';
+      actH+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(0,200,150,.05)"><span style="font-size:16px">'+a.icon+'</span><div style="flex:1;font-size:12px;color:rgba(248,242,224,.6)">'+a.text+'</div><span style="font-size:11px;color:rgba(248,242,224,.25)">'+d+'</span></div>';
+    });
+    h+=_pSection('Hoạt động gần đây',actH);
+  } else {
+    h+=_pSection('Hoạt động gần đây',_pEmpty('📋','Chưa có hoạt động nào'));
+  }
+
+  /* Notification badge */
+  if(unread>0){
+    h+='<div onclick="switchProfTab(\'notifs\',document.getElementById(\'profNotifTab\'))" style="background:rgba(255,77,109,.06);border:1px solid rgba(255,77,109,.2);border-radius:10px;padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px"><span style="font-size:18px">🔔</span><span style="flex:1;font-size:13px;color:#FF4D6D;font-weight:600">'+unread+' thông báo chưa đọc</span><span style="font-size:16px">→</span></div>';
+  }
+  el.innerHTML=h;
+}
+
+/* Tab 2: Đơn Hàng */
+function renderProfOrders(){
+  var el=document.getElementById('profOrdersContent');if(!el)return;
+  var orders=JSON.parse(localStorage.getItem('anima_orders')||'[]').reverse();
+  if(!orders.length){el.innerHTML=_pEmpty('📦','Chưa có đơn hàng nào');return;}
+  var statusMap={pending:{l:'Chờ xác nhận',c:'yellow'},confirmed:{l:'Đã xác nhận',c:'blue'},shipped:{l:'Đang giao',c:'purple'},delivered:{l:'Đã giao',c:'green'},cancelled:{l:'Đã hủy',c:'red'}};
+  var h='';
+  orders.forEach(function(o){
+    var st=statusMap[o.status||'pending']||statusMap.pending;
+    var product=o.product||o.itemName||(o.items&&o.items[0]?o.items[0].name:'Sản phẩm');
+    var total=o.total||o.price||0;
+    var date=o.date?new Date(o.date).toLocaleDateString('vi-VN'):o.createdAt?new Date(o.createdAt).toLocaleDateString('vi-VN'):'';
+    h+='<div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:12px;padding:14px;margin-bottom:8px">';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:12px;color:rgba(248,242,224,.35);font-family:monospace">#'+(o.id||'').slice(-8)+'</span>'+_pBadge(st.l,st.c)+'</div>';
+    h+='<div style="font-size:14px;font-weight:600;color:#F8F2E0;margin-bottom:4px">'+product+'</div>';
+    h+='<div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(248,242,224,.4)"><span>'+date+'</span><span style="font-weight:600;color:#00C896">'+(typeof total==='number'?total.toLocaleString()+'đ':total)+'</span></div>';
+    h+='</div>';
+  });
+  el.innerHTML=h;
+}
+
+/* Tab 3: Gói Dịch Vụ */
+function renderProfPackages(){
+  var el=document.getElementById('profPackagesContent');if(!el)return;
+  var pkgs=JSON.parse(localStorage.getItem('anima_user_packages')||'[]');
+  if(!pkgs.length){
+    el.innerHTML=_pEmpty('🎫','Chưa đăng ký gói dịch vụ nào')
+    +'<div style="text-align:center;margin-top:12px"><button onclick="closeProfile();if(typeof openStore===\'function\')openStore()" style="padding:12px 24px;background:linear-gradient(135deg,#005A42,#00C896);border:none;border-radius:10px;color:#000;font-weight:700;font-size:13px;cursor:pointer">Khám phá gói dịch vụ</button></div>';
+    return;
+  }
+  var h='';
+  pkgs.forEach(function(p){
+    var used=p.usedSessions||0;var total=p.totalSessions||1;var pct=Math.round(used/total*100);
+    var remaining=total-used;
+    var expiry=p.expiryDate?new Date(p.expiryDate).toLocaleDateString('vi-VN'):'—';
+    h+='<div style="background:rgba(155,130,255,.04);border:1px solid rgba(155,130,255,.15);border-radius:14px;padding:16px;margin-bottom:10px">';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-size:15px;font-weight:700;color:#F8F2E0">'+p.name+'</span>'+_pBadge(remaining>0?'Đang dùng':'Hết hạn',remaining>0?'green':'red')+'</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;font-size:12px;text-align:center">';
+    h+='<div><div style="font-size:18px;font-weight:700;color:#9B82FF">'+remaining+'</div><div style="color:rgba(248,242,224,.35)">Buổi còn</div></div>';
+    h+='<div><div style="font-size:18px;font-weight:700;color:#00C896">'+used+'</div><div style="color:rgba(248,242,224,.35)">Đã dùng</div></div>';
+    h+='<div><div style="font-size:18px;font-weight:700;color:#FFB800">'+total+'</div><div style="color:rgba(248,242,224,.35)">Tổng buổi</div></div>';
+    h+='</div>';
+    /* Progress bar */
+    h+='<div style="background:rgba(0,0,0,.3);border-radius:6px;height:8px;overflow:hidden;margin-bottom:6px"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#005A42,#00C896);border-radius:6px;transition:width .3s"></div></div>';
+    h+='<div style="font-size:11px;color:rgba(248,242,224,.3)">Hết hạn: '+expiry+'</div>';
+    h+='</div>';
+  });
+  /* Session History */
+  var sessions=JSON.parse(localStorage.getItem('anima_user_sessions')||'[]');
+  if(sessions.length){
+    var sh='';
+    sessions.slice(-10).reverse().forEach(function(s){
+      sh+='<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(0,200,150,.04);font-size:12px"><span style="color:rgba(248,242,224,.3);min-width:70px">'+(s.date?new Date(s.date).toLocaleDateString('vi-VN'):'')+'</span><span style="flex:1;color:rgba(248,242,224,.6)">'+s.service+'</span><span style="color:rgba(248,242,224,.3)">'+s.center+'</span></div>';
+    });
+    h+=_pSection('Lịch sử buổi dịch vụ',sh);
+  }
+  el.innerHTML=h;
+}
+
+/* Tab 4: Tầm Soát */
+function renderProfScans(){
+  var el=document.getElementById('profScansContent');if(!el)return;
+  var scans=JSON.parse(localStorage.getItem('anima_tongue_scans')||'[]').reverse();
+  if(!scans.length){
+    el.innerHTML=_pEmpty('🔬','Chưa có lần tầm soát nào')
+    +'<div style="text-align:center;margin-top:12px"><button onclick="closeProfile();acBotToggle();setTimeout(acTongueScan,500)" style="padding:12px 24px;background:linear-gradient(135deg,#3B2D8B,#9B82FF);border:none;border-radius:10px;color:#fff;font-weight:700;font-size:13px;cursor:pointer">Tầm soát ngay</button></div>';
+    return;
+  }
+  var h='';
+  /* Energy score chart (simple bars) */
+  if(scans.length>=2){
+    h+='<div style="background:rgba(0,191,255,.04);border:1px solid rgba(0,191,255,.1);border-radius:12px;padding:14px;margin-bottom:12px">';
+    h+='<div style="font-size:12px;font-weight:600;color:#00BFFF;margin-bottom:10px">📈 Xu hướng năng lượng</div>';
+    h+='<div style="display:flex;align-items:flex-end;gap:6px;height:60px">';
+    scans.slice(0,8).reverse().forEach(function(s){
+      var score=s.energyScore||5;var pct=score*10;
+      h+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px"><div style="width:100%;height:'+pct+'%;min-height:4px;background:linear-gradient(180deg,#00BFFF,#005A42);border-radius:3px"></div><div style="font-size:8px;color:rgba(248,242,224,.25)">'+(s.date?new Date(s.date).toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit'}):'')+'</div></div>';
+    });
+    h+='</div></div>';
+  }
+  /* Scan list */
+  scans.forEach(function(s,i){
+    var d=s.date?new Date(s.date).toLocaleDateString('vi-VN')+' '+new Date(s.date).toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}):'';
+    h+='<div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer" onclick="this.querySelector(\'.scan-detail\').style.display=this.querySelector(\'.scan-detail\').style.display===\'none\'?\'block\':\'none\'">';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center"><div><span style="font-size:13px;font-weight:600;color:#F8F2E0">Lần '+(scans.length-i)+'</span><span style="font-size:11px;color:rgba(248,242,224,.3);margin-left:8px">'+d+'</span></div><div style="display:flex;gap:6px">'+_pBadge(s.constitution||'—','purple')+_pBadge('⚡'+(s.energyScore||'?')+'/10','blue')+'</div></div>';
+    h+='<div class="scan-detail" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid rgba(0,200,150,.06);font-size:12px;color:rgba(248,242,224,.5);white-space:pre-wrap;line-height:1.6;max-height:200px;overflow-y:auto">'+(s.result||'Không có chi tiết')+'</div>';
+    h+='</div>';
+  });
+  el.innerHTML=h;
+}
+
+/* Tab 5: Thông Báo */
+function renderProfNotifs(){
+  var el=document.getElementById('profNotifsContent');if(!el)return;
+  var notifs=JSON.parse(localStorage.getItem('anima_notifications')||'[]').reverse();
+  if(!notifs.length){el.innerHTML=_pEmpty('🔔','Chưa có thông báo nào');return;}
+  var h='<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button onclick="markAllNotifsRead()" style="font-size:11px;color:#00C896;background:none;border:none;cursor:pointer;text-decoration:underline">Đánh dấu tất cả đã đọc</button></div>';
+  notifs.forEach(function(n,i){
+    var typeIcon={order:'📦',scan:'🔬',promo:'🎉',appointment:'📅',system:'⚙️'};
+    var icon=typeIcon[n.type]||'📌';
+    var bg=n.read?'rgba(0,200,150,.02)':'rgba(0,200,150,.06)';
+    var border=n.read?'rgba(0,200,150,.06)':'rgba(0,200,150,.15)';
+    var d=n.date?new Date(n.date).toLocaleDateString('vi-VN')+' '+new Date(n.date).toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}):'';
+    h+='<div onclick="markNotifRead('+i+')" style="background:'+bg+';border:1px solid '+border+';border-radius:10px;padding:12px;margin-bottom:6px;cursor:pointer;transition:background .2s">';
+    h+='<div style="display:flex;align-items:flex-start;gap:10px"><span style="font-size:18px">'+icon+'</span><div style="flex:1"><div style="font-size:13px;font-weight:'+(n.read?'400':'600')+';color:'+(n.read?'rgba(248,242,224,.5)':'#F8F2E0')+'">'+n.title+'</div>';
+    if(n.body) h+='<div style="font-size:12px;color:rgba(248,242,224,.35);margin-top:3px">'+n.body+'</div>';
+    h+='<div style="font-size:10px;color:rgba(248,242,224,.2);margin-top:4px">'+d+'</div>';
+    h+='</div>'+(n.read?'':'<div style="width:8px;height:8px;border-radius:50%;background:#00C896;flex-shrink:0;margin-top:4px"></div>')+'</div></div>';
+  });
+  el.innerHTML=h;
+}
+window.markNotifRead=function(idx){
+  var notifs=JSON.parse(localStorage.getItem('anima_notifications')||'[]');
+  var ri=notifs.length-1-idx;
+  if(notifs[ri])notifs[ri].read=true;
+  localStorage.setItem('anima_notifications',JSON.stringify(notifs));
+  renderProfNotifs();updateNotifBadge();
+};
+window.markAllNotifsRead=function(){
+  var notifs=JSON.parse(localStorage.getItem('anima_notifications')||'[]');
+  notifs.forEach(function(n){n.read=true;});
+  localStorage.setItem('anima_notifications',JSON.stringify(notifs));
+  renderProfNotifs();updateNotifBadge();
+};
+function updateNotifBadge(){
+  var notifs=JSON.parse(localStorage.getItem('anima_notifications')||'[]');
+  var unread=notifs.filter(function(n){return !n.read;}).length;
+  var tab=document.getElementById('profNotifTab');
+  if(tab)tab.textContent='🔔 Thông Báo'+(unread?' ('+unread+')':'');
+}
+/* Helper: add notification */
+window.addAnimaNotif=function(type,title,body){
+  var notifs=JSON.parse(localStorage.getItem('anima_notifications')||'[]');
+  notifs.push({type:type,title:title,body:body||'',date:new Date().toISOString(),read:false});
+  localStorage.setItem('anima_notifications',JSON.stringify(notifs));
+  updateNotifBadge();
+};
 
 function renderUserDashboard(){
   var el=document.getElementById('profTabDashboard');if(!el)return;
@@ -13034,6 +13247,13 @@ window.acProcessTongueImage = async function(input){
           if(!reply) reply='Em không thể phân tích được ảnh này. Anh/Chị vui lòng chụp lại rõ hơn ạ.';
           addMsg('bot',reply);
           acBotHistory.push({role:'model',parts:[{text:reply}]});
+          /* Save scan result to history */
+          var scanRecord={date:new Date().toISOString(),result:reply,constitution:'',energyScore:5};
+          var cMatch=reply.match(/THỂ\s*(MỘC|HỎA|THỔ|KIM|THỦY)/i);if(cMatch)scanRecord.constitution='Thể '+cMatch[1];
+          var eMatch=reply.match(/(\d+)\s*\/\s*10/);if(eMatch)scanRecord.energyScore=parseInt(eMatch[1]);
+          var scans=JSON.parse(localStorage.getItem('anima_tongue_scans')||'[]');
+          scans.push(scanRecord);localStorage.setItem('anima_tongue_scans',JSON.stringify(scans));
+          if(typeof addAnimaNotif==='function')addAnimaNotif('scan','Kết quả tầm soát mới',scanRecord.constitution||'Đã phân tích xong');
         } else if(data.error){
           addMsg('bot','Xin lỗi, em gặp sự cố kỹ thuật. Anh/Chị gọi hotline 0913 156 676 ạ.\n\nLỗi: '+(data.error.message||''));
         } else {
