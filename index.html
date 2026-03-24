@@ -12050,7 +12050,7 @@ updateCartUI();
 
     <!-- ═══ TAB 6: CÀI ĐẶT (keep existing Info + Settings content) ═══ -->
     <div id="profTabSettings" class="prof-panel" style="display:none">
-    <div id="profSettingsInfo" class="prof-panel">
+    <div id="profSettingsInfo">
       <div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.1);border-radius:16px;padding:24px">
         <div style="font-size:14px;font-weight:700;color:#00C896;margin-bottom:16px;display:flex;align-items:center;gap:8px">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -12127,198 +12127,9 @@ updateCartUI();
       </div>
 
     </div>
-    <!-- Health fields moved into Settings tab -->
-    <div id="profTabHealth" style="display:none">
-
-      <!-- BMI Card -->
-      <div id="profBmiCard" style="background:linear-gradient(135deg,rgba(0,200,150,.06),rgba(0,200,150,.02));border:1px solid rgba(0,200,150,.15);border-radius:16px;padding:20px;margin-bottom:16px;display:none">
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div>
-            <div style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px" data-vi="Chi so BMI cua ban" data-en="Your BMI">CHI SO BMI CUA BAN</div>
-            <div id="profBmiValue" style="font-size:32px;font-weight:700;color:#00C896;font-family:'Roboto Mono',monospace;margin:4px 0">--</div>
-            <div id="profBmiLabel" style="font-size:13px;font-weight:600;color:#00C896"></div>
-          </div>
-          <div id="profBmiGauge" style="width:80px;height:80px;border-radius:50%;border:4px solid rgba(0,200,150,.15);display:flex;align-items:center;justify-content:center;position:relative">
-            <svg width="72" height="72" viewBox="0 0 72 72" style="transform:rotate(-90deg)">
-              <circle cx="36" cy="36" r="30" fill="none" stroke="rgba(0,200,150,.1)" stroke-width="5"/>
-              <circle id="profBmiArc" cx="36" cy="36" r="30" fill="none" stroke="#00C896" stroke-width="5" stroke-dasharray="188.5" stroke-dashoffset="188.5" stroke-linecap="round" style="transition:stroke-dashoffset .8s ease"/>
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <!-- Thong so co ban -->
-      <div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.1);border-radius:16px;padding:24px;margin-bottom:16px">
-        <div style="font-size:14px;font-weight:700;color:#00C896;margin-bottom:16px;display:flex;align-items:center;gap:8px">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-          <span data-vi="Thong so co ban" data-en="Basic Metrics">Thong so co ban</span>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:14px">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-            <div>
-              <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Chieu cao (cm)" data-en="Height (cm)">Chieu cao (cm)</label>
-              <input id="profHeight" type="number" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none" placeholder="170" oninput="calcBMI()">
-            </div>
-            <div>
-              <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Can nang (kg)" data-en="Weight (kg)">Can nang (kg)</label>
-              <input id="profWeight" type="number" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none" placeholder="65" oninput="calcBMI()">
-            </div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-            <div>
-              <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Nhom mau" data-en="Blood Type">Nhom mau</label>
-              <select id="profBlood" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none">
-                <option value="">—</option>
-                <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
-                <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
-              </select>
-            </div>
-            <div>
-              <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Huyet ap" data-en="Blood Pressure">Huyet ap</label>
-              <input id="profBP" type="text" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none" placeholder="120/80 mmHg">
-            </div>
-          </div>
-          <div>
-            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="The tang Dong Y (AI Khai Van)" data-en="TCM Constitution (AI Assessment)">The tang Dong Y (AI Khai Van)</label>
-            <div id="profConstitution" style="background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px 14px;font-size:14px;color:rgba(248,242,224,.4);min-height:42px;cursor:pointer" onclick="if(typeof openKhaiVan==='function')openKhaiVan()" data-vi="Chua danh gia — Bam de su dung AI Khai Van" data-en="Not assessed — Tap to use AI Assessment">Chua danh gia — Bam de su dung AI Khai Van</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tinh trang suc khoe hien tai -->
-      <div style="background:rgba(255,170,51,.03);border:1px solid rgba(255,170,51,.12);border-radius:16px;padding:24px;margin-bottom:16px">
-        <div style="font-size:14px;font-weight:700;color:#FFAA33;margin-bottom:16px;display:flex;align-items:center;gap:8px">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4l3 3"/></svg>
-          <span data-vi="Tinh trang suc khoe hien tai" data-en="Current Health Status">Tinh trang suc khoe hien tai</span>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:14px">
-          <!-- Muc nang luong -->
-          <div>
-            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:block" data-vi="Muc nang luong hang ngay" data-en="Daily Energy Level">Muc nang luong hang ngay</label>
-            <div style="display:flex;gap:6px" id="profEnergyWrap">
-              <button class="hlth-lvl" onclick="setHealthLevel('energy',1,this)" data-v="1" style="flex:1;padding:10px 0;border-radius:8px;border:1px solid rgba(255,77,109,.2);background:rgba(255,77,109,.06);color:#FF4D6D;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s" data-vi="Rat kem" data-en="Very Low">Rat kem</button>
-              <button class="hlth-lvl" onclick="setHealthLevel('energy',2,this)" data-v="2" style="flex:1;padding:10px 0;border-radius:8px;border:1px solid rgba(255,170,51,.2);background:transparent;color:rgba(248,242,224,.4);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s" data-vi="Kem" data-en="Low">Kem</button>
-              <button class="hlth-lvl" onclick="setHealthLevel('energy',3,this)" data-v="3" style="flex:1;padding:10px 0;border-radius:8px;border:1px solid rgba(248,242,224,.1);background:transparent;color:rgba(248,242,224,.4);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s" data-vi="Trung binh" data-en="Medium">Trung binh</button>
-              <button class="hlth-lvl" onclick="setHealthLevel('energy',4,this)" data-v="4" style="flex:1;padding:10px 0;border-radius:8px;border:1px solid rgba(248,242,224,.1);background:transparent;color:rgba(248,242,224,.4);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s" data-vi="Tot" data-en="Good">Tot</button>
-              <button class="hlth-lvl" onclick="setHealthLevel('energy',5,this)" data-v="5" style="flex:1;padding:10px 0;border-radius:8px;border:1px solid rgba(248,242,224,.1);background:transparent;color:rgba(248,242,224,.4);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s" data-vi="Rat tot" data-en="Excellent">Rat tot</button>
-            </div>
-          </div>
-          <!-- Chat luong giac ngu -->
-          <div>
-            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:block" data-vi="Chat luong giac ngu" data-en="Sleep Quality">Chat luong giac ngu</label>
-            <div style="display:flex;gap:6px" id="profSleepWrap">
-              <button class="hlth-lvl" onclick="setHealthLevel('sleep',1,this)" data-v="1" style="flex:1;padding:10px 0;border-radius:8px;border:1px solid rgba(248,242,224,.1);background:transparent;color:rgba(248,242,224,.4);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s" data-vi="Mat ngu" data-en="Insomnia">Mat ngu</button>
-              <button class="hlth-lvl" onclick="setHealthLevel('sleep',2,this)" data-v="2" style="flex:1;padding:10px 0;border-radius:8px;border:1px solid rgba(248,242,224,.1);background:transparent;color:rgba(248,242,224,.4);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s" data-vi="Kem" data-en="Poor">Kem</button>
-              <button class="hlth-lvl" onclick="setHealthLevel('sleep',3,this)" data-v="3" style="flex:1;padding:10px 0;border-radius:8px;border:1px solid rgba(248,242,224,.1);background:transparent;color:rgba(248,242,224,.4);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s" data-vi="Binh thuong" data-en="Fair">Binh thuong</button>
-              <button class="hlth-lvl" onclick="setHealthLevel('sleep',4,this)" data-v="4" style="flex:1;padding:10px 0;border-radius:8px;border:1px solid rgba(248,242,224,.1);background:transparent;color:rgba(248,242,224,.4);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s" data-vi="Tot" data-en="Good">Tot</button>
-              <button class="hlth-lvl" onclick="setHealthLevel('sleep',5,this)" data-v="5" style="flex:1;padding:10px 0;border-radius:8px;border:1px solid rgba(248,242,224,.1);background:transparent;color:rgba(248,242,224,.4);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s" data-vi="Rat tot" data-en="Excellent">Rat tot</button>
-            </div>
-          </div>
-          <!-- Muc do stress -->
-          <div>
-            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:block" data-vi="Muc do stress" data-en="Stress Level">Muc do stress</label>
-            <div style="display:flex;gap:6px" id="profStressWrap">
-              <button class="hlth-lvl" onclick="setHealthLevel('stress',1,this)" data-v="1" style="flex:1;padding:10px 0;border-radius:8px;border:1px solid rgba(248,242,224,.1);background:transparent;color:rgba(248,242,224,.4);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s" data-vi="Khong" data-en="None">Khong</button>
-              <button class="hlth-lvl" onclick="setHealthLevel('stress',2,this)" data-v="2" style="flex:1;padding:10px 0;border-radius:8px;border:1px solid rgba(248,242,224,.1);background:transparent;color:rgba(248,242,224,.4);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s" data-vi="Nhe" data-en="Mild">Nhe</button>
-              <button class="hlth-lvl" onclick="setHealthLevel('stress',3,this)" data-v="3" style="flex:1;padding:10px 0;border-radius:8px;border:1px solid rgba(248,242,224,.1);background:transparent;color:rgba(248,242,224,.4);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s" data-vi="Trung binh" data-en="Moderate">Trung binh</button>
-              <button class="hlth-lvl" onclick="setHealthLevel('stress',4,this)" data-v="4" style="flex:1;padding:10px 0;border-radius:8px;border:1px solid rgba(248,242,224,.1);background:transparent;color:rgba(248,242,224,.4);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s" data-vi="Cao" data-en="High">Cao</button>
-              <button class="hlth-lvl" onclick="setHealthLevel('stress',5,this)" data-v="5" style="flex:1;padding:10px 0;border-radius:8px;border:1px solid rgba(255,77,109,.2);background:transparent;color:rgba(248,242,224,.4);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s" data-vi="Rat cao" data-en="Very High">Rat cao</button>
-            </div>
-          </div>
-          <!-- Muc do dau -->
-          <div>
-            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:block" data-vi="Muc do dau" data-en="Pain Level">Muc do dau</label>
-            <div style="display:flex;gap:4px;align-items:center">
-              <input id="profPainLevel" type="range" min="0" max="10" value="0" style="flex:1;accent-color:#FF4D6D;height:6px" oninput="document.getElementById('profPainNum').textContent=this.value">
-              <span id="profPainNum" style="min-width:28px;text-align:center;font-family:'Roboto Mono',monospace;font-size:18px;font-weight:700;color:#FF4D6D">0</span>
-              <span style="font-size:11px;color:rgba(248,242,224,.3)">/10</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(248,242,224,.25);margin-top:2px">
-              <span data-vi="Khong dau" data-en="No pain">Khong dau</span>
-              <span data-vi="Dau khong chiu noi" data-en="Unbearable">Dau khong chiu noi</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Trieu chung & benh ly -->
-      <div style="background:rgba(155,130,255,.03);border:1px solid rgba(155,130,255,.12);border-radius:16px;padding:24px;margin-bottom:16px">
-        <div style="font-size:14px;font-weight:700;color:#9B82FF;margin-bottom:16px;display:flex;align-items:center;gap:8px">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-          <span data-vi="Trieu chung & benh ly" data-en="Symptoms & Conditions">Trieu chung & benh ly</span>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:14px">
-          <!-- Trieu chung hien tai -->
-          <div>
-            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:block" data-vi="Trieu chung hien tai (chon tat ca)" data-en="Current Symptoms (select all)">Trieu chung hien tai (chon tat ca)</label>
-            <div id="profSymptomsWrap" style="display:flex;flex-wrap:wrap;gap:6px">
-              <button class="symp-tag" onclick="toggleSymptom(this)" data-val="dau_dau" style="padding:7px 14px;border-radius:20px;border:1px solid rgba(155,130,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Dau dau" data-en="Headache">Dau dau</button>
-              <button class="symp-tag" onclick="toggleSymptom(this)" data-val="mat_ngu" style="padding:7px 14px;border-radius:20px;border:1px solid rgba(155,130,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Mat ngu" data-en="Insomnia">Mat ngu</button>
-              <button class="symp-tag" onclick="toggleSymptom(this)" data-val="met_moi" style="padding:7px 14px;border-radius:20px;border:1px solid rgba(155,130,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Met moi" data-en="Fatigue">Met moi</button>
-              <button class="symp-tag" onclick="toggleSymptom(this)" data-val="dau_lung" style="padding:7px 14px;border-radius:20px;border:1px solid rgba(155,130,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Dau lung" data-en="Back Pain">Dau lung</button>
-              <button class="symp-tag" onclick="toggleSymptom(this)" data-val="dau_co_vai" style="padding:7px 14px;border-radius:20px;border:1px solid rgba(155,130,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Dau co vai" data-en="Shoulder Pain">Dau co vai</button>
-              <button class="symp-tag" onclick="toggleSymptom(this)" data-val="tieu_hoa" style="padding:7px 14px;border-radius:20px;border:1px solid rgba(155,130,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Roi loan tieu hoa" data-en="Digestive Issues">Roi loan tieu hoa</button>
-              <button class="symp-tag" onclick="toggleSymptom(this)" data-val="stress" style="padding:7px 14px;border-radius:20px;border:1px solid rgba(155,130,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Stress / lo au" data-en="Stress / Anxiety">Stress / lo au</button>
-              <button class="symp-tag" onclick="toggleSymptom(this)" data-val="da_lieu" style="padding:7px 14px;border-radius:20px;border:1px solid rgba(155,130,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Van de da lieu" data-en="Skin Issues">Van de da lieu</button>
-              <button class="symp-tag" onclick="toggleSymptom(this)" data-val="ho_hap" style="padding:7px 14px;border-radius:20px;border:1px solid rgba(155,130,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Kho tho" data-en="Breathing Issues">Kho tho</button>
-              <button class="symp-tag" onclick="toggleSymptom(this)" data-val="thoat_vi" style="padding:7px 14px;border-radius:20px;border:1px solid rgba(155,130,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Thoat vi dia dem" data-en="Disc Herniation">Thoat vi dia dem</button>
-              <button class="symp-tag" onclick="toggleSymptom(this)" data-val="tieu_duong" style="padding:7px 14px;border-radius:20px;border:1px solid rgba(155,130,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Tieu duong" data-en="Diabetes">Tieu duong</button>
-              <button class="symp-tag" onclick="toggleSymptom(this)" data-val="huyet_ap" style="padding:7px 14px;border-radius:20px;border:1px solid rgba(155,130,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Huyet ap" data-en="Blood Pressure">Huyet ap</button>
-            </div>
-          </div>
-          <div>
-            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Di ung" data-en="Allergies">Di ung</label>
-            <input id="profAllergy" type="text" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(155,130,255,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none" placeholder="Khong co">
-          </div>
-          <div>
-            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Benh ly nen" data-en="Pre-existing Conditions">Benh ly nen</label>
-            <textarea id="profConditions" rows="2" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(155,130,255,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none;resize:none" placeholder="Tieu duong, huyet ap cao..."></textarea>
-          </div>
-          <div>
-            <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Thuoc dang su dung" data-en="Current Medications">Thuoc dang su dung</label>
-            <textarea id="profMedications" rows="2" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(155,130,255,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none;resize:none" placeholder="Ten thuoc, lieu luong..."></textarea>
-          </div>
-        </div>
-      </div>
-
-      <!-- Muc tieu suc khoe -->
-      <div style="background:rgba(77,159,255,.03);border:1px solid rgba(77,159,255,.12);border-radius:16px;padding:24px;margin-bottom:16px">
-        <div style="font-size:14px;font-weight:700;color:#4D9FFF;margin-bottom:16px;display:flex;align-items:center;gap:8px">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          <span data-vi="Muc tieu suc khoe" data-en="Health Goals">Muc tieu suc khoe</span>
-        </div>
-        <div id="profGoalsWrap" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
-          <button class="goal-tag" onclick="toggleGoal(this)" data-val="giam_dau" style="padding:8px 16px;border-radius:20px;border:1px solid rgba(77,159,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Giam dau" data-en="Pain Relief">Giam dau</button>
-          <button class="goal-tag" onclick="toggleGoal(this)" data-val="ngu_tot" style="padding:8px 16px;border-radius:20px;border:1px solid rgba(77,159,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Ngu ngon hon" data-en="Better Sleep">Ngu ngon hon</button>
-          <button class="goal-tag" onclick="toggleGoal(this)" data-val="tang_nang_luong" style="padding:8px 16px;border-radius:20px;border:1px solid rgba(77,159,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Tang nang luong" data-en="More Energy">Tang nang luong</button>
-          <button class="goal-tag" onclick="toggleGoal(this)" data-val="giam_stress" style="padding:8px 16px;border-radius:20px;border:1px solid rgba(77,159,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Giam stress" data-en="Reduce Stress">Giam stress</button>
-          <button class="goal-tag" onclick="toggleGoal(this)" data-val="giam_can" style="padding:8px 16px;border-radius:20px;border:1px solid rgba(77,159,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Giam can" data-en="Weight Loss">Giam can</button>
-          <button class="goal-tag" onclick="toggleGoal(this)" data-val="tang_de_khang" style="padding:8px 16px;border-radius:20px;border:1px solid rgba(77,159,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Tang de khang" data-en="Boost Immunity">Tang de khang</button>
-          <button class="goal-tag" onclick="toggleGoal(this)" data-val="detox" style="padding:8px 16px;border-radius:20px;border:1px solid rgba(77,159,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Detox co the" data-en="Body Detox">Detox co the</button>
-          <button class="goal-tag" onclick="toggleGoal(this)" data-val="phuc_hoi" style="padding:8px 16px;border-radius:20px;border:1px solid rgba(77,159,255,.15);background:transparent;color:rgba(248,242,224,.5);font-size:12px;cursor:pointer;transition:all .2s" data-vi="Phuc hoi co xuong" data-en="Musculoskeletal">Phuc hoi co xuong</button>
-        </div>
-        <div>
-          <label style="font-size:11px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block" data-vi="Ghi chu suc khoe" data-en="Health Notes">Ghi chu suc khoe</label>
-          <textarea id="profHealthNote" rows="3" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,.4);border:1px solid rgba(77,159,255,.15);border-radius:10px;padding:12px 14px;font-size:15px;color:#F8F2E0;outline:none;resize:none" placeholder="Ghi chu them ve tinh trang suc khoe..."></textarea>
-        </div>
-      </div>
-
-      <!-- Lich su cap nhat -->
-      <div id="profHealthHistory" style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.1);border-radius:16px;padding:24px;margin-bottom:16px;display:none">
-        <div style="font-size:14px;font-weight:700;color:#00C896;margin-bottom:12px;display:flex;align-items:center;gap:8px">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          <span data-vi="Lich su cap nhat suc khoe" data-en="Health Update History">Lich su cap nhat suc khoe</span>
-        </div>
-        <div id="profHealthTimeline" style="display:flex;flex-direction:column;gap:8px"></div>
-      </div>
-
-      <button onclick="saveHealthProfile()" style="width:100%;padding:14px;background:linear-gradient(135deg,#005A42,#00C896);border:none;border-radius:12px;font-size:15px;font-weight:700;color:#000;cursor:pointer;letter-spacing:.5px;transition:opacity .2s">
-        <span data-vi="LUU HO SO SUC KHOE" data-en="SAVE HEALTH PROFILE">LUU HO SO SUC KHOE</span>
-      </button>
-    </div>
-
-    <!-- Old orders tab removed — now in profTabOrders above -->
-    <!-- Settings content continues from profSettingsInfo above -->
+    
+<!-- Old orders tab removed — now in profTabOrders above -->
+    
       <!-- Notifications -->
       <div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.1);border-radius:16px;padding:24px;margin-bottom:16px">
         <div style="font-size:14px;font-weight:700;color:#00C896;margin-bottom:16px;display:flex;align-items:center;gap:8px">
@@ -12380,9 +12191,6 @@ updateCartUI();
         <span data-vi="LƯU CÀI ĐẶT" data-en="SAVE SETTINGS">LƯU CÀI ĐẶT</span>
       </button>
     </div>
-
-    <!-- TAB: Dashboard -->
-    </div><!-- /profTabSettings -->
 
       </div><!-- /max-width wrapper -->
     </main><!-- /main content -->
