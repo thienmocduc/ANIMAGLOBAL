@@ -11951,19 +11951,7 @@ updateCartUI();
 <!-- ═══ USER PROFILE OVERLAY ═══ -->
 <div id="profileOverlay" style="position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;display:flex;flex-direction:column;overflow:hidden">
 
-  <!-- Header — fixed top -->
-  <div style="flex-shrink:0;z-index:10;background:rgba(0,0,0,.9);border-bottom:1px solid rgba(0,200,150,.1);padding:0 20px;height:48px;display:flex;align-items:center;justify-content:space-between">
-    <div style="display:flex;align-items:center;gap:10px">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00C896" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span style="font-family:'Roboto',sans-serif;font-size:14px;font-weight:700;color:#F8F2E0;letter-spacing:1px" data-vi="TÀI KHOẢN CÁ NHÂN" data-en="MY ACCOUNT">TÀI KHOẢN CÁ NHÂN</span>
-    </div>
-    <button onclick="closeProfile()" style="background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.2);border-radius:8px;padding:6px 14px;display:flex;align-items:center;gap:6px;cursor:pointer;color:#FF4D6D;font-size:12px;font-weight:600;transition:all .2s">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      Đóng
-    </button>
-  </div>
-
-  <!-- Layout: Sidebar + Content -->
+  <!-- Layout: Sidebar + Content (header removed — close button is in sidebar) -->
   <div id="profApp" style="display:grid;grid-template-columns:200px 1fr;flex:1;min-height:0;overflow:hidden">
 
     <!-- SIDEBAR -->
