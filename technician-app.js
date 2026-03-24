@@ -263,7 +263,7 @@ function renderTechDash() {
   var statusColors = { online:'#00C896', busy:'#F59E0B', offline:'#607870' };
   var statusLabels = { online:{ vi:'Tr\u1EF1c tuy\u1EBFn', en:'Online' }, busy:{ vi:'\u0110ang b\u1EADn', en:'Busy' }, offline:{ vi:'Ngo\u1EA1i tuy\u1EBFn', en:'Offline' } };
 
-  var html = '<div style="display:grid;grid-template-columns:200px 1fr;height:100vh;background:#030608;color:#F8F2E0;font-family:\'Roboto\',sans-serif">';
+  var html = '<div style="display:grid;grid-template-columns:180px 1fr;height:100vh;background:#030608;color:#F8F2E0;font-family:\'Roboto\',sans-serif;overflow:hidden">';
 
   // ── SIDEBAR ──
   html += '<aside style="background:#060C0F;border-right:1px solid rgba(123,95,255,.08);display:flex;flex-direction:column;overflow-y:auto;padding:0">';
@@ -331,9 +331,9 @@ function renderTechDash() {
   html += '<span>' + t('\u0110\u0103ng Xu\u1EA5t','Sign Out') + '</span></div></div>';
   html += '</aside>';
 
-  // ── MAIN CONTENT ──
-  html += '<main style="flex:1;overflow-y:auto;padding:20px;-webkit-overflow-scrolling:touch">';
-  html += '<div style="max-width:700px">';
+  // ── MAIN CONTENT — full width ──
+  html += '<main style="flex:1;overflow-y:auto;padding:12px;-webkit-overflow-scrolling:touch;max-width:100%">';
+  html += '<div style="max-width:100%">';
 
   // QUEUE PAGE
   if(tPage === 't-queue') {
