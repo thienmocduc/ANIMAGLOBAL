@@ -294,10 +294,21 @@ function renderTechDash() {
   var ktvIncome = JSON.parse(localStorage.getItem('anima_ktv_income_' + tUser.id) || '{}');
   var pendingWithdraw = (ktvIncome.pendingWithdrawals || []).filter(function(w){return w.status==='pending';}).length;
 
+  // Reviews data
+  var allReviews = sync ? sync.get('reviews',[]).filter(function(r){return r.ktvId===tUser.id;}) : [];
+  var unreadReviews = allReviews.filter(function(r){return !r.readByKtv;}).length;
+  // Notifications
+  var ktvNotifs = JSON.parse(localStorage.getItem('anima_ktv_notifs_'+tUser.id)||'[]');
+  var unreadNotifs = ktvNotifs.filter(function(n){return !n.read;}).length;
+
   var tabs = [
     { id:'t-queue', icon:'M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9', vi:'H\u00E0ng ch\u1EDD', en:'Queue', badge:pending.length },
+    { id:'t-calendar', icon:'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', vi:'L\u1ECBch', en:'Calendar' },
     { id:'t-clients', icon:'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', vi:'Kh\u00E1ch h\u00E0ng', en:'Clients', badge:incompleteClients.length },
+    { id:'t-reviews', icon:'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z', vi:'\u0110\u00E1nh gi\u00E1', en:'Reviews', badge:unreadReviews },
     { id:'t-income', icon:'M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6', vi:'Thu nh\u1EADp', en:'Income', badge:pendingWithdraw },
+    { id:'t-training', icon:'M12 14l9-5-9-5-9 5 9 5zM12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z', vi:'\u0110\u00E0o t\u1EA1o', en:'Training' },
+    { id:'t-notifs', icon:'M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0', vi:'Th\u00F4ng b\u00E1o', en:'Notifs', badge:unreadNotifs },
     { id:'t-nearby', icon:'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z', vi:'Quanh \u0111\u00E2y', en:'Nearby' },
     { id:'t-profile', icon:'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2', vi:'C\u00E1 nh\u00E2n', en:'Profile' }
   ];
@@ -357,8 +368,8 @@ function renderTechDash() {
     }
   }
 
-  // SCHEDULE PAGE
-  else if(tPage === 't-schedule') {
+  // CALENDAR PAGE (was schedule)
+  else if(tPage === 't-calendar' || tPage === 't-schedule') {
     html += '<div style="font-size:18px;font-weight:600;margin-bottom:16px">' + t('L\u1ECBch L\u00E0m Vi\u1EC7c','My Schedule') + '</div>';
     var allMy = myBookings.filter(function(b) { return b.status !== 'cancelled'; });
     var grouped = {};
@@ -1114,6 +1125,82 @@ function renderTechDash() {
     html += '</div>';
   }
 
+  // ══════ REVIEWS PAGE ══════
+  else if(tPage === 't-reviews') {
+    html += '<div style="font-size:18px;font-weight:600;margin-bottom:4px">' + t('\u0110\u00E1nh Gi\u00E1 T\u1EEB Kh\u00E1ch H\u00E0ng','Customer Reviews') + '</div>';
+    html += '<div style="font-size:12px;color:rgba(248,242,224,.42);margin-bottom:16px">' + t('Ph\u1EA3n h\u1ED3i t\u1EEB kh\u00E1ch \u0111\u00E3 ph\u1EE5c v\u1EE5','Feedback from served customers') + '</div>';
+    // Average rating
+    var avgRating = allReviews.length ? (allReviews.reduce(function(s,r){return s+(r.rating||0);},0)/allReviews.length).toFixed(1) : '0';
+    html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:20px;margin-bottom:16px;text-align:center">';
+    html += '<div style="font-size:42px;font-weight:700;color:#FFB800">' + avgRating + '</div>';
+    html += '<div style="font-size:20px;color:#FFB800;margin:4px 0">' + '\u2605'.repeat(Math.round(avgRating)) + '\u2606'.repeat(5-Math.round(avgRating)) + '</div>';
+    html += '<div style="font-size:12px;color:rgba(248,242,224,.42)">' + allReviews.length + ' ' + t('\u0111\u00E1nh gi\u00E1','reviews') + '</div></div>';
+    // Review list
+    if(allReviews.length === 0) {
+      html += '<div style="text-align:center;padding:40px;color:rgba(248,242,224,.3)"><div style="font-size:36px;opacity:.4;margin-bottom:8px">\u2605</div>' + t('Ch\u01B0a c\u00F3 \u0111\u00E1nh gi\u00E1','No reviews yet') + '</div>';
+    }
+    allReviews.sort(function(a,b){return (b.createdAt||'').localeCompare(a.createdAt||'');}).forEach(function(r){
+      html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.08);border-radius:12px;padding:14px;margin-bottom:8px">';
+      html += '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><div style="font-weight:600;font-size:13px">' + (r.customerName||t('Kh\u00E1ch','Customer')) + '</div>';
+      html += '<div style="font-size:14px;color:#FFB800">' + '\u2605'.repeat(r.rating||0) + '</div></div>';
+      if(r.comment) html += '<div style="font-size:13px;color:rgba(248,242,224,.7);line-height:1.5">' + r.comment + '</div>';
+      html += '<div style="font-size:10px;color:rgba(248,242,224,.3);margin-top:6px">' + (r.service||'') + ' \u00B7 ' + (r.createdAt||'').split('T')[0] + '</div>';
+      html += '</div>';
+    });
+  }
+
+  // ══════ TRAINING PAGE ══════
+  else if(tPage === 't-training') {
+    html += '<div style="font-size:18px;font-weight:600;margin-bottom:4px">' + t('\u0110\u00E0o T\u1EA1o & Ch\u1EE9ng Ch\u1EC9','Training & Certificates') + '</div>';
+    html += '<div style="font-size:12px;color:rgba(248,242,224,.42);margin-bottom:16px">' + t('N\u00E2ng cao k\u1EF9 n\u0103ng, nh\u1EADn ch\u1EE9ng ch\u1EC9 Anima Care','Level up skills, earn Anima Care certificates') + '</div>';
+    var courses = [
+      {id:'C01',name:'8 B\u01B0\u1EDBc Ph\u1EE5c H\u01B0ng S\u1EF1 S\u1ED1ng',en:'8 Revival Steps',duration:'12h',level:t('C\u01A1 b\u1EA3n','Basic'),color:'#00C896',icon:'\uD83C\uDF3F'},
+      {id:'C02',name:'AI Scan L\u01B0\u1EE1i & Th\u1EC3 T\u1EA1ng',en:'AI Tongue Scan & Constitution',duration:'8h',level:t('Trung c\u1EA5p','Intermediate'),color:'#9B82FF',icon:'\uD83D\uDD0D'},
+      {id:'C03',name:'Massage Kinh L\u1EA1c 12 \u0110\u01B0\u1EDDng',en:'12 Meridian Massage',duration:'16h',level:t('N\u00E2ng cao','Advanced'),color:'#FFB800',icon:'\uD83D\uDCAA'},
+      {id:'C04',name:'Th\u1EA3o M\u1ED9c Nhi\u1EC7t & X\u00F4ng H\u01A1i',en:'Herbal Heat & Steam',duration:'10h',level:t('Trung c\u1EA5p','Intermediate'),color:'#FF6B9D',icon:'\uD83C\uDF3E'},
+      {id:'C05',name:'T\u01B0 V\u1EA5n T\u00E2m Th\u1EE9c & N\u0103ng L\u01B0\u1EE3ng',en:'Mind & Energy Counseling',duration:'20h',level:t('Chuy\u00EAn gia','Expert'),color:'#00BFFF',icon:'\uD83E\uDDD8'},
+      {id:'C06',name:'ANIMA 119 — Ki\u1EBFn Th\u1EE9c S\u1EA3n Ph\u1EA9m',en:'ANIMA 119 Product Knowledge',duration:'4h',level:t('C\u01A1 b\u1EA3n','Basic'),color:'#00E676',icon:'\uD83D\uDCDA'}
+    ];
+    var ktvCerts = JSON.parse(localStorage.getItem('anima_ktv_certs_'+tUser.id)||'{}');
+    courses.forEach(function(c){
+      var status = ktvCerts[c.id] || 'locked';
+      var statusLabel = status==='completed'?t('\u0110\u00E3 ho\u00E0n th\u00E0nh','Completed'):status==='progress'?t('\u0110ang h\u1ECDc','In Progress'):t('Ch\u01B0a m\u1EDF','Locked');
+      var statusColor = status==='completed'?'#00E676':status==='progress'?'#FFB800':'rgba(248,242,224,.25)';
+      html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,.1);border-radius:14px;padding:16px;margin-bottom:10px;display:flex;gap:14px;align-items:center">';
+      html += '<div style="font-size:28px;width:44px;text-align:center;flex-shrink:0">' + c.icon + '</div>';
+      html += '<div style="flex:1"><div style="font-size:14px;font-weight:600;margin-bottom:3px">' + c.name + '</div>';
+      html += '<div style="display:flex;gap:8px;font-size:11px;color:rgba(248,242,224,.42)">';
+      html += '<span style="background:rgba(123,95,255,.1);padding:2px 6px;border-radius:4px;color:' + c.color + '">' + c.level + '</span>';
+      html += '<span>\u23F0 ' + c.duration + '</span></div></div>';
+      html += '<div style="text-align:center"><div style="font-size:10px;font-weight:600;color:' + statusColor + ';padding:4px 8px;border:1px solid ' + statusColor + '33;border-radius:6px">' + statusLabel + '</div>';
+      if(status!=='completed') html += '<button onclick="window._tStartCourse(\''+c.id+'\')" style="margin-top:6px;padding:4px 10px;background:rgba(123,95,255,.1);border:1px solid rgba(123,95,255,.2);border-radius:6px;color:#9B82FF;font-size:10px;font-weight:600;cursor:pointer">' + t('B\u1EAFt \u0111\u1EA7u','Start') + '</button>';
+      html += '</div></div>';
+    });
+  }
+
+  // ══════ NOTIFICATIONS PAGE ══════
+  else if(tPage === 't-notifs') {
+    html += '<div style="font-size:18px;font-weight:600;margin-bottom:4px">' + t('Th\u00F4ng B\u00E1o','Notifications') + '</div>';
+    html += '<div style="font-size:12px;color:rgba(248,242,224,.42);margin-bottom:16px">' + t('C\u1EADp nh\u1EADt t\u1EEB h\u1EC7 th\u1ED1ng & kh\u00E1ch h\u00E0ng','Updates from system & customers') + '</div>';
+    // Auto-generate notifications from bookings
+    var autoNotifs = [];
+    pending.forEach(function(b){ autoNotifs.push({type:'booking',title:t('L\u1ECBch h\u1EB9n m\u1EDBi','New booking'),msg:b.customer+' - '+b.service+' ('+b.date+')',time:b.createdAt||b.date,read:false,icon:'\uD83D\uDCC5'}); });
+    allReviews.slice(0,5).forEach(function(r){ autoNotifs.push({type:'review',title:t('\u0110\u00E1nh gi\u00E1 m\u1EDBi','New review'),msg:(r.customerName||t('Kh\u00E1ch','Customer'))+' - '+'\u2605'.repeat(r.rating||0),time:r.createdAt||'',read:r.readByKtv||false,icon:'\u2B50'}); });
+    completed.forEach(function(b){ autoNotifs.push({type:'completed',title:t('Bu\u1ED5i ho\u00E0n th\u00E0nh','Session done'),msg:b.customer+' - '+b.service,time:b.completedAt||b.date,read:true,icon:'\u2705'}); });
+    autoNotifs.concat(ktvNotifs).sort(function(a,b){return (b.time||'').localeCompare(a.time||'');});
+    if(autoNotifs.length === 0) {
+      html += '<div style="text-align:center;padding:40px;color:rgba(248,242,224,.3)"><div style="font-size:36px;opacity:.4;margin-bottom:8px">\uD83D\uDD14</div>' + t('Ch\u01B0a c\u00F3 th\u00F4ng b\u00E1o','No notifications') + '</div>';
+    }
+    autoNotifs.forEach(function(n){
+      html += '<div style="background:#0A1218;border:1px solid rgba(123,95,255,' + (n.read?'.04':'.15') + ');border-radius:12px;padding:12px 14px;margin-bottom:6px;display:flex;gap:10px;align-items:flex-start;opacity:' + (n.read?'.6':'1') + '">';
+      html += '<div style="font-size:20px;flex-shrink:0;margin-top:2px">' + (n.icon||'\uD83D\uDD14') + '</div>';
+      html += '<div style="flex:1"><div style="font-size:13px;font-weight:' + (n.read?'400':'600') + '">' + n.title + '</div>';
+      html += '<div style="font-size:12px;color:rgba(248,242,224,.5);margin-top:2px">' + n.msg + '</div>';
+      html += '<div style="font-size:10px;color:rgba(248,242,224,.25);margin-top:4px">' + (n.time||'').split('T')[0] + '</div>';
+      html += '</div></div>';
+    });
+  }
+
   html += '</div>'; // page content
   html += '</div></main>'; // max-width + main
   html += '</div>'; // grid layout
@@ -1135,6 +1222,17 @@ window._tSetStatus = function(s) {
   tUser.status = s;
   localStorage.setItem('anima_tech_user', JSON.stringify(tUser));
   renderTechDash();
+};
+
+// ── Training ──
+window._tStartCourse = function(courseId) {
+  if(!tUser) return;
+  var certs = JSON.parse(localStorage.getItem('anima_ktv_certs_'+tUser.id)||'{}');
+  if(certs[courseId] === 'completed') return;
+  certs[courseId] = 'progress';
+  localStorage.setItem('anima_ktv_certs_'+tUser.id, JSON.stringify(certs));
+  renderTechDash();
+  if(typeof showToast === 'function') showToast(t('\u0110\u00E3 b\u1EAFt \u0111\u1EA7u kh\u00F3a h\u1ECDc!','Course started!'), '#9B82FF');
 };
 
 window._tAccept = function(id) {
