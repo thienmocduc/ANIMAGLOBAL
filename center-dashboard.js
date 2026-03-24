@@ -864,7 +864,8 @@ function renderDashboard() {
     var h = '<div class="pg" id="pg-c-customers">';
     h += '<div class="pg-hd"><div class="pg-title">' + t('Kh\u00E1ch H\u00E0ng','Customers') + '</div></div>';
     h += '<div class="fbar"><div class="fbar-in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="' + t('T\u00ECm kh\u00E1ch h\u00E0ng...','Search customers...') + '"></div>';
-    h += '<button class="btn btn-p" onclick="window._cAddCustomer()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' + t('Th\u00EAm m\u1EDBi','Add New') + '</button></div>';
+    h += '<button class="btn btn-p" onclick="window._cAddCustomer()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' + t('Th\u00EAm m\u1EDBi','Add New') + '</button>';
+    h += '<button class="btn btn-g" onclick="window._cSyncToAdmin()" style="font-size:11px">\u21BB ' + t('\u0110\u1ED3ng b\u1ED9 v\u1EC1 Admin','Sync to Admin') + '</button></div>';
     // Customer KPIs
     var totalSpend = myCustomers.reduce(function(s,c){return s+(c.totalSpend||0);},0);
     var vipCount = myCustomers.filter(function(c){return c.type==='VIP';}).length;
@@ -895,15 +896,42 @@ function renderDashboard() {
 
   function buildInventoryPage() {
     var h = '<div class="pg" id="pg-c-inventory">';
-    h += '<div class="pg-hd"><div class="pg-title">' + t('T\u1ED3n Kho','Inventory') + '</div></div>';
-    h += '<div class="c"><div class="cb"><div class="tw"><table class="dt"><thead><tr><th>' + t('S\u1EA3n ph\u1EA9m','Product') + '</th><th>SKU</th><th>' + t('T\u1ED3n','Stock') + '</th><th>Min</th><th>' + t('Gi\u00E1','Price') + '</th><th>' + t('M\u1EE9c','Level') + '</th></tr></thead><tbody>';
+    h += '<div class="pg-hd"><div class="pg-title">' + t('Qu\u1EA3n L\u00FD Kho H\u00E0ng','Inventory Management') + '</div></div>';
+    // KPIs
+    var totalStock = inventory.reduce(function(s,i){return s+(i.stock||0);},0);
+    var lowStock = inventory.filter(function(i){return i.stock<=i.minStock;}).length;
+    var totalValue = inventory.reduce(function(s,i){return s+((i.stock||0)*(i.price||0));},0);
+    var importHistory = sync ? sync.get('inventory_imports',[]).filter(function(im){return im.centerId===cid;}) : [];
+    h += '<div class="kpi-g">';
+    h += kpiCard(totalStock, t('T\u1ED5ng t\u1ED3n','Total Stock'), '#00C896');
+    h += kpiCard(lowStock, t('S\u1EAFp h\u1EBFt','Low Stock'), lowStock>0?'#FF4D6D':'#22C55E');
+    h += kpiCard(money(totalValue), t('Gi\u00E1 tr\u1ECB kho','Stock Value'), '#60A5FA');
+    h += kpiCard(importHistory.length, t('L\u1EA7n nh\u1EADp','Imports'), '#9B82FF');
+    h += '</div>';
+    // Import button
+    h += '<div style="display:flex;gap:8px;margin-bottom:16px">';
+    h += '<button class="btn p" onclick="window._cImportStock()" style="font-size:12px;padding:8px 14px">\uD83D\uDCE5 ' + t('Nh\u1EADp H\u00E0ng','Import Stock') + '</button>';
+    h += '</div>';
+    // Stock table
+    h += '<div class="c"><div class="ch"><span class="ct">' + t('T\u1ED3n Kho Hi\u1EC7n T\u1EA1i','Current Stock') + '</span></div>';
+    h += '<div class="cb"><div class="tw"><table class="dt"><thead><tr><th>' + t('S\u1EA3n ph\u1EA9m','Product') + '</th><th>SKU</th><th>' + t('T\u1ED3n','Stock') + '</th><th>Min</th><th>' + t('Gi\u00E1','Price') + '</th><th>' + t('Gi\u00E1 tr\u1ECB','Value') + '</th><th>' + t('M\u1EE9c','Level') + '</th></tr></thead><tbody>';
     inventory.forEach(function(item) {
       var pct = Math.min(item.stock / Math.max(item.minStock * 3, 1) * 100, 100);
       var color = item.stock <= item.minStock ? 'var(--red)' : (item.stock <= item.minStock * 2 ? 'var(--amber)' : 'var(--g1)');
-      h += '<tr><td>' + item.product + '</td><td class="td-mo">' + item.sku + '</td><td style="color:' + color + ';font-weight:600">' + item.stock + '</td><td class="td-mo">' + item.minStock + '</td><td class="td-mo">' + money(item.price) + '</td>';
+      var val = (item.stock||0) * (item.price||0);
+      h += '<tr><td>' + item.product + '</td><td class="td-mo">' + item.sku + '</td><td style="color:' + color + ';font-weight:600">' + item.stock + '</td><td class="td-mo">' + item.minStock + '</td><td class="td-mo">' + money(item.price) + '</td><td class="td-mo" style="color:#60A5FA">' + money(val) + '</td>';
       h += '<td><div class="pb" style="width:80px;margin:0"><div class="pbf" style="width:' + pct + '%;background:' + color + '"></div></div></td></tr>';
     });
-    h += '</tbody></table></div></div></div></div>';
+    h += '</tbody></table></div></div></div>';
+    // Import history
+    h += '<div class="c" style="margin-top:16px"><div class="ch"><span class="ct">' + t('L\u1ECBch S\u1EED Nh\u1EADp H\u00E0ng','Import History') + '</span></div>';
+    h += '<div class="cb"><div class="tw"><table class="dt"><thead><tr><th>' + t('Ng\u00E0y','Date') + '</th><th>' + t('S\u1EA3n ph\u1EA9m','Product') + '</th><th>SL</th><th>' + t('Gi\u00E1 nh\u1EADp','Cost') + '</th><th>' + t('T\u1ED5ng','Total') + '</th><th>' + t('Ghi ch\u00FA','Note') + '</th></tr></thead><tbody>';
+    if(importHistory.length === 0) h += '<tr><td colspan="6" style="text-align:center;padding:20px;color:rgba(248,242,224,.25)">' + t('Ch\u01B0a c\u00F3 l\u1ECBch s\u1EED nh\u1EADp','No import history') + '</td></tr>';
+    importHistory.sort(function(a,b){return (b.date||'').localeCompare(a.date||'');}).forEach(function(im) {
+      h += '<tr><td class="td-mo">' + (im.date||'').split('T')[0] + '</td><td>' + (im.product||'') + '</td><td style="font-weight:600;color:#00C896">+' + (im.qty||0) + '</td><td class="td-mo">' + money(im.costPerUnit||0) + '</td><td class="td-mo" style="color:#60A5FA">' + money((im.qty||0)*(im.costPerUnit||0)) + '</td><td style="font-size:10px;color:rgba(248,242,224,.4)">' + (im.note||'') + '</td></tr>';
+    });
+    h += '</tbody></table></div></div></div>';
+    h += '</div>';
     return h;
   }
 
@@ -1720,11 +1748,108 @@ window._cAddCustomer = function() {
     email: email || '',
     type: 'New',
     visits: 0,
+    totalSpend: 0,
     lastVisit: new Date().toISOString().split('T')[0]
   });
 
+  // Auto-sync to admin CRM
+  AnimaSync.push('crm_leads', {
+    name: name,
+    phone: phone || '',
+    email: email || '',
+    type: 'customer',
+    source: cUser.centerName,
+    centerId: cUser.centerId,
+    status: 'new',
+    date: new Date().toISOString(),
+    note: t('Th\u00EAm t\u1EEB c\u01A1 s\u1EDF ' + cUser.centerName, 'Added from center ' + cUser.centerName)
+  });
+
   renderDashboard();
-  if(typeof showToast === 'function') showToast(t('\u0110\u00E3 th\u00EAm kh\u00E1ch h\u00E0ng!','Customer added!'), '#00C896');
+  if(typeof showToast === 'function') showToast(t('\u0110\u00E3 th\u00EAm kh\u00E1ch h\u00E0ng + \u0111\u1ED3ng b\u1ED9 Admin!','Customer added + synced to Admin!'), '#00C896');
+};
+
+// ── Import Stock ──
+window._cImportStock = function() {
+  if(!cUser) return;
+  // Build product selection
+  var productList = PRODUCTS.map(function(p){return p.name;}).join('\n');
+  var productName = prompt(t('Ch\u1ECDn s\u1EA3n ph\u1EA9m nh\u1EADp:\n','Select product to import:\n') + productList);
+  if(!productName) return;
+  var qty = parseInt(prompt(t('S\u1ED1 l\u01B0\u1EE3ng nh\u1EADp:','Quantity to import:')));
+  if(!qty || qty <= 0) return;
+  var costPerUnit = parseInt(prompt(t('Gi\u00E1 nh\u1EADp/\u0111\u01A1n v\u1ECB (VND):','Cost per unit (VND):')));
+  if(!costPerUnit) costPerUnit = 0;
+  var note = prompt(t('Ghi ch\u00FA (t\u00F9y ch\u1ECDn):','Note (optional):')) || '';
+
+  // Update inventory stock
+  var inv = AnimaSync.get('inventory', []);
+  var found = false;
+  inv.forEach(function(item) {
+    if(item.product && item.product.toLowerCase().indexOf(productName.toLowerCase()) !== -1) {
+      item.stock = (item.stock || 0) + qty;
+      found = true;
+    }
+  });
+  if(!found) {
+    inv.push({ product: productName, sku: 'IMP-' + Date.now().toString(36).toUpperCase(), stock: qty, minStock: 5, price: costPerUnit, centerId: cUser.centerId });
+  }
+  AnimaSync.set('inventory', inv);
+
+  // Log import history
+  AnimaSync.push('inventory_imports', {
+    centerId: cUser.centerId,
+    centerName: cUser.centerName,
+    product: productName,
+    qty: qty,
+    costPerUnit: costPerUnit,
+    total: qty * costPerUnit,
+    note: note,
+    date: new Date().toISOString(),
+    importedBy: cUser.name
+  });
+
+  // Activity log
+  AnimaSync.push('activities', {
+    type: 'stock_import',
+    vi: cUser.name + ' nh\u1EADp ' + qty + ' ' + productName,
+    en: cUser.name + ' imported ' + qty + ' ' + productName,
+    centerId: cUser.centerId, ago: 0
+  });
+
+  renderDashboard();
+  if(typeof showToast === 'function') showToast(t('Nh\u1EADp h\u00E0ng th\u00E0nh c\u00F4ng! +' + qty + ' ' + productName, 'Stock imported! +' + qty + ' ' + productName), '#00C896');
+};
+
+// ── Sync Center Customers to Admin CRM ──
+window._cSyncToAdmin = function() {
+  if(!cUser || !window.AnimaSync) return;
+  var myCustomers = AnimaSync.get('customers', []).filter(function(c) { return c.centerId === cUser.centerId; });
+  var crmLeads = AnimaSync.get('crm_leads', []);
+
+  var synced = 0;
+  myCustomers.forEach(function(c) {
+    // Check if already in CRM
+    var exists = crmLeads.some(function(l) { return l.phone === c.phone || l.email === c.email; });
+    if(!exists) {
+      AnimaSync.push('crm_leads', {
+        name: c.name,
+        phone: c.phone || '',
+        email: c.email || '',
+        type: 'customer',
+        source: cUser.centerName,
+        centerId: cUser.centerId,
+        product: '',
+        status: 'qualified',
+        date: new Date().toISOString(),
+        totalSpend: c.totalSpend || 0,
+        visits: c.visits || 0,
+        note: t('\u0110\u1ED3ng b\u1ED9 t\u1EEB c\u01A1 s\u1EDF ' + cUser.centerName, 'Synced from center ' + cUser.centerName)
+      });
+      synced++;
+    }
+  });
+  if(typeof showToast === 'function') showToast(t('\u0110\u1ED3ng b\u1ED9 ' + synced + '/' + myCustomers.length + ' kh\u00E1ch h\u00E0ng v\u1EC1 Admin CRM', 'Synced ' + synced + '/' + myCustomers.length + ' customers to Admin CRM'), '#9B82FF');
 };
 
 // ── Create Sub-Center (Level 2) ──
