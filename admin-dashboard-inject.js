@@ -501,8 +501,11 @@ function renderOrders(){
         id:o.order_code, customer:o.customer_name, phone:o.customer_phone,
         product:items.length>0?items[0].name:'', total:o.total_amount||0,
         date:o.created_at?new Date(o.created_at).toLocaleDateString('vi-VN'):'',
-        payment:o.payment_method||'cod', status:o.order_status||'pending',
-        center:o.center_name||'', _dbId:o.id, _source:'supabase'
+        payment:o.payment_method||'cod', paymentStatus:o.payment_status||'unpaid',
+        status:o.order_status||'pending', tracking:o.tracking_code||'',
+        center:o.center_name||'', commission:o.commission||0,
+        address:o.address||'', notes:o.notes||'',
+        _dbId:o.id, _source:'supabase'
       };
     }).concat(extraLocal.map(function(o){
       return {
@@ -513,39 +516,65 @@ function renderOrders(){
       };
     }));
 
-    var html='<div class="adm-card"><div class="adm-card-header"><span class="adm-card-title" data-vi="T\u1EA5t c\u1EA3 \u0111\u01A1n h\u00E0ng" data-en="All Orders">T\u1EA5t c\u1EA3 \u0111\u01A1n h\u00E0ng ('+allOrders.length+')</span>';
-    html+='<button class="adm-btn adm-btn-secondary" onclick="admNav(document.querySelector(\'[data-page=orders]\'),\'orders\')">\u21BB</button></div>';
+    // Pipeline KPIs
+    var oPending=allOrders.filter(function(o){return o.status==='pending';}).length;
+    var oConfirmed=allOrders.filter(function(o){return o.status==='confirmed';}).length;
+    var oShipped=allOrders.filter(function(o){return o.status==='shipped';}).length;
+    var oDelivered=allOrders.filter(function(o){return o.status==='delivered';}).length;
+    var totalRev=allOrders.reduce(function(s,o){return s+(o.total||0);},0);
+    var html='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:6px;margin-bottom:12px">';
+    [{l:'Ch\u1EDD',v:oPending,c:'#F59E0B'},{l:'X\u00E1c nh\u1EADn',v:oConfirmed,c:'#60A5FA'},{l:'\u0110ang giao',v:oShipped,c:'#9B82FF'},{l:'\u0110\u00E3 giao',v:oDelivered,c:'#22C55E'},{l:'T\u1ED5ng',v:allOrders.length,c:'#00C896'},{l:'Doanh thu',v:formatVND(totalRev),c:'#FFB800'}].forEach(function(k){
+      html+='<div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:8px;padding:8px;text-align:center"><div style="font-size:16px;font-weight:700;color:'+k.c+'">'+k.v+'</div><div style="font-size:9px;color:#607870">'+k.l+'</div></div>';
+    });
+    html+='</div>';
+    html+='<div class="adm-card"><div class="adm-card-header"><span class="adm-card-title" data-vi="T\u1EA5t c\u1EA3 \u0111\u01A1n h\u00E0ng" data-en="All Orders">T\u1EA5t c\u1EA3 \u0111\u01A1n h\u00E0ng ('+allOrders.length+')</span>';
+    html+='<button class="adm-btn adm-btn-secondary" onclick="admNav(document.querySelector(\'[data-page=orders]\'),\'orders\')" style="font-size:11px;padding:4px 10px">\u21BB</button></div>';
     html+='<div class="adm-table-wrap"><table class="adm-table"><thead><tr>';
-    html+='<th>M\u00E3 \u0111\u01A1n</th><th>Kh\u00E1ch h\u00E0ng</th><th>S\u0110T</th><th>S\u1EA3n ph\u1EA9m</th><th>T\u1ED5ng ti\u1EC1n</th><th>Ng\u00E0y</th><th>Thanh to\u00E1n</th><th>Tr\u1EA1ng th\u00E1i</th>';
+    html+='<th>M\u00E3 \u0111\u01A1n</th><th>Kh\u00E1ch</th><th>SP</th><th>T\u1ED5ng</th><th>TT</th><th>Thanh to\u00E1n</th><th>Tr\u1EA1ng th\u00E1i</th><th>V\u1EADn \u0111\u01A1n</th>';
     html+='</tr></thead><tbody>';
 
     if(allOrders.length===0){
       html+='<tr><td colspan="8" style="text-align:center;padding:30px;color:#607870">Ch\u01B0a c\u00F3 \u0111\u01A1n h\u00E0ng n\u00E0o</td></tr>';
     } else {
       allOrders.forEach(function(o){
-        var payLabels={cod:'COD',bank:'Chuy\u1EC3n kho\u1EA3n',momo:'MoMo'};
-        var statusColors={pending:'yellow',confirmed:'blue',processing:'purple',shipped:'blue',delivered:'green',cancelled:'red'};
-        var statusLabels={pending:'Ch\u1EDD x\u1EED l\u00FD',confirmed:'X\u00E1c nh\u1EADn',processing:'\u0110ang x\u1EED l\u00FD',shipped:'\u0110ang giao',delivered:'\u0110\u00E3 giao',cancelled:'H\u1EE7y'};
+        var payLabels={cod:'COD',bank:'CK',momo:'MoMo'};
+        var statusLabels={pending:'Ch\u1EDD',confirmed:'X\u00E1c nh\u1EADn',processing:'X\u1EED l\u00FD',shipped:'Giao',delivered:'\u0110\u00E3 giao',cancelled:'H\u1EE7y'};
+        var payStatusLabels={unpaid:'Ch\u01B0a TT',pending:'Ch\u1EDD TT',paid:'\u0110\u00E3 TT',refunded:'Ho\u00E0n ti\u1EC1n'};
+        var payStatusColors={unpaid:'#FF4D6D',pending:'#F59E0B',paid:'#22C55E',refunded:'#9B82FF'};
         html+='<tr>';
-        html+='<td style="color:#7B5FFF;font-weight:600;font-size:12px;font-family:monospace">'+o.id+'</td>';
-        html+='<td style="font-weight:600;color:#E8F8F4">'+o.customer+'</td>';
-        html+='<td style="color:#00C896">'+(o.phone||'\u2014')+'</td>';
-        html+='<td style="font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis">'+(o.product||'\u2014')+'</td>';
-        html+='<td style="font-weight:600;color:#FFB800">'+formatVND(o.total)+'</td>';
-        html+='<td style="font-size:12px;color:#607870;white-space:nowrap">'+o.date+'</td>';
-        html+='<td><span class="adm-badge adm-badge-blue">'+(payLabels[o.payment]||o.payment)+'</span></td>';
+        html+='<td style="color:#7B5FFF;font-weight:600;font-size:10px;font-family:monospace">'+o.id+'</td>';
+        html+='<td style="font-weight:500;font-size:11px">'+o.customer+'</td>';
+        html+='<td style="font-size:10px;max-width:100px;overflow:hidden;text-overflow:ellipsis">'+(o.product||'\u2014')+'</td>';
+        html+='<td style="font-weight:600;color:#FFB800;font-size:11px">'+formatVND(o.total)+'</td>';
+        // Payment method
+        html+='<td><span class="adm-badge adm-badge-blue" style="font-size:9px">'+(payLabels[o.payment]||o.payment)+'</span></td>';
+        // Payment status
         html+='<td>';
         if(o._dbId){
-          html+='<select onchange="ordUpdateStatus(\''+o._dbId+'\',this.value)" style="font-size:11px;background:#0A1218;color:#B8D8D0;border:1px solid rgba(0,200,150,0.2);border-radius:6px;padding:3px 6px">';
+          html+='<select onchange="ordUpdatePayment(\''+o._dbId+'\',this.value)" style="font-size:10px;background:#0A1218;color:'+(payStatusColors[o.paymentStatus||'unpaid']||'#F59E0B')+';border:1px solid rgba(0,200,150,0.15);border-radius:4px;padding:2px 4px;font-weight:600">';
+          ['unpaid','pending','paid','refunded'].forEach(function(ps){
+            html+='<option value="'+ps+'"'+((o.paymentStatus||'unpaid')===ps?' selected':'')+'>'+(payStatusLabels[ps]||ps)+'</option>';
+          });
+          html+='</select>';
+        } else {
+          html+='<span style="font-size:10px;color:#F59E0B">Ch\u01B0a TT</span>';
+        }
+        html+='</td>';
+        // Order status
+        html+='<td>';
+        if(o._dbId){
+          html+='<select onchange="ordUpdateStatus(\''+o._dbId+'\',this.value)" style="font-size:10px;background:#0A1218;color:#B8D8D0;border:1px solid rgba(0,200,150,0.15);border-radius:4px;padding:2px 4px">';
           ['pending','confirmed','processing','shipped','delivered','cancelled'].forEach(function(s){
             html+='<option value="'+s+'"'+(o.status===s?' selected':'')+'>'+(statusLabels[s]||s)+'</option>';
           });
           html+='</select>';
         } else {
-          html+='<span class="adm-badge adm-badge-'+(statusColors[o.status]||'yellow')+'">'+(statusLabels[o.status]||o.status)+'</span>';
-          html+=' <span style="font-size:9px;color:#607870">(local)</span>';
+          html+='<span class="adm-badge adm-badge-yellow" style="font-size:9px">'+(statusLabels[o.status]||o.status)+'</span>';
         }
-        html+='</td></tr>';
+        html+='</td>';
+        // Tracking
+        html+='<td style="font-size:10px;color:#60A5FA;font-family:monospace">'+(o.tracking||'\u2014')+'</td>';
+        html+='</tr>';
       });
     }
     html+='</tbody></table></div></div>';
@@ -565,7 +594,29 @@ function renderOrders(){
 
 window.ordUpdateStatus=function(id,status){
   if(!window.AnimaOrders) return;
-  AnimaOrders.updateStatus(id,status).then(function(){
+  var updateData = {order_status: status, updated_at: new Date().toISOString()};
+  // Auto-set timestamps
+  if(status==='shipped') updateData.shipped_at = new Date().toISOString();
+  if(status==='delivered') updateData.delivered_at = new Date().toISOString();
+  // If shipped, ask for tracking code
+  if(status==='shipped'){
+    var code = prompt('Nhập mã vận đơn (tracking code):');
+    if(code) updateData.tracking_code = code;
+  }
+  // If cancelled, ask reason
+  if(status==='cancelled'){
+    var reason = prompt('Lý do hủy:');
+    if(reason) updateData.notes = reason;
+  }
+  AnimaOrders.update(id, updateData).then(function(){
+    if(typeof showToast==='function') showToast('Đã cập nhật: '+status, '#00C896');
+    admNav(document.querySelector('[data-page=orders]'),'orders');
+  });
+};
+window.ordUpdatePayment=function(id,payStatus){
+  if(!window.AnimaOrders) return;
+  AnimaOrders.update(id, {payment_status: payStatus, updated_at: new Date().toISOString()}).then(function(){
+    if(typeof showToast==='function') showToast('Thanh toán: '+payStatus, '#FFB800');
     admNav(document.querySelector('[data-page=orders]'),'orders');
   });
 };

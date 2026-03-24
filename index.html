@@ -4490,20 +4490,24 @@ if(window.AnimaSync){
 
 /* ══ SAVE TO SUPABASE DATABASE ══ */
 if(window.AnimaOrders){
+  var centerName = '';
+  if(window.AnimaSync){var cd=AnimaSync.get('centers',[]).find(function(c){return c._id===assignedCenter;});if(cd)centerName=cd.name||cd.city||'';}
   AnimaOrders.create({
     order_code: orderId,
     customer_name: name,
     customer_phone: phone,
-    customer_email: '',
+    customer_email: (window.currentUser?currentUser.email:''),
     address: addr.trim(),
     center_id: assignedCenter,
-    center_name: orderCity,
-    items: JSON.stringify([{sku:_currentOrder.sku,name:_currentOrder.name,price:_currentOrder.price,qty:_currentOrder.qty||1}]),
+    center_name: centerName||orderCity,
+    items: JSON.stringify([{sku:_currentOrder.sku||'',name:_currentOrder.name,price:total,qty:_currentOrder.qty||1}]),
     total_amount: total,
-    payment_method: _selectedPayment,
-    payment_status: 'pending',
+    payment_method: _selectedPayment||'cod',
+    payment_status: _selectedPayment==='cod'?'unpaid':'pending',
     order_status: 'pending',
-    notes: note.trim()
+    commission: Math.round(total*commRate),
+    notes: note.trim(),
+    tracking_code: ''
   }).then(function(o){console.log('[Supabase] Order saved:',o);}).catch(function(e){console.warn('[Supabase] Order save failed:',e);});
   /* Auto-create CRM lead */
   AnimaCRM.createLead({
