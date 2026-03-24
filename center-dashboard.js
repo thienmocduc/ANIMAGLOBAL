@@ -671,12 +671,31 @@ function renderDashboard() {
   var sync = window.AnimaSync;
   var cid = cUser.centerId;
 
-  // Get scoped data
+  // Get scoped data from AnimaSync (local)
   var allBookings = sync ? sync.get('bookings', []) : [];
   var allOrders = sync ? sync.get('orders', []) : [];
   var allCustomers = sync ? sync.get('customers', []) : [];
   var allActivities = sync ? sync.get('activities', []) : [];
   var inventory = sync ? sync.get('inventory', []) : [];
+
+  /* Also load from Supabase and merge */
+  if(window.AnimaOrders){
+    AnimaOrders.getAll({filter:'center_id=eq.'+encodeURIComponent(cid),limit:200}).then(function(dbOrders){
+      if(!dbOrders||!dbOrders.length)return;
+      var localIds=allOrders.map(function(o){return o._id||o.id;});
+      dbOrders.forEach(function(o){
+        if(localIds.indexOf(o.order_code)===-1){
+          var items=[];try{items=typeof o.items==='string'?JSON.parse(o.items):o.items||[];}catch(e){}
+          allOrders.push({_id:o.order_code,id:o.order_code,customer:o.customer_name,phone:o.customer_phone,
+            product:items[0]?items[0].name:'',qty:items[0]?items[0].qty||1:1,total:o.total_amount||0,
+            commission:o.commission||0,status:o.order_status||'pending',centerId:o.center_id||'',
+            date:o.created_at?new Date(o.created_at).toISOString().split('T')[0]:'',_dbId:o.id});
+        }
+      });
+      /* Re-render if center dashboard is visible */
+      if(dash.style.display!=='none') renderDashboard();
+    }).catch(function(){});
+  }
 
   var myBookings = allBookings.filter(function(b) { return b.centerId === cid; });
   var myOrders = allOrders.filter(function(o) { return o.centerId === cid; });
@@ -1728,9 +1747,24 @@ window._cEditBooking = function(id) {
 };
 
 window._cUpdateOrder = function(id) {
-  var newStatus = prompt(t('Tr\u1EA1ng th\u00E1i m\u1EDBi (processing/shipped/delivered):','New status (processing/shipped/delivered):'));
+  var newStatus = prompt(t('Trạng thái mới (confirmed/processing/shipped/delivered):','New status (confirmed/processing/shipped/delivered):'));
   if(!newStatus) return;
   AnimaSync.update('orders', id, { status: newStatus });
+  /* Also update Supabase if order has _dbId */
+  if(window.AnimaOrders){
+    var orders = AnimaSync.get('orders',[]);
+    var order = orders.find(function(o){return (o._id||o.id)===id;});
+    if(order && order._dbId){
+      var updateData = {order_status:newStatus,updated_at:new Date().toISOString()};
+      if(newStatus==='shipped'){
+        var tracking=prompt(t('Mã vận đơn:','Tracking code:'));
+        if(tracking){updateData.tracking_code=tracking;AnimaSync.update('orders',id,{tracking:tracking});}
+        updateData.shipped_at=new Date().toISOString();
+      }
+      if(newStatus==='delivered') updateData.delivered_at=new Date().toISOString();
+      AnimaOrders.update(order._dbId,updateData).then(function(){console.log('[Center] Order synced to Supabase');});
+    }
+  }
   renderDashboard();
 };
 
