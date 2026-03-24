@@ -12790,7 +12790,7 @@ overlayIds.forEach(function(id){
     </div>
     <div id="acBotMsgs" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none;-ms-overflow-style:none"></div>
     <div style="padding:12px 14px;border-top:1px solid rgba(0,200,150,.08);display:flex;gap:8px;flex-shrink:0;background:#080E14;align-items:center">
-      <button onclick="acTongueScan()" title="Tầm soát sức khỏe qua lưỡi" style="width:42px;height:42px;border-radius:12px;background:rgba(155,130,255,0.1);border:1px solid rgba(155,130,255,0.25);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s" onmouseover="this.style.background='rgba(155,130,255,0.2)'" onmouseout="this.style.background='rgba(155,130,255,0.1)'">
+      <button onclick="if(_tongueStep>=1&&_tongueStep<=3){document.getElementById('acTongueFile').click();}else{acTongueScan();}" title="Tầm soát sức khỏe qua lưỡi" style="width:42px;height:42px;border-radius:12px;background:rgba(155,130,255,0.1);border:1px solid rgba(155,130,255,0.25);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s" onmouseover="this.style.background='rgba(155,130,255,0.2)'" onmouseout="this.style.background='rgba(155,130,255,0.1)'">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9B82FF" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
       </button>
       <input type="file" id="acTongueFile" accept="image/*" style="display:none" onchange="acProcessTongueImage(this)">
@@ -12949,64 +12949,91 @@ var TONGUE_PROMPT = 'Bạn là CHUYÊN GIA THIỆT CHẨN (chẩn đoán lưỡi
 +'• Nếu phát hiện dấu hiệu nghiêm trọng (lưỡi lệch, tím đen, gai nổi nhiều) → khuyên đến bác sĩ ngay\n'
 +'• Luôn nhấn mạnh đây là tầm soát tham khảo, không thay thế khám lâm sàng';
 
+/* ── Thu thập 3 ảnh lưỡi: chính giữa, bên trái, bên phải ── */
+var _tongueImages = []; /* [{base64,mime,label}] */
+var _tongueStep = 0;
+var TONGUE_LABELS = [
+  {step:1, label:'CHÍNH GIỮA', icon:'👅', guide:'Há miệng rộng, thè lưỡi thẳng ra, chụp chính diện'},
+  {step:2, label:'BÊN TRÁI', icon:'👈', guide:'Nghiêng lưỡi sang bên phải để lộ mặt trái lưỡi, chụp rõ cạnh trái'},
+  {step:3, label:'BÊN PHẢI', icon:'👉', guide:'Nghiêng lưỡi sang bên trái để lộ mặt phải lưỡi, chụp rõ cạnh phải'}
+];
+
 window.acTongueScan = function(){
-  document.getElementById('acTongueFile').click();
+  _tongueImages = [];
+  _tongueStep = 0;
+  addMsg('bot','🔬 **TẦNG SOÁT SỨC KHỎE QUA LƯỠI — Thiệt Chẩn Đông Y**\n\nĐể em phân tích chính xác nhất, Anh/Chị vui lòng chụp **3 ảnh lưỡi** theo hướng dẫn:\n\n📸 Ảnh 1/3: **Chính giữa** — Há miệng rộng, thè lưỡi thẳng\n📸 Ảnh 2/3: **Bên trái** — Nghiêng lưỡi lộ cạnh trái\n📸 Ảnh 3/3: **Bên phải** — Nghiêng lưỡi lộ cạnh phải\n\n💡 Mẹo: Chụp dưới ánh sáng tự nhiên, không dùng flash.\n\nBắt đầu nhé! Bấm 📸 để chụp ảnh **chính giữa** lưỡi ạ.');
+  _tongueStep = 1;
 };
 
 window.acProcessTongueImage = async function(input){
-  if(!input.files||!input.files[0])return;
+  if(!input.files||!input.files[0]||_tongueStep<1||_tongueStep>3)return;
   var file=input.files[0];
+  var currentLabel = TONGUE_LABELS[_tongueStep-1];
 
-  /* Show preview in chat */
   var reader=new FileReader();
   reader.onload=async function(e){
     var base64Full=e.target.result;
     var base64Data=base64Full.split(',')[1];
     var mimeType=file.type||'image/jpeg';
 
-    /* Add image preview to chat */
+    /* Save image */
+    _tongueImages.push({base64:base64Data, mime:mimeType, label:currentLabel.label, full:base64Full});
+
+    /* Show preview in chat */
     var m=document.getElementById('acBotMsgs');
     var imgDiv=document.createElement('div');
-    imgDiv.style.cssText='align-self:flex-end;max-width:200px;border-radius:14px;overflow:hidden;border:2px solid rgba(155,130,255,0.3)';
-    imgDiv.innerHTML='<img src="'+base64Full+'" style="width:100%;display:block"><div style="background:rgba(155,130,255,0.1);padding:6px 10px;font-size:11px;color:#9B82FF;text-align:center">📸 Ảnh lưỡi đã gửi</div>';
+    imgDiv.style.cssText='align-self:flex-end;max-width:160px;border-radius:12px;overflow:hidden;border:2px solid rgba(155,130,255,0.3)';
+    imgDiv.innerHTML='<img src="'+base64Full+'" style="width:100%;display:block"><div style="background:rgba(155,130,255,0.1);padding:5px 8px;font-size:11px;color:#9B82FF;text-align:center">'+currentLabel.icon+' Ảnh '+_tongueStep+'/3: '+currentLabel.label+'</div>';
     m.appendChild(imgDiv);
     m.scrollTop=m.scrollHeight;
 
-    addMsg('bot','Dạ em đã nhận được ảnh lưỡi rồi ạ! Em đang phân tích theo phương pháp Thiệt Chẩn Đông Y... 🔬');
-    addTyping();
+    if(_tongueStep < 3){
+      /* Next photo */
+      _tongueStep++;
+      var next = TONGUE_LABELS[_tongueStep-1];
+      addMsg('bot','✅ Ảnh '+(_tongueStep-1)+'/3 đã nhận!\n\nTiếp theo: 📸 Ảnh '+_tongueStep+'/3: **'+next.label+'**\n'+next.guide+'\n\nBấm 📸 để chụp tiếp ạ.');
+    } else {
+      /* All 3 photos collected — analyze */
+      _tongueStep = 0;
+      addMsg('bot','✅ Đã nhận đủ 3 ảnh! Em đang phân tích toàn diện theo phương pháp Thiệt Chẩn Đông Y...\n\n🔬 Phân tích chất lưỡi & rêu lưỡi\n🗺️ Đánh giá 5 vùng tạng phủ\n☯️ Xác định thể tạng Ngũ Hành\n\nVui lòng chờ em 10-15 giây ạ...');
+      addTyping();
 
-    try{
-      var url='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+_GK;
-      var res=await fetch(url,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          contents:[{
-            role:'user',
-            parts:[
-              {text:TONGUE_PROMPT+'\n\nHãy phân tích ảnh lưỡi này theo phương pháp Thiệt Chẩn Đông Y:'},
-              {inlineData:{mimeType:mimeType,data:base64Data}}
-            ]
-          }],
-          generationConfig:{maxOutputTokens:1500,temperature:0.3,topP:0.85}
-        })
-      });
-      var data=await res.json();
-      removeTyping();
+      try{
+        /* Build multi-image request */
+        var parts=[{text:TONGUE_PROMPT+'\n\nDưới đây là 3 ảnh lưỡi của khách hàng:\n- Ảnh 1: Chính giữa (nhìn thẳng) — phân tích tổng thể chất lưỡi, rêu lưỡi, đầu lưỡi (Tâm/Phế), giữa lưỡi (Tỳ/Vị), gốc lưỡi (Thận)\n- Ảnh 2: Bên trái — phân tích chi tiết vùng CAN (Gan), kiểm tra sưng đỏ, tĩnh mạch dưới lưỡi\n- Ảnh 3: Bên phải — phân tích chi tiết vùng ĐỞM (Mật), kiểm tra rêu lưỡi bên phải\n\nHãy phân tích TỔNG HỢP cả 3 góc chụp để đưa ra đánh giá toàn diện nhất. Trình bày kết quả theo format:\n\n📋 TỔNG QUAN\n(Nhận xét chung về chất lưỡi, rêu lưỡi, hình dạng)\n\n🗺️ PHÂN TÍCH TỪNG VÙNG TẠNG PHỦ\n• Tâm (đầu lưỡi): ...\n• Phế (sau đầu): ...\n• Tỳ/Vị (giữa): ...\n• Can (bên trái): ...\n• Đởm (bên phải): ...\n• Thận (gốc lưỡi): ...\n\n☯️ THỂ TẠNG NGŨ HÀNH: [Mộc/Hỏa/Thổ/Kim/Thủy] + giải thích\n\n⚡ MỨC ĐỘ CÂN BẰNG NĂNG LƯỢNG: [Tốt/Khá/Cần chú ý/Cần hỗ trợ sớm] (thang 1-10)\n\n🌿 KHUYẾN NGHỊ (5-7 mục cụ thể)\n- Thực dưỡng\n- Sinh hoạt & vận động\n- ANIMA 119 kết nối\n- Dịch vụ AnimaCare phù hợp\n- Lưu ý đặc biệt'}];
 
-      if(data.candidates && data.candidates[0]){
-        var reply=data.candidates[0].content.parts.map(function(p){return p.text||'';}).join('').trim();
-        if(!reply) reply='Em không thể phân tích được ảnh này. Anh/Chị vui lòng chụp lại ảnh lưỡi rõ hơn, trong điều kiện ánh sáng tốt ạ.';
-        addMsg('bot',reply);
-        acBotHistory.push({role:'model',parts:[{text:reply}]});
-      } else if(data.error){
-        addMsg('bot','Xin lỗi, em đang gặp sự cố kỹ thuật. Anh/Chị vui lòng thử lại hoặc gọi hotline 0913 156 676 ạ.');
-      } else {
-        addMsg('bot','Em không thể phân tích ảnh này. Anh/Chị chụp lại lưỡi rõ hơn nhé ạ!');
+        _tongueImages.forEach(function(img,i){
+          parts.push({inlineData:{mimeType:img.mime,data:img.base64}});
+          parts.push({text:'(Ảnh '+(i+1)+'/3: '+img.label+')'});
+        });
+
+        var url='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+_GK;
+        var res=await fetch(url,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({
+            contents:[{role:'user',parts:parts}],
+            generationConfig:{maxOutputTokens:2500,temperature:0.25,topP:0.85}
+          })
+        });
+        var data=await res.json();
+        removeTyping();
+
+        if(data.candidates && data.candidates[0]){
+          var reply=data.candidates[0].content.parts.map(function(p){return p.text||'';}).join('').trim();
+          if(!reply) reply='Em không thể phân tích được ảnh này. Anh/Chị vui lòng chụp lại rõ hơn ạ.';
+          addMsg('bot',reply);
+          acBotHistory.push({role:'model',parts:[{text:reply}]});
+        } else if(data.error){
+          addMsg('bot','Xin lỗi, em gặp sự cố kỹ thuật. Anh/Chị gọi hotline 0913 156 676 ạ.\n\nLỗi: '+(data.error.message||''));
+        } else {
+          addMsg('bot','Em chưa phân tích được. Anh/Chị chụp lại 3 ảnh rõ hơn nhé ạ!');
+        }
+      }catch(err){
+        removeTyping();
+        addMsg('bot','Kết nối gián đoạn. Anh/Chị thử lại hoặc gọi 0913 156 676 ạ.');
       }
-    }catch(err){
-      removeTyping();
-      addMsg('bot','Kết nối bị gián đoạn. Anh/Chị thử lại hoặc gọi hotline 0913 156 676 ạ.');
+      _tongueImages=[];
     }
     input.value='';
   };
