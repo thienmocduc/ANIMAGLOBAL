@@ -755,6 +755,9 @@ function renderDashboard() {
     'c-orders': buildOrdersPage(),
     'c-customers': buildCustomersPage(),
     'c-inventory': buildInventoryPage(),
+    'c-ktv': buildKtvPage(),
+    'c-reports': buildReportsPage(),
+    'c-staff': buildStaffPage(),
     'c-settings': buildSettingsPage()
   };
 
@@ -769,6 +772,14 @@ function renderDashboard() {
     h += kpiCard('\uD83D\uDCB3', t('Hoa h\u1ED3ng','Commission'), money(commissionData.totalCommission), '#00C896', t(money(commissionData.pendingCommission) + ' ch\u1EDD thanh to\u00E1n', money(commissionData.pendingCommission) + ' pending'));
     h += kpiCard('\uD83D\uDCE6', t('\u0110\u01A1n h\u00E0ng','Orders'), myOrders.length, '#F59E0B', t(pendingOrders + ' \u0111ang x\u1EED l\u00FD', pendingOrders + ' processing'));
     h += kpiCard('\uD83D\uDCC5', t('L\u1ECBch h\u1EB9n','Bookings'), todayBookings, '#7B5FFF', t('+' + pendingBookings + ' ch\u1EDD duy\u1EC7t', pendingBookings + ' pending'));
+    h += '</div>';
+
+    // Quick Actions
+    h += '<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">';
+    h += '<button class="btn p" onclick="window._cAddBooking()" style="font-size:12px;padding:8px 14px">\uD83D\uDCC5 ' + t('T\u1EA1o L\u1ECBch H\u1EB9n','New Booking') + '</button>';
+    h += '<button class="btn p" onclick="window._cNav(document.querySelector(\'[data-page=c-orders]\'),\'c-orders\')" style="font-size:12px;padding:8px 14px">\uD83D\uDCE6 ' + t('Xem \u0110\u01A1n','View Orders') + '</button>';
+    h += '<button class="btn g" onclick="window._cNav(document.querySelector(\'[data-page=c-reports]\'),\'c-reports\')" style="font-size:12px;padding:8px 14px">\uD83D\uDCCA ' + t('B\u00E1o C\u00E1o','Reports') + '</button>';
+    h += '<button class="btn g" onclick="window._cNav(document.querySelector(\'[data-page=c-ktv]\'),\'c-ktv\')" style="font-size:12px;padding:8px 14px">\uD83D\uDC64 ' + t('Qu\u1EA3n L\u00FD KTV','Manage KTV') + '</button>';
     h += '</div>';
 
     // Recent bookings table
@@ -798,11 +809,24 @@ function renderDashboard() {
     var h = '<div class="pg" id="pg-c-bookings">';
     h += '<div class="pg-hd"><div class="pg-title">' + t('Qu\u1EA3n L\u00FD L\u1ECBch H\u1EB9n','Booking Management') + '</div>';
     h += '<div class="pg-sub">' + cUser.centerName + '</div></div>';
+    // Status pipeline
+    var bkPending = myBookings.filter(function(b){return b.status==='pending';}).length;
+    var bkConfirmed = myBookings.filter(function(b){return b.status==='confirmed';}).length;
+    var bkCompleted = myBookings.filter(function(b){return b.status==='completed';}).length;
+    var bkCancelled = myBookings.filter(function(b){return b.status==='cancelled';}).length;
+    h += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">';
+    [{l:t('Ch\u1EDD duy\u1EC7t','Pending'),v:bkPending,c:'#F59E0B'},{l:t('X\u00E1c nh\u1EADn','Confirmed'),v:bkConfirmed,c:'#60A5FA'},{l:t('Ho\u00E0n th\u00E0nh','Completed'),v:bkCompleted,c:'#22C55E'},{l:t('H\u1EE7y','Cancelled'),v:bkCancelled,c:'#FF4D6D'}].forEach(function(s){
+      h += '<div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:10px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:700;color:'+s.c+'">'+s.v+'</div><div style="font-size:10px;color:rgba(248,242,224,.4)">'+s.l+'</div></div>';
+    });
+    h += '</div>';
+    // Filter bar + New button
     h += '<div class="fbar"><div class="fbar-in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="' + t('T\u00ECm l\u1ECBch h\u1EB9n...','Search bookings...') + '"></div>';
+    h += '<select style="background:rgba(0,0,0,.3);border:1px solid rgba(0,200,150,.12);border-radius:6px;padding:4px 8px;color:#F8F2E0;font-size:11px"><option value="">' + t('T\u1EA5t c\u1EA3','All Status') + '</option><option>Pending</option><option>Confirmed</option><option>Completed</option></select>';
     h += '<button class="btn btn-p" onclick="window._cAddBooking()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' + t('T\u1EA1o m\u1EDBi','New Booking') + '</button></div>';
-    h += '<div class="c"><div class="cb"><div class="tw"><table class="dt"><thead><tr><th>ID</th><th>' + t('Kh\u00E1ch h\u00E0ng','Customer') + '</th><th>' + t('D\u1ECBch v\u1EE5','Service') + '</th><th>' + t('Ng\u00E0y','Date') + '</th><th>' + t('Gi\u1EDD','Time') + '</th><th>' + t('Tr\u1EA1ng th\u00E1i','Status') + '</th><th></th></tr></thead><tbody>';
+    // Table
+    h += '<div class="c"><div class="cb"><div class="tw"><table class="dt"><thead><tr><th>ID</th><th>' + t('Kh\u00E1ch h\u00E0ng','Customer') + '</th><th>' + t('D\u1ECBch v\u1EE5','Service') + '</th><th>' + t('Ng\u00E0y','Date') + '</th><th>' + t('Gi\u1EDD','Time') + '</th><th>KTV</th><th>' + t('Tr\u1EA1ng th\u00E1i','Status') + '</th><th></th></tr></thead><tbody>';
     myBookings.forEach(function(b) {
-      h += '<tr><td class="td-mo">' + b._id + '</td><td>' + b.customer + '</td><td>' + b.service + '</td><td class="td-mo">' + b.date + '</td><td class="td-mo">' + (b.time||'') + '</td><td>' + st(b.status) + '</td>';
+      h += '<tr><td class="td-mo">' + b._id + '</td><td>' + b.customer + '</td><td>' + b.service + '</td><td class="td-mo">' + b.date + '</td><td class="td-mo">' + (b.time||'') + '</td><td style="font-size:11px;color:rgba(248,242,224,.5)">' + (b.ktvName||t('Ch\u01B0a g\u00E1n','Unassigned')) + '</td><td>' + st(b.status) + '</td>';
       h += '<td><button class="btn btn-g btn-sm" onclick="window._cEditBooking(\'' + b._id + '\')">' + t('S\u1EEDa','Edit') + '</button></td></tr>';
     });
     h += '</tbody></table></div></div></div></div>';
@@ -812,9 +836,24 @@ function renderDashboard() {
   function buildOrdersPage() {
     var h = '<div class="pg" id="pg-c-orders">';
     h += '<div class="pg-hd"><div class="pg-title">' + t('Qu\u1EA3n L\u00FD \u0110\u01A1n H\u00E0ng','Order Management') + '</div></div>';
-    h += '<div class="c"><div class="cb"><div class="tw"><table class="dt"><thead><tr><th>ID</th><th>' + t('Kh\u00E1ch','Customer') + '</th><th>' + t('S\u1EA3n ph\u1EA9m','Product') + '</th><th>SL</th><th>' + t('T\u1ED5ng','Total') + '</th><th>' + t('Tr\u1EA1ng th\u00E1i','Status') + '</th><th></th></tr></thead><tbody>';
+    // Pipeline KPIs
+    var oPending = myOrders.filter(function(o){return o.status==='pending';}).length;
+    var oProcessing = myOrders.filter(function(o){return o.status==='processing'||o.status==='confirmed';}).length;
+    var oShipped = myOrders.filter(function(o){return o.status==='shipped';}).length;
+    var oDelivered = myOrders.filter(function(o){return o.status==='delivered'||o.status==='completed';}).length;
+    h += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">';
+    [{l:t('Ch\u1EDD','Pending'),v:oPending,c:'#F59E0B'},{l:t('X\u1EED l\u00FD','Processing'),v:oProcessing,c:'#60A5FA'},{l:t('\u0110ang giao','Shipping'),v:oShipped,c:'#9B82FF'},{l:t('Ho\u00E0n th\u00E0nh','Delivered'),v:oDelivered,c:'#22C55E'}].forEach(function(s){
+      h += '<div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:10px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:700;color:'+s.c+'">'+s.v+'</div><div style="font-size:10px;color:rgba(248,242,224,.4)">'+s.l+'</div></div>';
+    });
+    h += '</div>';
+    // Total revenue
+    var totalRev = myOrders.reduce(function(s,o){return s+(o.total||0);},0);
+    h += '<div style="margin-bottom:12px;font-size:12px;color:rgba(248,242,224,.5)">' + t('T\u1ED5ng doanh thu \u0111\u01A1n h\u00E0ng: ','Total order revenue: ') + '<strong style="color:#00C896">' + money(totalRev) + '</strong></div>';
+    // Table
+    h += '<div class="c"><div class="cb"><div class="tw"><table class="dt"><thead><tr><th>ID</th><th>' + t('Kh\u00E1ch','Customer') + '</th><th>' + t('S\u1EA3n ph\u1EA9m','Product') + '</th><th>SL</th><th>' + t('T\u1ED5ng','Total') + '</th><th>' + t('Hoa h\u1ED3ng','Comm') + '</th><th>' + t('Tr\u1EA1ng th\u00E1i','Status') + '</th><th></th></tr></thead><tbody>';
     myOrders.forEach(function(o) {
-      h += '<tr><td class="td-mo">' + o._id + '</td><td>' + o.customer + '</td><td>' + o.product + '</td><td>' + o.qty + '</td><td class="td-mo">' + money(o.total) + '</td><td>' + st(o.status) + '</td>';
+      var comm = (o.commission || (o.total||0)*COMMISSION_RATES.product_exclusive);
+      h += '<tr><td class="td-mo">' + o._id + '</td><td>' + o.customer + '</td><td>' + (o.product||o.name||'') + '</td><td>' + o.qty + '</td><td class="td-mo">' + money(o.total) + '</td><td style="color:#00C896;font-weight:600;font-size:11px">' + money(comm) + '</td><td>' + st(o.status) + '</td>';
       h += '<td><button class="btn btn-g btn-sm" onclick="window._cUpdateOrder(\'' + o._id + '\')">' + t('C\u1EADp nh\u1EADt','Update') + '</button></td></tr>';
     });
     h += '</tbody></table></div></div></div></div>';
@@ -826,10 +865,29 @@ function renderDashboard() {
     h += '<div class="pg-hd"><div class="pg-title">' + t('Kh\u00E1ch H\u00E0ng','Customers') + '</div></div>';
     h += '<div class="fbar"><div class="fbar-in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="' + t('T\u00ECm kh\u00E1ch h\u00E0ng...','Search customers...') + '"></div>';
     h += '<button class="btn btn-p" onclick="window._cAddCustomer()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' + t('Th\u00EAm m\u1EDBi','Add New') + '</button></div>';
-    h += '<div class="c"><div class="cb"><div class="tw"><table class="dt"><thead><tr><th>ID</th><th>' + t('T\u00EAn','Name') + '</th><th>SĐT</th><th>Email</th><th>' + t('Lo\u1EA1i','Type') + '</th><th>' + t('L\u01B0\u1EE3t kh\u00E1m','Visits') + '</th></tr></thead><tbody>';
+    // Customer KPIs
+    var totalSpend = myCustomers.reduce(function(s,c){return s+(c.totalSpend||0);},0);
+    var vipCount = myCustomers.filter(function(c){return c.type==='VIP';}).length;
+    var newCount = myCustomers.filter(function(c){return c.type==='New'||!c.type;}).length;
+    h += '<div class="kpi-g" style="margin-bottom:16px">';
+    h += kpiCard(myCustomers.length, t('T\u1ED5ng KH','Total'), '#00C896');
+    h += kpiCard(vipCount, 'VIP', '#9B82FF');
+    h += kpiCard(newCount, t('M\u1EDBi','New'), '#F59E0B');
+    h += kpiCard(money(totalSpend), t('T\u1ED5ng chi ti\u00EAu','Total Spend'), '#60A5FA');
+    h += '</div>';
+    // Table with CRM columns
+    h += '<div class="c"><div class="cb"><div class="tw"><table class="dt"><thead><tr><th>ID</th><th>' + t('T\u00EAn','Name') + '</th><th>SĐT</th><th>' + t('Lo\u1EA1i','Tier') + '</th><th>' + t('Chi ti\u00EAu','Spend') + '</th><th>' + t('L\u01B0\u1EE3t','Visits') + '</th><th>' + t('L\u1EA7n cu\u1ED1i','Last Visit') + '</th></tr></thead><tbody>';
     myCustomers.forEach(function(c) {
-      var tCls = c.type === 'VIP' ? 'p' : (c.type === 'New' ? 'g' : 'b');
-      h += '<tr><td class="td-mo">' + c._id + '</td><td><div class="td-nm"><div class="td-av" style="background:linear-gradient(135deg,var(--pu1),var(--pu2));color:#fff">' + c.name[0] + '</div>' + c.name + '</div></td><td class="td-mo">' + c.phone + '</td><td class="td-mo">' + c.email + '</td><td><span class="bx ' + tCls + '">' + c.type + '</span></td><td>' + c.visits + '</td></tr>';
+      var tier = (c.totalSpend||0) > 20000000 ? 'Premium' : (c.totalSpend||0) > 5000000 ? 'VIP' : (c.visits||0) > 3 ? t('Th\u01B0\u1EDDng','Regular') : t('M\u1EDBi','New');
+      var tierColor = tier==='Premium'?'#FFB800':tier==='VIP'?'#9B82FF':tier===t('Th\u01B0\u1EDDng','Regular')?'#60A5FA':'#22C55E';
+      h += '<tr><td class="td-mo">' + c._id + '</td>';
+      h += '<td><div class="td-nm"><div class="td-av" style="background:linear-gradient(135deg,var(--pu1),var(--pu2));color:#fff">' + (c.name||'?')[0] + '</div>' + c.name + '</div></td>';
+      h += '<td class="td-mo">' + c.phone + '</td>';
+      h += '<td><span style="padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;background:' + tierColor + '22;color:' + tierColor + '">' + tier + '</span></td>';
+      h += '<td style="font-weight:600;color:#00C896;font-size:11px">' + money(c.totalSpend||0) + '</td>';
+      h += '<td>' + (c.visits||0) + '</td>';
+      h += '<td class="td-mo" style="font-size:10px">' + (c.lastVisit||'-') + '</td>';
+      h += '</tr>';
     });
     h += '</tbody></table></div></div></div></div>';
     return h;
@@ -846,6 +904,199 @@ function renderDashboard() {
       h += '<td><div class="pb" style="width:80px;margin:0"><div class="pbf" style="width:' + pct + '%;background:' + color + '"></div></div></td></tr>';
     });
     h += '</tbody></table></div></div></div></div>';
+    return h;
+  }
+
+  // ══════════════════════════════════════
+  // KTV MANAGEMENT PAGE
+  // ══════════════════════════════════════
+  function buildKtvPage() {
+    var h = '<div class="pg" id="pg-c-ktv">';
+    h += '<div class="pg-hd"><div class="pg-title">' + t('Qu\u1EA3n L\u00FD K\u1EF9 Thu\u1EADt Vi\u00EAn', 'Technician Management') + '</div></div>';
+    // Get KTV data from tech accounts
+    var allTechs = [];
+    try { allTechs = JSON.parse(localStorage.getItem('anima_tech_accounts') || '[]').filter(function(k){ return k.centerId === cUser.centerId; }); } catch(e){}
+    var onlineCount = allTechs.filter(function(k){ return k.status === 'online'; }).length;
+    var busyCount = allTechs.filter(function(k){ return k.status === 'busy'; }).length;
+    // KPIs
+    h += '<div class="kpi-g">';
+    h += kpiCard(allTechs.length, t('T\u1ED5ng KTV','Total'), '#00C896');
+    h += kpiCard(onlineCount, t('Tr\u1EF1c tuy\u1EBFn','Online'), '#22C55E');
+    h += kpiCard(busyCount, t('\u0110ang b\u1EADn','Busy'), '#F59E0B');
+    var avgRating = allTechs.length ? (allTechs.reduce(function(s,k){return s+(parseFloat(k.rating)||0);},0)/allTechs.length).toFixed(1) : '0';
+    h += kpiCard(avgRating + '\u2605', t('Rating TB','Avg Rating'), '#FFB800');
+    h += '</div>';
+    // Filter
+    h += '<div class="c" style="margin-top:16px"><div class="ch"><span class="ct">' + t('Danh S\u00E1ch KTV','Technician List') + '</span>';
+    h += '<div style="display:flex;gap:6px"><select id="cKtvFilter" onchange="window._cFilterKtv(this.value)" style="background:rgba(0,0,0,.3);border:1px solid rgba(0,200,150,.12);border-radius:6px;padding:4px 8px;color:#F8F2E0;font-size:11px"><option value="all">' + t('T\u1EA5t c\u1EA3','All') + '</option><option value="online">' + t('Online','Online') + '</option><option value="busy">' + t('B\u1EADn','Busy') + '</option><option value="offline">' + t('Offline','Offline') + '</option></select></div></div>';
+    h += '<div class="cb"><div class="dt-wrap"><table class="dt"><thead><tr>';
+    h += '<th>' + t('KTV','Tech') + '</th><th>' + t('Chuy\u00EAn m\u00F4n','Specialty') + '</th><th>S\u0110T</th><th>Rating</th><th>' + t('Bu\u1ED5i','Sessions') + '</th><th>' + t('Tr\u1EA1ng th\u00E1i','Status') + '</th>';
+    h += '</tr></thead><tbody id="cKtvList">';
+    if(allTechs.length === 0) {
+      h += '<tr><td colspan="6" style="text-align:center;padding:32px;color:rgba(248,242,224,.3)">' + t('Ch\u01B0a c\u00F3 KTV n\u00E0o \u0111\u0103ng k\u00FD t\u1EA1i c\u01A1 s\u1EDF','No technicians registered at this center') + '</td></tr>';
+    }
+    allTechs.forEach(function(k) {
+      var sc = k.status==='online'?'#22C55E':k.status==='busy'?'#F59E0B':'#607870';
+      var sl = k.status==='online'?t('Online','Online'):k.status==='busy'?t('\u0110ang b\u1EADn','Busy'):t('Offline','Offline');
+      h += '<tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#5B3FDF,#7B5FFF);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff">' + (k.name||'').charAt(0) + '</div><div><div style="font-weight:600;font-size:12px">' + k.name + '</div><div style="font-size:9px;color:rgba(248,242,224,.3)">' + k.id + '</div></div></div></td>';
+      h += '<td style="font-size:11px">' + (k.specialty||'KTV') + '</td>';
+      h += '<td style="font-size:11px">' + (k.phone||'-') + '</td>';
+      h += '<td><span style="color:#FFB800;font-weight:600">\u2605 ' + (k.rating||'0') + '</span></td>';
+      h += '<td style="font-weight:600">' + (k.sessions||0) + '</td>';
+      h += '<td><span class="bx" style="--dot:' + sc + '">' + sl + '</span></td>';
+      h += '</tr>';
+    });
+    h += '</tbody></table></div></div></div>';
+    h += '</div>';
+    return h;
+  }
+
+  // ══════════════════════════════════════
+  // REPORTS & ANALYTICS PAGE
+  // ══════════════════════════════════════
+  function buildReportsPage() {
+    var h = '<div class="pg" id="pg-c-reports">';
+    h += '<div class="pg-hd"><div class="pg-title">' + t('B\u00E1o C\u00E1o & Ph\u00E2n T\u00EDch', 'Reports & Analytics') + '</div></div>';
+    // Revenue by week (CSS bar chart)
+    var now = new Date();
+    var weekDays = [];
+    for(var i=6;i>=0;i--){ var d=new Date(now); d.setDate(d.getDate()-i); weekDays.push(d.toISOString().split('T')[0]); }
+    var dayRevenue = {};
+    weekDays.forEach(function(d){ dayRevenue[d]=0; });
+    myOrders.forEach(function(o){ var d=(o.date||o.createdAt||'').split('T')[0]; if(dayRevenue[d]!==undefined) dayRevenue[d]+=(o.total||0); });
+    var maxRev = Math.max.apply(null, weekDays.map(function(d){return dayRevenue[d];})) || 1;
+    h += '<div class="g2" style="gap:16px">';
+    // Bar chart
+    h += '<div class="c"><div class="ch"><span class="ct">' + t('Doanh Thu 7 Ng\u00E0y','7-Day Revenue') + '</span></div><div class="cb">';
+    h += '<div style="display:flex;align-items:flex-end;gap:6px;height:160px;padding-top:8px">';
+    weekDays.forEach(function(d){
+      var val = dayRevenue[d];
+      var pct = Math.max(val/maxRev*100, 4);
+      var dayLabel = d.split('-')[2]+'/'+d.split('-')[1];
+      h += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">';
+      h += '<div style="font-size:9px;color:rgba(248,242,224,.4)">' + (val>0?money(val):'') + '</div>';
+      h += '<div style="width:100%;height:' + pct + '%;background:linear-gradient(to top,#005A42,#00C896);border-radius:4px 4px 0 0;min-height:4px"></div>';
+      h += '<div style="font-size:9px;color:rgba(248,242,224,.35)">' + dayLabel + '</div>';
+      h += '</div>';
+    });
+    h += '</div></div></div>';
+    // Customer donut
+    var newCust = myCustomers.filter(function(c){ return (c.visits||0)<=1; }).length;
+    var returnCust = myCustomers.filter(function(c){ return (c.visits||0)>1; }).length;
+    var totalCust = Math.max(newCust+returnCust,1);
+    var returnPct = Math.round(returnCust/totalCust*100);
+    h += '<div class="c"><div class="ch"><span class="ct">' + t('Kh\u00E1ch H\u00E0ng','Customers') + '</span></div><div class="cb" style="text-align:center">';
+    h += '<div style="position:relative;width:120px;height:120px;margin:0 auto">';
+    h += '<svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="12"/>';
+    h += '<circle cx="60" cy="60" r="50" fill="none" stroke="#00C896" stroke-width="12" stroke-linecap="round" stroke-dasharray="' + (returnPct*3.14) + ' ' + ((100-returnPct)*3.14) + '" transform="rotate(-90 60 60)"/></svg>';
+    h += '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-size:22px;font-weight:700;color:#00C896">' + returnPct + '%</div><div style="font-size:8px;color:rgba(248,242,224,.4)">' + t('Quay l\u1EA1i','Return') + '</div></div></div>';
+    h += '<div style="display:flex;justify-content:center;gap:16px;margin-top:12px;font-size:11px">';
+    h += '<span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#00C896;margin-right:4px"></span>' + t('Quay l\u1EA1i','Return') + ': ' + returnCust + '</span>';
+    h += '<span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#F59E0B;margin-right:4px"></span>' + t('M\u1EDBi','New') + ': ' + newCust + '</span>';
+    h += '</div></div></div>';
+    h += '</div>';
+    // Top products & services
+    h += '<div class="g2" style="gap:16px;margin-top:16px">';
+    // Top products
+    var productSales = {};
+    myOrders.forEach(function(o){ var n=o.product||o.name||'Unknown'; productSales[n]=(productSales[n]||0)+(o.qty||1); });
+    var topProducts = Object.keys(productSales).map(function(k){return {name:k,qty:productSales[k]};}).sort(function(a,b){return b.qty-a.qty;}).slice(0,5);
+    h += '<div class="c"><div class="ch"><span class="ct">' + t('Top S\u1EA3n Ph\u1EA9m','Top Products') + '</span></div><div class="cb">';
+    if(topProducts.length===0) h += '<div style="text-align:center;padding:20px;color:rgba(248,242,224,.25);font-size:12px">' + t('Ch\u01B0a c\u00F3 d\u1EEF li\u1EC7u','No data') + '</div>';
+    topProducts.forEach(function(p,i){
+      var barPct = topProducts[0].qty>0?Math.round(p.qty/topProducts[0].qty*100):0;
+      h += '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span style="color:rgba(248,242,224,.7)">' + (i+1) + '. ' + p.name.substring(0,25) + '</span><span style="font-weight:600;color:#00C896">' + p.qty + '</span></div>';
+      h += '<div style="height:6px;background:rgba(0,200,150,.06);border-radius:3px"><div style="height:100%;width:' + barPct + '%;background:#00C896;border-radius:3px"></div></div></div>';
+    });
+    h += '</div></div>';
+    // Top services
+    var serviceSales = {};
+    myBookings.filter(function(b){return b.status==='completed';}).forEach(function(b){ var n=b.service||'Unknown'; serviceSales[n]=(serviceSales[n]||0)+1; });
+    var topServices = Object.keys(serviceSales).map(function(k){return {name:k,qty:serviceSales[k]};}).sort(function(a,b){return b.qty-a.qty;}).slice(0,5);
+    h += '<div class="c"><div class="ch"><span class="ct">' + t('Top D\u1ECBch V\u1EE5','Top Services') + '</span></div><div class="cb">';
+    if(topServices.length===0) h += '<div style="text-align:center;padding:20px;color:rgba(248,242,224,.25);font-size:12px">' + t('Ch\u01B0a c\u00F3 d\u1EEF li\u1EC7u','No data') + '</div>';
+    topServices.forEach(function(s,i){
+      var barPct = topServices[0].qty>0?Math.round(s.qty/topServices[0].qty*100):0;
+      h += '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span style="color:rgba(248,242,224,.7)">' + (i+1) + '. ' + s.name.substring(0,25) + '</span><span style="font-weight:600;color:#9B82FF">' + s.qty + '</span></div>';
+      h += '<div style="height:6px;background:rgba(123,95,255,.06);border-radius:3px"><div style="height:100%;width:' + barPct + '%;background:#9B82FF;border-radius:3px"></div></div></div>';
+    });
+    h += '</div></div>';
+    h += '</div>';
+    // Month comparison
+    var thisMonth = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+    var lastMonth = now.getMonth()===0?(now.getFullYear()-1)+'-12':now.getFullYear()+'-'+String(now.getMonth()).padStart(2,'0');
+    var thisRev=0,lastRev=0,thisOrds=0,lastOrds=0;
+    myOrders.forEach(function(o){ var m=(o.date||o.createdAt||'').substring(0,7); if(m===thisMonth){thisRev+=(o.total||0);thisOrds++;} if(m===lastMonth){lastRev+=(o.total||0);lastOrds++;} });
+    var revChange = lastRev>0?Math.round((thisRev-lastRev)/lastRev*100):thisRev>0?100:0;
+    var ordChange = lastOrds>0?Math.round((thisOrds-lastOrds)/lastOrds*100):thisOrds>0?100:0;
+    h += '<div class="kpi-g" style="margin-top:16px">';
+    h += kpiCard(money(thisRev), t('Th\u00E1ng n\u00E0y','This Month'), '#00C896');
+    h += kpiCard((revChange>=0?'+':'')+revChange+'%', t('So v\u1EDBi th\u00E1ng tr\u01B0\u1EDBc','vs Last Month'), revChange>=0?'#22C55E':'#FF4D6D');
+    h += kpiCard(thisOrds, t('\u0110\u01A1n th\u00E1ng n\u00E0y','Orders This Month'), '#60A5FA');
+    h += kpiCard((ordChange>=0?'+':'')+ordChange+'%', t('So \u0111\u01A1n th\u00E1ng tr\u01B0\u1EDBc','vs Last Month Orders'), ordChange>=0?'#22C55E':'#FF4D6D');
+    h += '</div>';
+    h += '</div>';
+    return h;
+  }
+
+  // ══════════════════════════════════════
+  // STAFF SCHEDULE PAGE
+  // ══════════════════════════════════════
+  function buildStaffPage() {
+    var h = '<div class="pg" id="pg-c-staff">';
+    h += '<div class="pg-hd"><div class="pg-title">' + t('L\u1ECBch Ca L\u00E0m Vi\u1EC7c', 'Staff Schedule') + '</div></div>';
+    var allTechs = [];
+    try { allTechs = JSON.parse(localStorage.getItem('anima_tech_accounts') || '[]').filter(function(k){ return k.centerId === cUser.centerId; }); } catch(e){}
+    // Week view
+    var now = new Date();
+    var weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay() + 1); // Monday
+    var days = [];
+    var dayNames = t('T2,T3,T4,T5,T6,T7,CN','Mon,Tue,Wed,Thu,Fri,Sat,Sun').split(',');
+    for(var i=0;i<7;i++){ var d=new Date(weekStart); d.setDate(weekStart.getDate()+i); days.push({date:d.toISOString().split('T')[0],label:dayNames[i]+' '+d.getDate()+'/'+(d.getMonth()+1)}); }
+    // Time slots
+    var slots = ['08:00','09:00','10:00','11:00','13:00','14:00','15:00','16:00','17:00'];
+    // Schedules from AnimaSync
+    var schedules = sync ? sync.get('staff_schedules',[]).filter(function(s){return s.centerId===cUser.centerId;}) : [];
+    h += '<div class="c"><div class="ch"><span class="ct">' + t('Tu\u1EA7n n\u00E0y','This Week') + ' (' + days[0].date + ' \u2192 ' + days[6].date + ')</span></div>';
+    h += '<div class="cb" style="overflow-x:auto">';
+    h += '<table class="dt" style="min-width:700px"><thead><tr><th style="width:60px">' + t('Gi\u1EDD','Time') + '</th>';
+    days.forEach(function(d){ h += '<th style="text-align:center;font-size:10px">' + d.label + '</th>'; });
+    h += '</tr></thead><tbody>';
+    slots.forEach(function(slot){
+      h += '<tr><td style="font-size:11px;font-weight:600;color:rgba(248,242,224,.5)">' + slot + '</td>';
+      days.forEach(function(d){
+        var assigned = schedules.filter(function(s){return s.date===d.date && s.time===slot;});
+        var booked = myBookings.filter(function(b){return b.date===d.date && (b.time||'').startsWith(slot.split(':')[0]);});
+        h += '<td style="text-align:center;padding:6px;vertical-align:top">';
+        if(booked.length > 0){
+          booked.forEach(function(b){
+            h += '<div style="background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.15);border-radius:6px;padding:4px;margin-bottom:2px;font-size:9px">';
+            h += '<div style="font-weight:600;color:#00C896">' + (b.customer||'').substring(0,10) + '</div>';
+            h += '<div style="color:rgba(248,242,224,.4)">' + (b.service||'').substring(0,12) + '</div></div>';
+          });
+        } else if(assigned.length > 0){
+          assigned.forEach(function(a){ h += '<div style="font-size:9px;color:#9B82FF;font-weight:500">' + (a.ktvName||'KTV') + '</div>'; });
+        } else {
+          h += '<div style="font-size:9px;color:rgba(248,242,224,.1)">\u2014</div>';
+        }
+        h += '</td>';
+      });
+      h += '</tr>';
+    });
+    h += '</tbody></table></div></div>';
+    // KTV availability
+    h += '<div class="c" style="margin-top:16px"><div class="ch"><span class="ct">' + t('KTV S\u1EB5n S\u00E0ng','Available Technicians') + '</span></div><div class="cb">';
+    if(allTechs.length===0) h += '<div style="text-align:center;padding:20px;color:rgba(248,242,224,.25);font-size:12px">' + t('Ch\u01B0a c\u00F3 KTV','No technicians') + '</div>';
+    allTechs.forEach(function(k){
+      var sc = k.status==='online'?'#22C55E':k.status==='busy'?'#F59E0B':'#607870';
+      h += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(0,200,150,.04)">';
+      h += '<div style="width:8px;height:8px;border-radius:50%;background:' + sc + '"></div>';
+      h += '<div style="flex:1;font-size:12px;font-weight:500">' + k.name + '</div>';
+      h += '<div style="font-size:10px;color:rgba(248,242,224,.4)">' + (k.specialty||'KTV') + '</div>';
+      h += '</div>';
+    });
+    h += '</div></div>';
+    h += '</div>';
     return h;
   }
 
@@ -1200,6 +1451,9 @@ function renderDashboard() {
     { id:'c-orders', icon:'<path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>', vi:'\u0110\u01A1n H\u00E0ng', en:'Orders', badge: pendingOrders || null, badgeCls:'r' },
     { id:'c-customers', icon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>', vi:'Kh\u00E1ch H\u00E0ng', en:'Customers' },
     { id:'c-inventory', icon:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>', vi:'Kho H\u00E0ng', en:'Inventory' },
+    { id:'c-ktv', icon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>', vi:'K\u1EF9 Thu\u1EADt Vi\u00EAn', en:'Technicians' },
+    { id:'c-reports', icon:'<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>', vi:'B\u00E1o C\u00E1o', en:'Reports' },
+    { id:'c-staff', icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>', vi:'L\u1ECBch Ca', en:'Staff Schedule' },
     { id:'c-settings', icon:'<circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M2 12h2M20 12h2"/>', vi:'C\u00E0i \u0110\u1EB7t', en:'Settings' }
   ];
 
@@ -1402,7 +1656,7 @@ window._cNav = function(pageId, el) {
   // Breadcrumb
   var bc = document.getElementById('cBcPage');
   if(bc) {
-    var names = { 'c-dash':'Dashboard', 'c-network':t('M\u1EA1ng L\u01B0\u1EDBi','Network'), 'c-marketplace':'Marketplace', 'c-revenue':t('Doanh Thu','Revenue'), 'c-bookings':t('L\u1ECBch H\u1EB9n','Bookings'), 'c-orders':t('\u0110\u01A1n H\u00E0ng','Orders'), 'c-customers':t('Kh\u00E1ch H\u00E0ng','Customers'), 'c-inventory':t('Kho H\u00E0ng','Inventory'), 'c-settings':t('C\u00E0i \u0110\u1EB7t','Settings') };
+    var names = { 'c-dash':'Dashboard', 'c-network':t('M\u1EA1ng L\u01B0\u1EDBi','Network'), 'c-marketplace':'Marketplace', 'c-revenue':t('Doanh Thu','Revenue'), 'c-bookings':t('L\u1ECBch H\u1EB9n','Bookings'), 'c-orders':t('\u0110\u01A1n H\u00E0ng','Orders'), 'c-customers':t('Kh\u00E1ch H\u00E0ng','Customers'), 'c-inventory':t('Kho H\u00E0ng','Inventory'), 'c-ktv':t('K\u1EF9 Thu\u1EADt Vi\u00EAn','Technicians'), 'c-reports':t('B\u00E1o C\u00E1o','Reports'), 'c-staff':t('L\u1ECBch Ca','Schedule'), 'c-settings':t('C\u00E0i \u0110\u1EB7t','Settings') };
     bc.textContent = names[pageId] || pageId;
   }
   if(pageId === 'c-marketplace') setTimeout(loadPolicyFields, 50);
