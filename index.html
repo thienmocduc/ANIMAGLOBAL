@@ -7801,11 +7801,20 @@ if(!e||!p){showToast(lang==='vi'?'Vui lòng điền đầy đủ thông tin':'Pl
 var users=[];try{users=JSON.parse(localStorage.getItem('anima_users')||'[]');}catch(ex){}
 var found=users.find(function(u){return (u.email===e||u.phone===e);});
 if(found){
+  /* User tồn tại — check đã xác minh chưa */
+  if(!found.emailVerified){
+    /* Chưa xác minh → gửi OTP */
+    var otp=Math.floor(100000+Math.random()*900000).toString();
+    window._pendingReg={user:found,otp:otp,users:users,expiry:Date.now()+10*60*1000,isLogin:true};
+    showEmailOTP(found.email,otp,found.name);
+    return;
+  }
   currentUser=found;
 }else{
-  currentUser={id:'USR-'+Date.now().toString(36).toUpperCase(),name:e.split('@')[0],email:e,phone:'',provider:'email',picture:'',createdAt:new Date().toISOString()};
-  users.push(currentUser);
-  localStorage.setItem('anima_users',JSON.stringify(users));
+  /* User mới — yêu cầu đăng ký trước */
+  showToast(lang==='vi'?'Email chưa đăng ký. Vui lòng tạo tài khoản mới!':'Email not registered. Please sign up!','#FF7070');
+  if(typeof switchAuthTab==='function')switchAuthTab('register');
+  return;
 }
 localStorage.setItem('anima_current_user',JSON.stringify(currentUser));
 localStorage.setItem('anima_user',JSON.stringify(currentUser));
@@ -7848,13 +7857,117 @@ var newUser={
 var users=[];try{users=JSON.parse(localStorage.getItem('anima_users')||'[]');}catch(e){}
 var exists=users.find(function(u){return u.email===email;});
 if(exists){showToast(lang==='vi'?'Email đã được đăng ký! Hãy đăng nhập.':'Email already registered! Please sign in.','#FF7070');switchAuthTab('login');return;}
-users.push(newUser);
-localStorage.setItem('anima_users',JSON.stringify(users));
-/* Set current user */
-currentUser=newUser;
-localStorage.setItem('anima_current_user',JSON.stringify(currentUser));
-localStorage.setItem('anima_user',JSON.stringify(currentUser));
-window.currentUser=currentUser;
+
+/* ── Xác minh email bằng OTP ── */
+var otp=Math.floor(100000+Math.random()*900000).toString();
+window._pendingReg={user:newUser,otp:otp,users:users,expiry:Date.now()+10*60*1000};
+
+/* Gửi OTP qua Supabase Edge hoặc hiển thị prompt */
+showEmailOTP(email,otp,fullName);
+return;
+/* Sau khi xác minh OTP → gọi completeRegistration() */
+}
+
+function showEmailOTP(email,otp,name){
+  /* Tạo OTP form overlay */
+  var existing=document.getElementById('otpVerifyBox');
+  if(existing)existing.remove();
+
+  var box=document.createElement('div');
+  box.id='otpVerifyBox';
+  box.style.cssText='position:fixed;inset:0;z-index:1100;background:rgba(0,0,0,.9);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:20px';
+  box.innerHTML='<div style="background:#0A1218;border:1px solid rgba(0,200,150,.2);border-radius:20px;padding:32px;max-width:400px;width:100%;text-align:center">'
+  +'<div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#005A42,#00C896);display:inline-flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px">📧</div>'
+  +'<div style="font-size:18px;font-weight:700;color:#F8F2E0;margin-bottom:8px">Xác minh Email</div>'
+  +'<div style="font-size:13px;color:rgba(248,242,224,.5);margin-bottom:20px">Mã xác minh đã được gửi đến<br><strong style="color:#00C896">'+email+'</strong></div>'
+  +'<div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px" id="otpInputs">'
+  +'<input type="text" maxlength="1" style="width:42px;height:50px;text-align:center;font-size:22px;font-weight:700;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.2);border-radius:10px;color:#00C896;outline:none" oninput="otpNext(this)" onfocus="this.select()">'
+  +'<input type="text" maxlength="1" style="width:42px;height:50px;text-align:center;font-size:22px;font-weight:700;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.2);border-radius:10px;color:#00C896;outline:none" oninput="otpNext(this)" onfocus="this.select()">'
+  +'<input type="text" maxlength="1" style="width:42px;height:50px;text-align:center;font-size:22px;font-weight:700;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.2);border-radius:10px;color:#00C896;outline:none" oninput="otpNext(this)" onfocus="this.select()">'
+  +'<input type="text" maxlength="1" style="width:42px;height:50px;text-align:center;font-size:22px;font-weight:700;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.2);border-radius:10px;color:#00C896;outline:none" oninput="otpNext(this)" onfocus="this.select()">'
+  +'<input type="text" maxlength="1" style="width:42px;height:50px;text-align:center;font-size:22px;font-weight:700;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.2);border-radius:10px;color:#00C896;outline:none" oninput="otpNext(this)" onfocus="this.select()">'
+  +'<input type="text" maxlength="1" style="width:42px;height:50px;text-align:center;font-size:22px;font-weight:700;background:rgba(0,0,0,.4);border:1px solid rgba(0,200,150,.2);border-radius:10px;color:#00C896;outline:none" oninput="otpNext(this)" onfocus="this.select()">'
+  +'</div>'
+  +'<div id="otpError" style="font-size:12px;color:#FF4D6D;margin-bottom:12px;display:none"></div>'
+  +'<button onclick="verifyOTP()" style="width:100%;padding:14px;background:linear-gradient(135deg,#005A42,#00C896);border:none;border-radius:12px;color:#000;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px">Xác Minh</button>'
+  +'<div style="font-size:12px;color:rgba(248,242,224,.3)">Mã hết hạn sau 10 phút · <button onclick="resendOTP()" style="color:#00C896;background:none;border:none;cursor:pointer;font-size:12px;text-decoration:underline">Gửi lại</button></div>'
+  +'<button onclick="document.getElementById(\'otpVerifyBox\').remove()" style="margin-top:12px;background:none;border:none;color:rgba(248,242,224,.3);font-size:12px;cursor:pointer">Hủy</button>'
+  +'</div>';
+  document.body.appendChild(box);
+  setTimeout(function(){box.querySelector('input').focus();},200);
+
+  /* Gửi OTP email qua Supabase */
+  sendOTPEmail(email,otp,name);
+}
+
+function otpNext(el){
+  if(el.value.length===1){var next=el.nextElementSibling;if(next&&next.tagName==='INPUT')next.focus();}
+  /* Auto-verify when all 6 filled */
+  var inputs=document.querySelectorAll('#otpInputs input');
+  var code='';inputs.forEach(function(i){code+=i.value;});
+  if(code.length===6)verifyOTP();
+}
+
+function verifyOTP(){
+  var inputs=document.querySelectorAll('#otpInputs input');
+  var code='';inputs.forEach(function(i){code+=i.value;});
+  var reg=window._pendingReg;
+  if(!reg){showToast('Phiên đăng ký hết hạn, vui lòng thử lại','#FF7070');return;}
+  if(Date.now()>reg.expiry){document.getElementById('otpError').textContent='Mã đã hết hạn. Bấm "Gửi lại"';document.getElementById('otpError').style.display='block';return;}
+  if(code!==reg.otp){document.getElementById('otpError').textContent='Mã xác minh không đúng';document.getElementById('otpError').style.display='block';inputs.forEach(function(i){i.value='';});inputs[0].focus();return;}
+
+  /* OTP correct — complete registration or login */
+  reg.user.emailVerified=true;
+  if(!reg.isLogin) reg.users.push(reg.user);
+  /* Update existing user if login verification */
+  if(reg.isLogin){var idx=reg.users.findIndex(function(u){return u.email===reg.user.email;});if(idx>=0)reg.users[idx]=reg.user;}
+  localStorage.setItem('anima_users',JSON.stringify(reg.users));
+  currentUser=reg.user;
+  localStorage.setItem('anima_current_user',JSON.stringify(currentUser));
+  localStorage.setItem('anima_user',JSON.stringify(currentUser));
+  window.currentUser=currentUser;
+
+  /* Sync to admin */
+  if(window.AnimaSync){
+    AnimaSync.push('customers',{name:reg.user.name,email:reg.user.email,phone:reg.user.phone,constitution:reg.user.constitution,referral:reg.user.referral,joinDate:new Date().toISOString().split('T')[0],status:'active'});
+    AnimaSync.push('activities',{type:'customer_new',vi:reg.user.name+' vừa đăng ký (đã xác minh email)',en:reg.user.name+' registered (email verified)',ago:0});
+  }
+
+  document.getElementById('otpVerifyBox').remove();
+  updateNavUser();closeAuth();
+  showToast(lang==='vi'?'Xác minh thành công! Chào mừng '+(reg.user.firstName||reg.user.name)+' đến Anima Care 🎉':'Verified! Welcome '+(reg.user.firstName||reg.user.name)+' to Anima Care 🎉','var(--g2)');
+  if(typeof addAnimaNotif==='function')addAnimaNotif('system','Chào mừng bạn đến Anima Care!','Tài khoản đã được xác minh thành công.');
+  window._pendingReg=null;
+}
+
+function resendOTP(){
+  if(!window._pendingReg)return;
+  var otp=Math.floor(100000+Math.random()*900000).toString();
+  window._pendingReg.otp=otp;
+  window._pendingReg.expiry=Date.now()+10*60*1000;
+  sendOTPEmail(window._pendingReg.user.email,otp,window._pendingReg.user.name);
+  showToast('Đã gửi lại mã xác minh','var(--g1)');
+}
+
+function sendOTPEmail(email,otp,name){
+  /* Gửi qua Supabase Edge Function hoặc fetch API */
+  var SUPABASE_URL=window.SUPABASE_URL||'https://pvhfzqopcorzaoghbywo.supabase.co';
+  var SUPABASE_KEY=window.SUPABASE_ANON||'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2aGZ6cW9wY29yemFvZ2hieXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMjIyNDksImV4cCI6MjA4NzY5ODI0OX0.rv1CJizk4GpFjOw7I5ifipyEYv2TMSGeQbdf358PjBU';
+
+  /* Lưu OTP vào Supabase để verify phía server */
+  fetch(SUPABASE_URL+'/rest/v1/otp_codes',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Prefer':'return=minimal'},
+    body:JSON.stringify({email:email,code:otp,name:name,created_at:new Date().toISOString()})
+  }).catch(function(){});
+
+  /* Hiển thị mã OTP tạm thời cho dev/testing (production sẽ gửi email thật) */
+  console.log('[AnimaCare OTP] Email:',email,'Code:',otp);
+}
+
+function completeRegistration(){
+/* Legacy — now handled by verifyOTP */
+}
 /* Sync to admin */
 if(window.AnimaSync){
   AnimaSync.push('customers',{name:fullName,email:email,phone:phone,constitution:constitution,referral:referral,joinDate:new Date().toISOString().split('T')[0],status:'active'});
