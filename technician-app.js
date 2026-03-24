@@ -24,7 +24,7 @@ try {
 
 var tLang = 'vi';
 var tUser = null;
-var tPage = 't-queue';
+var tPage = 't-profile'; /* Default: Dashboard hiệu suất */
 var watchId = null;
 
 function t(vi, en) { return tLang === 'vi' ? vi : en; }
@@ -302,6 +302,7 @@ function renderTechDash() {
   var unreadNotifs = ktvNotifs.filter(function(n){return !n.read;}).length;
 
   var tabs = [
+    { id:'t-profile', icon:'M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zM3 14h7v7H3v-7z', vi:'Dashboard', en:'Dashboard' },
     { id:'t-queue', icon:'M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9', vi:'H\u00E0ng ch\u1EDD', en:'Queue', badge:pending.length },
     { id:'t-calendar', icon:'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', vi:'L\u1ECBch', en:'Calendar' },
     { id:'t-clients', icon:'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', vi:'Kh\u00E1ch h\u00E0ng', en:'Clients', badge:incompleteClients.length },
@@ -310,8 +311,7 @@ function renderTechDash() {
     { id:'t-training', icon:'M12 14l9-5-9-5-9 5 9 5zM12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z', vi:'\u0110\u00E0o t\u1EA1o', en:'Training' },
     { id:'t-notifs', icon:'M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0', vi:'Th\u00F4ng b\u00E1o', en:'Notifs', badge:unreadNotifs },
     { id:'t-affiliate', icon:'M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3', vi:'Affiliate', en:'Affiliate' },
-    { id:'t-nearby', icon:'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z', vi:'Quanh \u0111\u00E2y', en:'Nearby' },
-    { id:'t-profile', icon:'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2', vi:'C\u00E1 nh\u00E2n', en:'Profile' }
+    { id:'t-nearby', icon:'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z', vi:'Quanh \u0111\u00E2y', en:'Nearby' }
   ];
 
   html += '<div style="flex:1;padding:6px;display:flex;flex-direction:column;gap:1px">';
