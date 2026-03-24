@@ -13186,9 +13186,12 @@ overlayIds.forEach(function(id){
   <div id="acScanMsgs" style="flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none;-ms-overflow-style:none"></div>
   <div style="padding:10px 12px;border-top:1px solid rgba(155,130,255,.08);display:flex;gap:8px;flex-shrink:0;background:#080E14;align-items:center">
     <input type="file" id="acTongueFile" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none" onchange="acProcessTongueImage(this)">
-    <button onclick="acScanCamClick()" type="button" style="flex:1;padding:14px;background:linear-gradient(135deg,rgba(59,45,139,.3),rgba(155,130,255,.15));border:1px solid rgba(155,130,255,.25);border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:600;color:#9B82FF;transition:background .2s">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
-      📸 Chụp / Chọn ảnh lưỡi
+    <button onclick="acScanCamClick()" type="button" title="Chụp ảnh lưỡi" style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,rgba(59,45,139,.3),rgba(155,130,255,.15));border:1px solid rgba(155,130,255,.25);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9B82FF" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+    </button>
+    <input id="acScanInput" type="text" placeholder="Hỏi chuyên gia về kết quả..." style="flex:1;background:rgba(155,130,255,.04);border:1px solid rgba(155,130,255,.12);border-radius:12px;padding:10px 14px;font-size:13px;color:#F8F2E0;outline:none;font-family:'Roboto',sans-serif" onfocus="this.style.borderColor='rgba(155,130,255,.3)'" onblur="this.style.borderColor='rgba(155,130,255,.12)'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();acScanChat()}">
+    <button onclick="acScanChat()" style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#3B2D8B,#9B82FF);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     </button>
   </div>
 </div>
@@ -13374,7 +13377,28 @@ var TONGUE_PROMPT = 'Bạn là CHUYÊN GIA THIỆT CHẨN (chẩn đoán lưỡi
 +'• Không dùng "tác dụng phụ" → dùng "tín hiệu thích nghi"\n'
 +'• Nếu ảnh không rõ hoặc không phải lưỡi → lịch sự yêu cầu chụp lại\n'
 +'• Nếu phát hiện dấu hiệu nghiêm trọng (lưỡi lệch, tím đen, gai nổi nhiều) → khuyên đến bác sĩ ngay\n'
-+'• Luôn nhấn mạnh đây là tầm soát tham khảo, không thay thế khám lâm sàng';
++'• Luôn nhấn mạnh đây là tầm soát tham khảo, không thay thế khám lâm sàng\n\n'
++'HƯỚNG DẪN CẢI THIỆN SỨC KHỎE (LUÔN đưa ra sau khi phân tích):\n'
++'🕐 THỜI GIAN TẬP LUYỆN THEO THỂ TẠNG:\n'
++'• Thể Mộc (Can): Tập 6-7h sáng, yoga nhẹ, đi bộ trong công viên. Tránh tập sau 21h.\n'
++'• Thể Hỏa (Tâm): Tập 5-6h sáng hoặc 17-18h, bơi lội, thiền định. Tránh tập nặng giữa trưa.\n'
++'• Thể Thổ (Tỳ): Tập 7-8h sáng, đi bộ nhanh 30 phút, khí công. Tránh nằm sau ăn.\n'
++'• Thể Kim (Phế): Tập 6-7h sáng nơi không khí trong lành, hít thở sâu, thái cực quyền.\n'
++'• Thể Thủy (Thận): Tập 8-9h sáng khi dương khí lên, bài tập lưng gối, tránh tập khuya.\n\n'
++'🍵 THỰC DƯỠNG THEO THỂ TẠNG:\n'
++'• Mộc: Rau xanh, trà hoa cúc, tránh cay nóng rượu bia. Ăn chua nhẹ (chanh, bưởi).\n'
++'• Hỏa: Đậu xanh, bí đao, trà sen, tránh cà phê sau 14h. Ăn đắng nhẹ (khổ qua, trà xanh).\n'
++'• Thổ: Hạt sen, khoai mài, gừng ấm, tránh đồ sống lạnh. Ăn ngọt tự nhiên (mật ong, táo đỏ).\n'
++'• Kim: Lê, bạch mộc nhĩ, hạnh nhân, mật ong. Tránh đồ chiên, khói thuốc. Ăn cay nhẹ (tỏi, hành).\n'
++'• Thủy: Hà thủ ô, đậu đen, hạt óc chó, tránh đồ lạnh. Ăn mặn nhẹ (rong biển, miso).\n\n'
++'💊 KẾT NỐI ANIMA 119 THEO THỂ TẠNG:\n'
++'• Mộc: ANIMA 119 giúp sơ Can lý khí, thông kinh mạch vùng gan mật. Dùng sáng sớm bụng rỗng.\n'
++'• Hỏa: ANIMA 119 giúp dưỡng Tâm an thần, thanh nhiệt. Dùng sáng + tối trước ngủ.\n'
++'• Thổ: ANIMA 119 hỗ trợ kiện Tỳ vận hóa, enzyme lên men đặc biệt phù hợp. Dùng trước bữa ăn.\n'
++'• Kim: ANIMA 119 giúp nhuận Phế, thanh phế nhiệt. Dùng sáng với nước ấm.\n'
++'• Thủy: ANIMA 119 bồi dưỡng Thận nguyên khí — đây là trọng tâm năng lượng gốc. Dùng sáng bụng rỗng.\n\n'
++'🏥 KẾT NỐI DỊCH VỤ ANIMACARE:\n'
++'Luôn giới thiệu: "Em khuyên Anh/Chị đặt lịch tại cơ sở AnimaCare gần nhất để chuyên gia đánh giá trực tiếp và thiết kế liệu trình phục hồi năng lượng phù hợp thể tạng ạ. Hotline: 0913 156 676 | Web: animacare.global"';
 
 /* ── Thu thập 3 ảnh lưỡi: chính giữa, bên trái, bên phải ── */
 var _tongueImages = []; /* [{base64,mime,label}] */
@@ -13403,6 +13427,35 @@ function addScanTyping(){
 function removeScanTyping(){var t=document.getElementById('acScanTyping');if(t)t.remove();}
 
 /* Camera button click handler — works on all devices including iPad */
+/* Chat trong panel Tầm Soát — hỏi chuyên gia về kết quả */
+window.acScanChat = async function(){
+  if(!currentUser){addScanMsg('bot','Anh/Chị vui lòng đăng nhập ạ.');return;}
+  var inp=document.getElementById('acScanInput');
+  var q=(inp.value||'').trim();
+  if(!q)return;
+  inp.value='';
+  addScanMsg('user',q);
+  acScanHistory.push({role:'user',parts:[{text:q}]});
+  if(acScanHistory.length>10) acScanHistory=acScanHistory.slice(-10);
+  addScanTyping();
+  inp.disabled=true;
+  try{
+    var contents=[{role:'user',parts:[{text:TONGUE_PROMPT+'\n\nBạn đang trong vai trò CHUYÊN GIA TƯ VẤN SỨC KHỎE. Khách hàng đã hoặc đang tầm soát lưỡi. Hãy trả lời câu hỏi dưới đây với kiến thức Đông Y sâu sắc, đưa ra hướng dẫn cụ thể về sinh hoạt, tập luyện, ăn uống, và kết nối ANIMA 119 khi phù hợp.'}]},{role:'model',parts:[{text:'Dạ em hiểu, em sẽ tư vấn chuyên sâu về kết quả tầm soát và hướng dẫn cải thiện sức khỏe ạ.'}]}].concat(acScanHistory);
+    var url='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+_GK;
+    var res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:contents,generationConfig:{maxOutputTokens:1200,temperature:0.35,topP:0.9}})});
+    var data=await res.json();
+    removeScanTyping();
+    if(data.candidates&&data.candidates[0]){
+      var reply=data.candidates[0].content.parts.map(function(p){return p.text||'';}).join('').trim();
+      addScanMsg('bot',reply||'Em chưa hiểu câu hỏi, Anh/Chị nói rõ hơn ạ.');
+      acScanHistory.push({role:'model',parts:[{text:reply}]});
+    }else{
+      addScanMsg('bot','Xin lỗi, em gặp sự cố. Anh/Chị gọi hotline 0913 156 676 ạ.');
+    }
+  }catch(e){removeScanTyping();addScanMsg('bot','Kết nối gián đoạn. Anh/Chị thử lại ạ.');}
+  inp.disabled=false;inp.focus();
+};
+
 window.acScanCamClick = function(){
   if(typeof _tongueStep!=='undefined' && _tongueStep>=1 && _tongueStep<=3){
     /* Đang trong flow chụp 3 ảnh → mở file picker */
