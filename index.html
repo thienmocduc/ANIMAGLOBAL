@@ -10833,16 +10833,17 @@ if(p==='chats') return useSupa('orders', window.renderAdmChats);
 if(p==='inventory') return useSupa('inventory', window.renderAdmInventory, renderInvTable);
 if(p==='academy') return useSupa('orders', window.renderAdmAcademy, renderAcadTable);
 if(p==='analytics') return useSupa('analytics', window.renderAdmAnalytics, renderAnalyticsOld);
-/* ── Demo/static pages (will be replaced gradually) ── */
-if(p==='centers') renderCentersTable();
-if(p==='members') renderMembersTable();
-if(p==='revenue') renderRevTable();
+/* ── ALL pages now Supabase-powered ── */
+if(p==='centers') return useSupa('centers', window.renderRealCenters, renderCentersTable);
+if(p==='members') return useSupa('members', window.renderRealMembers, renderMembersTable);
+if(p==='revenue') return useSupa('revenue', window.renderRealRevenue, renderRevTable);
+if(p==='staff') return useSupa('staff', window.renderRealStaff, renderStaffTable);
+if(p==='franchise') return useSupa('franchise', window.renderRealFranchise, renderFrTable);
+if(p==='content') return useSupa('content', window.renderRealCMS, renderCMSTable);
+if(p==='settings') return useSupa('settings', window.renderRealSettings);
+if(p==='audit') return useSupa('settings', window.renderRealAudit);
 if(p==='ai') renderAITable();
-if(p==='staff') renderStaffTable();
-if(p==='franchise') renderFrTable();
 if(p==='investors') renderInvestors();
-if(p==='content') renderCMSTable();
-if(p==='analytics') renderAnalytics();
 }
 function toggleNP(){document.getElementById('np').classList.toggle('on')}
 document.addEventListener('click',function(e){
@@ -13933,6 +13934,7 @@ document.head.appendChild(st);
 <script src="loyalty-system.js?v=20260326b"></script>
 <script src="chat-system.js?v=20260326b"></script>
 <script src="academy-system.js?v=20260326b"></script>
+<script src="admin-real-pages.js?v=20260326c"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </body>
 </html>
