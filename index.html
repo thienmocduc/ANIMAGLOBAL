@@ -296,20 +296,20 @@ html.light-mode #techPortal{background:rgba(0,0,0,.85)!important}
 html.light-mode #techPortal *{color:#F8F2E0!important}
 </style>
 
-<!-- ═══ DARK THEME OVERRIDE — Clean & Professional ═══ -->
+<!-- ═══ DARK THEME "ANIMA 119 SPACE" — Vũ trụ năng lượng ═══ -->
 <style id="darkThemeCSS">
 /* ═══════════════════════════════════════════
-   DARK THEME "DEEP FOREST" — Tương phản cao
-   Nền: Xanh đen sâu #060D0A
-   Card: Xanh đêm #0C1A14
-   Text chính: Xanh bạc sáng #D8EDE5
-   Text phụ: Xanh khói #8FAF9F
-   Accent: Xanh ngọc #00D4A0
-   Gold: Vàng ấm #E8B84D
+   ANIMA 119 SPACE — Nền xanh đậm vũ trụ
+   Nền chính: #070E1E (navy space)
+   Nền card: #0C1628 (deep blue)
+   Hào quang: radial-gradient teal/gold mờ
+   Text: #E2ECF5 (trắng ánh sao)
+   Accent: #00C896 (năng lượng xanh)
+   Gold: #C8A84E (kim khí)
    ═══════════════════════════════════════════ */
-html:not(.light-mode){--dk-bg:#060D0A;--dk-bg2:#0C1A14;--dk-card:#0F211A;--dk-card2:#132B22;--dk-h:#E8F5EE;--dk-body:#C0D8CE;--dk-sub:#8FAF9F;--dk-mute:#5C7A6D;--dk-accent:#00D4A0;--dk-accent2:#00E5B0;--dk-gold:#E8B84D;--dk-purple:#A78BFA;--dk-border:rgba(0,212,160,.12);--dk-glow:0 0 20px rgba(0,212,160,.06)}
+html:not(.light-mode){--dk-bg:#070E1E;--dk-bg2:#0B1628;--dk-card:#0E1B30;--dk-card2:#111F38;--dk-h:#E2ECF5;--dk-body:#B8CCDD;--dk-sub:#7E98AE;--dk-mute:#506070;--dk-accent:#00C896;--dk-accent2:#00E5A8;--dk-gold:#C8A84E;--dk-purple:#A78BFA;--dk-border:rgba(0,200,150,.1);--dk-aura:radial-gradient(ellipse at center,rgba(0,200,150,.04) 0%,transparent 70%);--dk-aura-gold:radial-gradient(ellipse at center,rgba(200,168,78,.03) 0%,transparent 70%)}
 
-/* ── Nền toàn cục ── */
+/* ── Nền vũ trụ ── */
 html:not(.light-mode) body{background:var(--dk-bg)!important;color:var(--dk-body)!important}
 
 /* ── Override inline colors cho tương phản cao ── */
@@ -331,24 +331,25 @@ html:not(.light-mode) [style*="color:var(--t3)"]{color:var(--dk-sub)!important}
 html:not(.light-mode) [style*="color:#607870"],
 html:not(.light-mode) [style*="color:var(--t4)"]{color:var(--dk-mute)!important}
 
-/* ── Nền tối → xanh đen sâu (thay vì đen thuần) ── */
+/* ── Nền đen gốc → xanh navy space ── */
 html:not(.light-mode) [style*="background:#030608"],
 html:not(.light-mode) [style*="background:#000000"]{background:var(--dk-bg)!important}
 html:not(.light-mode) [style*="background:#060C0F"],
 html:not(.light-mode) [style*="background:#080E14"]{background:var(--dk-bg2)!important}
 html:not(.light-mode) [style*="background:#0A1218"],
 html:not(.light-mode) [style*="background:var(--dark3)"]{background:var(--dk-card)!important}
+html:not(.light-mode) [style*="background:rgba(0,0,0,"]{background:rgba(7,14,30,.5)!important}
 
-/* ── NAV — sâu + glow ── */
-html:not(.light-mode) nav#mainNav{background:rgba(6,13,10,.95)!important;border-bottom:1px solid var(--dk-border)!important;backdrop-filter:blur(16px)!important}
+/* ── NAV — space glass ── */
+html:not(.light-mode) nav#mainNav{background:rgba(7,14,30,.92)!important;border-bottom:1px solid rgba(0,200,150,.08)!important;backdrop-filter:blur(20px)!important;box-shadow:0 2px 20px rgba(0,0,0,.3)}
 html:not(.light-mode) .nav-link{color:var(--dk-sub)!important}
 html:not(.light-mode) .nav-link:hover{color:var(--dk-accent)!important}
 html:not(.light-mode) .nav-link-cta{color:var(--dk-accent)!important}
 html:not(.light-mode) .nc{color:var(--dk-mute)!important}
 
-/* ── SECTIONS ── */
+/* ── SECTIONS — vũ trụ xanh ── */
 html:not(.light-mode) section{background:var(--dk-bg)!important}
-html:not(.light-mode) .intro-section{background:linear-gradient(180deg,#040A07,var(--dk-bg))!important}
+html:not(.light-mode) .intro-section{background:linear-gradient(180deg,#050B18,var(--dk-bg))!important}
 html:not(.light-mode) .intro-headline{color:var(--dk-h)!important}
 html:not(.light-mode) .intro-headline em{color:var(--dk-accent)!important}
 html:not(.light-mode) .intro-quote{color:var(--dk-body)!important}
@@ -357,23 +358,24 @@ html:not(.light-mode) .sec-ttl{color:var(--dk-h)!important}
 html:not(.light-mode) .sec-sub{color:var(--dk-body)!important}
 html:not(.light-mode) .sec-lbl{color:var(--dk-accent)!important}
 
-/* ── STATS ── */
-html:not(.light-mode) .intro-stats{background:var(--dk-card)!important;border-color:var(--dk-border)!important}
-html:not(.light-mode) .is-card{background:transparent!important;border-color:rgba(0,212,160,.06)!important}
+/* ── STATS — hào quang vàng kim nhẹ ── */
+html:not(.light-mode) .intro-stats{background:var(--dk-card)!important;border-color:var(--dk-border)!important;box-shadow:0 0 40px rgba(200,168,78,.04),0 4px 20px rgba(0,0,0,.3)!important}
+html:not(.light-mode) .is-card{background:transparent!important;border-color:rgba(0,200,150,.06)!important}
 html:not(.light-mode) .is-num{color:var(--dk-accent2)!important}
 html:not(.light-mode) .is-lbl{color:var(--dk-sub)!important}
 html:not(.light-mode) .is-note{color:var(--dk-mute)!important}
 
-/* ── CARDS — xanh đêm + viền phát sáng ── */
-html:not(.light-mode) .eco-card,html:not(.light-mode) .step-card,html:not(.light-mode) .ip-card,html:not(.light-mode) .tech-card{background:var(--dk-card)!important;border:1px solid var(--dk-border)!important;box-shadow:var(--dk-glow)!important}
-html:not(.light-mode) .eco-card:hover,html:not(.light-mode) .step-card:hover,html:not(.light-mode) .ip-card:hover{border-color:rgba(0,212,160,.25)!important;box-shadow:0 0 30px rgba(0,212,160,.1)!important}
+/* ── CARDS — navy + hào quang teal mờ ── */
+html:not(.light-mode) .eco-card,html:not(.light-mode) .step-card,html:not(.light-mode) .ip-card,html:not(.light-mode) .tech-card{background:var(--dk-card)!important;border:1px solid var(--dk-border)!important;box-shadow:0 0 24px rgba(0,200,150,.05),0 4px 16px rgba(0,0,0,.3)!important;position:relative!important}
+html:not(.light-mode) .eco-card::before,html:not(.light-mode) .step-card::before,html:not(.light-mode) .ip-card::before,html:not(.light-mode) .tech-card::before{content:'';position:absolute;inset:-1px;border-radius:inherit;background:radial-gradient(ellipse at 50% 0%,rgba(0,200,150,.06) 0%,transparent 60%);pointer-events:none;z-index:0}
+html:not(.light-mode) .eco-card:hover,html:not(.light-mode) .step-card:hover,html:not(.light-mode) .ip-card:hover{border-color:rgba(0,200,150,.22)!important;box-shadow:0 0 40px rgba(0,200,150,.08),0 8px 32px rgba(0,0,0,.4)!important}
 html:not(.light-mode) .eco-ttl,html:not(.light-mode) .step-ttl,html:not(.light-mode) .ip-name{color:var(--dk-accent2)!important}
 html:not(.light-mode) .eco-desc,html:not(.light-mode) .step-desc,html:not(.light-mode) .ip-sub{color:var(--dk-sub)!important}
 html:not(.light-mode) .eco-sub,html:not(.light-mode) .step-tag{color:var(--dk-accent)!important}
 html:not(.light-mode) .step-num{color:rgba(0,212,160,.08)!important}
 
-/* ── IPO ── */
-html:not(.light-mode) .ipo-right{background:var(--dk-card)!important;border-color:var(--dk-border)!important}
+/* ── IPO — hào quang tím nhẹ ── */
+html:not(.light-mode) .ipo-right{background:var(--dk-card)!important;border-color:var(--dk-border)!important;box-shadow:0 0 30px rgba(167,139,250,.04),0 4px 16px rgba(0,0,0,.3)!important}
 html:not(.light-mode) .in-v{color:var(--dk-accent2)!important}
 html:not(.light-mode) .in-l{color:var(--dk-sub)!important}
 
@@ -394,7 +396,7 @@ html:not(.light-mode) input:focus,html:not(.light-mode) select:focus,html:not(.l
 html:not(.light-mode) input::placeholder,html:not(.light-mode) textarea::placeholder{color:var(--dk-mute)!important}
 
 /* ── PROFILE ── */
-html:not(.light-mode) #profileOverlay{background:rgba(6,13,10,.97)!important}
+html:not(.light-mode) #profileOverlay{background:rgba(7,14,30,.97)!important}
 html:not(.light-mode) #profSidebar{background:var(--dk-bg2)!important;border-color:var(--dk-border)!important}
 html:not(.light-mode) .prof-tab{color:var(--dk-sub)!important}
 html:not(.light-mode) .prof-tab.on{color:var(--dk-accent)!important;background:rgba(0,212,160,.08)!important}
@@ -411,13 +413,13 @@ html:not(.light-mode) #acBotPanel{background:var(--dk-card)!important;border-col
 html:not(.light-mode) #acBotMsgs>div{color:var(--dk-h)!important}
 html:not(.light-mode) #acBotInput{background:var(--dk-bg2)!important;color:var(--dk-h)!important}
 
-/* ── OVERLAYS ── */
-html:not(.light-mode) [id$="Overlay"]{background:rgba(6,13,10,.97)!important}
+/* ── OVERLAYS — space background ── */
+html:not(.light-mode) [id$="Overlay"]{background:rgba(7,14,30,.97)!important}
 html:not(.light-mode) [id$="Overlay"] h1,html:not(.light-mode) [id$="Overlay"] h2,html:not(.light-mode) [id$="Overlay"] h3{color:var(--dk-h)!important}
 html:not(.light-mode) [id$="Overlay"] p{color:var(--dk-body)!important}
 
 /* ── MOBILE NAV ── */
-html:not(.light-mode) .mobile-nav-overlay{background:rgba(6,13,10,.98)!important}
+html:not(.light-mode) .mobile-nav-overlay{background:rgba(7,14,30,.98)!important}
 html:not(.light-mode) .mobile-nav-overlay a{color:var(--dk-h)!important}
 html:not(.light-mode) .mobile-nav-overlay .dropdown-label{color:var(--dk-accent)!important}
 html:not(.light-mode) .mobile-nav-overlay .mob-sub a{color:var(--dk-sub)!important}
@@ -425,11 +427,32 @@ html:not(.light-mode) .mobile-nav-overlay .mob-sub a{color:var(--dk-sub)!importa
 /* ── USER DROPDOWN ── */
 html:not(.light-mode) #userDropMenu{background:var(--dk-card2)!important;border-color:var(--dk-border)!important}
 
-/* ── FOOTER ── */
-html:not(.light-mode) footer{background:#040A07!important}
+/* ── FOOTER — navy sâu nhất ── */
+html:not(.light-mode) footer{background:#040814!important}
 
 /* ── STORE ── */
-html:not(.light-mode) .st-card{background:var(--dk-card)!important;border-color:var(--dk-border)!important}
+html:not(.light-mode) .st-card{background:var(--dk-card)!important;border-color:var(--dk-border)!important;box-shadow:0 0 20px rgba(0,200,150,.04),0 4px 12px rgba(0,0,0,.2)!important}
+
+/* ── SECTION AURA — hào quang nhẹ xung quanh nội dung ── */
+html:not(.light-mode) .sec-wrap{position:relative}
+html:not(.light-mode) .sec-wrap::before{content:'';position:absolute;top:50%;left:50%;width:80%;height:80%;transform:translate(-50%,-50%);background:radial-gradient(ellipse,rgba(0,200,150,.03) 0%,transparent 70%);pointer-events:none;z-index:0}
+html:not(.light-mode) .intro-wrap{position:relative}
+html:not(.light-mode) .intro-wrap::before{content:'';position:absolute;top:30%;left:50%;width:90%;height:90%;transform:translate(-50%,-50%);background:radial-gradient(ellipse,rgba(0,200,150,.04) 0%,rgba(200,168,78,.02) 40%,transparent 70%);pointer-events:none;z-index:0}
+
+/* ── AUTH + ORDER MODAL — hào quang ── */
+html:not(.light-mode) #authModal>div:last-child{box-shadow:0 0 60px rgba(0,200,150,.06),0 20px 60px rgba(0,0,0,.5)!important}
+html:not(.light-mode) #orderBox{box-shadow:0 0 60px rgba(0,200,150,.06),0 20px 60px rgba(0,0,0,.5)!important}
+
+/* ── CHATBOT — hào quang ── */
+html:not(.light-mode) #acBotPanel{box-shadow:0 0 40px rgba(0,200,150,.06),0 12px 40px rgba(0,0,0,.4)!important}
+
+/* ── HEADLINE GLOW — chữ có hào quang nhẹ ── */
+html:not(.light-mode) .intro-headline{text-shadow:0 0 40px rgba(0,200,150,.08)}
+html:not(.light-mode) .sec-ttl{text-shadow:0 0 30px rgba(0,200,150,.06)}
+
+/* ── ACCENT COLORS trên nền space ── */
+html:not(.light-mode) .is-num{text-shadow:0 0 12px rgba(0,200,150,.2)}
+html:not(.light-mode) .eco-ttl,html:not(.light-mode) .step-ttl,html:not(.light-mode) .ip-name{text-shadow:0 0 10px rgba(0,200,150,.15)}
 </style>
 
 <script>
