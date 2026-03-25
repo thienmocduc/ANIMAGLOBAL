@@ -10814,12 +10814,36 @@ document.getElementById('tbc').innerHTML = 'Anima Care Admin <span class="sep">�
 loadPage(page);
 }
 function loadPage(p){
-/* Helper: inject admPageContent into inline page div for Supabase renderers */
+/* Helper: clear page + inject admPageContent for Supabase renderers */
 function useSupa(pageId, renderer, fallback){
   if(typeof renderer==='function'){
+    /* Clear ALL existing admPageContent to prevent duplicates */
+    document.querySelectorAll('#admPageContent').forEach(function(el){el.remove();});
+    /* Find the page div — try exact match first, then use any visible .pg */
     var pg=document.getElementById('pg-'+pageId);
-    if(pg){pg.innerHTML='<div id="admPageContent" style="padding:20px"></div>';pg.classList.add('on');}
-    renderer();
+    if(!pg){
+      /* Fallback: find the active page or create container in main area */
+      pg=document.querySelector('.pg.on')||document.querySelector('.main .pages');
+    }
+    if(pg){
+      pg.innerHTML='<div id="admPageContent" style="padding:20px"></div>';
+      pg.classList.add('on');
+    }
+    /* Ensure admPageContent exists before calling renderer */
+    if(!document.getElementById('admPageContent')){
+      var main=document.querySelector('#adminDashboard .main')||document.querySelector('.main');
+      if(main){
+        var pages=main.querySelector('.pages');
+        var target=pages||main;
+        /* Hide all other pages */
+        target.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on');});
+        var wrap=document.createElement('div');
+        wrap.className='pg on';wrap.id='pg-supa-'+pageId;
+        wrap.innerHTML='<div id="admPageContent" style="padding:20px"></div>';
+        target.appendChild(wrap);
+      }
+    }
+    setTimeout(function(){renderer();},10);
   } else if(typeof fallback==='function') fallback();
 }
 /* ── Supabase-powered pages (real data) ── */
