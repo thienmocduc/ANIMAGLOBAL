@@ -4908,6 +4908,13 @@ closeOrder();
 if(typeof _payosAfterOrder==='function' && _selectedPayment && _selectedPayment!=='cod'){
   _payosAfterOrder(orderId, _selectedPayment, total);
 }
+/* Trigger email + push notification */
+if(typeof _emailPushAfterOrder==='function') _emailPushAfterOrder();
+/* Earn loyalty points */
+if(typeof earnPoints==='function' && window.currentUser){
+  var uid=currentUser.phone||currentUser.email||'';
+  if(uid) earnPoints(uid, currentUser.name||'', Math.round(total/1000), 'order', 'Đặt hàng #'+orderId, orderId);
+}
 document.getElementById('suc-name').textContent=_currentOrder.name;
 document.getElementById('suc-price').textContent=_currentOrder.price;
 document.getElementById('suc-phone').textContent='\�\� '+phone+' \· '+name;
@@ -12053,13 +12060,21 @@ window.currentUser=null;
 if(typeof google!=='undefined'&&google.accounts&&google.accounts.id){
 try{google.accounts.id.disableAutoSelect();}catch(e){}
 }
-/* Reset nav button */
+/* Remove dropdown menu from DOM */
+var dd=document.getElementById('userDropMenu');
+if(dd) dd.remove();
+/* Reset nav button to login state */
 var btn=document.getElementById('navAuthBtn');
 if(btn){
 var l=typeof lang!=='undefined'?lang:'vi';
-btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'+(l==='vi'?' KẾt NỐI':' Connect');
+btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>'+(l==='vi'?'Đăng nhập':'Sign in')+'</span>';
+btn.style.cssText='background:linear-gradient(135deg,rgba(0,90,66,.8),rgba(0,200,150,.8));border:none;border-radius:20px;padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:#000;font-family:var(--fb);font-size:12px;font-weight:700;letter-spacing:.5px;transition:all .2s;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;position:relative;z-index:310;white-space:nowrap';
 btn.onclick=function(){openAuth('login');};
+btn.onmouseover=function(){this.style.opacity='.85';};
+btn.onmouseout=function(){this.style.opacity='1';};
 }
+/* Close profile if open */
+if(typeof closeProfile==='function') try{closeProfile();}catch(e){}
 showToast(typeof lang!=='undefined'&&lang==='vi'?'Đã đăng xuất':'Logged out','var(--g1)');
 }
 </script>

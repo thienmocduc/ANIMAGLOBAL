@@ -272,25 +272,21 @@ window.sendPushNotification = function(userId, userType, title, body, type, link
 // 3. AUTO NOTIFICATIONS ON EVENTS
 // ═══════════════════════════════════════
 
-// Hook into order submission
-var _origSubmitOrder = window.submitOrder;
-if(_origSubmitOrder){
-  window.submitOrder = function(){
-    _origSubmitOrder.apply(this, arguments);
-    // After order: send email + push
-    setTimeout(function(){
-      var u = (typeof currentUser!=='undefined'&&currentUser)?currentUser:{};
-      if(u.email){
-        var orders = JSON.parse(localStorage.getItem('anima_orders')||'[]');
-        var lastOrder = orders[orders.length-1];
-        if(lastOrder){
-          sendOrderConfirmEmail(u.email, u.name, lastOrder._id||lastOrder.id, lastOrder.product, lastOrder.total||lastOrder.amount);
-          sendPushNotification(u.email, 'customer', 'Đặt hàng thành công!', 'Đơn '+(lastOrder._id||'')+' đang được xử lý', 'order');
-        }
+// Hook into order submission — DO NOT override, just add post-hook
+// Original submitOrder already saves to Supabase + localStorage
+window._emailPushAfterOrder = function(){
+  setTimeout(function(){
+    var u = (typeof currentUser!=='undefined'&&currentUser)?currentUser:{};
+    if(u.email){
+      var orders = JSON.parse(localStorage.getItem('anima_orders')||'[]');
+      var lastOrder = orders[orders.length-1];
+      if(lastOrder){
+        sendOrderConfirmEmail(u.email, u.name, lastOrder._id||lastOrder.id, lastOrder.product, lastOrder.total||lastOrder.amount);
+        sendPushNotification(u.email, 'customer', 'Đặt hàng thành công!', 'Đơn '+(lastOrder._id||'')+' đang được xử lý', 'order');
       }
-    }, 1000);
-  };
-}
+    }
+  }, 1000);
+};
 
 // Auto-ask for push permission after login
 var _origUpdateNavUser = window.updateNavUser;
