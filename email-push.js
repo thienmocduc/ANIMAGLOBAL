@@ -313,9 +313,9 @@ if(typeof _origUpdateNavUser === 'function'){
 // PayOS requires backend for payment link creation (Checksum Key must be secret)
 // Using Supabase Edge Function or direct API with client_id
 
-var PAYOS_CLIENT_ID = 'YOUR_PAYOS_CLIENT_ID';
-var PAYOS_API_KEY = 'YOUR_PAYOS_API_KEY';
-var PAYOS_CHECKSUM_KEY = 'YOUR_PAYOS_CHECKSUM_KEY';
+var PAYOS_CLIENT_ID = '2de33052-8493-4d13-9502-91b473845c12';
+var PAYOS_API_KEY = '07463cc4-e804-4f17-a5fe-355ff48e9010';
+var PAYOS_CHECKSUM_KEY = 'd559bc91037674422e1b457e1bd81be7043fb034205e7c064cf5f374ebe44e01';
 
 // Load PayOS Checkout Script
 (function loadPayOS(){
@@ -327,49 +327,77 @@ var PAYOS_CHECKSUM_KEY = 'YOUR_PAYOS_CHECKSUM_KEY';
   document.head.appendChild(s);
 })();
 
-// Create payment (needs backend — placeholder for now)
-window.createPayOSPayment = function(orderCode, amount, description, returnUrl, cancelUrl){
-  if(PAYOS_CLIENT_ID === 'YOUR_PAYOS_CLIENT_ID'){
-    console.log('[PayOS] Not configured — skipping payment');
-    if(typeof showToast==='function') showToast('Thanh toán online chưa cấu hình','#FFB800');
-    return Promise.resolve(null);
-  }
+// HMAC-SHA256 for PayOS signature
+function hmacSHA256(key, message){
+  return crypto.subtle.importKey('raw', new TextEncoder().encode(key), {name:'HMAC',hash:'SHA-256'}, false, ['sign'])
+    .then(function(k){ return crypto.subtle.sign('HMAC', k, new TextEncoder().encode(message)); })
+    .then(function(sig){ return Array.from(new Uint8Array(sig)).map(function(b){return b.toString(16).padStart(2,'0');}).join(''); });
+}
 
-  // PayOS requires server-side signature generation
-  // For now, use embedded checkout with client_id
-  return new Promise(function(resolve){
-    if(window.PayOSCheckout){
-      var checkout = PayOSCheckout.usePayOS({
-        RETURN_URL: returnUrl || 'https://animacare.global/?payment=success',
-        ELEMENT_ID: 'payos-checkout',
-        CHECKOUT_URL: '', // Will be set after creating payment link
-        onSuccess: function(e){
-          console.log('[PayOS] Success:', e);
-          resolve({status:'success', data:e});
-          if(typeof showToast==='function') showToast('Thanh toán thành công!','#00C896');
-        },
-        onCancel: function(e){
-          console.log('[PayOS] Cancelled:', e);
-          resolve({status:'cancelled', data:e});
-        },
-        onExit: function(e){
-          resolve({status:'exit', data:e});
-        }
-      });
-      resolve(checkout);
-    } else {
-      resolve(null);
-    }
-  });
+// Create PayOS payment link
+window.createPayOSPayment = function(orderCode, amount, description, returnUrl, cancelUrl){
+  var numOrderCode = parseInt(orderCode.replace(/[^0-9]/g,'').slice(-8)) || Date.now() % 100000000;
+  var amt = parseInt(amount) || 0;
+  if(amt < 1000){ console.log('[PayOS] Amount too small:', amt); return Promise.resolve(null); }
+
+  var retUrl = returnUrl || 'https://animacare.global/?payment=success&order='+orderCode;
+  var canUrl = cancelUrl || 'https://animacare.global/?payment=cancel&order='+orderCode;
+
+  // Build signature: amount={}&cancelUrl={}&description={}&orderCode={}&returnUrl={}
+  var signData = 'amount='+amt+'&cancelUrl='+canUrl+'&description='+(description||'AnimaCare').substring(0,25)+'&orderCode='+numOrderCode+'&returnUrl='+retUrl;
+
+  return hmacSHA256(PAYOS_CHECKSUM_KEY, signData).then(function(signature){
+    return fetch('https://api-merchant.payos.vn/v2/payment-requests', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-client-id': PAYOS_CLIENT_ID,
+        'x-api-key': PAYOS_API_KEY
+      },
+      body: JSON.stringify({
+        orderCode: numOrderCode,
+        amount: amt,
+        description: (description||'AnimaCare').substring(0,25),
+        cancelUrl: canUrl,
+        returnUrl: retUrl,
+        signature: signature
+      })
+    });
+  }).then(function(r){ return r.json(); })
+    .then(function(data){
+      console.log('[PayOS] Response:', data);
+      if(data.code === '00' && data.data && data.data.checkoutUrl){
+        // Redirect to PayOS checkout
+        window.open(data.data.checkoutUrl, '_blank');
+        return {status:'redirect', url:data.data.checkoutUrl, orderCode:numOrderCode};
+      } else {
+        console.error('[PayOS] Error:', data);
+        if(typeof showToast==='function') showToast('Lỗi tạo thanh toán: '+(data.desc||data.message||'Unknown'),'#FF4D6D');
+        return {status:'error', data:data};
+      }
+    }).catch(function(e){
+      console.error('[PayOS] Fetch error:', e);
+      if(typeof showToast==='function') showToast('Lỗi kết nối PayOS','#FF4D6D');
+      return {status:'error', error:e.message};
+    });
 };
 
-// Payment method selector enhancement
+// Payment method selector: bank/momo → PayOS, cod → skip
 window.processPayment = function(method, orderCode, amount, customerName, customerPhone){
-  if(method === 'payos' || method === 'bank' || method === 'momo'){
-    return createPayOSPayment(orderCode, amount, 'AnimaCare - '+orderCode);
+  if(method === 'bank' || method === 'momo'){
+    return createPayOSPayment(orderCode, amount, 'AC '+orderCode.slice(-8));
   }
-  // COD — no online payment needed
   return Promise.resolve({status:'cod'});
+};
+
+// Auto-trigger PayOS after order submission for online payment
+var _origCloseOrder = window.closeOrder;
+window._payosAfterOrder = function(orderId, paymentMethod, total){
+  if(paymentMethod === 'bank' || paymentMethod === 'momo'){
+    setTimeout(function(){
+      createPayOSPayment(orderId, total, 'AC '+orderId.slice(-8));
+    }, 500);
+  }
 };
 
 console.log('[Phase1] Email + Push + PayOS loaded');

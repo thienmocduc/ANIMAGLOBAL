@@ -4904,6 +4904,10 @@ if(window.AnimaOrders){
 }
 
 closeOrder();
+/* Trigger PayOS for online payment */
+if(typeof _payosAfterOrder==='function' && _selectedPayment && _selectedPayment!=='cod'){
+  _payosAfterOrder(orderId, _selectedPayment, total);
+}
 document.getElementById('suc-name').textContent=_currentOrder.name;
 document.getElementById('suc-price').textContent=_currentOrder.price;
 document.getElementById('suc-phone').textContent='\�\� '+phone+' \· '+name;
