@@ -361,6 +361,45 @@ window.AnimaNotifs = {
 };
 
 // ═══════════════════════════════
+// USERS (Sync to Supabase)
+// ═══════════════════════════════
+window.AnimaUsers = {
+  getByEmail: function(email) {
+    return sbFetch('users', 'GET', { filter: 'email=eq.' + encodeURIComponent(email), select: '*' })
+      .then(function(r) { return r[0] || null; });
+  },
+  getByPhone: function(phone) {
+    return sbFetch('users', 'GET', { filter: 'phone=eq.' + encodeURIComponent(phone), select: '*' })
+      .then(function(r) { return r[0] || null; });
+  },
+  create: function(data) {
+    return sbFetch('users', 'POST', { body: data }).then(function(r) { return r[0]; });
+  },
+  update: function(id, data) {
+    data.updated_at = new Date().toISOString();
+    return sbFetch('users?id=eq.' + id, 'PATCH', { body: data });
+  },
+  getAll: function(opts) {
+    opts = opts || {};
+    return sbFetch('users', 'GET', { select: '*', order: 'created_at.desc', limit: opts.limit || 100 });
+  },
+  syncUser: function(user) {
+    var self = this;
+    if (!user || !user.email) return Promise.resolve();
+    return self.getByEmail(user.email).then(function(existing) {
+      if (existing) return existing;
+      return self.create({
+        uid: user.id || '', name: user.name || '', first_name: user.firstName || '',
+        last_name: user.lastName || '', email: user.email || '', phone: user.phone || '',
+        constitution: user.constitution || '', referral: user.referral || '',
+        provider: user.provider || 'email', picture: user.picture || '',
+        email_verified: user.emailVerified || false
+      });
+    });
+  }
+};
+
+// ═══════════════════════════════
 // PHASE 2: LOYALTY
 // ═══════════════════════════════
 window.AnimaLoyalty = {

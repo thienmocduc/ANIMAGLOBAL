@@ -8325,11 +8325,15 @@ function verifyOTP(){
   localStorage.setItem('anima_user',JSON.stringify(currentUser));
   window.currentUser=currentUser;
 
-  /* Sync to admin */
+  /* Sync to Supabase users table */
+  if(window.AnimaUsers) AnimaUsers.syncUser(reg.user).catch(function(){});
+  /* Sync to AnimaSync for cross-tab */
   if(window.AnimaSync){
     AnimaSync.push('customers',{name:reg.user.name,email:reg.user.email,phone:reg.user.phone,constitution:reg.user.constitution,referral:reg.user.referral,joinDate:new Date().toISOString().split('T')[0],status:'active'});
     AnimaSync.push('activities',{type:'customer_new',vi:reg.user.name+' vừa đăng ký (đã xác minh email)',en:reg.user.name+' registered (email verified)',ago:0});
   }
+  /* Auto-create CRM lead */
+  if(window.AnimaCRM) AnimaCRM.createLead({name:reg.user.name,phone:reg.user.phone||'',email:reg.user.email,source:'registration',status:'new',notes:'Đăng ký mới qua web'}).catch(function(){});
 
   document.getElementById('otpVerifyBox').remove();
   updateNavUser();closeAuth();
