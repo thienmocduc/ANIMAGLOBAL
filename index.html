@@ -4595,8 +4595,8 @@ document.body.style.overflow='';
           </label>
           <label onclick="selectPayment('momo')" id="pm-momo" style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border:1px solid rgba(0,200,150,0.12);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .2s">
             <div style="width:18px;height:18px;border-radius:50%;border:2px solid rgba(0,200,150,.3);display:flex;align-items:center;justify-content:center"><div class="pm-dot" style="width:10px;height:10px;border-radius:50%;background:transparent"></div></div>
-            <div><div style="font-size:13px;font-weight:600;color:var(--t1)" data-vi="Ví MoMo / ZaloPay" data-en="MoMo / ZaloPay Wallet">Ví MoMo / ZaloPay</div>
-            <div style="font-size:11px;color:var(--t3)" data-vi="Thanh toán qua QR code" data-en="Pay via QR code">Thanh toán qua QR code</div></div>
+            <div><div style="font-size:13px;font-weight:600;color:var(--t1)" data-vi="VNPay QR" data-en="VNPay QR">VNPay QR</div>
+            <div style="font-size:11px;color:var(--t3)" data-vi="Thanh toán qua QR code VNPay" data-en="Pay via VNPay QR code">Thanh toán qua QR code VNPay</div></div>
           </label>
         </div>
       </div>
@@ -4613,12 +4613,12 @@ document.body.style.overflow='';
         <div style="margin-top:8px;font-size:11px;color:var(--t3);font-style:italic" data-vi="Vui lòng chuyển khoản trước khi bấm Xác Nhận. Đơn hàng sẽ được xử lý sau khi xác nhận thanh toán." data-en="Please transfer before confirming. Order will be processed after payment verification.">Vui lòng chuyển khoản trước khi bấm Xác Nhận. Đơn sẽ được xử lý sau khi xác nhận TT.</div>
       </div>
 
-      <!-- MoMo/ZaloPay QR (hidden by default) -->
-      <div id="ord-momo-info" style="display:none;background:rgba(166,48,141,0.06);border:1px solid rgba(166,48,141,0.2);border-radius:12px;padding:14px 16px;text-align:center">
-        <div style="font-size:12px;font-weight:600;color:#A6308D;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">MoMo / ZaloPay</div>
-        <div style="font-size:13px;color:var(--t2);margin-bottom:8px" data-vi="Số điện thoại nhận tiền:" data-en="Payment phone:">Số điện thoại nhận tiền:</div>
-        <div style="font-size:20px;font-weight:700;color:var(--t1);font-family:var(--fb);letter-spacing:2px">0913 156 676</div>
-        <div style="margin-top:8px;font-size:11px;color:var(--t3);font-style:italic" data-vi="Nội dung: AC [SĐT của bạn]. Đơn hàng xử lý sau khi xác nhận thanh toán." data-en="Content: AC [Your Phone]. Order processed after payment confirmation.">Nội dung: AC [SĐT của bạn]</div>
+      <!-- VNPay QR (hidden by default) -->
+      <div id="ord-momo-info" style="display:none;background:rgba(0,106,176,0.06);border:1px solid rgba(0,106,176,0.2);border-radius:12px;padding:14px 16px;text-align:center">
+        <div style="font-size:12px;font-weight:600;color:#006AB0;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">VNPay QR</div>
+        <div style="font-size:13px;color:var(--t2);margin-bottom:8px" data-vi="Quét QR hoặc thanh toán qua VNPay" data-en="Scan QR or pay via VNPay">Quét QR hoặc thanh toán qua VNPay</div>
+        <div style="font-size:14px;color:var(--t1);margin-bottom:4px" data-vi="Sau khi bấm Xác Nhận, hệ thống sẽ tạo link thanh toán PayOS tự động." data-en="After confirming, the system will create a PayOS payment link automatically.">Sau khi bấm Xác Nhận, hệ thống sẽ tạo link thanh toán tự động.</div>
+        <div style="margin-top:8px;font-size:11px;color:var(--t3);font-style:italic" data-vi="Hỗ trợ: VNPay, ngân hàng nội địa, ví điện tử" data-en="Supports: VNPay, domestic banks, e-wallets">Hỗ trợ: VNPay, ngân hàng nội địa, ví điện tử</div>
       </div>
 
       <button id="ord-submit" onclick="submitOrder()" style="background:linear-gradient(135deg,var(--g-dark),var(--g1));color:#000;border:none;border-radius:30px;padding:14px 0;width:100%;font-family:var(--fb);font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-top:4px;transition:opacity .2s" onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'" data-vi="Xác Nhận Đặt Hàng →" data-en="Confirm Order →">Xác Nhận Đặt Hàng →</button>
