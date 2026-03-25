@@ -82,8 +82,8 @@ img,video{max-width:100%;height:auto}
   .nav-center.nav-center{display:none!important}
   .nav-right .nav-cta{display:none!important}
   .nav-right{margin-left:auto!important;gap:8px!important}
-  nav#mainNav{padding:0 12px!important;height:52px!important}
-  .nav-logo-img{height:36px!important}
+  nav#mainNav{padding:0 12px!important;height:70px!important}
+  .nav-logo-img{height:80px!important}
   .lang-toggle{transform:scale(.85);transform-origin:right center}
 
   /* Global — cards sát viền màn hình */
@@ -292,8 +292,8 @@ img,video{max-width:100%;height:auto}
 
 /* ══════════ SMALL ≤480px ══════════ */
 @media(max-width:480px){
-  nav#mainNav{padding:0 8px!important;height:48px!important}
-  .nav-logo-img{height:30px!important}
+  nav#mainNav{padding:0 8px!important;height:60px!important}
+  .nav-logo-img{height:60px!important}
   section{padding:16px 6px!important}
   section.hero{min-height:40vh!important}
   .sec-wrap{padding:16px 6px!important}
