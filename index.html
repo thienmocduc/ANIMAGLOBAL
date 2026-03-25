@@ -8348,19 +8348,19 @@ function resendOTP(){
 }
 
 function sendOTPEmail(email,otp,name){
-  /* Gửi qua Supabase Edge Function hoặc fetch API */
-  var SUPABASE_URL=window.SUPABASE_URL||'https://pvhfzqopcorzaoghbywo.supabase.co';
-  var SUPABASE_KEY=window.SUPABASE_ANON||'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2aGZ6cW9wY29yemFvZ2hieXdvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMjIyNDksImV4cCI6MjA4NzY5ODI0OX0.rv1CJizk4GpFjOw7I5ifipyEYv2TMSGeQbdf358PjBU';
-
-  /* Lưu OTP vào Supabase để verify phía server */
-  fetch(SUPABASE_URL+'/rest/v1/otp_codes',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Prefer':'return=minimal'},
-    body:JSON.stringify({email:email,code:otp,name:name,created_at:new Date().toISOString()})
-  }).catch(function(){});
-
-  /* Hiển thị mã OTP tạm thời cho dev/testing (production sẽ gửi email thật) */
-  console.log('[AnimaCare OTP] Email:',email,'Code:',otp);
+  /* Try EmailJS first */
+  if(window.emailjs && typeof sendVerificationEmail==='function'){
+    sendVerificationEmail(email,name).catch(function(){});
+  }
+  /* Auto-fill OTP for user convenience (until email service configured) */
+  setTimeout(function(){
+    var inputs=document.querySelectorAll('#otpInputs input');
+    if(inputs.length===6){
+      for(var i=0;i<6;i++){inputs[i].value=otp[i];}
+      showToast('Mã xác minh: '+otp,'#00C896');
+    }
+  },1500);
+  console.log('[OTP]',email,otp);
 }
 
 function completeRegistration(){
