@@ -7974,13 +7974,7 @@ function completeRegistration(){
 }
 function handleGoogleAuth(){
 /* Google Identity Services - One Tap / Button Sign-In */
-var CLIENT_ID='YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
-if(CLIENT_ID.indexOf('YOUR_')===0){
-/* Demo mode - no real client ID configured */
-var demoUser={name:'Google User',email:'user@gmail.com',picture:'',provider:'google'};
-handleGoogleCredential(demoUser);
-return;
-}
+var CLIENT_ID='142755402716-7lhtorvkm0hneqs0jiq0ub7r7skbkh36.apps.googleusercontent.com';
 if(typeof google==='undefined'||!google.accounts){
 showToast(lang==='vi'?'Google Sign-In đang tải...':' Loading Google Sign-In...','var(--g1)');
 setTimeout(handleGoogleAuth,1000);
@@ -8038,6 +8032,7 @@ var userData={
 name:user.name,
 email:user.email,
 picture:user.picture,
+phone:'',
 provider:'google',
 loginAt:new Date().toISOString()
 };
@@ -8049,6 +8044,14 @@ showToast(
 (lang==='vi'?'Chào mừng ':'Welcome ')+user.name+'!',
 'var(--g1)'
 );
+/* Save to Supabase contacts */
+if(window.AnimaContacts){
+  AnimaContacts.create({
+    name:user.name,email:user.email,phone:'',
+    source:'google_login',status:'active',
+    notes:'Google OAuth login',tags:['google','member']
+  }).catch(function(){});
+}
 }
 function showForgot(){showToast(lang==='vi'?'Link khôi phục sẽ gửi qua email':'Password reset link will be sent to your email','var(--g1)');}
 function updateNavUser(){var btn=document.getElementById('navAuthBtn');if(!btn||!currentUser)return;
