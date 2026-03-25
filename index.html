@@ -110,6 +110,89 @@ if(window.innerWidth<=768){
   }).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
 }
 </script>
+<!-- ═══ LIGHT THEME ═══ -->
+<style id="lightThemeCSS">
+html.light-mode{color-scheme:light}
+html.light-mode body{background:#F5F3EF!important;color:#1A1A2E!important}
+html.light-mode #bgCanvas{opacity:0.03!important}
+html.light-mode nav{background:#FFFFFF!important;border-bottom:1px solid rgba(0,0,0,.08)!important;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+html.light-mode .nav-link{color:rgba(26,26,46,.65)!important}
+html.light-mode .nav-link:hover{color:#005A42!important}
+html.light-mode .nav-logo-img{filter:brightness(0.2)!important;mix-blend-mode:normal!important}
+html.light-mode .lb{color:#1A1A2E!important}
+html.light-mode .lb.active{background:#00C896!important;color:#fff!important}
+html.light-mode .lang-toggle{background:rgba(0,0,0,.04)!important;border-color:rgba(0,0,0,.1)!important}
+html.light-mode #navAuthBtn{background:rgba(0,200,150,.08)!important;color:#005A42!important;border-color:rgba(0,90,66,.2)!important}
+html.light-mode section{background:#F5F3EF!important}
+html.light-mode .intro-section{background:linear-gradient(180deg,#EDE9E3 0%,#F5F3EF 100%)!important}
+html.light-mode .intro-headline,.light-mode .sec-ttl{color:#1A1A2E!important}
+html.light-mode .intro-quote,.light-mode .sec-sub{color:#4A4A5A!important}
+html.light-mode .intro-eyebrow,.light-mode .sec-lbl{color:#005A42!important}
+html.light-mode .is-card{background:#FFFFFF!important;border-color:rgba(0,0,0,.06)!important}
+html.light-mode .is-lbl{color:#6B7280!important}
+html.light-mode .eco-card,.light-mode .step-card,.light-mode .ip-card,.light-mode .tech-card{background:#FFFFFF!important;border-color:rgba(0,0,0,.08)!important;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+html.light-mode .eco-ttl,.light-mode .step-ttl,.light-mode .ip-name{color:#1A1A2E!important}
+html.light-mode .eco-desc,.light-mode .step-desc,.light-mode .ip-sub{color:#6B7280!important}
+html.light-mode .eco-sub,.light-mode .step-tag{color:#005A42!important}
+html.light-mode .ipo-right{background:#FFFFFF!important;border-color:rgba(0,0,0,.08)!important}
+html.light-mode footer{background:#1A1A2E!important}
+html.light-mode .hero-img{filter:brightness(1.05)}
+/* Profile overlay */
+html.light-mode #profileOverlay{background:rgba(245,243,239,.96)!important}
+html.light-mode #profileOverlay *{color:#1A1A2E}
+html.light-mode #profSidebar{background:#FFFFFF!important;border-color:rgba(0,0,0,.06)!important}
+html.light-mode .prof-tab{color:#6B7280!important}
+html.light-mode .prof-tab.on{color:#005A42!important;background:rgba(0,200,150,.08)!important}
+html.light-mode #profileOverlay main{background:#F5F3EF!important}
+html.light-mode #profileOverlay [style*="background:rgba(0,200,150"]{background:rgba(0,200,150,.06)!important;border-color:rgba(0,200,150,.15)!important}
+html.light-mode #profileOverlay [style*="background:rgba(155,130,255"]{background:rgba(155,130,255,.06)!important}
+html.light-mode #profileOverlay [style*="background:rgba(0,191,255"]{background:rgba(0,191,255,.06)!important}
+html.light-mode #profileOverlay input,html.light-mode #profileOverlay select,html.light-mode #profileOverlay textarea{background:#FFFFFF!important;color:#1A1A2E!important;border-color:rgba(0,0,0,.12)!important}
+/* Auth modal */
+html.light-mode #authModal>div:last-child{background:#FFFFFF!important}
+html.light-mode #authModal input{background:#F5F3EF!important;color:#1A1A2E!important;border-color:rgba(0,0,0,.12)!important}
+/* Order modal */
+html.light-mode #orderBox{background:#FFFFFF!important;border-color:rgba(0,0,0,.1)!important}
+html.light-mode #orderBox input,html.light-mode #orderBox select,html.light-mode #orderBox textarea{background:#F5F3EF!important;color:#1A1A2E!important}
+/* Chatbot */
+html.light-mode #acBotPanel{background:#FFFFFF!important;border-color:rgba(0,0,0,.1)!important}
+html.light-mode #acBotPanel *{color:#1A1A2E}
+html.light-mode #acBotMsgs>div{background:rgba(0,200,150,.06)!important;border-color:rgba(0,200,150,.12)!important;color:#1A1A2E!important}
+html.light-mode #acBotInput{background:#F5F3EF!important;color:#1A1A2E!important;border-color:rgba(0,0,0,.1)!important}
+/* Overlays */
+html.light-mode [id$="Overlay"]{background:rgba(245,243,239,.96)!important}
+html.light-mode [id$="Overlay"] *{color:#1A1A2E}
+html.light-mode [id$="Overlay"] .sec-ttl,html.light-mode [id$="Overlay"] h2{color:#1A1A2E!important}
+html.light-mode [id$="Overlay"] [style*="background:#0"]{background:#FFFFFF!important}
+html.light-mode [id$="Overlay"] [style*="background:var(--dark"]{background:#FFFFFF!important}
+/* Store */
+html.light-mode #storeOverlay{background:rgba(245,243,239,.98)!important}
+/* Admin stays dark */
+html.light-mode #adminDashboard{background:#030608!important;color:#F8F2E0!important}
+html.light-mode #adminDashboard *{color:inherit}
+html.light-mode #centerDashboard{background:#030608!important;color:#F8F2E0!important}
+html.light-mode #centerDashboard *{color:inherit}
+</style>
+<script>
+/* Theme toggle */
+(function(){
+  var saved=localStorage.getItem('anima_theme');
+  if(saved==='light') document.documentElement.classList.add('light-mode');
+  document.addEventListener('DOMContentLoaded',function(){
+    var btn=document.getElementById('themeToggleBtn');
+    if(btn) btn.innerHTML=saved==='light'?'🌙':'☀️';
+  });
+})();
+window.toggleTheme=function(){
+  var html=document.documentElement;
+  html.classList.toggle('light-mode');
+  var isLight=html.classList.contains('light-mode');
+  localStorage.setItem('anima_theme',isLight?'light':'dark');
+  /* Update toggle button if exists */
+  var btn=document.getElementById('themeToggleBtn');
+  if(btn) btn.innerHTML=isLight?'🌙 Tối':'☀️ Sáng';
+};
+</script>
 </head>
 <body>
 
@@ -228,6 +311,7 @@ if(window.innerWidth<=768){
       <button class="lb active" id="btnVI" onclick="setLang('vi')" style="padding:3px 8px;font-size:11px;border-radius:12px">VI</button>
       <button class="lb" id="btnEN" onclick="setLang('en')" style="padding:3px 8px;font-size:11px;border-radius:12px">EN</button>
     </div>
+    <button id="themeToggleBtn" onclick="toggleTheme()" title="Sáng/Tối" style="background:rgba(0,200,150,.06);border:1px solid rgba(0,200,150,.1);border-radius:12px;padding:3px 8px;font-size:12px;cursor:pointer;color:var(--g1);flex-shrink:0;transition:all .2s">☀️</button>
     <button id="navAuthBtn" onclick="openAuth('login')" title="Tài khoản" style="background:rgba(0,200,150,0.08);border:1px solid rgba(0,200,150,0.25);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--g1);transition:background .2s;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;position:relative;z-index:10" onmouseover="this.style.background='rgba(0,200,150,0.18)'" onmouseout="this.style.background='rgba(0,200,150,0.08)'">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     </button>
