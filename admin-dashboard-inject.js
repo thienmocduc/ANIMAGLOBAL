@@ -460,6 +460,109 @@ function renderAnalytics(){
   document.getElementById('admPageContent').innerHTML=html;
 }
 
+// ── REAL Analytics (Supabase + Chart.js) ──────────────────
+window.renderAdmAnalytics = function(){
+  var el=document.getElementById('admPageContent');if(!el)return;
+  el.innerHTML='<div style="text-align:center;padding:40px;color:#607870">Loading analytics...</div>';
+
+  Promise.all([
+    window.AnimaOrders?AnimaOrders.getAll({limit:500}):Promise.resolve([]),
+    window.AnimaBookings?AnimaBookings.getAll({limit:500}):Promise.resolve([]),
+    window.AnimaCRM?AnimaCRM.getLeads({limit:500}):Promise.resolve([]),
+    window.AnimaRatings?AnimaRatings.getAll({limit:500}):Promise.resolve([])
+  ]).then(function(res){
+    var orders=res[0]||[],bookings=res[1]||[],leads=res[2]||[],ratings=res[3]||[];
+    var totalRev=orders.reduce(function(s,o){return s+(o.total_amount||0);},0);
+    var totalBookRev=bookings.reduce(function(s,b){return s+(b.service_price||0);},0);
+    var gmv=totalRev+totalBookRev;
+    var aov=orders.length?(totalRev/orders.length):0;
+    var avgRating=ratings.length?(ratings.reduce(function(s,r){return s+r.stars;},0)/ratings.length):0;
+
+    var h='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:20px">';
+    [{l:'GMV',v:formatVND(gmv),c:'#00C896'},{l:'Đơn hàng',v:orders.length,c:'#60A5FA'},{l:'Lịch hẹn',v:bookings.length,c:'#9B82FF'},{l:'CRM Leads',v:leads.length,c:'#FFB800'},{l:'AOV',v:formatVND(Math.round(aov)),c:'#FF6B9D'},{l:'Rating TB',v:avgRating.toFixed(1)+'⭐',c:'#FFC800'}].forEach(function(k){
+      h+='<div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:10px;padding:12px;text-align:center"><div style="font-size:18px;font-weight:700;color:'+k.c+'">'+k.v+'</div><div style="font-size:10px;color:#607870;margin-top:2px">'+k.l+'</div></div>';
+    });
+    h+='</div>';
+
+    // Charts
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">';
+    h+='<div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:12px;padding:16px"><div style="font-size:13px;font-weight:600;color:#F8F2E0;margin-bottom:12px">Doanh thu theo ngày (7 ngày)</div><canvas id="chartRevenue" height="180"></canvas></div>';
+    h+='<div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:12px;padding:16px"><div style="font-size:13px;font-weight:600;color:#F8F2E0;margin-bottom:12px">CRM Funnel</div><canvas id="chartFunnel" height="180"></canvas></div>';
+    h+='</div>';
+
+    // Lead source breakdown
+    h+='<div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:12px;padding:16px"><div style="font-size:13px;font-weight:600;color:#F8F2E0;margin-bottom:12px">Nguồn Lead</div><canvas id="chartSources" height="120"></canvas></div>';
+
+    el.innerHTML=h;
+
+    // Render charts with Chart.js
+    if(typeof Chart!=='undefined'){
+      Chart.defaults.color='#607870';Chart.defaults.borderColor='rgba(0,200,150,.08)';
+
+      // Revenue by day (last 7 days)
+      var days=[],revByDay=[];
+      for(var d=6;d>=0;d--){
+        var dt=new Date();dt.setDate(dt.getDate()-d);
+        var key=dt.toISOString().split('T')[0];
+        days.push(dt.toLocaleDateString('vi-VN',{day:'numeric',month:'short'}));
+        var dayRev=orders.filter(function(o){return o.created_at&&o.created_at.startsWith(key);}).reduce(function(s,o){return s+(o.total_amount||0);},0);
+        dayRev+=bookings.filter(function(b){return b.created_at&&b.created_at.startsWith(key);}).reduce(function(s,b){return s+(b.service_price||0);},0);
+        revByDay.push(dayRev);
+      }
+      new Chart(document.getElementById('chartRevenue'),{type:'bar',data:{labels:days,datasets:[{label:'Doanh thu',data:revByDay,backgroundColor:'rgba(0,200,150,.6)',borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:function(v){return(v/1000000).toFixed(1)+'M';}}}}}});
+
+      // CRM Funnel
+      var funnelData=['new','contacted','qualified','proposal','won'].map(function(s){return leads.filter(function(l){return l.status===s;}).length;});
+      new Chart(document.getElementById('chartFunnel'),{type:'bar',data:{labels:['Mới','Liên hệ','Chất lượng','Đề xuất','Thành công'],datasets:[{data:funnelData,backgroundColor:['#60A5FA','#FFB800','#9B82FF','#FF6B9D','#22C55E'],borderRadius:4}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}}}});
+
+      // Lead sources
+      var sources={};leads.forEach(function(l){var s=l.source||'unknown';sources[s]=(sources[s]||0)+1;});
+      new Chart(document.getElementById('chartSources'),{type:'doughnut',data:{labels:Object.keys(sources),datasets:[{data:Object.values(sources),backgroundColor:['#00C896','#60A5FA','#9B82FF','#FFB800','#FF6B9D','#22C55E']}]},options:{responsive:true,plugins:{legend:{position:'right'}}}});
+    }
+  });
+};
+var renderAnalyticsOld=renderAnalytics;
+
+// ── Real Inventory (Supabase) ──────────────────
+window.renderAdmInventory = function(){
+  var el=document.getElementById('admPageContent');if(!el)return;
+  el.innerHTML='<div style="text-align:center;padding:40px;color:#607870">Loading inventory...</div>';
+  if(!window.AnimaInventory){el.innerHTML='Supabase not connected';return;}
+
+  AnimaInventory.getAll({limit:200}).then(function(items){
+    var lowStock=items.filter(function(i){return i.stock<=i.min_stock;}).length;
+    var totalValue=items.reduce(function(s,i){return s+(i.stock||0)*(i.price||0);},0);
+
+    var h='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:16px">';
+    [{l:'Tổng SKU',v:items.length,c:'#00C896'},{l:'Cảnh báo tồn',v:lowStock,c:'#FF4D6D'},{l:'Giá trị kho',v:formatVND(totalValue),c:'#FFB800'}].forEach(function(k){
+      h+='<div style="background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:8px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:700;color:'+k.c+'">'+k.v+'</div><div style="font-size:9px;color:#607870">'+k.l+'</div></div>';
+    });
+    h+='</div>';
+
+    h+='<div class="adm-card"><div class="adm-card-header"><span class="adm-card-title">Kho hàng ('+items.length+')</span><button class="adm-btn adm-btn-primary" onclick="window._admAddStock()" style="font-size:11px;padding:4px 10px">+ Nhập kho</button></div>';
+    h+='<div class="adm-table-wrap"><table class="adm-table"><thead><tr><th>SKU</th><th>Sản phẩm</th><th>Cơ sở</th><th>Tồn kho</th><th>Tối thiểu</th><th>Giá</th><th>Trạng thái</th></tr></thead><tbody>';
+    if(!items.length) h+='<tr><td colspan="7" style="text-align:center;padding:30px;color:#607870">Chưa có hàng trong kho</td></tr>';
+    items.forEach(function(i){
+      var isLow=i.stock<=i.min_stock;
+      h+='<tr><td style="font-family:monospace;font-size:11px;color:#7B5FFF">'+i.sku+'</td><td>'+i.product_name+'</td><td style="font-size:11px">'+i.center_id+'</td><td style="font-weight:600;color:'+(isLow?'#FF4D6D':'#F8F2E0')+'">'+i.stock+' '+i.unit+'</td><td>'+i.min_stock+'</td><td style="color:#FFB800">'+formatVND(i.price)+'</td><td>'+(isLow?'<span class="adm-badge adm-badge-red">Thấp</span>':'<span class="adm-badge adm-badge-green">OK</span>')+'</td></tr>';
+    });
+    h+='</tbody></table></div></div>';
+    el.innerHTML=h;
+  });
+};
+
+window._admAddStock = function(){
+  var sku=prompt('SKU (VD: A119-10):');if(!sku)return;
+  var name=prompt('Tên sản phẩm:');if(!name)return;
+  var center=prompt('Mã cơ sở (VD: CTR-HN):');if(!center)return;
+  var stock=parseInt(prompt('Số lượng nhập:')||'0');
+  var price=parseInt(prompt('Giá (VNĐ):')||'0');
+  AnimaInventory.create({center_id:center,sku:sku,product_name:name,stock:stock,min_stock:5,price:price,unit:'hộp'}).then(function(){
+    AnimaInventory.addTransaction({center_id:center,sku:sku,type:'in',quantity:stock,note:'Nhập kho mới',created_by:'admin'});
+    renderAdmInventory();
+  });
+};
+
 // ── Bookings Page ────────────────────────────────────────
 function renderBookings(){
   var html='<div class="adm-card"><div class="adm-card-header"><span class="adm-card-title" data-vi="T\u1EA5t c\u1EA3 l\u1ECBch h\u1EB9n" data-en="All Bookings">T\u1EA5t c\u1EA3 l\u1ECBch h\u1EB9n</span><button class="adm-btn adm-btn-primary" onclick="admShowBookingForm()">+ Th\u00EAm m\u1EDBi</button></div>';

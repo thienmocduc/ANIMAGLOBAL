@@ -360,5 +360,93 @@ window.AnimaNotifs = {
   }
 };
 
-console.log('[AnimaCRM] Supabase client loaded — Phase 1 MVP — ' + SUPABASE_URL);
+// ═══════════════════════════════
+// PHASE 2: LOYALTY
+// ═══════════════════════════════
+window.AnimaLoyalty = {
+  get: function(userId) {
+    return sbFetch('loyalty_points', 'GET', { filter: 'user_id=eq.' + encodeURIComponent(userId), select: '*' })
+      .then(function(r) { return r[0] || null; });
+  },
+  create: function(data) { return sbFetch('loyalty_points', 'POST', { body: data }).then(function(r) { return r[0]; }); },
+  update: function(id, data) { data.updated_at = new Date().toISOString(); return sbFetch('loyalty_points?id=eq.' + id, 'PATCH', { body: data }); },
+  getOrCreate: function(userId, userName) {
+    var self = this;
+    return this.get(userId).then(function(lp) {
+      if (lp) return lp;
+      return self.create({ user_id: userId, user_name: userName || '', points: 0, level: 'bronze', total_earned: 0, total_spent: 0 });
+    });
+  },
+  getAll: function(opts) { opts = opts || {}; return sbFetch('loyalty_points', 'GET', { select: '*', order: opts.order || 'total_earned.desc', limit: opts.limit || 100 }); },
+  addTransaction: function(data) { return sbFetch('loyalty_transactions', 'POST', { body: data }).then(function(r) { return r[0]; }); },
+  getTransactions: function(userId, limit) { return sbFetch('loyalty_transactions', 'GET', { filter: 'user_id=eq.' + encodeURIComponent(userId), order: 'created_at.desc', limit: limit || 20, select: '*' }); }
+};
+
+// ═══════════════════════════════
+// PHASE 2: REFERRALS
+// ═══════════════════════════════
+window.AnimaReferrals = {
+  getCode: function(userId) {
+    return sbFetch('referral_codes', 'GET', { filter: 'user_id=eq.' + encodeURIComponent(userId), select: '*' })
+      .then(function(r) { return r[0] || null; });
+  },
+  createCode: function(data) { return sbFetch('referral_codes', 'POST', { body: data }).then(function(r) { return r[0]; }); },
+  findByCode: function(code) {
+    return sbFetch('referral_codes', 'GET', { filter: 'code=eq.' + encodeURIComponent(code), select: '*' })
+      .then(function(r) { return r[0] || null; });
+  },
+  updateCode: function(id, data) { return sbFetch('referral_codes?id=eq.' + id, 'PATCH', { body: data }); },
+  logUse: function(data) { return sbFetch('referral_uses', 'POST', { body: data }).then(function(r) { return r[0]; }); },
+  getUses: function(code) { return sbFetch('referral_uses', 'GET', { filter: 'code=eq.' + encodeURIComponent(code), order: 'created_at.desc', select: '*' }); }
+};
+
+// ═══════════════════════════════
+// PHASE 2: CHAT
+// ═══════════════════════════════
+window.AnimaConversations = {
+  getAll: function(opts) { opts = opts || {}; return sbFetch('conversations', 'GET', { select: '*', order: 'updated_at.desc', limit: opts.limit || 50, filter: opts.filter || '' }); },
+  create: function(data) { return sbFetch('conversations', 'POST', { body: data }).then(function(r) { return r[0]; }); },
+  update: function(id, data) { data.updated_at = new Date().toISOString(); return sbFetch('conversations?id=eq.' + id, 'PATCH', { body: data }); },
+  find: function(customerId, ktvId) {
+    return sbFetch('conversations', 'GET', { filter: 'customer_id=eq.' + encodeURIComponent(customerId) + '&ktv_id=eq.' + encodeURIComponent(ktvId), select: '*' })
+      .then(function(r) { return r[0] || null; });
+  }
+};
+window.AnimaChat = {
+  getMessages: function(convId, limit) { return sbFetch('chat_messages', 'GET', { filter: 'conversation_id=eq.' + convId, order: 'created_at.asc', limit: limit || 100, select: '*' }); },
+  send: function(data) { return sbFetch('chat_messages', 'POST', { body: data }).then(function(r) { return r[0]; }); },
+  markRead: function(convId, senderType) {
+    var opposite = senderType === 'customer' ? 'ktv' : 'customer';
+    return sbFetch('chat_messages?conversation_id=eq.' + convId + '&sender_type=eq.' + opposite + '&read=eq.false', 'PATCH', { body: { read: true } });
+  }
+};
+
+// ═══════════════════════════════
+// PHASE 2: INVENTORY
+// ═══════════════════════════════
+window.AnimaInventory = {
+  getAll: function(opts) { opts = opts || {}; return sbFetch('inventory', 'GET', { select: '*', order: 'updated_at.desc', limit: opts.limit || 200, filter: opts.filter || '' }); },
+  getByCenter: function(centerId) { return this.getAll({ filter: 'center_id=eq.' + encodeURIComponent(centerId) }); },
+  create: function(data) { return sbFetch('inventory', 'POST', { body: data }).then(function(r) { return r[0]; }); },
+  update: function(id, data) { data.updated_at = new Date().toISOString(); return sbFetch('inventory?id=eq.' + id, 'PATCH', { body: data }); },
+  addTransaction: function(data) { return sbFetch('inventory_transactions', 'POST', { body: data }).then(function(r) { return r[0]; }); },
+  getTransactions: function(centerId, limit) { return sbFetch('inventory_transactions', 'GET', { filter: centerId ? 'center_id=eq.' + encodeURIComponent(centerId) : '', order: 'created_at.desc', limit: limit || 50, select: '*' }); }
+};
+
+// ═══════════════════════════════
+// PHASE 2: COURSES & ENROLLMENTS
+// ═══════════════════════════════
+window.AnimaCourses = {
+  getAll: function(opts) { opts = opts || {}; return sbFetch('courses', 'GET', { select: '*', order: 'created_at.asc', limit: opts.limit || 50, filter: opts.filter || '' }); },
+  create: function(data) { return sbFetch('courses', 'POST', { body: data }).then(function(r) { return r[0]; }); },
+  update: function(id, data) { return sbFetch('courses?id=eq.' + id, 'PATCH', { body: data }); }
+};
+window.AnimaEnrollments = {
+  getAll: function(opts) { opts = opts || {}; return sbFetch('enrollments', 'GET', { select: '*', order: 'created_at.desc', limit: opts.limit || 100, filter: opts.filter || '' }); },
+  getByKTV: function(ktvId) { return this.getAll({ filter: 'ktv_id=eq.' + encodeURIComponent(ktvId) }); },
+  create: function(data) { return sbFetch('enrollments', 'POST', { body: data }).then(function(r) { return r[0]; }); },
+  update: function(id, data) { return sbFetch('enrollments?id=eq.' + id, 'PATCH', { body: data }); }
+};
+
+console.log('[AnimaCRM] Supabase client loaded — Phase 2 Growth — ' + SUPABASE_URL);
 })();
