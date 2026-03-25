@@ -148,9 +148,23 @@ const dashboardBlock = `
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
       <span data-vi="CRM Leads" data-en="CRM Leads">CRM Leads</span>
     </div>
+    <div class="adm-nav-item" data-page="bookings_mgmt" onclick="admNav(this,'bookings_mgmt')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span data-vi="L\u1ECBch H\u1EB9n" data-en="Bookings">Lịch Hẹn</span>
+    </div>
     <div class="adm-nav-item" data-page="inventory" onclick="admNav(this,'inventory')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27,6.96 12,12.01 20.73,6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
       <span data-vi="Kho h\u00E0ng" data-en="Inventory">Inventory</span>
+    </div>
+    <div class="adm-nav-section" data-vi="T\u00E0i ch\u00EDnh" data-en="Finance">Tài chính</div>
+    <div class="adm-nav-item" data-page="wallets" onclick="admNav(this,'wallets')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><circle cx="18" cy="15" r="1.5"/></svg>
+      <span data-vi="V\u00ED & R\u00FAt ti\u1EC1n" data-en="Wallets">Ví & Rút tiền</span>
+    </div>
+    <div class="adm-nav-section" data-vi="Nh\u00E2n s\u1EF1" data-en="HR">Nhân sự</div>
+    <div class="adm-nav-item" data-page="kyc" onclick="admNav(this,'kyc')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <span data-vi="X\u00E1c minh KTV" data-en="KTV Verify">Xác minh KTV</span>
     </div>
     <div class="adm-nav-section" data-vi="Trung t\u00E2m" data-en="Centers">Centers</div>
     <div class="adm-nav-item" data-page="centers" onclick="admNav(this,'centers')">
@@ -340,6 +354,9 @@ function renderPage(page){
     dashboard:{vi:'B\u1EA3ng \u0111i\u1EC1u khi\u1EC3n',en:'Dashboard'},
     analytics:{vi:'Ph\u00E2n t\u00EDch',en:'Analytics'},
     bookings:{vi:'Qu\u1EA3n l\u00FD l\u1ECBch h\u1EB9n',en:'Manage Bookings'},
+    bookings_mgmt:{vi:'L\u1ECBch H\u1EB9n (Supabase)',en:'Bookings (Supabase)'},
+    wallets:{vi:'V\u00ED & Rút Ti\u1EC1n',en:'Wallets & Withdrawals'},
+    kyc:{vi:'X\u00E1c Minh KTV',en:'KTV Verification'},
     customers:{vi:'Qu\u1EA3n l\u00FD kh\u00E1ch h\u00E0ng',en:'Manage Customers'},
     pets:{vi:'Qu\u1EA3n l\u00FD th\u00FA c\u01B0ng',en:'Manage Pets'},
     orders:{vi:'Qu\u1EA3n l\u00FD \u0111\u01A1n h\u00E0ng',en:'Manage Orders'},
@@ -360,7 +377,10 @@ function renderPage(page){
     dashboard:renderDashboard,analytics:renderAnalytics,bookings:renderBookings,
     customers:renderCustomers,pets:renderPets,orders:renderOrders,
     inventory:renderInventory,centers:renderCenters,staff:renderStaff,
-    settings:renderSettings,audit:renderAudit
+    settings:renderSettings,audit:renderAudit,
+    bookings_mgmt:function(){if(typeof renderAdmBookings==='function')renderAdmBookings();},
+    wallets:function(){if(typeof renderAdmWallets==='function')renderAdmWallets();},
+    kyc:function(){if(typeof renderAdmKYC==='function')renderAdmKYC();}
   };
   var fn=renderers[page];
   if(fn) fn();
