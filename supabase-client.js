@@ -140,8 +140,45 @@ window.AnimaOrders = {
 
   updateStatus: function(id, status) {
     return this.update(id, { order_status: status });
+  },
+
+  // Auto-sync localStorage orders to Supabase (runs once on load)
+  syncLocal: function() {
+    var self = this;
+    var local = [];
+    try { local = JSON.parse(localStorage.getItem('anima_orders') || '[]'); } catch(e) {}
+    if (!local.length) return;
+    self.getAll({ limit: 500 }).then(function(db) {
+      var existing = (db || []).map(function(o) { return o.order_code; });
+      var toSync = local.filter(function(o) { return existing.indexOf(o._id || o.id) === -1; });
+      if (!toSync.length) return;
+      console.log('[AnimaOrders] Syncing ' + toSync.length + ' local orders to Supabase...');
+      toSync.forEach(function(o) {
+        var total = o.total || parseInt(String(o.amount || o.price || '0').replace(/[^\d]/g, '')) || 0;
+        self.create({
+          order_code: o._id || o.id || '',
+          customer_name: o.customer || o.name || '',
+          customer_phone: o.phone || '',
+          customer_email: '',
+          address: o.address || '',
+          items: JSON.stringify([{ name: o.product || '', qty: o.qty || 1, price: total, sku: o.sku || '' }]),
+          total_amount: total,
+          payment_method: o.paymentMethod || o.method || 'cod',
+          payment_status: 'unpaid',
+          order_status: o.status || 'pending',
+          center_id: o.centerId || '',
+          center_name: o.city || '',
+          commission: o.commission || 0,
+          notes: o.note || ''
+        }).then(function() { console.log('[AnimaOrders] Synced:', o._id || o.id); })
+          .catch(function(e) { console.warn('[AnimaOrders] Sync failed:', e); });
+      });
+    }).catch(function() {});
   }
 };
+
+// Auto-sync on page load
+setTimeout(function() { if (window.AnimaOrders) AnimaOrders.syncLocal(); }, 3000);
 
 // ═══════════════════════════════
 // CONTACTS
