@@ -10797,7 +10797,8 @@ function loadPage(p){
 if(p==='centers') renderCentersTable();
 if(p==='bookings') renderBookingsTable();
 if(p==='members') renderMembersTable();
-if(p==='orders') renderOrdersTable();
+if(p==='orders') { if(typeof renderOrders==='function'){var pg=document.getElementById('pg-orders');if(pg){pg.innerHTML='<div id="admPageContent"></div>';pg.classList.add('on');}renderOrders();}else renderOrdersTable(); }
+if(p==='bookings') { if(typeof renderAdmBookings==='function'){var pg=document.getElementById('pg-bookings');if(pg){pg.innerHTML='<div id="admPageContent"></div>';pg.classList.add('on');}renderAdmBookings();}else renderBookingsTable(); }
 if(p==='revenue') renderRevTable();
 if(p==='ai') renderAITable();
 if(p==='staff') renderStaffTable();
