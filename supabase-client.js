@@ -184,5 +184,144 @@ window.AnimaChats = {
   }
 };
 
-console.log('[AnimaCRM] Supabase client loaded — ' + SUPABASE_URL);
+// ═══════════════════════════════
+// BOOKINGS (Đặt lịch)
+// ═══════════════════════════════
+window.AnimaBookings = {
+  getAll: function(opts) {
+    opts = opts || {};
+    return sbFetch('bookings', 'GET', {
+      select: '*', order: opts.order || 'created_at.desc',
+      limit: opts.limit || 100, filter: opts.filter || ''
+    });
+  },
+  create: function(data) {
+    return sbFetch('bookings', 'POST', { body: data }).then(function(r) { return r[0]; });
+  },
+  update: function(id, data) {
+    data.updated_at = new Date().toISOString();
+    return sbFetch('bookings?id=eq.' + id, 'PATCH', { body: data }).then(function(r) { return r[0]; });
+  },
+  updateStatus: function(id, status) {
+    return this.update(id, { status: status });
+  }
+};
+
+// ═══════════════════════════════
+// WALLETS (Ví KTV/Center)
+// ═══════════════════════════════
+window.AnimaWallets = {
+  get: function(ownerId) {
+    return sbFetch('wallets', 'GET', { filter: 'owner_id=eq.' + encodeURIComponent(ownerId), select: '*' })
+      .then(function(r) { return r[0] || null; });
+  },
+  create: function(data) {
+    return sbFetch('wallets', 'POST', { body: data }).then(function(r) { return r[0]; });
+  },
+  getOrCreate: function(ownerId, ownerType, ownerName) {
+    var self = this;
+    return this.get(ownerId).then(function(w) {
+      if (w) return w;
+      return self.create({ owner_id: ownerId, owner_type: ownerType || 'ktv', owner_name: ownerName || '' });
+    });
+  },
+  addEarning: function(ownerId, amount, description, refId, refType) {
+    var self = this;
+    return this.get(ownerId).then(function(w) {
+      if (!w) return null;
+      var newBalance = (w.balance || 0) + amount;
+      var newEarned = (w.total_earned || 0) + amount;
+      return Promise.all([
+        sbFetch('wallets?id=eq.' + w.id, 'PATCH', { body: { balance: newBalance, total_earned: newEarned, updated_at: new Date().toISOString() } }),
+        sbFetch('wallet_transactions', 'POST', { body: { wallet_id: w.id, type: 'earning', amount: amount, description: description || '', reference_id: refId || '', reference_type: refType || '', balance_after: newBalance } })
+      ]);
+    });
+  },
+  update: function(id, data) {
+    data.updated_at = new Date().toISOString();
+    return sbFetch('wallets?id=eq.' + id, 'PATCH', { body: data });
+  }
+};
+
+// ═══════════════════════════════
+// WITHDRAWALS (Rút tiền)
+// ═══════════════════════════════
+window.AnimaWithdrawals = {
+  getAll: function(opts) {
+    opts = opts || {};
+    return sbFetch('withdrawals', 'GET', { select: '*', order: 'created_at.desc', limit: opts.limit || 50, filter: opts.filter || '' });
+  },
+  create: function(data) {
+    return sbFetch('withdrawals', 'POST', { body: data }).then(function(r) { return r[0]; });
+  },
+  approve: function(id, adminNote) {
+    return sbFetch('withdrawals?id=eq.' + id, 'PATCH', { body: { status: 'approved', admin_note: adminNote || '', processed_at: new Date().toISOString() } });
+  },
+  reject: function(id, adminNote) {
+    return sbFetch('withdrawals?id=eq.' + id, 'PATCH', { body: { status: 'rejected', admin_note: adminNote || '', processed_at: new Date().toISOString() } });
+  }
+};
+
+// ═══════════════════════════════
+// RATINGS (Đánh giá)
+// ═══════════════════════════════
+window.AnimaRatings = {
+  getAll: function(opts) {
+    opts = opts || {};
+    return sbFetch('ratings', 'GET', { select: '*', order: 'created_at.desc', limit: opts.limit || 100, filter: opts.filter || '' });
+  },
+  create: function(data) {
+    return sbFetch('ratings', 'POST', { body: data }).then(function(r) { return r[0]; });
+  },
+  getAverage: function(ratedId) {
+    return sbFetch('ratings', 'GET', { filter: 'rated_id=eq.' + encodeURIComponent(ratedId), select: 'stars' })
+      .then(function(r) {
+        if (!r || !r.length) return { avg: 0, count: 0 };
+        var sum = r.reduce(function(s, x) { return s + x.stars; }, 0);
+        return { avg: Math.round(sum / r.length * 10) / 10, count: r.length };
+      });
+  }
+};
+
+// ═══════════════════════════════
+// KYC (Xác minh KTV)
+// ═══════════════════════════════
+window.AnimaKYC = {
+  getAll: function(opts) {
+    opts = opts || {};
+    return sbFetch('kyc_requests', 'GET', { select: '*', order: 'created_at.desc', limit: opts.limit || 50, filter: opts.filter || '' });
+  },
+  create: function(data) {
+    return sbFetch('kyc_requests', 'POST', { body: data }).then(function(r) { return r[0]; });
+  },
+  approve: function(id, note) {
+    return sbFetch('kyc_requests?id=eq.' + id, 'PATCH', { body: { status: 'approved', admin_note: note || '', reviewed_at: new Date().toISOString() } });
+  },
+  reject: function(id, note) {
+    return sbFetch('kyc_requests?id=eq.' + id, 'PATCH', { body: { status: 'rejected', admin_note: note || '', reviewed_at: new Date().toISOString() } });
+  }
+};
+
+// ═══════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════
+window.AnimaNotifs = {
+  getAll: function(userId, userType) {
+    return sbFetch('notifications', 'GET', {
+      filter: 'user_id=eq.' + encodeURIComponent(userId) + '&user_type=eq.' + (userType || 'customer'),
+      order: 'created_at.desc', limit: 50, select: '*'
+    });
+  },
+  create: function(data) {
+    return sbFetch('notifications', 'POST', { body: data }).then(function(r) { return r[0]; });
+  },
+  markRead: function(id) {
+    return sbFetch('notifications?id=eq.' + id, 'PATCH', { body: { read: true } });
+  },
+  markAllRead: function(userId, userType) {
+    return sbFetch('notifications?user_id=eq.' + encodeURIComponent(userId) + '&user_type=eq.' + (userType || 'customer') + '&read=eq.false', 'PATCH', { body: { read: true } });
+  }
+};
+
+console.log('[AnimaCRM] Supabase client loaded — Phase 1 MVP — ' + SUPABASE_URL);
 })();
