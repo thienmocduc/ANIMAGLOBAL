@@ -10195,9 +10195,16 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&document.ge
     <div class="sb-i" onclick="go('crm',this)"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>CRM Leads<span class="sb-bx" id="crm-badge">0</span></div>
 
     <div class="sb-grp" data-vi="Thương Mại" data-en="Commerce">Thương Mại</div>
-    <div class="sb-i" onclick="go('orders',this)"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>Đơn Hàng<span class="sb-bx r">3</span></div>
+    <div class="sb-i" onclick="go('orders',this)"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>Đơn Hàng</div>
+    <div class="sb-i" onclick="go('bookings',this)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Lịch Hẹn</div>
     <div class="sb-i" onclick="go('inventory',this)"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Kho Hàng</div>
     <div class="sb-i" onclick="go('franchise',this)"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Nhượng Quyền</div>
+
+    <div class="sb-grp" data-vi="Tài Chính" data-en="Finance">Tài Chính</div>
+    <div class="sb-i" onclick="go('wallets',this)"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><circle cx="18" cy="15" r="1.5"/></svg>Ví & Rút Tiền</div>
+
+    <div class="sb-grp" data-vi="Nhân Sự" data-en="HR">Nhân Sự</div>
+    <div class="sb-i" onclick="go('kyc',this)"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>Xác Minh KTV</div>
 
     <div class="sb-grp" data-vi="Công Nghệ" data-en="Technology">Công Nghệ</div>
     <div class="sb-i" onclick="go('ai',this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>AI Engine</div>
@@ -10794,11 +10801,23 @@ document.getElementById('tbc').innerHTML = 'Anima Care Admin <span class="sep">�
 loadPage(page);
 }
 function loadPage(p){
+/* Helper: inject admPageContent into inline page div for Supabase renderers */
+function useSupa(pageId, renderer, fallback){
+  if(typeof renderer==='function'){
+    var pg=document.getElementById('pg-'+pageId);
+    if(pg){pg.innerHTML='<div id="admPageContent" style="padding:20px"></div>';pg.classList.add('on');}
+    renderer();
+  } else if(typeof fallback==='function') fallback();
+}
+/* ── Supabase-powered pages (real data) ── */
+if(p==='orders') return useSupa('orders', window.renderOrders, renderOrdersTable);
+if(p==='bookings') return useSupa('bookings', window.renderAdmBookings, renderBookingsTable);
+if(p==='crm') return useSupa('crm', window.renderCRM);
+if(p==='wallets') return useSupa('orders', window.renderAdmWallets); /* reuse orders page div */
+if(p==='kyc') return useSupa('orders', window.renderAdmKYC);
+/* ── Demo/static pages ── */
 if(p==='centers') renderCentersTable();
-if(p==='bookings') renderBookingsTable();
 if(p==='members') renderMembersTable();
-if(p==='orders') { if(typeof renderOrders==='function'){var pg=document.getElementById('pg-orders');if(pg){pg.innerHTML='<div id="admPageContent"></div>';pg.classList.add('on');}renderOrders();}else renderOrdersTable(); }
-if(p==='bookings') { if(typeof renderAdmBookings==='function'){var pg=document.getElementById('pg-bookings');if(pg){pg.innerHTML='<div id="admPageContent"></div>';pg.classList.add('on');}renderAdmBookings();}else renderBookingsTable(); }
 if(p==='revenue') renderRevTable();
 if(p==='ai') renderAITable();
 if(p==='staff') renderStaffTable();
@@ -10808,7 +10827,6 @@ if(p==='academy') renderAcadTable();
 if(p==='investors') renderInvestors();
 if(p==='content') renderCMSTable();
 if(p==='analytics') renderAnalytics();
-if(p==='crm') renderCRM();
 }
 function toggleNP(){document.getElementById('np').classList.toggle('on')}
 document.addEventListener('click',function(e){
