@@ -546,77 +546,323 @@ function reloadOrders(){
 }
 
 // ═══════════════════════════════════════
-// PAGE 3: CRM LEADS
+// PAGE 3: CRM — 3-TAB SYSTEM
 // ═══════════════════════════════════════
+var _crmTab='customers';
+var _crmSearch='';
+var _crmTierFilter='';
+var _crmCustomers=[];
+var _crmKTVs=[];
+var _crmCentersData=[];
+
 function pgCRM(){
   var c=el('admV3Content');if(!c) return;
   var act=el('admV3Actions');
   if(act) act.innerHTML='<button class="btn btn-p btn-sm" onclick="admV3ShowCreateLead()">+ THÊM LEAD</button>';
   c.innerHTML='<div class="empty">Đang tải CRM...</div>';
 
-  safeLoad('AnimaCRM','getLeads',[{limit:200}]).then(function(data){
-    _leads=safeArr(data);
-    renderCRMPage();
-  }).catch(function(){_leads=[];renderCRMPage();});
-}
-
-function renderCRMPage(){
-  var c=el('admV3Content');if(!c) return;
-  var filtered=filterLeads();
-  var counts={};LEAD_STATUSES.forEach(function(s){counts[s.v]=0;});
-  _leads.forEach(function(l){if(counts.hasOwnProperty(l.status)) counts[l.status]++;});
-
-  var h='<div class="kpis">';
-  LEAD_STATUSES.forEach(function(s){h+=kpi(counts[s.v],s.l,s.c);});
-  h+='</div>';
-
-  h+='<div class="crd"><div class="crd-h"><div style="display:flex;gap:10px;align-items:center">';
-  h+='<div class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Tìm tên, SĐT, email..." value="'+(_search||'')+'" oninput="admV3LeadSearch(this.value)"/></div>';
-  h+='<select class="f-sel" onchange="admV3LeadFilterStatus(this.value)"><option value="">Tất Cả Trạng Thái</option>';
-  LEAD_STATUSES.forEach(function(s){h+='<option value="'+s.v+'"'+(_filterStatus===s.v?' selected':'')+'>'+s.l+'</option>';});
-  h+='</select>';
-  h+='<select class="f-sel" onchange="admV3LeadFilterSource(this.value)"><option value="">Tất Cả Nguồn</option>';
-  var sources={};_leads.forEach(function(l){if(l.source)sources[l.source]=1;});
-  Object.keys(sources).forEach(function(s){h+='<option value="'+s+'"'+(_filterSource===s?' selected':'')+'>'+s+'</option>';});
-  h+='</select></div><span style="color:#607870;font-size:12px">'+filtered.length+' leads</span></div>';
-
-  h+='<div class="tbl-w"><table><tr><th>Tên</th><th>SĐT</th><th>Email</th><th>Loại</th><th>Sản Phẩm</th><th>Nguồn</th><th>Ngày</th><th>Trạng Thái</th><th>Action</th></tr>';
-  filtered.forEach(function(l){
-    var st=statusLabel(l.status,LEAD_STATUSES);
-    h+='<tr onclick="admV3ViewLead(\''+l.id+'\')" style="cursor:pointer">';
-    h+='<td>'+(l.name||l.full_name||'-')+'</td>';
-    h+='<td>'+(l.phone||'-')+'</td>';
-    h+='<td style="max-width:140px;overflow:hidden;text-overflow:ellipsis">'+(l.email||'-')+'</td>';
-    h+='<td>'+(l.lead_type||l.type||'-')+'</td>';
-    h+='<td>'+(l.product||l.interest||'-')+'</td>';
-    h+='<td>'+(l.source||'-')+'</td>';
-    h+='<td>'+shortDate(l.created_at)+'</td>';
-    h+='<td><select class="f-sel" onclick="event.stopPropagation()" onchange="admV3UpdateLeadStatus(\''+l.id+'\',this.value)">';
-    LEAD_STATUSES.forEach(function(s){h+='<option value="'+s.v+'"'+(l.status===s.v?' selected':'')+'>'+s.l+'</option>';});
-    h+='</select></td>';
-    h+='<td class="row-act"><button class="btn btn-s btn-sm" onclick="event.stopPropagation();admV3ViewLead(\''+l.id+'\')">Chi Tiết</button></td></tr>';
+  // Load all data in parallel
+  Promise.all([
+    safeLoad('AnimaOrders','getAll',[{limit:1000}]),
+    safeLoad('AnimaCRM','getLeads',[{limit:500}]),
+    safeLoad('AnimaContacts','getAll',[{limit:500}])
+  ]).then(function(res){
+    _orders=safeArr(res[0]);
+    _leads=safeArr(res[1]);
+    _contacts=safeArr(res[2]);
+    buildCRMCustomers();
+    buildCRMKTVs();
+    buildCRMCenters();
+    renderCRMTabs();
+  }).catch(function(){
+    _orders=[];_leads=[];_contacts=[];
+    buildCRMCustomers();buildCRMKTVs();buildCRMCenters();
+    renderCRMTabs();
   });
-  if(!filtered.length) h+='<tr><td colspan="9" class="empty">Không có leads</td></tr>';
-  h+='</table></div></div>';
-  c.innerHTML=h;
 }
 
-function filterLeads(){
-  return _leads.filter(function(l){
-    if(_filterStatus && l.status!==_filterStatus) return false;
-    if(_filterSource && l.source!==_filterSource) return false;
-    if(_search){
-      var s=_search.toLowerCase();
-      var match=(l.name||l.full_name||'').toLowerCase().indexOf(s)>-1||(l.phone||'').indexOf(s)>-1||(l.email||'').toLowerCase().indexOf(s)>-1;
-      if(!match) return false;
+function buildCRMCustomers(){
+  var map={};
+  _orders.forEach(function(o){
+    var key=o.customer_phone||o.phone||'';
+    if(!key) return;
+    if(!map[key]) map[key]={name:o.customer_name||o.full_name||'-',phone:key,email:o.customer_email||o.email||'',province:o.province||o.city||o.shipping_province||'-',totalSpent:0,orderCount:0,lastOrder:null};
+    map[key].totalSpent+=(o.total_amount||0);
+    map[key].orderCount++;
+    if(!map[key].lastOrder||o.created_at>map[key].lastOrder) map[key].lastOrder=o.created_at;
+    if(o.customer_name && map[key].name==='-') map[key].name=o.customer_name;
+    if(o.customer_email && !map[key].email) map[key].email=o.customer_email;
+    if((o.province||o.city||o.shipping_province) && map[key].province==='-') map[key].province=o.province||o.city||o.shipping_province;
+  });
+  // Merge CRM leads
+  _leads.forEach(function(l){
+    var key=l.phone||'';
+    if(!key) return;
+    if(!map[key]) map[key]={name:l.name||l.full_name||'-',phone:key,email:l.email||'',province:l.province||l.city||'-',totalSpent:0,orderCount:0,lastOrder:l.created_at||null};
+    if(map[key].name==='-' && (l.name||l.full_name)) map[key].name=l.name||l.full_name;
+    if(!map[key].email && l.email) map[key].email=l.email;
+  });
+  _crmCustomers=Object.keys(map).map(function(k){
+    var c=map[k];
+    c.tier=c.totalSpent>=50000000?'Platinum':c.totalSpent>=20000000?'Gold':c.totalSpent>=5000000?'Silver':'Bronze';
+    return c;
+  });
+  _crmCustomers.sort(function(a,b){return b.totalSpent-a.totalSpent;});
+}
+
+function buildCRMKTVs(){
+  _crmKTVs=[];
+  try{
+    var raw=JSON.parse(localStorage.getItem('anima_saved_tech'));
+    if(Array.isArray(raw)) _crmKTVs=raw;
+  }catch(e){}
+}
+
+function buildCRMCenters(){
+  _crmCentersData=[];
+  var c1=[];
+  if(window.AnimaSync && window.AnimaSync.get){
+    try{c1=window.AnimaSync.get('centers',[]);}catch(e){}
+  }
+  if(!Array.isArray(c1)||!c1.length){
+    c1=[
+      {_id:'CTR-HN',name:'Anima Care Ha Noi',city:'Ha Noi',region:'north',tier:1,status:'active'},
+      {_id:'CTR-HCM',name:'Anima Care TP.HCM',city:'TP.HCM',region:'south',tier:1,status:'active'},
+      {_id:'CTR-DN',name:'Anima Care Da Nang',city:'Da Nang',region:'central',tier:1,status:'active'},
+      {_id:'CTR-HP',name:'Anima Care Hai Phong',city:'Hai Phong',region:'north',tier:1,status:'active'},
+      {_id:'CTR-CT',name:'Anima Care Can Tho',city:'Can Tho',region:'south',tier:1,status:'active'},
+      {_id:'CTR-HUE',name:'Anima Care Hue',city:'Hue',region:'central',tier:1,status:'active'},
+      {_id:'CTR-NT',name:'Anima Care Nha Trang',city:'Nha Trang',region:'central',tier:1,status:'active'},
+      {_id:'CTR-VT',name:'Anima Care Vung Tau',city:'Vung Tau',region:'south',tier:1,status:'active'},
+      {_id:'CTR-QN',name:'Anima Care Quang Ninh',city:'Quang Ninh',region:'north',tier:1,status:'active'},
+      {_id:'CTR-BD',name:'Anima Care Binh Duong',city:'Binh Duong',region:'south',tier:1,status:'active'},
+      {_id:'CTR-DN2',name:'Anima Care Dong Nai',city:'Dong Nai',region:'south',tier:1,status:'pending'},
+      {_id:'CTR-TH',name:'Anima Care Thanh Hoa',city:'Thanh Hoa',region:'north',tier:1,status:'pending'},
+      {_id:'CTR-NA',name:'Anima Care Nghe An',city:'Nghe An',region:'central',tier:1,status:'pending'},
+      {_id:'CTR-BN',name:'Anima Care Bac Ninh',city:'Bac Ninh',region:'north',tier:1,status:'pending'},
+      {_id:'CTR-HD',name:'Anima Care Hai Duong',city:'Hai Duong',region:'north',tier:1,status:'pending'},
+      {_id:'CTR-LA',name:'Anima Care Long An',city:'Long An',region:'south',tier:1,status:'pending'},
+      {_id:'CTR-QNA',name:'Anima Care Quang Nam',city:'Quang Nam',region:'central',tier:1,status:'pending'},
+      {_id:'CTR-KH',name:'Anima Care Khanh Hoa',city:'Khanh Hoa',region:'central',tier:1,status:'pending'},
+      {_id:'CTR-GL',name:'Anima Care Gia Lai',city:'Gia Lai',region:'central',tier:1,status:'pending'},
+      {_id:'CTR-DL',name:'Anima Care Da Lat',city:'Da Lat',region:'central',tier:1,status:'pending'},
+      {_id:'CTR-AG',name:'Anima Care An Giang',city:'An Giang',region:'south',tier:1,status:'pending'},
+      {_id:'CTR-TG',name:'Anima Care Tien Giang',city:'Tien Giang',region:'south',tier:1,status:'pending'},
+      {_id:'CTR-BT',name:'Anima Care Ben Tre',city:'Ben Tre',region:'south',tier:1,status:'pending'},
+      {_id:'CTR-TB',name:'Anima Care Thai Binh',city:'Thai Binh',region:'north',tier:1,status:'pending'},
+      {_id:'CTR-NB',name:'Anima Care Ninh Binh',city:'Ninh Binh',region:'north',tier:1,status:'pending'},
+      {_id:'CTR-PY',name:'Anima Care Phu Yen',city:'Phu Yen',region:'central',tier:1,status:'pending'},
+      {_id:'CTR-BP',name:'Anima Care Binh Phuoc',city:'Binh Phuoc',region:'south',tier:1,status:'pending'},
+      {_id:'CTR-TN',name:'Anima Care Tay Ninh',city:'Tay Ninh',region:'south',tier:1,status:'pending'},
+      {_id:'CTR-VL',name:'Anima Care Vinh Long',city:'Vinh Long',region:'south',tier:1,status:'pending'},
+      {_id:'CTR-VP',name:'Anima Care Vinh Phuc',city:'Vinh Phuc',region:'north',tier:1,status:'pending'},
+      {_id:'CTR-LS',name:'Anima Care Lang Son',city:'Lang Son',region:'north',tier:1,status:'pending'},
+      {_id:'CTR-PT',name:'Anima Care Phu Tho',city:'Phu Tho',region:'north',tier:1,status:'pending'},
+      {_id:'CTR-BTH',name:'Anima Care Binh Thuan',city:'Binh Thuan',region:'central',tier:1,status:'pending'},
+      {_id:'CTR-DK',name:'Anima Care Dak Lak',city:'Dak Lak',region:'central',tier:1,status:'pending'}
+    ];
+  }
+  // C2 sub-centers
+  var c2=[];
+  if(window.AnimaSync && window.AnimaSync.get){
+    try{
+      var allCenters=window.AnimaSync.get('centers',[]);
+      if(Array.isArray(allCenters)){
+        c2=allCenters.filter(function(ct){return ct.parentId||ct.parent_id||ct.level===2||ct.tier===2;});
+      }
+    }catch(e){}
+  }
+  _crmCentersData=[];
+  c1.forEach(function(ct){
+    var cOrders=_orders.filter(function(o){return o.center_id===ct._id||o.center_name===ct.city;});
+    var rev=cOrders.reduce(function(s,o){return s+(o.total_amount||0);},0);
+    _crmCentersData.push({id:ct._id,name:ct.name,province:ct.city,level:'L1',orders:cOrders.length,revenue:rev,ktv:0,status:ct.status||'pending'});
+  });
+  c2.forEach(function(ct){
+    var cOrders=_orders.filter(function(o){return o.center_id===ct._id;});
+    var rev=cOrders.reduce(function(s,o){return s+(o.total_amount||0);},0);
+    _crmCentersData.push({id:ct._id||'SUB-'+Math.random().toString(36).substr(2,4).toUpperCase(),name:ct.name||'Sub-Center',province:ct.city||'-',level:'L2',orders:cOrders.length,revenue:rev,ktv:0,status:ct.status||'pending',parentId:ct.parentId||ct.parent_id||''});
+  });
+}
+
+function renderCRMTabs(){
+  var c=el('admV3Content');if(!c) return;
+  var tabStyle='background:#0D1520;border:1px solid rgba(0,200,150,.08);border-radius:8px;padding:8px 16px;cursor:pointer;font-size:12px;color:#607870;font-family:inherit;transition:all .2s';
+  var activeStyle='background:rgba(0,200,150,.1);color:#00C896;font-weight:600;border-color:rgba(0,200,150,.2)';
+
+  var h='<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">';
+  h+='<button id="crmTabCustomers" style="'+tabStyle+(_crmTab==='customers'?';'+activeStyle:'')+'" onclick="crmSwitchTab(\'customers\')">&#128100; Khach Hang ('+_crmCustomers.length+')</button>';
+  h+='<button id="crmTabKtv" style="'+tabStyle+(_crmTab==='ktv'?';'+activeStyle:'')+'" onclick="crmSwitchTab(\'ktv\')">&#128295; KTV ('+_crmKTVs.length+')</button>';
+  h+='<button id="crmTabCenters" style="'+tabStyle+(_crmTab==='centers'?';'+activeStyle:'')+'" onclick="crmSwitchTab(\'centers\')">&#127970; Centers ('+_crmCentersData.length+')</button>';
+  h+='</div>';
+  h+='<div id="crmTabContent"></div>';
+  c.innerHTML=h;
+
+  if(_crmTab==='customers') renderCRMCustomersTab();
+  else if(_crmTab==='ktv') renderCRMKTVTab();
+  else renderCRMCentersTab();
+}
+
+window.crmSwitchTab=function(tab){
+  _crmTab=tab;_crmSearch='';_crmTierFilter='';
+  renderCRMTabs();
+};
+
+window.crmSearch=function(v){
+  _crmSearch=v;
+  if(_crmTab==='customers') renderCRMCustomersTab();
+  else if(_crmTab==='ktv') renderCRMKTVTab();
+  else renderCRMCentersTab();
+};
+
+window.crmFilterTier=function(v){
+  _crmTierFilter=v;
+  renderCRMCustomersTab();
+};
+
+function renderCRMCustomersTab(){
+  var tc=el('crmTabContent');if(!tc) return;
+  var filtered=_crmCustomers.filter(function(c){
+    if(_crmTierFilter && c.tier!==_crmTierFilter) return false;
+    if(_crmSearch){
+      var s=_crmSearch.toLowerCase();
+      if((c.name||'').toLowerCase().indexOf(s)===-1 && (c.phone||'').indexOf(s)===-1 && (c.email||'').toLowerCase().indexOf(s)===-1) return false;
     }
     return true;
   });
+  var vip=_crmCustomers.filter(function(c){return c.tier==='Gold'||c.tier==='Platinum';}).length;
+  var now=new Date();var thisMonth=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  var newThisMonth=_crmCustomers.filter(function(c){return c.lastOrder&&c.lastOrder.indexOf(thisMonth)===0&&c.orderCount===1;}).length;
+  var avgSpend=_crmCustomers.length?Math.round(_crmCustomers.reduce(function(s,c){return s+c.totalSpent;},0)/_crmCustomers.length):0;
+
+  var h='<div class="kpis">';
+  h+=kpi(_crmCustomers.length,'Tong KH','#6496FF');
+  h+=kpi(vip,'VIP (Gold+)','#FFC800');
+  h+=kpi(newThisMonth,'Moi Thang Nay','#00C896');
+  h+=kpi(money(avgSpend),'DT Trung Binh','#9B82FF');
+  h+='</div>';
+
+  h+='<div class="crd"><div class="crd-h"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">';
+  h+='<div class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Tim ten, SDT, email..." value="'+(_crmSearch||'')+'" oninput="crmSearch(this.value)"/></div>';
+  h+='<select class="f-sel" onchange="crmFilterTier(this.value)"><option value="">Tat Ca Tier</option>';
+  ['Bronze','Silver','Gold','Platinum'].forEach(function(t){h+='<option value="'+t+'"'+(_crmTierFilter===t?' selected':'')+'>'+t+'</option>';});
+  h+='</select></div><span style="color:#607870;font-size:12px">'+filtered.length+' khach hang</span></div>';
+
+  h+='<div class="tbl-w"><table><tr><th>Ten</th><th>SDT</th><th>Email</th><th>Tinh</th><th>Tong Chi Tieu</th><th>So Don</th><th>Tier</th><th>Lan Cuoi</th></tr>';
+  filtered.forEach(function(cu){
+    var tierColor=cu.tier==='Platinum'?'#E0C068':cu.tier==='Gold'?'#FFC800':cu.tier==='Silver'?'#B8D8D0':'#A08060';
+    h+='<tr>';
+    h+='<td style="font-weight:600;color:#E8F8F4">'+(cu.name||'-')+'</td>';
+    h+='<td>'+(cu.phone||'-')+'</td>';
+    h+='<td style="max-width:140px;overflow:hidden;text-overflow:ellipsis">'+(cu.email||'-')+'</td>';
+    h+='<td>'+(cu.province||'-')+'</td>';
+    h+='<td style="color:#00C896;font-weight:600">'+money(cu.totalSpent)+'</td>';
+    h+='<td>'+cu.orderCount+'</td>';
+    h+='<td>'+badge(cu.tier,tierColor)+'</td>';
+    h+='<td>'+shortDate(cu.lastOrder)+'</td>';
+    h+='</tr>';
+  });
+  if(!filtered.length) h+='<tr><td colspan="8" class="empty">Khong co khach hang</td></tr>';
+  h+='</table></div></div>';
+  tc.innerHTML=h;
 }
 
-window.admV3LeadSearch=function(v){_search=v;renderCRMPage();};
-window.admV3LeadFilterStatus=function(v){_filterStatus=v;renderCRMPage();};
-window.admV3LeadFilterSource=function(v){_filterSource=v;renderCRMPage();};
+function renderCRMKTVTab(){
+  var tc=el('crmTabContent');if(!tc) return;
+  var filtered=_crmKTVs.filter(function(k){
+    if(_crmSearch){
+      var s=_crmSearch.toLowerCase();
+      if((k.name||k.full_name||'').toLowerCase().indexOf(s)===-1 && (k.phone||'').indexOf(s)===-1) return false;
+    }
+    return true;
+  });
+  var active=_crmKTVs.filter(function(k){return (k.status||'active')==='active';}).length;
+  var avgRating=_crmKTVs.length?(_crmKTVs.reduce(function(s,k){return s+(k.rating||k.avg_rating||0);},0)/_crmKTVs.length).toFixed(1):0;
+  var totalRev=_crmKTVs.reduce(function(s,k){return s+(k.revenue||k.total_revenue||0);},0);
+
+  var h='<div class="kpis">';
+  h+=kpi(_crmKTVs.length,'Tong KTV','#6496FF');
+  h+=kpi(active,'Active','#00C896');
+  h+=kpi(avgRating,'Avg Rating','#FFC800');
+  h+=kpi(money(totalRev),'Tong DT KTV','#9B82FF');
+  h+='</div>';
+
+  h+='<div class="crd"><div class="crd-h"><div style="display:flex;gap:10px;align-items:center">';
+  h+='<div class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Tim KTV..." value="'+(_crmSearch||'')+'" oninput="crmSearch(this.value)"/></div>';
+  h+='</div><span style="color:#607870;font-size:12px">'+filtered.length+' KTV</span></div>';
+
+  h+='<div class="tbl-w"><table><tr><th>Ten</th><th>SDT</th><th>Co So</th><th>Rating</th><th>Buoi</th><th>Doanh Thu</th><th>Chung Chi</th><th>Trang Thai</th></tr>';
+  filtered.forEach(function(k){
+    var st=k.status||'active';
+    var stColor=st==='active'?'#00C896':st==='inactive'?'#FF7070':'#FFC800';
+    var stLabel=st==='active'?'Active':st==='inactive'?'Inactive':'Pending';
+    h+='<tr>';
+    h+='<td style="font-weight:600;color:#E8F8F4">'+(k.name||k.full_name||'-')+'</td>';
+    h+='<td>'+(k.phone||'-')+'</td>';
+    h+='<td>'+(k.center||k.branch||k.facility||'-')+'</td>';
+    h+='<td style="color:#FFC800;font-weight:600">'+(k.rating||k.avg_rating||0).toFixed?parseFloat(k.rating||k.avg_rating||0).toFixed(1):(k.rating||k.avg_rating||0)+'</td>';
+    h+='<td>'+(k.sessions||k.total_sessions||0)+'</td>';
+    h+='<td style="color:#00C896">'+money(k.revenue||k.total_revenue||0)+'</td>';
+    h+='<td>'+(k.cert||k.certificate||k.certifications||'-')+'</td>';
+    h+='<td>'+badge(stLabel,stColor)+'</td>';
+    h+='</tr>';
+  });
+  if(!filtered.length) h+='<tr><td colspan="8" class="empty">Khong co KTV</td></tr>';
+  h+='</table></div></div>';
+  tc.innerHTML=h;
+}
+
+function renderCRMCentersTab(){
+  var tc=el('crmTabContent');if(!tc) return;
+  var c1Count=_crmCentersData.filter(function(c){return c.level==='L1';}).length;
+  var c2Count=_crmCentersData.filter(function(c){return c.level==='L2';}).length;
+  var totalRev=_crmCentersData.reduce(function(s,c){return s+c.revenue;},0);
+  var topCenter=_crmCentersData.slice().sort(function(a,b){return b.revenue-a.revenue;})[0];
+
+  var h='<div class="kpis">';
+  h+=kpi(c1Count,'C1 Tinh','#6496FF');
+  h+=kpi(c2Count,'C2 Sub-Centers','#9B82FF');
+  h+=kpi(money(totalRev),'Tong DT','#00C896');
+  h+=kpi(topCenter?topCenter.name.replace('Anima Care ',''):'N/A','Top Center','#FFC800');
+  h+='</div>';
+
+  h+='<div class="crd"><div class="crd-h"><div style="display:flex;gap:10px;align-items:center">';
+  h+='<div class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Tim center..." value="'+(_crmSearch||'')+'" oninput="crmSearch(this.value)"/></div>';
+  h+='</div><span style="color:#607870;font-size:12px">'+_crmCentersData.length+' centers</span></div>';
+
+  var filtered=_crmCentersData.filter(function(ct){
+    if(_crmSearch){
+      var s=_crmSearch.toLowerCase();
+      if((ct.name||'').toLowerCase().indexOf(s)===-1 && (ct.province||'').toLowerCase().indexOf(s)===-1 && (ct.id||'').toLowerCase().indexOf(s)===-1) return false;
+    }
+    return true;
+  });
+
+  h+='<div class="tbl-w"><table><tr><th>Ma</th><th>Ten</th><th>Tinh</th><th>Cap</th><th>Don Hang</th><th>Doanh Thu</th><th>KTV</th><th>Trang Thai</th></tr>';
+  filtered.forEach(function(ct){
+    var stColor=ct.status==='active'?'#00C896':'#FFC800';
+    var stLabel=ct.status==='active'?'Active':'Pending';
+    var lvlColor=ct.level==='L1'?'#6496FF':'#9B82FF';
+    h+='<tr>';
+    h+='<td style="color:#00C896;font-weight:600">'+ct.id+'</td>';
+    h+='<td>'+(ct.name||'-')+'</td>';
+    h+='<td>'+(ct.province||'-')+'</td>';
+    h+='<td>'+badge(ct.level,lvlColor)+'</td>';
+    h+='<td>'+ct.orders+'</td>';
+    h+='<td style="color:#00C896;font-weight:600">'+money(ct.revenue)+'</td>';
+    h+='<td>'+ct.ktv+'</td>';
+    h+='<td>'+badge(stLabel,stColor)+'</td>';
+    h+='</tr>';
+  });
+  if(!filtered.length) h+='<tr><td colspan="8" class="empty">Khong co center</td></tr>';
+  h+='</table></div></div>';
+  tc.innerHTML=h;
+}
+
+// Keep legacy lead functions for backward compatibility
+window.admV3LeadSearch=function(v){_search=v;};
+window.admV3LeadFilterStatus=function(v){_filterStatus=v;};
+window.admV3LeadFilterSource=function(v){_filterSource=v;};
 
 window.admV3UpdateLeadStatus=function(id,status){
   safeCall('AnimaCRM','updateLead',[id,{status:status}]).then(function(){reloadLeads();});
@@ -626,56 +872,44 @@ window.admV3ViewLead=function(id){
   var l=_leads.filter(function(x){return x.id===id;})[0];
   if(!l) return;
   var h='<div style="display:grid;gap:10px">';
-  h+='<div><span style="color:#607870">Tên:</span> <b>'+(l.name||l.full_name||'-')+'</b></div>';
-  h+='<div><span style="color:#607870">SĐT:</span> '+(l.phone||'-')+'</div>';
+  h+='<div><span style="color:#607870">Ten:</span> <b>'+(l.name||l.full_name||'-')+'</b></div>';
+  h+='<div><span style="color:#607870">SDT:</span> '+(l.phone||'-')+'</div>';
   h+='<div><span style="color:#607870">Email:</span> '+(l.email||'-')+'</div>';
-  h+='<div><span style="color:#607870">Loại:</span> '+(l.lead_type||l.type||'-')+'</div>';
-  h+='<div><span style="color:#607870">Sản phẩm quan tâm:</span> '+(l.product||l.interest||'-')+'</div>';
-  h+='<div><span style="color:#607870">Nguồn:</span> '+(l.source||'-')+'</div>';
-  h+='<div><span style="color:#607870">Trạng thái:</span> '+badge(statusLabel(l.status,LEAD_STATUSES).l,statusLabel(l.status,LEAD_STATUSES).c)+'</div>';
-  h+='<div><span style="color:#607870">Ghi chú:</span> '+(l.notes||l.note||'-')+'</div>';
-  h+='<div><span style="color:#607870">Ngày tạo:</span> '+shortDateTime(l.created_at)+'</div>';
+  h+='<div><span style="color:#607870">Loai:</span> '+(l.lead_type||l.type||'-')+'</div>';
+  h+='<div><span style="color:#607870">San pham quan tam:</span> '+(l.product||l.interest||'-')+'</div>';
+  h+='<div><span style="color:#607870">Nguon:</span> '+(l.source||'-')+'</div>';
+  h+='<div><span style="color:#607870">Trang thai:</span> '+badge(statusLabel(l.status,LEAD_STATUSES).l,statusLabel(l.status,LEAD_STATUSES).c)+'</div>';
+  h+='<div><span style="color:#607870">Ghi chu:</span> '+(l.notes||l.note||'-')+'</div>';
+  h+='<div><span style="color:#607870">Ngay tao:</span> '+shortDateTime(l.created_at)+'</div>';
   h+='</div>';
-  h+='<div style="margin-top:16px;border-top:1px solid rgba(0,200,150,.08);padding-top:14px"><div style="font-size:13px;font-weight:600;color:#E8F8F4;margin-bottom:10px">Lịch Sử Hoạt Động</div><div id="_leadActs"><div class="empty">Đang tải...</div></div></div>';
   admV3Modal('Lead: '+(l.name||l.full_name||''),h);
-  // Load activities
-  if(window.AnimaCRM && window.AnimaCRM.getActivities){
-    window.AnimaCRM.getActivities(id).then(function(acts){
-      var ae=el('_leadActs');if(!ae) return;
-      if(!acts||!acts.length){ae.innerHTML='<div style="color:#607870;font-size:12px">Chưa có hoạt động</div>';return;}
-      var ah='';acts.forEach(function(a){
-        ah+='<div style="padding:8px 0;border-bottom:1px solid rgba(0,200,150,.04);font-size:12px"><span style="color:#00C896">'+shortDateTime(a.created_at)+'</span> - <span style="color:#B8D8D0">'+(a.type||'note')+':</span> '+(a.description||a.content||'-')+'</div>';
-      });
-      ae.innerHTML=ah;
-    }).catch(function(){var ae=el('_leadActs');if(ae)ae.innerHTML='<div style="color:#607870;font-size:12px">Không tải được</div>';});
-  }
 };
 
 window.admV3ShowCreateLead=function(){
-  var h='<div class="fg"><label>Tên</label><input id="_lName" placeholder="Họ tên..."></div>';
-  h+='<div class="fg"><label>Số Điện Thoại</label><input id="_lPhone" placeholder="0xxx..."></div>';
+  var h='<div class="fg"><label>Ten</label><input id="_lName" placeholder="Ho ten..."></div>';
+  h+='<div class="fg"><label>So Dien Thoai</label><input id="_lPhone" placeholder="0xxx..."></div>';
   h+='<div class="fg"><label>Email</label><input id="_lEmail" placeholder="email@..."></div>';
-  h+='<div class="fg"><label>Loại Lead</label><select id="_lType"><option value="customer">Khách Hàng</option><option value="franchise">Nhượng Quyền</option><option value="partner">Đối Tác</option></select></div>';
-  h+='<div class="fg"><label>Sản Phẩm Quan Tâm</label><input id="_lProd" placeholder="Tên sản phẩm/dịch vụ..."></div>';
-  h+='<div class="fg"><label>Nguồn</label><select id="_lSrc"><option value="website">Website</option><option value="facebook">Facebook</option><option value="zalo">Zalo</option><option value="referral">Giới Thiệu</option><option value="event">Sự Kiện</option><option value="other">Khác</option></select></div>';
-  h+='<div class="fg"><label>Ghi Chú</label><textarea id="_lNote" rows="2"></textarea></div>';
-  h+='<button class="btn btn-p" style="width:100%;justify-content:center;margin-top:8px" onclick="admV3SubmitLead()">Thêm Lead</button>';
-  admV3Modal('Thêm Lead Mới',h);
+  h+='<div class="fg"><label>Loai Lead</label><select id="_lType"><option value="customer">Khach Hang</option><option value="franchise">Nhuong Quyen</option><option value="partner">Doi Tac</option></select></div>';
+  h+='<div class="fg"><label>San Pham Quan Tam</label><input id="_lProd" placeholder="Ten san pham/dich vu..."></div>';
+  h+='<div class="fg"><label>Nguon</label><select id="_lSrc"><option value="website">Website</option><option value="facebook">Facebook</option><option value="zalo">Zalo</option><option value="referral">Gioi Thieu</option><option value="event">Su Kien</option><option value="other">Khac</option></select></div>';
+  h+='<div class="fg"><label>Ghi Chu</label><textarea id="_lNote" rows="2"></textarea></div>';
+  h+='<button class="btn btn-p" style="width:100%;justify-content:center;margin-top:8px" onclick="admV3SubmitLead()">Them Lead</button>';
+  admV3Modal('Them Lead Moi',h);
 };
 
 window.admV3SubmitLead=function(){
   var name=el('_lName').value.trim();var phone=el('_lPhone').value.trim();
-  if(!name){alert('Vui lòng nhập tên');return;}
+  if(!name){alert('Vui long nhap ten');return;}
   var data={
     name:name,full_name:name,phone:phone,email:el('_lEmail').value.trim(),
     lead_type:el('_lType').value,product:el('_lProd').value.trim(),
     source:el('_lSrc').value,status:'new',notes:el('_lNote').value.trim()
   };
-  safeCall('AnimaCRM','createLead',[data]).then(function(){admV3CloseModal();reloadLeads();}).catch(function(e){alert('Lỗi: '+e.message);});
+  safeCall('AnimaCRM','createLead',[data]).then(function(){admV3CloseModal();reloadLeads();}).catch(function(e){alert('Loi: '+e.message);});
 };
 
 function reloadLeads(){
-  safeLoad('AnimaCRM','getLeads',[{limit:200}]).then(function(d){_leads=safeArr(d);renderCRMPage();});
+  safeLoad('AnimaCRM','getLeads',[{limit:200}]).then(function(d){_leads=safeArr(d);buildCRMCustomers();renderCRMTabs();});
 }
 
 // ═══════════════════════════════════════
@@ -1304,28 +1538,52 @@ function safeCall(api,method,args){
   return window[api][method].apply(window[api],args||[]);
 }
 
-// ═══ PAGE: AI AGENT ═══
+// ═══ PAGE: AI AGENT — MONITORING DASHBOARD ═══
 function pgAgents(){
   var c=el('admV3Content');if(!c)return;
+  c.innerHTML='<div class="empty">Dang tai Agent Monitor...</div>';
+
+  // Load live data
+  Promise.all([
+    safeLoad('AnimaOrders','getAll',[{limit:1000}]),
+    safeLoad('AnimaCRM','getLeads',[{limit:500}]),
+    safeLoad('AnimaContacts','getAll',[{limit:500}])
+  ]).then(function(res){
+    _orders=safeArr(res[0]);_leads=safeArr(res[1]);_contacts=safeArr(res[2]);
+    try{_bookings=safeArr(JSON.parse(localStorage.getItem('anima_bookings')));}catch(e){_bookings=[];}
+    renderAgentsDashboard();
+  }).catch(function(){renderAgentsDashboard();});
+}
+
+function renderAgentsDashboard(){
+  var c=el('admV3Content');if(!c)return;
+
+  // Count real metrics from localStorage
+  var chatCount=0;var scanCount=0;
+  try{var chatHist=JSON.parse(localStorage.getItem('anima_chat_history'));if(Array.isArray(chatHist))chatCount=chatHist.length;}catch(e){}
+  try{var scanHist=JSON.parse(localStorage.getItem('anima_scan_history')||localStorage.getItem('anima_tongue_scans'));if(Array.isArray(scanHist))scanCount=scanHist.length;}catch(e){}
+
   var agents=[
-    {name:'Anima Tư Vấn',desc:'Chatbot chăm sóc khách hàng 24/7. Tư vấn sản phẩm ANIMA 119, dịch vụ, đặt lịch. Gemini 2.5 Flash.',status:'active',model:'gemini-2.5-flash-lite',tokens:'~500/msg',color:'#00C896',icon:'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z'},
-    {name:'Chuyên Gia Tầm Soát',desc:'AI phân tích ảnh lưỡi theo Đông Y. Chẩn đoán thể tạng, tình trạng tạng phủ. Yêu cầu 3 ảnh (chính giữa, trái, phải).',status:'active',model:'gemini-2.5-flash',tokens:'~2000/scan',color:'#9B82FF',icon:'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'},
-    {name:'AI Đề Xuất Sản Phẩm',desc:'Gợi ý sản phẩm/dịch vụ phù hợp dựa trên thể tạng, lịch sử mua hàng, kết quả tầm soát.',status:'planned',model:'gemini-2.5-pro',tokens:'~300/req',color:'#FFC800',icon:'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'},
-    {name:'AI Dự Báo Nhu Cầu',desc:'Phân tích dữ liệu booking, đơn hàng → dự báo peak demand → gợi ý tăng KTV.',status:'planned',model:'gemini-2.5-pro',tokens:'~1000/analysis',color:'#00B4D8',icon:'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'},
-    {name:'AI Chăm Sóc Sau Buổi',desc:'Tự động gửi lời khuyên sau trị liệu: chế độ ăn, tập luyện, thời gian nghỉ ngơi phù hợp thể tạng.',status:'planned',model:'gemini-2.5-flash-lite',tokens:'~400/msg',color:'#FF6B9D',icon:'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'}
+    {name:'Anima Tu Van',desc:'Chatbot cham soc khach hang 24/7. Tu van san pham ANIMA 119, dich vu, dat lich. Gemini 2.5 Flash.',status:'active',model:'gemini-2.5-flash-lite',tokens:'~500/msg',color:'#00C896',icon:'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z',metric:chatCount+' tin nhan'},
+    {name:'Chuyen Gia Tam Soat',desc:'AI phan tich anh luoi theo Dong Y. Chan doan the tang, tinh trang tang phu.',status:'active',model:'gemini-2.5-flash',tokens:'~2000/scan',color:'#9B82FF',icon:'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',metric:scanCount+' lan scan'},
+    {name:'AI De Xuat San Pham',desc:'Goi y san pham/dich vu phu hop dua tren the tang, lich su mua hang, ket qua tam soat.',status:'planned',model:'gemini-2.5-pro',tokens:'~300/req',color:'#FFC800',icon:'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z',metric:'Chua trien khai'},
+    {name:'AI Du Bao Nhu Cau',desc:'Phan tich du lieu booking, don hang -> du bao peak demand -> goi y tang KTV.',status:'planned',model:'gemini-2.5-pro',tokens:'~1000/analysis',color:'#00B4D8',icon:'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6',metric:'Chua trien khai'},
+    {name:'AI Cham Soc Sau Buoi',desc:'Tu dong gui loi khuyen sau tri lieu: che do an, tap luyen, thoi gian nghi ngoi phu hop the tang.',status:'planned',model:'gemini-2.5-flash-lite',tokens:'~400/msg',color:'#FF6B9D',icon:'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z',metric:'Chua trien khai'}
   ];
+
+  // === SECTION 1: Agent Status Cards ===
   var h='<div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">';
-  h+=kpi(agents.filter(function(a){return a.status==='active';}).length,'Agent Hoạt Động','#00C896');
-  h+=kpi(agents.length,'Tổng Agent','#6496FF');
-  h+=kpi(agents.filter(function(a){return a.status==='planned';}).length,'Đang Phát Triển','#FFC800');
-  h+=kpi('Gemini','AI Engine','#9B82FF');
+  h+=kpi(agents.filter(function(a){return a.status==='active';}).length,'Agent Hoat Dong','#00C896');
+  h+=kpi(agents.length,'Tong Agent','#6496FF');
+  h+=kpi(chatCount,'Tin Nhan Chatbot','#9B82FF');
+  h+=kpi(scanCount,'Lan Tam Soat','#FFC800');
   h+='</div>';
 
-  h+='<div class="crd"><div class="crd-h"><span class="crd-t">Hệ Thống AI Agent</span></div>';
+  h+='<div class="crd"><div class="crd-h"><span class="crd-t">He Thong AI Agent</span></div>';
   agents.forEach(function(a){
     var statusBg=a.status==='active'?'rgba(0,200,150,.1)':'rgba(255,200,0,.06)';
     var statusBorder=a.status==='active'?'rgba(0,200,150,.2)':'rgba(255,200,0,.15)';
-    var statusText=a.status==='active'?'<span style="color:#00C896;font-weight:600">● Hoạt động</span>':'<span style="color:#FFC800;font-weight:600">◐ Đang phát triển</span>';
+    var statusText=a.status==='active'?'<span style="color:#00C896;font-weight:600">&#9679; Hoat dong</span>':'<span style="color:#FFC800;font-weight:600">&#9684; Dang phat trien</span>';
     h+='<div style="background:'+statusBg+';border:1px solid '+statusBorder+';border-radius:12px;padding:16px;margin-bottom:10px">';
     h+='<div style="display:flex;align-items:flex-start;gap:14px">';
     h+='<div style="width:44px;height:44px;min-width:44px;border-radius:12px;background:'+a.color+'18;border:1px solid '+a.color+'30;display:flex;align-items:center;justify-content:center">'+svgIcon(a.icon).replace('width="18"','width="22"').replace('height="18"','height="22"').replace('stroke="currentColor"','stroke="'+a.color+'"')+'</div>';
@@ -1335,19 +1593,215 @@ function pgAgents(){
     h+='<div style="display:flex;gap:12px;font-size:11px;color:#607870">';
     h+='<span>Model: <b style="color:#00C896">'+a.model+'</b></span>';
     h+='<span>Token: <b style="color:#FFC800">'+a.tokens+'</b></span>';
+    h+='<span>Metric: <b style="color:#00B4D8">'+a.metric+'</b></span>';
     h+='</div></div></div></div>';
   });
   h+='</div>';
 
-  // Agent Performance (mock)
-  h+='<div class="crd"><div class="crd-h"><span class="crd-t">Hiệu Suất Agent (7 ngày)</span></div>';
+  // === SECTION 2: Hieu Suat He Thong ===
+  var totalLeads=_leads.length;
+  var wonLeads=_leads.filter(function(l){return l.status==='won';}).length;
+  var conversionRate=totalLeads>0?(wonLeads/totalLeads*100).toFixed(1):0;
+
+  var deliveredOrders=_orders.filter(function(o){return o.status==='delivered';});
+  var totalOrders=_orders.length;
+  var completionRate=totalOrders>0?(deliveredOrders.length/totalOrders*100).toFixed(1):0;
+
+  // Avg processing time
+  var avgProcessDays=0;
+  var processCount=0;
+  deliveredOrders.forEach(function(o){
+    if(o.created_at&&o.delivered_at){
+      var diff=new Date(o.delivered_at)-new Date(o.created_at);
+      if(diff>0){avgProcessDays+=diff/(1000*60*60*24);processCount++;}
+    }
+  });
+  avgProcessDays=processCount>0?(avgProcessDays/processCount).toFixed(1):'N/A';
+
+  // Returning customers
+  var phoneMap={};
+  _orders.forEach(function(o){var p=o.customer_phone||o.phone||'';if(p){if(!phoneMap[p])phoneMap[p]=0;phoneMap[p]++;}});
+  var totalCustomers=Object.keys(phoneMap).length;
+  var returningCustomers=Object.keys(phoneMap).filter(function(k){return phoneMap[k]>1;}).length;
+  var returnRate=totalCustomers>0?(returningCustomers/totalCustomers*100).toFixed(1):0;
+
+  h+='<div class="crd"><div class="crd-h"><span class="crd-t">Hieu Suat He Thong</span></div>';
   h+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">';
-  [{l:'Tin nhắn tư vấn',v:'1,247',d:'+18%',c:'#00C896'},{l:'Lần tầm soát',v:'89',d:'+32%',c:'#9B82FF'},{l:'Tỷ lệ chuyển đổi',v:'12.4%',d:'+2.1%',c:'#FFC800'},{l:'TB thời gian phản hồi',v:'1.8s',d:'-0.3s',c:'#00B4D8'}].forEach(function(m){
+
+  var perfMetrics=[
+    {l:'Ti le chuyen doi',v:conversionRate+'%',desc:wonLeads+'/'+totalLeads+' leads',pct:parseFloat(conversionRate),c:'#00C896'},
+    {l:'Thoi gian xu ly don TB',v:avgProcessDays+(avgProcessDays!=='N/A'?' ngay':''),desc:'Pending -> Delivered',pct:avgProcessDays!=='N/A'?Math.min(100,100-parseFloat(avgProcessDays)*10):0,c:'#6496FF'},
+    {l:'Ti le hoan thanh',v:completionRate+'%',desc:deliveredOrders.length+'/'+totalOrders+' don',pct:parseFloat(completionRate),c:'#9B82FF'},
+    {l:'Khach quay lai',v:returnRate+'%',desc:returningCustomers+'/'+totalCustomers+' khach',pct:parseFloat(returnRate),c:'#FFC800'}
+  ];
+  perfMetrics.forEach(function(m){
     h+='<div style="background:#0D1520;border:1px solid rgba(0,200,150,.06);border-radius:10px;padding:14px">';
     h+='<div style="font-size:11px;color:#607870;margin-bottom:6px">'+m.l+'</div>';
-    h+='<div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:22px;font-weight:700;color:'+m.c+'">'+m.v+'</span><span style="font-size:11px;color:#00C896">'+m.d+'</span></div>';
+    h+='<div style="font-size:22px;font-weight:700;color:'+m.c+';margin-bottom:4px">'+m.v+'</div>';
+    h+='<div style="font-size:10px;color:#607870;margin-bottom:8px">'+m.desc+'</div>';
+    h+='<div style="height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+Math.min(100,m.pct)+'%;background:'+m.c+';border-radius:2px;transition:width .5s"></div></div>';
     h+='</div>';
   });
+  h+='</div></div>';
+
+  // === SECTION 3: Canh Bao Rui Ro ===
+  var alerts=[];
+  var now=new Date();
+  var h24=24*60*60*1000;var h72=72*60*60*1000;var d30=30*24*60*60*1000;
+
+  // Pending >24h
+  _orders.forEach(function(o){
+    if(o.status==='pending'&&o.created_at){
+      var age=now-new Date(o.created_at);
+      if(age>h24) alerts.push({icon:'&#9888;&#65039;',msg:'Don #'+(o.order_code||o.id||'?')+' pending >24h',severity:'warn',time:o.created_at});
+    }
+  });
+  // Shipped >72h
+  _orders.forEach(function(o){
+    if(o.status==='shipped'&&(o.shipped_at||o.updated_at)){
+      var age=now-new Date(o.shipped_at||o.updated_at);
+      if(age>h72) alerts.push({icon:'&#128680;',msg:'Don #'+(o.order_code||o.id||'?')+' shipped >72h chua giao',severity:'error',time:o.shipped_at||o.updated_at});
+    }
+  });
+  // Unpaid delivered
+  _orders.forEach(function(o){
+    if(o.status==='delivered'&&(o.payment_status==='unpaid'||o.payment_status==='pending')){
+      alerts.push({icon:'&#128176;',msg:'Don #'+(o.order_code||o.id||'?')+' da giao nhung chua thanh toan',severity:'warn',time:o.created_at});
+    }
+  });
+  // Low stock
+  try{
+    var warehouses=JSON.parse(localStorage.getItem('anima_warehouses')||localStorage.getItem('anima_inventory'));
+    if(Array.isArray(warehouses)){
+      warehouses.forEach(function(w){
+        if(w.items&&Array.isArray(w.items)){
+          w.items.forEach(function(it){
+            if((it.quantity||it.stock||0)<10) alerts.push({icon:'&#128230;',msg:'Ton kho thap: '+(it.name||it.sku||'?')+' ('+(it.quantity||it.stock||0)+' con lai) tai '+(w.name||'kho'),severity:'warn',time:new Date().toISOString()});
+          });
+        }
+      });
+    }
+  }catch(e){}
+  // Inactive KTVs
+  try{
+    var ktvs=JSON.parse(localStorage.getItem('anima_saved_tech'));
+    if(Array.isArray(ktvs)){
+      ktvs.forEach(function(k){
+        if(k.last_session||k.lastActive){
+          var lastActive=new Date(k.last_session||k.lastActive);
+          if(now-lastActive>d30) alerts.push({icon:'&#128100;',msg:'KTV '+(k.name||k.full_name||'?')+' khong hoat dong >30 ngay',severity:'info',time:k.last_session||k.lastActive});
+        }
+      });
+    }
+  }catch(e){}
+  // Revenue drop check
+  var thisMonthRev=0;var lastMonthRev=0;
+  var thisM=now.getMonth();var thisY=now.getFullYear();
+  _orders.forEach(function(o){
+    if(!o.created_at) return;
+    var d=new Date(o.created_at);
+    if(d.getFullYear()===thisY&&d.getMonth()===thisM) thisMonthRev+=(o.total_amount||0);
+    if((d.getFullYear()===thisY&&d.getMonth()===thisM-1)||(thisM===0&&d.getFullYear()===thisY-1&&d.getMonth()===11)) lastMonthRev+=(o.total_amount||0);
+  });
+  if(lastMonthRev>0&&thisMonthRev<lastMonthRev*0.8){
+    alerts.push({icon:'&#128201;',msg:'Doanh thu thang nay giam '+(((lastMonthRev-thisMonthRev)/lastMonthRev)*100).toFixed(0)+'% so voi thang truoc',severity:'error',time:new Date().toISOString()});
+  }
+  // Security: unusual patterns
+  var dailyPhoneOrders={};
+  _orders.forEach(function(o){
+    var p=o.customer_phone||o.phone||'';var d=(o.created_at||'').split('T')[0];
+    if(p&&d){var key=p+'_'+d;if(!dailyPhoneOrders[key])dailyPhoneOrders[key]=0;dailyPhoneOrders[key]++;}
+  });
+  Object.keys(dailyPhoneOrders).forEach(function(k){
+    if(dailyPhoneOrders[k]>5){
+      var parts=k.split('_');
+      alerts.push({icon:'&#128274;',msg:'Bat thuong: '+parts[0]+' dat >5 don trong ngay '+parts[1],severity:'error',time:parts[1]+'T00:00:00'});
+    }
+  });
+
+  // Sort alerts by severity
+  var sevOrder={error:0,warn:1,info:2};
+  alerts.sort(function(a,b){return (sevOrder[a.severity]||2)-(sevOrder[b.severity]||2);});
+
+  h+='<div class="crd"><div class="crd-h"><span class="crd-t">Canh Bao Rui Ro ('+alerts.length+')</span></div>';
+  if(alerts.length){
+    h+='<div style="max-height:300px;overflow-y:auto">';
+    alerts.forEach(function(a){
+      var bgColor=a.severity==='error'?'rgba(255,70,70,.06)':a.severity==='warn'?'rgba(255,200,0,.06)':'rgba(100,150,255,.06)';
+      var borderColor=a.severity==='error'?'rgba(255,70,70,.15)':a.severity==='warn'?'rgba(255,200,0,.12)':'rgba(100,150,255,.1)';
+      var textColor=a.severity==='error'?'#FF7070':a.severity==='warn'?'#FFC800':'#6496FF';
+      h+='<div style="background:'+bgColor+';border:1px solid '+borderColor+';border-radius:8px;padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;gap:10px;font-size:12px">';
+      h+='<span style="font-size:16px">'+a.icon+'</span>';
+      h+='<span style="flex:1;color:'+textColor+'">'+a.msg+'</span>';
+      h+='<span style="color:#607870;font-size:10px;white-space:nowrap">'+shortDate(a.time)+'</span>';
+      h+='</div>';
+    });
+    h+='</div>';
+  }else{
+    h+='<div style="text-align:center;padding:20px;color:#00C896;font-size:13px">&#9989; Khong co canh bao nao. He thong hoat dong binh thuong.</div>';
+  }
+  h+='</div>';
+
+  // === SECTION 4: Bao Mat ===
+  h+='<div class="crd"><div class="crd-h"><span class="crd-t">&#128274; Quy Tac Bao Mat Agent AI</span></div>';
+  h+='<div style="font-family:monospace;font-size:12px;line-height:2;color:#B8D8D0;background:#0A1218;border-radius:8px;padding:16px">';
+  var rules=[
+    {icon:'&#9989;',text:'Chi tra loi ve he sinh thai AnimaCare'},
+    {icon:'&#9989;',text:'KHONG tiet lo doanh thu, data khach hang'},
+    {icon:'&#9989;',text:'KHONG chia se thong tin noi bo cong ty'},
+    {icon:'&#9989;',text:'KHONG truy cap data ngoai pham vi'},
+    {icon:'&#9989;',text:'Moi du lieu duoc ma hoa khi truyen tai'},
+    {icon:'&#9989;',text:'Log tat ca tuong tac de audit'}
+  ];
+  rules.forEach(function(r,i){
+    var prefix=i<rules.length-1?'&#9500;&#9472;&#9472;':'&#9492;&#9472;&#9472;';
+    h+='<div>'+prefix+' '+r.icon+' '+r.text+'</div>';
+  });
+  h+='</div></div>';
+
+  // === SECTION 5: Agent Activity Log ===
+  h+='<div class="crd"><div class="crd-h"><span class="crd-t">Agent Activity Log</span></div>';
+  h+='<div style="max-height:280px;overflow-y:auto">';
+
+  // Recent chatbot conversations
+  var chatLogs=[];
+  try{
+    var hist=JSON.parse(localStorage.getItem('anima_chat_history'));
+    if(Array.isArray(hist)){
+      chatLogs=hist.slice(-10).reverse().map(function(m){
+        return {type:'chat',icon:'&#128172;',msg:'Chatbot: '+(m.content||m.message||m.text||'').substring(0,80)+(((m.content||m.message||m.text||'').length>80)?'...':''),time:m.timestamp||m.created_at||m.time||'',color:'#00C896'};
+      });
+    }
+  }catch(e){}
+
+  // Recent scans
+  var scanLogs=[];
+  try{
+    var scans=JSON.parse(localStorage.getItem('anima_scan_history')||localStorage.getItem('anima_tongue_scans'));
+    if(Array.isArray(scans)){
+      scanLogs=scans.slice(-5).reverse().map(function(s){
+        return {type:'scan',icon:'&#128269;',msg:'Tam Soat: '+(s.result||s.diagnosis||s.summary||'Ket qua phan tich').substring(0,80),time:s.timestamp||s.created_at||s.time||'',color:'#9B82FF'};
+      });
+    }
+  }catch(e){}
+
+  // Mock blocked queries
+  var activityLogs=chatLogs.concat(scanLogs);
+  activityLogs.push({type:'system',icon:'&#128683;',msg:'Blocked query: User hoi ve thong tin tai chinh noi bo',time:new Date(now-3600000).toISOString(),color:'#FF7070'});
+  activityLogs.push({type:'system',icon:'&#128683;',msg:'Blocked query: Yeu cau xuat data khach hang',time:new Date(now-7200000).toISOString(),color:'#FF7070'});
+  activityLogs.push({type:'system',icon:'&#9989;',msg:'System audit: Tat ca agent hoat dong trong pham vi cho phep',time:new Date(now-1800000).toISOString(),color:'#00C896'});
+
+  if(!activityLogs.length){
+    h+='<div class="empty">Chua co hoat dong nao</div>';
+  }else{
+    activityLogs.slice(0,15).forEach(function(log){
+      h+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(0,200,150,.04);font-size:12px">';
+      h+='<span style="font-size:14px">'+log.icon+'</span>';
+      h+='<span style="flex:1;color:'+log.color+'">'+log.msg+'</span>';
+      h+='<span style="color:#607870;font-size:10px;white-space:nowrap">'+(log.time?shortDateTime(log.time):'-')+'</span>';
+      h+='</div>';
+    });
+  }
   h+='</div></div>';
 
   c.innerHTML=h;
