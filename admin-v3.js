@@ -268,6 +268,41 @@ function pgDashboard(){
     h+=kpi(convRate+'%','Tỉ Lệ Chuyển Đổi','#FF7070');
     h+='</div>';
 
+    /* ── 48H COMMISSION AUTO-CHECK ── */
+    var commReady=[];var commTotal=0;
+    var now48=Date.now()-48*3600000;
+    _orders.forEach(function(o){
+      if(o.order_status==='delivered' && o.delivered_at){
+        var deliveredTime=new Date(o.delivered_at).getTime();
+        if(deliveredTime<now48 && o.payment_status==='paid' && !o._commission_released){
+          var comm=o.commission||(o.total_amount?Math.round(o.total_amount*0.25):0);
+          commReady.push({code:o.order_code,center:o.center_name||o.center_id,amount:comm,delivered:o.delivered_at});
+          commTotal+=comm;
+        }
+      }
+    });
+    if(commReady.length){
+      h+='<div class="crd" style="border-color:rgba(0,200,150,.25);background:rgba(0,200,150,.04)"><div class="crd-h"><span class="crd-t" style="color:#00C896">💰 Hoa Hồng Sẵn Sàng Giải Ngân (48h+)</span><button class="btn btn-p btn-sm" onclick="admV3ReleaseAllComm()">Giải Ngân '+money(commTotal)+'</button></div>';
+      commReady.slice(0,5).forEach(function(cr){
+        h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;margin-bottom:4px;background:rgba(0,200,150,.04);border-radius:8px;font-size:12px"><span><b style="color:#00C896">'+cr.code+'</b> → '+cr.center+'</span><span style="font-weight:700;color:#00C896">'+money(cr.amount)+'</span></div>';
+      });
+      if(commReady.length>5) h+='<div style="font-size:11px;color:#607870;padding:4px 12px">...và '+(commReady.length-5)+' đơn nữa</div>';
+      h+='</div>';
+    }
+
+    /* ── AGENT AI DASHBOARD ALERTS ── */
+    var dashAlerts=[];
+    _orders.forEach(function(o){
+      var age=(Date.now()-new Date(o.created_at).getTime())/3600000;
+      if(o.order_status==='pending'&&age>24) dashAlerts.push('⏳ Đơn <b>'+o.order_code+'</b> chờ duyệt '+Math.round(age)+'h');
+      if(o.order_status==='shipped'&&age>72) dashAlerts.push('🚨 Đơn <b>'+o.order_code+'</b> giao '+Math.round(age)+'h chưa hoàn thành');
+    });
+    if(dashAlerts.length){
+      h+='<div class="crd" style="border-color:rgba(255,184,0,.15)"><div class="crd-h"><span class="crd-t" style="color:#FFC800">🤖 Agent Cảnh Báo</span></div>';
+      dashAlerts.slice(0,4).forEach(function(a){h+='<div style="font-size:12px;color:#FFC800;padding:6px 0;border-bottom:1px solid rgba(255,184,0,.06)">'+a+'</div>';});
+      h+='</div>';
+    }
+
     // Revenue chart last 7 days
     h+='<div class="grid2">';
     h+='<div class="crd"><div class="crd-h"><span class="crd-t">Doanh Thu 7 Ngày Qua</span></div>';
@@ -1050,6 +1085,34 @@ window.admV3SaveWarehouse=function(centerId){
   localStorage.setItem('anima_warehouses',JSON.stringify(warehouses));
   admV3CloseModal();
   pgInventory();
+};
+
+/* ── 48H COMMISSION RELEASE ── */
+window.admV3ReleaseAllComm=function(){
+  var now48=Date.now()-48*3600000;
+  var toRelease=_orders.filter(function(o){
+    return o.order_status==='delivered'&&o.delivered_at&&new Date(o.delivered_at).getTime()<now48&&o.payment_status==='paid';
+  });
+  if(!toRelease.length){alert('Không có hoa hồng cần giải ngân.');return;}
+  if(!confirm('Giải ngân hoa hồng cho '+toRelease.length+' đơn?')) return;
+  var total=0;
+  var updates=toRelease.map(function(o){
+    var comm=o.commission||(o.total_amount?Math.round(o.total_amount*0.25):0);
+    total+=comm;
+    /* Log commission to wallet via AnimaSync */
+    if(window.AnimaSync){
+      AnimaSync.push('wallet_transactions',{
+        centerId:o.center_id,centerName:o.center_name||'',
+        orderId:o.order_code,amount:comm,type:'commission',
+        status:'released',date:new Date().toISOString()
+      });
+    }
+    return safeCall('AnimaOrders','update',[o.id,{notes:(o.notes||'')+' [COMM RELEASED '+new Date().toLocaleDateString('vi-VN')+']'}]);
+  });
+  Promise.all(updates).then(function(){
+    alert('✅ Đã giải ngân '+money(total)+' cho '+toRelease.length+' đơn hàng!');
+    pgDashboard();
+  });
 };
 
 window.admV3BulkImport=function(){
