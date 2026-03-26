@@ -57,6 +57,7 @@ var NAV_ITEMS = [
   {id:'ktv',icon:'M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z',l:'KTV'},
   {id:'inventory',icon:'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',l:'Kho Hàng'},
   {id:'analytics',icon:'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',l:'Analytics'},
+  {id:'agents',icon:'M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714a2.25 2.25 0 00.659 1.591L19 14.5M14.25 3.104c.251.023.501.05.75.082M19 14.5l-2.47 2.47a2.25 2.25 0 01-1.591.659H9.061a2.25 2.25 0 01-1.591-.659L5 14.5m14 0V5a2 2 0 00-2-2H7a2 2 0 00-2 2v9.5',l:'AI Agent'},
   {id:'settings',icon:'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z',l:'Cài Đặt'}
 ];
 var PRODUCTS = [
@@ -77,8 +78,8 @@ function injectCSS(){
 #admV3{position:fixed;inset:0;z-index:10000;background:#070E1E;font-family:"Roboto","Segoe UI",sans-serif;color:#F8F2E0;display:none;overflow:hidden}\
 #admV3 *{box-sizing:border-box;margin:0;padding:0}\
 #admV3 .sb{position:fixed;left:0;top:0;bottom:0;width:250px;background:linear-gradient(180deg,#0A1218,#0D1820);border-right:1px solid rgba(0,200,150,.08);display:flex;flex-direction:column;z-index:10;transition:transform .3s}\
-#admV3 .sb-hd{padding:20px 16px;border-bottom:1px solid rgba(0,200,150,.08)}\
-#admV3 .sb-logo{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:700;color:#00C896}\
+#admV3 .sb-hd{padding:12px 12px;border-bottom:1px solid rgba(0,200,150,.08)}\
+#admV3 .sb-logo{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#00C896}\
 #admV3 .sb-usr{margin-top:12px;padding:10px;border-radius:10px;background:rgba(0,200,150,.04);border:1px solid rgba(0,200,150,.06)}\
 #admV3 .sb-usr-n{font-size:13px;font-weight:600;color:#E8F8F4}\
 #admV3 .sb-usr-r{font-size:10px;color:#00C896;text-transform:uppercase;letter-spacing:1px;margin-top:2px}\
@@ -90,7 +91,7 @@ function injectCSS(){
 #admV3 .sb-it.act svg{opacity:1}\
 #admV3 .sb-it .bdg{margin-left:auto;background:rgba(0,200,150,.15);color:#00C896;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600}\
 #admV3 .sb-ft{padding:12px 10px;border-top:1px solid rgba(0,200,150,.08)}\
-#admV3 .sb-close{display:flex;align-items:center;gap:8px;width:100%;padding:9px 14px;background:rgba(255,70,70,.06);border:1px solid rgba(255,70,70,.12);color:#FF7070;border-radius:10px;cursor:pointer;font-size:12px;font-family:inherit}\
+#admV3 .sb-close{display:flex;align-items:center;gap:6px;width:100%;padding:7px 10px;background:rgba(255,70,70,.06);border:1px solid rgba(255,70,70,.12);color:#FF7070;border-radius:8px;cursor:pointer;font-size:11px;font-family:inherit}\
 #admV3 .sb-close:hover{background:rgba(255,70,70,.12)}\
 #admV3 .mn{margin-left:250px;height:100vh;overflow-y:auto;background:#070E1E}\
 #admV3 .topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:rgba(7,14,30,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,200,150,.05)}\
@@ -228,6 +229,7 @@ function renderPage(page){
     case 'inventory': pgInventory();break;
     case 'analytics': pgAnalytics();break;
     case 'settings': pgSettings();break;
+    case 'agents': pgAgents();break;
     default: c.innerHTML='<div class="empty">Trang không tồn tại</div>';
   }
 }
@@ -1125,6 +1127,55 @@ function safeCall(api,method,args){
     return Promise.reject(new Error(api+'.'+method+' not available'));
   }
   return window[api][method].apply(window[api],args||[]);
+}
+
+// ═══ PAGE: AI AGENT ═══
+function pgAgents(){
+  var c=el('admV3Content');if(!c)return;
+  var agents=[
+    {name:'Anima Tư Vấn',desc:'Chatbot chăm sóc khách hàng 24/7. Tư vấn sản phẩm ANIMA 119, dịch vụ, đặt lịch. Gemini 2.5 Flash.',status:'active',model:'gemini-2.5-flash-lite',tokens:'~500/msg',color:'#00C896',icon:'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z'},
+    {name:'Chuyên Gia Tầm Soát',desc:'AI phân tích ảnh lưỡi theo Đông Y. Chẩn đoán thể tạng, tình trạng tạng phủ. Yêu cầu 3 ảnh (chính giữa, trái, phải).',status:'active',model:'gemini-2.5-flash',tokens:'~2000/scan',color:'#9B82FF',icon:'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'},
+    {name:'AI Đề Xuất Sản Phẩm',desc:'Gợi ý sản phẩm/dịch vụ phù hợp dựa trên thể tạng, lịch sử mua hàng, kết quả tầm soát.',status:'planned',model:'gemini-2.5-pro',tokens:'~300/req',color:'#FFC800',icon:'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'},
+    {name:'AI Dự Báo Nhu Cầu',desc:'Phân tích dữ liệu booking, đơn hàng → dự báo peak demand → gợi ý tăng KTV.',status:'planned',model:'gemini-2.5-pro',tokens:'~1000/analysis',color:'#00B4D8',icon:'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'},
+    {name:'AI Chăm Sóc Sau Buổi',desc:'Tự động gửi lời khuyên sau trị liệu: chế độ ăn, tập luyện, thời gian nghỉ ngơi phù hợp thể tạng.',status:'planned',model:'gemini-2.5-flash-lite',tokens:'~400/msg',color:'#FF6B9D',icon:'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'}
+  ];
+  var h='<div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">';
+  h+=kpi(agents.filter(function(a){return a.status==='active';}).length,'Agent Hoạt Động','#00C896');
+  h+=kpi(agents.length,'Tổng Agent','#6496FF');
+  h+=kpi(agents.filter(function(a){return a.status==='planned';}).length,'Đang Phát Triển','#FFC800');
+  h+=kpi('Gemini','AI Engine','#9B82FF');
+  h+='</div>';
+
+  h+='<div class="crd"><div class="crd-h"><span class="crd-t">Hệ Thống AI Agent</span></div>';
+  agents.forEach(function(a){
+    var statusBg=a.status==='active'?'rgba(0,200,150,.1)':'rgba(255,200,0,.06)';
+    var statusBorder=a.status==='active'?'rgba(0,200,150,.2)':'rgba(255,200,0,.15)';
+    var statusText=a.status==='active'?'<span style="color:#00C896;font-weight:600">● Hoạt động</span>':'<span style="color:#FFC800;font-weight:600">◐ Đang phát triển</span>';
+    h+='<div style="background:'+statusBg+';border:1px solid '+statusBorder+';border-radius:12px;padding:16px;margin-bottom:10px">';
+    h+='<div style="display:flex;align-items:flex-start;gap:14px">';
+    h+='<div style="width:44px;height:44px;min-width:44px;border-radius:12px;background:'+a.color+'18;border:1px solid '+a.color+'30;display:flex;align-items:center;justify-content:center">'+svgIcon(a.icon).replace('width="18"','width="22"').replace('height="18"','height="22"').replace('stroke="currentColor"','stroke="'+a.color+'"')+'</div>';
+    h+='<div style="flex:1;min-width:0">';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:15px;font-weight:700;color:#F8F2E0">'+a.name+'</span>'+statusText+'</div>';
+    h+='<div style="font-size:13px;color:#B8D8D0;line-height:1.6;margin-bottom:8px">'+a.desc+'</div>';
+    h+='<div style="display:flex;gap:12px;font-size:11px;color:#607870">';
+    h+='<span>Model: <b style="color:#00C896">'+a.model+'</b></span>';
+    h+='<span>Token: <b style="color:#FFC800">'+a.tokens+'</b></span>';
+    h+='</div></div></div></div>';
+  });
+  h+='</div>';
+
+  // Agent Performance (mock)
+  h+='<div class="crd"><div class="crd-h"><span class="crd-t">Hiệu Suất Agent (7 ngày)</span></div>';
+  h+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">';
+  [{l:'Tin nhắn tư vấn',v:'1,247',d:'+18%',c:'#00C896'},{l:'Lần tầm soát',v:'89',d:'+32%',c:'#9B82FF'},{l:'Tỷ lệ chuyển đổi',v:'12.4%',d:'+2.1%',c:'#FFC800'},{l:'TB thời gian phản hồi',v:'1.8s',d:'-0.3s',c:'#00B4D8'}].forEach(function(m){
+    h+='<div style="background:#0D1520;border:1px solid rgba(0,200,150,.06);border-radius:10px;padding:14px">';
+    h+='<div style="font-size:11px;color:#607870;margin-bottom:6px">'+m.l+'</div>';
+    h+='<div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:22px;font-weight:700;color:'+m.c+'">'+m.v+'</span><span style="font-size:11px;color:#00C896">'+m.d+'</span></div>';
+    h+='</div>';
+  });
+  h+='</div></div>';
+
+  c.innerHTML=h;
 }
 
 // ═══ AUTO-INIT ═══
