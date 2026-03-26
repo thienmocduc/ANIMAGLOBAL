@@ -11020,8 +11020,7 @@ document.getElementById('crm-detail-content').innerHTML=html;
 openM('crm-detail-modal');
 }
 function renderOrdersTable(){
-var tbl=document.getElementById('tbl-orders');if(!tbl)return;
-/* ═══ SUPABASE FIRST — load real orders ═══ */
+/* ═══ SUPABASE FIRST — load real orders (before DOM check) ═══ */
 if(window.AnimaOrders && !window._ordersFromSupa){
   window._ordersFromSupa=true;
   tbl.innerHTML='<tr><td colspan="10" style="text-align:center;padding:20px;color:#607870">Đang tải đơn hàng từ Supabase...</td></tr>';
@@ -11050,6 +11049,8 @@ if(window.AnimaOrders && !window._ordersFromSupa){
   }).catch(function(e){console.warn('Supabase orders load failed:',e);window._ordersFromSupa=false;renderOrdersTable();});
   return;
 }
+/* DOM check — table must exist to render */
+var tbl=document.getElementById('tbl-orders');if(!tbl)return;
 /* Merge static + realtime (AnimaSync) + localStorage orders */
 var allO=ORDERS.slice();
 var syncOrders=window.AnimaSync?AnimaSync.get('orders',[]):[];
