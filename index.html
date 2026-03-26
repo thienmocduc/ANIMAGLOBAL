@@ -11871,6 +11871,9 @@ window.openAdminDashboard=function(){
 var u;
 try{u=JSON.parse(localStorage.getItem('anima_admin_user'));}catch(e){return;}
 if(!u)return;
+/* ═══ USE ADMIN V3 ═══ */
+if(typeof openAdminV3==='function'){openAdminV3();return;}
+/* Fallback to old admin if V3 not loaded */
 var unEl=document.querySelector('#adminDashboard .sb-un');
 var urEl=document.querySelector('#adminDashboard .sb-ur');
 if(unEl)unEl.textContent=u.name||'Admin';
@@ -14022,7 +14025,7 @@ document.head.appendChild(st);
 <script src="loyalty-system.js?v=20260326b"></script>
 <script src="chat-system.js?v=20260326b"></script>
 <script src="academy-system.js?v=20260326b"></script>
-<script src="admin-real-pages.js?v=20260326c"></script>
+<script src="admin-v3.js?v=20260326d"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </body>
 </html>
