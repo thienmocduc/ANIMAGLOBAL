@@ -90,8 +90,9 @@ function injectCSS(){
 #admV3 .sb-it svg{width:18px;height:18px;flex-shrink:0;opacity:.7}\
 #admV3 .sb-it.act svg{opacity:1}\
 #admV3 .sb-it .bdg{margin-left:auto;background:rgba(0,200,150,.15);color:#00C896;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600}\
-#admV3 .sb-ft{padding:12px 10px;border-top:1px solid rgba(0,200,150,.08)}\
-#admV3 .sb-close{display:flex;align-items:center;gap:6px;width:100%;padding:7px 10px;background:rgba(255,70,70,.06);border:1px solid rgba(255,70,70,.12);color:#FF7070;border-radius:8px;cursor:pointer;font-size:11px;font-family:inherit}\
+#admV3 .sb-ft{padding:8px 10px;border-top:1px solid rgba(0,200,150,.08)}\
+#admV3 .sb-close{display:flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;background:rgba(255,70,70,.06);border:1px solid rgba(255,70,70,.12);color:#FF7070;border-radius:8px;cursor:pointer;font-size:11px;font-family:inherit}\
+#admV3 .sb-close svg{width:16px;height:16px}\
 #admV3 .sb-close:hover{background:rgba(255,70,70,.12)}\
 #admV3 .mn{margin-left:250px;height:100vh;overflow-y:auto;background:#070E1E}\
 #admV3 .topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:rgba(7,14,30,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,200,150,.05)}\
@@ -256,8 +257,8 @@ function pgDashboard(){
     var pendingBk=_bookings.filter(function(b){return b.status==='pending';}).length;
     var uniquePhones={};_orders.forEach(function(o){if(o.customer_phone)uniquePhones[o.customer_phone]=1;});
     var activeCust=Object.keys(uniquePhones).length;
-    var ktvs=[];try{ktvs=JSON.parse(localStorage.getItem('anima_saved_tech')||'[]');}catch(e){}
-    var activeKtvs=ktvs.filter(function(k){return k.status==='active';}).length||ktvs.length;
+    var ktvs=[];try{var _kt=JSON.parse(localStorage.getItem('anima_saved_tech'));if(Array.isArray(_kt))ktvs=_kt;}catch(e){}
+    var activeKtvs=ktvs.length?ktvs.filter(function(k){return k.status==='active';}).length||ktvs.length:0;
     var convRate=_leads.length?Math.round(_leads.filter(function(l){return l.status==='won';}).length/_leads.length*100):0;
 
     var h='<div class="kpis">';
@@ -929,9 +930,9 @@ window.admV3ViewCenter=function(id){
 function pgKTV(){
   var c=el('admV3Content');if(!c) return;
   var ktvs=[];
-  try{ktvs=JSON.parse(localStorage.getItem('anima_saved_tech')||'[]');}catch(e){}
+  try{var _kt2=JSON.parse(localStorage.getItem('anima_saved_tech'));if(Array.isArray(_kt2))ktvs=_kt2;}catch(e){}
 
-  var active=ktvs.filter(function(k){return k.status==='active';}).length;
+  var active=ktvs.length?ktvs.filter(function(k){return k.status==='active';}).length:0;
   var avgRating=0;
   if(ktvs.length){
     var total=ktvs.reduce(function(s,k){return s+(k.rating||0);},0);
