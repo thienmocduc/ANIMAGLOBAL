@@ -600,7 +600,7 @@ window.setThemeMode=function(mode){
           <div class="ddi" onclick="openCenterStore('CTR-HN')"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ddi-b"><div class="ddi-t">Hà Nội</div><div class="ddi-s">Đối tác độc quyền miền Bắc</div></div><span class="ddi-arr">↗</span></div>
           <div class="ddi" onclick="openCenterStore('CTR-HCM')"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ddi-b"><div class="ddi-t">TP. Hồ Chí Minh</div><div class="ddi-s">Đối tác độc quyền miền Nam</div></div><span class="ddi-arr">↗</span></div>
           <div class="ddi" onclick="openCenterStore('CTR-DN')"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ddi-b"><div class="ddi-t">Đà Nẵng</div><div class="ddi-s">Đối tác độc quyền miền Trung</div></div><span class="ddi-arr">↗</span></div>
-          <div class="ddi" onclick="openStations?openStations():void(0)"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Xem tất cả 34 tỉnh" data-en="View all 34 provinces">Xem tất cả 34 tỉnh →</div></div><span class="ddi-arr">↗</span></div>
+          <div class="ddi" onclick="openAllStations?openAllStations():void(0)"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Xem tất cả 34 tỉnh" data-en="View all 34 provinces">Xem tất cả 34 tỉnh →</div></div><span class="ddi-arr">↗</span></div>
         </div>
       </div>
     </div>
@@ -9670,6 +9670,81 @@ var l=lang||'vi';
 var msgs={hq:(l==='vi'?'Trụ sở chính: 286 Nguyễn Xiển, Thanh Liệt, Hà Nội':'Head Office: 286 Nguyen Xien, Thanh Liet, Hanoi'),p1:(l==='vi'?'Trạm Pilot 1: Đang xác nhận vị trí tại Hà Nội':'Pilot Station 1: Confirming location in Hanoi'),p2:(l==='vi'?'Trạm Pilot 2: Đang xác nhận vị trí tại Hà Nội':'Pilot Station 2: Confirming location in Hanoi')};
 if(typeof showToast==='function') showToast(msgs[id]||'','var(--g2)');
 }
+
+/* ═══ 34 PROVINCE STATIONS — Full list with search ═══ */
+function openAllStations(){
+  var CENTERS=[
+    {id:'CTR-HN',city:'Hà Nội',region:'Bắc'},{id:'CTR-HCM',city:'TP. Hồ Chí Minh',region:'Nam'},
+    {id:'CTR-DN',city:'Đà Nẵng',region:'Trung'},{id:'CTR-HP',city:'Hải Phòng',region:'Bắc'},
+    {id:'CTR-CT',city:'Cần Thơ',region:'Nam'},{id:'CTR-HUE',city:'Huế',region:'Trung'},
+    {id:'CTR-NT',city:'Nha Trang',region:'Trung'},{id:'CTR-VT',city:'Vũng Tàu',region:'Nam'},
+    {id:'CTR-QN',city:'Quảng Ninh',region:'Bắc'},{id:'CTR-BD',city:'Bình Dương',region:'Nam'},
+    {id:'CTR-DN2',city:'Đồng Nai',region:'Nam'},{id:'CTR-TH',city:'Thanh Hoá',region:'Bắc'},
+    {id:'CTR-NA',city:'Nghệ An',region:'Bắc'},{id:'CTR-BN',city:'Bắc Ninh',region:'Bắc'},
+    {id:'CTR-HD',city:'Hải Dương',region:'Bắc'},{id:'CTR-LA',city:'Long An',region:'Nam'},
+    {id:'CTR-QNA',city:'Quảng Nam',region:'Trung'},{id:'CTR-KH',city:'Khánh Hoà',region:'Trung'},
+    {id:'CTR-GL',city:'Gia Lai',region:'Trung'},{id:'CTR-DL',city:'Đắk Lắk',region:'Trung'},
+    {id:'CTR-AG',city:'An Giang',region:'Nam'},{id:'CTR-TG',city:'Tiền Giang',region:'Nam'},
+    {id:'CTR-BT',city:'Bến Tre',region:'Nam'},{id:'CTR-TB',city:'Thái Bình',region:'Bắc'},
+    {id:'CTR-NB',city:'Nam Định',region:'Bắc'},{id:'CTR-PY',city:'Phú Yên',region:'Trung'},
+    {id:'CTR-BP',city:'Bình Phước',region:'Nam'},{id:'CTR-TN',city:'Tây Ninh',region:'Nam'},
+    {id:'CTR-VL',city:'Vĩnh Long',region:'Nam'},{id:'CTR-VP',city:'Vĩnh Phúc',region:'Bắc'},
+    {id:'CTR-LS',city:'Lạng Sơn',region:'Bắc'},{id:'CTR-PT',city:'Phú Thọ',region:'Bắc'},
+    {id:'CTR-BTH',city:'Bình Thuận',region:'Trung'},{id:'CTR-DK',city:'Đắk Nông',region:'Trung'}
+  ];
+  var ov=document.getElementById('allStationsOv');
+  if(!ov){
+    ov=document.createElement('div');ov.id='allStationsOv';
+    ov.style.cssText='position:fixed;inset:0;z-index:600;background:#070E1E;overflow-y:auto;transition:opacity .3s;display:flex;flex-direction:column';
+    document.body.appendChild(ov);
+  }
+  var h='<div style="position:sticky;top:0;z-index:5;background:#070E1E;border-bottom:1px solid rgba(0,200,150,.08);padding:14px 20px;display:flex;align-items:center;gap:14px">';
+  h+='<button onclick="closeAllStations()" style="background:transparent;border:none;color:#00C896;font-size:22px;cursor:pointer">←</button>';
+  h+='<div style="flex:1"><div style="font-size:16px;font-weight:700;color:#F8F2E0">Trạm Anima Care Toàn Quốc</div><div style="font-size:11px;color:#607870">34 cơ sở đối tác độc quyền tỉnh</div></div>';
+  h+='</div>';
+  /* Search */
+  h+='<div style="padding:12px 20px;position:sticky;top:58px;z-index:4;background:#070E1E">';
+  h+='<input id="stationSearch" oninput="filterAllStations(this.value)" placeholder="🔍 Tìm tỉnh/thành phố..." style="width:100%;box-sizing:border-box;background:rgba(0,200,150,.04);border:1px solid rgba(0,200,150,.12);border-radius:12px;padding:12px 16px;font-size:15px;color:#F8F2E0;outline:none;font-family:inherit" onfocus="this.style.borderColor=\'rgba(0,200,150,.3)\'" onblur="this.style.borderColor=\'rgba(0,200,150,.12)\'">';
+  /* Region filters */
+  h+='<div style="display:flex;gap:8px;margin-top:10px">';
+  ['Tất Cả','Bắc','Trung','Nam'].forEach(function(r){
+    h+='<button onclick="filterAllStations(\'\',\''+r+'\')" style="padding:6px 14px;border-radius:20px;border:1px solid rgba(0,200,150,.2);background:'+(r==='Tất Cả'?'rgba(0,200,150,.12)':'transparent')+';color:'+(r==='Tất Cả'?'#00C896':'#B8D8D0')+';font-size:12px;cursor:pointer;font-family:inherit">'+r+'</button>';
+  });
+  h+='</div></div>';
+  /* Grid */
+  h+='<div id="stationsListGrid" style="padding:0 20px 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">';
+  CENTERS.forEach(function(c){
+    var regionColor=c.region==='Bắc'?'#6496FF':c.region==='Trung'?'#FFC800':'#00C896';
+    h+='<div class="st-list-card" data-city="'+c.city.toLowerCase()+'" data-region="'+c.region+'" onclick="closeAllStations();if(typeof openCenterStore===\'function\')openCenterStore(\''+c.id+'\')" style="background:#0D1520;border:1px solid rgba(0,200,150,.08);border-radius:14px;padding:18px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor=\'rgba(0,200,150,.25)\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.borderColor=\'rgba(0,200,150,.08)\';this.style.transform=\'none\'">';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:10px;color:#00C896;font-weight:600;font-family:monospace">'+c.id+'</span><span style="font-size:10px;padding:2px 8px;border-radius:10px;background:'+regionColor+'18;color:'+regionColor+';font-weight:600">'+c.region+'</span></div>';
+    h+='<div style="font-size:16px;font-weight:700;color:#F8F2E0;margin-bottom:4px">'+c.city+'</div>';
+    h+='<div style="font-size:12px;color:#607870">Anima Care '+c.city+' · Đối tác độc quyền</div>';
+    h+='<div style="margin-top:10px;display:flex;align-items:center;gap:6px;font-size:11px;color:#00C896"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg> Mua sắm tại cơ sở →</div>';
+    h+='</div>';
+  });
+  h+='</div>';
+  ov.innerHTML=h;
+  ov.style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeAllStations(){
+  var ov=document.getElementById('allStationsOv');
+  if(ov) ov.style.display='none';
+  document.body.style.overflow='';
+}
+window.filterAllStations=function(q,region){
+  var cards=document.querySelectorAll('.st-list-card');
+  q=(q||'').toLowerCase();
+  cards.forEach(function(c){
+    var city=c.getAttribute('data-city')||'';
+    var reg=c.getAttribute('data-region')||'';
+    var show=true;
+    if(q && city.indexOf(q)===-1) show=false;
+    if(region && region!=='Tất Cả' && reg!==region) show=false;
+    c.style.display=show?'':'none';
+  });
+};
+window.openAllStations=openAllStations;
 function showNotifyModal(station){
 _currentNotifyStation=station;
 document.getElementById('stNotifyStationName').textContent=(lang==='vi'?'Bạn sẽ nhận thông báo khi ':'You will be notified when ')+station+(lang==='vi'?' khai trương.':' opens.');
