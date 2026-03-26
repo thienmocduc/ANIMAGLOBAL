@@ -366,25 +366,48 @@ function renderOrdersPage(){
   ORDER_STATUSES.forEach(function(s){h+='<option value="'+s.v+'"'+(_filterStatus===s.v?' selected':'')+'>'+s.l+'</option>';});
   h+='</select></div><span style="color:#607870;font-size:12px">'+filtered.length+' đơn</span></div>';
 
-  h+='<div class="tbl-w"><table><tr><th>Mã Đơn</th><th>Khách Hàng</th><th>SĐT</th><th>Sản Phẩm</th><th>Thành Tiền</th><th>Thanh Toán</th><th>Ngày</th><th>Trạng Thái</th><th>Action</th></tr>';
-  filtered.forEach(function(o){
-    var st=statusLabel(o.order_status,ORDER_STATUSES);
-    var ps=statusLabel(o.payment_status,PAY_STATUSES);
-    var items='-';try{var it=typeof o.items==='string'?JSON.parse(o.items):o.items;if(Array.isArray(it)&&it.length)items=it.map(function(i){return i.name||i.sku;}).join(', ');}catch(e){}
+  /* ── AGENT AI ALERTS ── */
+  var alerts=[];
+  var now=Date.now();
+  _orders.forEach(function(o){
+    var age=(now-new Date(o.created_at).getTime())/3600000;
+    if(o.order_status==='pending'&&age>24) alerts.push({type:'warn',msg:'⚠️ Đơn <b>'+(o.order_code||'')+'</b> chờ duyệt quá 24h — Khách: '+(o.customer_name||'')});
+    if(o.order_status==='shipped'&&age>72) alerts.push({type:'error',msg:'🚨 Đơn <b>'+(o.order_code||'')+'</b> giao quá 72h chưa hoàn thành'});
+    if(o.order_status==='delivered'&&o.payment_status!=='paid') alerts.push({type:'info',msg:'💰 Đơn <b>'+(o.order_code||'')+'</b> đã giao nhưng chưa thanh toán'});
+  });
+  if(alerts.length){
+    h+='<div class="crd" style="border-color:rgba(255,184,0,.2);background:rgba(255,184,0,.03)"><div class="crd-h"><span class="crd-t" style="color:#FFC800">🤖 Agent AI Cảnh Báo ('+alerts.length+')</span></div>';
+    alerts.slice(0,8).forEach(function(a){
+      var bg=a.type==='error'?'rgba(255,70,70,.08)':a.type==='warn'?'rgba(255,184,0,.06)':'rgba(0,200,150,.04)';
+      h+='<div style="background:'+bg+';border-radius:8px;padding:10px 14px;margin-bottom:6px;font-size:12px;color:#E8F8F4;line-height:1.5">'+a.msg+'</div>';
+    });
+    h+='</div>';
+  }
 
-    h+='<tr><td style="color:#00C896;font-weight:600">'+(o.order_code||'-')+'</td>';
-    h+='<td>'+(o.customer_name||'-')+'</td>';
-    h+='<td>'+(o.customer_phone||'-')+'</td>';
-    h+='<td style="max-width:160px;overflow:hidden;text-overflow:ellipsis">'+items+'</td>';
+  h+='<div class="crd"><div class="crd-h"><div style="display:flex;gap:10px;align-items:center">';
+  h+='<div class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Tìm tên, SĐT, mã đơn..." value="'+(_search||'')+'" oninput="admV3OrderSearch(this.value)"/></div>';
+  h+='<select class="f-sel" onchange="admV3OrderFilter(this.value)"><option value="">Tất Cả Trạng Thái</option>';
+  ORDER_STATUSES.forEach(function(s){h+='<option value="'+s.v+'"'+(_filterStatus===s.v?' selected':'')+'>'+s.l+'</option>';});
+  h+='</select></div><span style="color:#607870;font-size:12px">'+filtered.length+' đơn</span></div>';
+
+  h+='<div class="tbl-w"><table><tr><th>Mã Đơn</th><th>Khách Hàng</th><th>SP</th><th>Tỉnh/Cơ Sở</th><th>Thành Tiền</th><th>TT</th><th>Ngày</th><th>Trạng Thái</th><th></th></tr>';
+  filtered.forEach(function(o){
+    var items='-';try{var it=typeof o.items==='string'?JSON.parse(o.items):o.items;if(Array.isArray(it)&&it.length)items=it.map(function(i){return i.name||i.sku;}).join(', ');}catch(e){}
+    var centerName=o.center_name||o.center_id||'Online';
+
+    h+='<tr><td style="color:#00C896;font-weight:600;font-size:11px">'+(o.order_code||'-')+'</td>';
+    h+='<td><div style="font-weight:600">'+(o.customer_name||'-')+'</div><div style="font-size:10px;color:#607870">'+(o.customer_phone||'')+'</div></td>';
+    h+='<td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;font-size:11px">'+items+'</td>';
+    h+='<td style="font-size:11px;color:#9B82FF">'+centerName+'</td>';
     h+='<td style="font-weight:600;color:#00C896">'+money(o.total_amount)+'</td>';
-    h+='<td><select class="f-sel" onchange="admV3UpdatePayment(\''+o.id+'\',this.value)">';
+    h+='<td><select class="f-sel" style="font-size:10px" onchange="admV3UpdatePayment(\''+o.id+'\',this.value)">';
     PAY_STATUSES.forEach(function(p){h+='<option value="'+p.v+'"'+(o.payment_status===p.v?' selected':'')+'>'+p.l+'</option>';});
     h+='</select></td>';
-    h+='<td>'+shortDate(o.created_at)+'</td>';
-    h+='<td><select class="f-sel" onchange="admV3UpdateOrderStatus(\''+o.id+'\',this.value)">';
+    h+='<td style="font-size:11px">'+shortDate(o.created_at)+'</td>';
+    h+='<td><select class="f-sel" style="font-size:10px" onchange="admV3UpdateOrderStatus(\''+o.id+'\',this.value)">';
     ORDER_STATUSES.forEach(function(s){h+='<option value="'+s.v+'"'+(o.order_status===s.v?' selected':'')+'>'+s.l+'</option>';});
     h+='</select></td>';
-    h+='<td class="row-act"><button class="btn btn-s btn-sm" onclick="admV3ViewOrder(\''+o.id+'\')">Chi Tiết</button></td></tr>';
+    h+='<td class="row-act"><button class="btn btn-s btn-sm" onclick="admV3ViewOrder(\''+o.id+'\')">⋯</button></td></tr>';
   });
   if(!filtered.length) h+='<tr><td colspan="9" class="empty">Không có đơn hàng</td></tr>';
   h+='</table></div></div>';
@@ -911,50 +934,137 @@ function pgKTV(){
 // ═══════════════════════════════════════
 function pgInventory(){
   var c=el('admV3Content');if(!c) return;
-  // Build inventory from PRODUCTS + localStorage
-  var inv=[];
-  try{inv=JSON.parse(localStorage.getItem('anima_inventory')||'[]');}catch(e){}
-  if(!inv.length){
-    inv=PRODUCTS.map(function(p){return {sku:p.sku,name:p.name,price:p.price,stock:Math.floor(Math.random()*100+10),minStock:5};});
+  c.innerHTML='<div class="empty">Đang tải kho hàng 34 tỉnh...</div>';
+
+  /* Load centers + orders to calculate stock per province */
+  var centers=[];
+  if(window.AnimaSync) centers=AnimaSync.get('centers',[]).filter(function(c){return c.tier===1;});
+  if(!centers.length){
+    /* Hardcoded 34 province fallback */
+    var provinces=['Hà Nội','TP.HCM','Đà Nẵng','Hải Phòng','Cần Thơ','Huế','Nha Trang','Vũng Tàu','Quảng Ninh','Bình Dương','Đồng Nai','Thanh Hoá','Nghệ An','Bắc Ninh','Hải Dương','Long An','Quảng Nam','Khánh Hoà','Gia Lai','Đắk Lắk','An Giang','Tiền Giang','Bến Tre','Thái Bình','Nam Định','Phú Yên','Bình Phước','Tây Ninh','Vĩnh Long','Vĩnh Phúc','Lạng Sơn','Phú Thọ','Bình Thuận','Đắk Nông'];
+    var ids=['CTR-HN','CTR-HCM','CTR-DN','CTR-HP','CTR-CT','CTR-HUE','CTR-NT','CTR-VT','CTR-QN','CTR-BD','CTR-DN2','CTR-TH','CTR-NA','CTR-BN','CTR-HD','CTR-LA','CTR-QNA','CTR-KH','CTR-GL','CTR-DL','CTR-AG','CTR-TG','CTR-BT','CTR-TB','CTR-NB','CTR-PY','CTR-BP','CTR-TN','CTR-VL','CTR-VP','CTR-LS','CTR-PT','CTR-BTH','CTR-DK'];
+    provinces.forEach(function(p,i){centers.push({_id:ids[i],city:p,name:'Anima Care '+p,tier:1,region:i<10?'Bắc':i<20?'Trung':'Nam'});});
   }
 
-  var totalItems=inv.reduce(function(s,i){return s+(i.stock||0);},0);
-  var lowStock=inv.filter(function(i){return (i.stock||0)<=(i.minStock||5);}).length;
+  /* Load warehouse data from localStorage */
+  var warehouses={};
+  try{warehouses=JSON.parse(localStorage.getItem('anima_warehouses')||'{}');}catch(e){}
 
-  var h='<div class="kpis">';
-  h+=kpi(inv.length,'Sản Phẩm','#6496FF');
-  h+=kpi(totalItems,'Tổng Tồn Kho','#00C896');
-  h+=kpi(lowStock,'Sắp Hết','#FF7070');
-  h+='</div>';
+  /* Count orders per center */
+  safeLoad('AnimaOrders','getAll',[{limit:1000}]).then(function(orders){
+    orders=safeArr(orders);
+    var ordersByCenter={};
+    orders.forEach(function(o){
+      var cid=o.center_id||'';
+      if(!ordersByCenter[cid]) ordersByCenter[cid]={count:0,revenue:0,pending:0};
+      ordersByCenter[cid].count++;
+      ordersByCenter[cid].revenue+=(o.total_amount||0);
+      if(o.order_status==='pending') ordersByCenter[cid].pending++;
+    });
 
-  h+='<div class="crd"><div class="crd-h"><span class="crd-t">Danh Sách Kho Hàng</span><div style="display:flex;gap:8px"><button class="btn btn-s btn-sm" onclick="admV3ExportInventory()">Xuất Excel</button><button class="btn btn-p btn-sm" onclick="admV3ImportInventory()">Nhập Kho</button></div></div>';
-  h+='<div class="tbl-w"><table><tr><th>SKU</th><th>Tên SP</th><th>Giá</th><th>Tồn Kho</th><th>Min</th><th>Trạng Thái</th><th>Action</th></tr>';
-  inv.forEach(function(item){
-    var isLow=(item.stock||0)<=(item.minStock||5);
-    h+='<tr><td style="color:#00C896;font-weight:600">'+item.sku+'</td>';
-    h+='<td>'+item.name+'</td>';
-    h+='<td>'+money(item.price)+'</td>';
-    h+='<td style="font-weight:600;color:'+(isLow?'#FF7070':'#B8D8D0')+'">'+(item.stock||0)+'</td>';
-    h+='<td>'+(item.minStock||5)+'</td>';
-    h+='<td>'+badge(isLow?'Sắp Hết':'Đủ Hàng',isLow?'#FF7070':'#00C896')+'</td>';
-    h+='<td><button class="btn btn-s btn-sm" onclick="admV3UpdateStock(\''+item.sku+'\')">Cập Nhật</button></td></tr>';
+    var totalStock=0,lowStockCount=0,totalRevenue=0;
+    centers.forEach(function(ct){
+      var wh=warehouses[ct._id]||{a119_10:20,a119_30:10,a119_120:5};
+      var stock=(wh.a119_10||0)+(wh.a119_30||0)+(wh.a119_120||0);
+      totalStock+=stock;
+      if(stock<10) lowStockCount++;
+      var co=ordersByCenter[ct._id]||{count:0,revenue:0};
+      totalRevenue+=co.revenue;
+    });
+
+    var h='<div class="kpis">';
+    h+=kpi(34,'Kho Tỉnh','#6496FF');
+    h+=kpi(totalStock,'Tổng Tồn Kho','#00C896');
+    h+=kpi(lowStockCount,'Kho Sắp Hết','#FF7070');
+    h+=kpi(money(totalRevenue),'Tổng DT','#FFC800');
+    h+='</div>';
+
+    /* Agent AI Stock Alerts */
+    var stockAlerts=[];
+    centers.forEach(function(ct){
+      var wh=warehouses[ct._id]||{a119_10:20,a119_30:10,a119_120:5};
+      var stock=(wh.a119_10||0)+(wh.a119_30||0)+(wh.a119_120||0);
+      if(stock<5) stockAlerts.push({type:'error',msg:'🚨 <b>'+ct.city+'</b> — Kho gần hết! Còn '+stock+' sản phẩm. Cần nhập hàng khẩn cấp.'});
+      else if(stock<15) stockAlerts.push({type:'warn',msg:'⚠️ <b>'+ct.city+'</b> — Tồn kho thấp: '+stock+' sản phẩm.'});
+      var co=ordersByCenter[ct._id]||{pending:0};
+      if(co.pending>3) stockAlerts.push({type:'warn',msg:'⏳ <b>'+ct.city+'</b> — '+co.pending+' đơn chờ duyệt!'});
+    });
+
+    if(stockAlerts.length){
+      h+='<div class="crd" style="border-color:rgba(255,184,0,.2);background:rgba(255,184,0,.03)"><div class="crd-h"><span class="crd-t" style="color:#FFC800">🤖 Agent Cảnh Báo Kho ('+stockAlerts.length+')</span></div>';
+      stockAlerts.slice(0,6).forEach(function(a){
+        var bg=a.type==='error'?'rgba(255,70,70,.08)':'rgba(255,184,0,.06)';
+        h+='<div style="background:'+bg+';border-radius:8px;padding:10px 14px;margin-bottom:6px;font-size:12px;color:#E8F8F4;line-height:1.5">'+a.msg+'</div>';
+      });
+      h+='</div>';
+    }
+
+    /* 34 Province Warehouse Table */
+    h+='<div class="crd"><div class="crd-h"><span class="crd-t">Kho Hàng 34 Tỉnh Thành</span><button class="btn btn-p btn-sm" onclick="admV3BulkImport()">📦 Nhập Hàng Toàn Quốc</button></div>';
+    h+='<div class="tbl-w"><table><tr><th>Mã KH</th><th>Tỉnh/TP</th><th>Đối Tác</th><th>A119 (10)</th><th>A119 (30)</th><th>A119 (120)</th><th>Tổng</th><th>Đơn</th><th>DT</th><th>Trạng Thái</th><th></th></tr>';
+    centers.forEach(function(ct){
+      var wh=warehouses[ct._id]||{a119_10:20,a119_30:10,a119_120:5};
+      var stock=(wh.a119_10||0)+(wh.a119_30||0)+(wh.a119_120||0);
+      var co=ordersByCenter[ct._id]||{count:0,revenue:0};
+      var isLow=stock<10;
+      var region=ct.region||'';
+      var regionColor=region==='Bắc'?'#6496FF':region==='Trung'?'#FFC800':'#00C896';
+      h+='<tr><td style="color:#00C896;font-size:11px;font-weight:600">'+ct._id+'</td>';
+      h+='<td><span style="font-weight:600">'+ct.city+'</span> '+badge(region,regionColor)+'</td>';
+      h+='<td style="font-size:11px;color:#9B82FF">'+(ct.manager||ct.name||'—')+'</td>';
+      h+='<td style="text-align:center">'+(wh.a119_10||0)+'</td>';
+      h+='<td style="text-align:center">'+(wh.a119_30||0)+'</td>';
+      h+='<td style="text-align:center">'+(wh.a119_120||0)+'</td>';
+      h+='<td style="font-weight:600;color:'+(isLow?'#FF7070':'#B8D8D0')+'">'+stock+'</td>';
+      h+='<td style="text-align:center">'+co.count+'</td>';
+      h+='<td style="color:#00C896;font-size:11px">'+money(co.revenue)+'</td>';
+      h+='<td>'+badge(isLow?'Thấp':'OK',isLow?'#FF7070':'#00C896')+'</td>';
+      h+='<td><button class="btn btn-s btn-sm" onclick="admV3EditWarehouse(\''+ct._id+'\',\''+ct.city+'\')">✏️</button></td></tr>';
+    });
+    h+='</table></div></div>';
+    c.innerHTML=h;
   });
-  h+='</table></div></div>';
-  c.innerHTML=h;
 }
 
-window.admV3UpdateStock=function(sku){
-  var qty=prompt('Nhập số lượng tồn kho mới cho '+sku+':');
-  if(!qty) return;
-  var inv=[];try{inv=JSON.parse(localStorage.getItem('anima_inventory')||'[]');}catch(e){}
-  if(!inv.length) inv=PRODUCTS.map(function(p){return {sku:p.sku,name:p.name,price:p.price,stock:50,minStock:5};});
-  inv.forEach(function(i){if(i.sku===sku) i.stock=parseInt(qty)||0;});
-  localStorage.setItem('anima_inventory',JSON.stringify(inv));
+window.admV3EditWarehouse=function(centerId,cityName){
+  var warehouses={};
+  try{warehouses=JSON.parse(localStorage.getItem('anima_warehouses')||'{}');}catch(e){}
+  var wh=warehouses[centerId]||{a119_10:20,a119_30:10,a119_120:5};
+  var formH='<div style="display:grid;gap:12px">';
+  formH+='<div><label style="font-size:11px;color:#607870;display:block;margin-bottom:4px">ANIMA 119 — 1 Hộp (10 Gói)</label><input id="wh-10" type="number" class="f-inp" value="'+(wh.a119_10||0)+'"></div>';
+  formH+='<div><label style="font-size:11px;color:#607870;display:block;margin-bottom:4px">ANIMA 119 — 3 Hộp (30 Gói)</label><input id="wh-30" type="number" class="f-inp" value="'+(wh.a119_30||0)+'"></div>';
+  formH+='<div><label style="font-size:11px;color:#607870;display:block;margin-bottom:4px">ANIMA 119 — 12 Hộp (120 Gói)</label><input id="wh-120" type="number" class="f-inp" value="'+(wh.a119_120||0)+'"></div>';
+  formH+='<button class="btn btn-p" onclick="admV3SaveWarehouse(\''+centerId+'\')">💾 Lưu Kho '+cityName+'</button>';
+  formH+='</div>';
+  admV3Modal('Kho Hàng — '+cityName,formH);
+};
+
+window.admV3SaveWarehouse=function(centerId){
+  var warehouses={};
+  try{warehouses=JSON.parse(localStorage.getItem('anima_warehouses')||'{}');}catch(e){}
+  warehouses[centerId]={
+    a119_10:parseInt(el('wh-10').value)||0,
+    a119_30:parseInt(el('wh-30').value)||0,
+    a119_120:parseInt(el('wh-120').value)||0
+  };
+  localStorage.setItem('anima_warehouses',JSON.stringify(warehouses));
+  admV3CloseModal();
   pgInventory();
 };
 
-window.admV3ExportInventory=function(){alert('Tính năng xuất Excel sẽ được tích hợp.');};
-window.admV3ImportInventory=function(){alert('Tính năng nhập kho sẽ được tích hợp.');};
+window.admV3BulkImport=function(){
+  var qty=prompt('Nhập số lượng ANIMA 119 (10 gói) cho TẤT CẢ 34 kho:');
+  if(!qty) return;
+  var warehouses={};
+  try{warehouses=JSON.parse(localStorage.getItem('anima_warehouses')||'{}');}catch(e){}
+  var ids=['CTR-HN','CTR-HCM','CTR-DN','CTR-HP','CTR-CT','CTR-HUE','CTR-NT','CTR-VT','CTR-QN','CTR-BD','CTR-DN2','CTR-TH','CTR-NA','CTR-BN','CTR-HD','CTR-LA','CTR-QNA','CTR-KH','CTR-GL','CTR-DL','CTR-AG','CTR-TG','CTR-BT','CTR-TB','CTR-NB','CTR-PY','CTR-BP','CTR-TN','CTR-VL','CTR-VP','CTR-LS','CTR-PT','CTR-BTH','CTR-DK'];
+  ids.forEach(function(id){
+    if(!warehouses[id]) warehouses[id]={a119_10:0,a119_30:0,a119_120:0};
+    warehouses[id].a119_10+=(parseInt(qty)||0);
+  });
+  localStorage.setItem('anima_warehouses',JSON.stringify(warehouses));
+  pgInventory();
+};
 
 // ═══════════════════════════════════════
 // PAGE 9: ANALYTICS
