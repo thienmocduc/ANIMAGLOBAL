@@ -11021,6 +11021,35 @@ openM('crm-detail-modal');
 }
 function renderOrdersTable(){
 var tbl=document.getElementById('tbl-orders');if(!tbl)return;
+/* ═══ SUPABASE FIRST — load real orders ═══ */
+if(window.AnimaOrders && !window._ordersFromSupa){
+  window._ordersFromSupa=true;
+  tbl.innerHTML='<tr><td colspan="10" style="text-align:center;padding:20px;color:#607870">Đang tải đơn hàng từ Supabase...</td></tr>';
+  AnimaOrders.getAll({limit:200}).then(function(dbOrders){
+    if(dbOrders&&dbOrders.length){
+      /* Convert Supabase format → inline admin format */
+      dbOrders.forEach(function(o){
+        var items=[];try{items=typeof o.items==='string'?JSON.parse(o.items):o.items||[];}catch(e){}
+        var existing=ORDERS.find(function(x){return x.id===o.order_code;});
+        if(!existing){
+          ORDERS.unshift({
+            id:o.order_code,name:o.customer_name||'',phone:o.customer_phone||'',email:o.customer_email||'',
+            sku:items[0]?items[0].sku||items[0].name:'',product:items[0]?items[0].name:'',
+            amount:o.total_amount?o.total_amount.toLocaleString()+'đ':'',total:o.total_amount||0,
+            channel:'Website',method:o.payment_method==='bank'?'CK':o.payment_method==='payos'?'PayOS':'COD',
+            city:o.center_name||'Online',date:o.created_at?new Date(o.created_at).toLocaleDateString('vi-VN'):'',
+            status:o.order_status||'pending',paymentStatus:o.payment_status||'unpaid',
+            address:o.address||'',note:o.notes||'',tracking:o.tracking_code||'',
+            commission:o.commission||0,_dbId:o.id,_rt:true,_id:o.order_code
+          });
+        }
+      });
+    }
+    window._ordersFromSupa=false;
+    renderOrdersTable(); /* Re-render with Supabase data */
+  }).catch(function(e){console.warn('Supabase orders load failed:',e);window._ordersFromSupa=false;renderOrdersTable();});
+  return;
+}
 /* Merge static + realtime (AnimaSync) + localStorage orders */
 var allO=ORDERS.slice();
 var syncOrders=window.AnimaSync?AnimaSync.get('orders',[]):[];
@@ -11184,8 +11213,9 @@ var t=document.getElementById('tbl-cms');if(!t)return;
 t.innerHTML='<thead><tr><th>ID</th><th>Tiêu Đề</th><th>Danh Mục</th><th>Tác Giả</th><th>Lượt Xem</th><th>Ngày</th><th>Trạng Thái</th><th>Action</th></tr></thead><tbody>'+
 CMS_DATA.map(function(c){return '<tr><td class="td-mo">'+c.id+'</td><td style="color:var(--t1);font-weight:500;max-width:240px">'+c.title+'</td><td>'+c.cat+'</td><td style="font-size:11.5px">'+c.author+'</td><td style="font-family:var(--fm);text-align:center">'+( c.views>0?c.views:'—' )+'</td><td class="td-mo">'+c.date+'</td><td>'+statusBadge(c.status)+'</td><td><div class="btn-row"><button class="btn btn-sm btn-s">Sửa</button>'+( c.status==='draft'?'<button class="btn btn-sm btn-p">Xuất Bản</button>':'' )+'</div></td></tr>'}).join('')+'</tbody>';
 }
-// ═══ CRM MODULE — DỮ LIỆU THẬT TỪ ANIMASYNC ═══
+// ═══ CRM MODULE — SUPABASE + ANIMASYNC ═══
 var _crmFilter = 'all';
+var _crmSupaLoaded = false;
 function getCRMLeads(){
   var leads = [];
   try { leads = JSON.parse(localStorage.getItem('anima_crm_leads')||'[]'); } catch(e){}
@@ -11200,6 +11230,31 @@ function getCRMLeads(){
       });
     }
   } catch(e){}
+  /* ═══ SUPABASE CRM Leads — fetch once ═══ */
+  if(window.AnimaCRM && !_crmSupaLoaded){
+    _crmSupaLoaded = true;
+    AnimaCRM.getLeads({limit:200}).then(function(dbLeads){
+      if(!dbLeads||!dbLeads.length){_crmSupaLoaded=false;return;}
+      var existPhones={};
+      leads.forEach(function(l){if(l.phone)existPhones[l.phone]=true;});
+      dbLeads.forEach(function(l){
+        if(l.phone && existPhones[l.phone]) return;
+        leads.push({
+          name:l.name||'',phone:l.phone||'',email:l.email||'',
+          type:l.source==='website_order'?'order':l.source==='website_contact'?'contact':'other',
+          product:l.notes||'',source:l.source||'',
+          status:l.status||'new',
+          date:l.created_at?new Date(l.created_at).toISOString().split('T')[0]:'',
+          createdAt:l.created_at?new Date(l.created_at).getTime():Date.now(),
+          _dbId:l.id,_supa:true
+        });
+      });
+      /* Save merged leads to localStorage for next getCRMLeads call */
+      localStorage.setItem('anima_crm_leads',JSON.stringify(leads));
+      _crmSupaLoaded=false;
+      renderCRM(); /* Re-render with merged data */
+    }).catch(function(e){console.warn('CRM Supabase load failed:',e);_crmSupaLoaded=false;});
+  }
   leads.sort(function(a,b){return (b.createdAt||0)-(a.createdAt||0);});
   return leads;
 }
