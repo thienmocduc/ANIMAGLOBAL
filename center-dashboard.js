@@ -650,7 +650,12 @@ function openCenterDashboard() {
     try { cUser = JSON.parse(localStorage.getItem('anima_center_user')); } catch(e) {}
     if(!cUser) return;
   }
-
+  /* ═══ USE CENTER ADMIN V2 ═══ */
+  if(typeof openCenterAdminV2==='function'){
+    openCenterAdminV2(cUser.centerId, cUser.centerName);
+    return;
+  }
+  /* Fallback to old dashboard */
   var dash = document.getElementById('centerDashboard');
   dash.style.display = 'block';
   document.body.style.overflow = 'hidden';
