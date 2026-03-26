@@ -590,17 +590,14 @@ window.setThemeMode=function(mode){
     </div>
 
     <div class="nav-item">
-      <div class="nav-link" onclick="openStore()" style="cursor:pointer" data-vi="Cửa Hàng" data-en="Store">Cửa Hàng</div>
-    </div>
-    <div class="nav-item">
-      <div class="nav-link" data-vi="Trạm Anima" data-en="Stations">Trạm Anima <span class="nc">▾</span></div>
+      <div class="nav-link" data-vi="Cửa Hàng" data-en="Store">Cửa Hàng <span class="nc">▾</span></div>
       <div class="dd">
         <div class="ddg">
-          <div class="ddg-lbl" data-vi="Chuỗi Cơ Sở Toàn Quốc" data-en="Nationwide Stations">Chuỗi Cơ Sở Toàn Quốc</div>
-          <div class="ddi" onclick="openCenterStore('CTR-HN')"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ddi-b"><div class="ddi-t">Hà Nội</div><div class="ddi-s">Đối tác độc quyền miền Bắc</div></div><span class="ddi-arr">↗</span></div>
-          <div class="ddi" onclick="openCenterStore('CTR-HCM')"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ddi-b"><div class="ddi-t">TP. Hồ Chí Minh</div><div class="ddi-s">Đối tác độc quyền miền Nam</div></div><span class="ddi-arr">↗</span></div>
-          <div class="ddi" onclick="openCenterStore('CTR-DN')"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ddi-b"><div class="ddi-t">Đà Nẵng</div><div class="ddi-s">Đối tác độc quyền miền Trung</div></div><span class="ddi-arr">↗</span></div>
-          <div class="ddi" onclick="openAllStations?openAllStations():void(0)"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Xem tất cả 34 tỉnh" data-en="View all 34 provinces">Xem tất cả 34 tỉnh →</div></div><span class="ddi-arr">↗</span></div>
+          <div class="ddg-lbl" data-vi="Mua Sắm Tại Cơ Sở" data-en="Shop by Station">Mua Sắm Tại Cơ Sở</div>
+          <div class="ddi" onclick="openCenterStore('CTR-HN')"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ddi-b"><div class="ddi-t">Hà Nội</div><div class="ddi-s">Sản phẩm · Vật tư · Thiết bị</div></div><span class="ddi-arr">↗</span></div>
+          <div class="ddi" onclick="openCenterStore('CTR-HCM')"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ddi-b"><div class="ddi-t">TP. Hồ Chí Minh</div><div class="ddi-s">Sản phẩm · Vật tư · Thiết bị</div></div><span class="ddi-arr">↗</span></div>
+          <div class="ddi" onclick="openCenterStore('CTR-DN')"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ddi-b"><div class="ddi-t">Đà Nẵng</div><div class="ddi-s">Sản phẩm · Vật tư · Thiết bị</div></div><span class="ddi-arr">↗</span></div>
+          <div class="ddi" onclick="openAllStations?openAllStations():void(0)"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Xem tất cả 34 tỉnh →" data-en="All 34 provinces →">Xem tất cả 34 tỉnh →</div></div><span class="ddi-arr">↗</span></div>
         </div>
       </div>
     </div>
@@ -12138,15 +12135,13 @@ navigator.serviceWorker.register('/sw.js').catch(function(){});
 </div>
 </div>
 
-<a href="#" onclick="if(typeof openStore==='function')openStore();closeMobileMenu()" data-vi="Cửa Hàng" data-en="Store">Cửa Hàng</a>
-
 <div>
-<div class="dropdown-label" onclick="this.nextElementSibling.classList.toggle('open')" data-vi="Trạm Anima ▾" data-en="Stations ▾">Trạm Anima ▾</div>
+<div class="dropdown-label" onclick="this.nextElementSibling.classList.toggle('open')" data-vi="Cửa Hàng ▾" data-en="Store ▾">Cửa Hàng ▾</div>
 <div class="mob-sub">
-<a href="#" onclick="if(typeof openCenterStore==='function')openCenterStore('CTR-HN');closeMobileMenu()">Hà Nội</a>
-<a href="#" onclick="if(typeof openCenterStore==='function')openCenterStore('CTR-HCM');closeMobileMenu()">TP. Hồ Chí Minh</a>
-<a href="#" onclick="if(typeof openCenterStore==='function')openCenterStore('CTR-DN');closeMobileMenu()">Đà Nẵng</a>
-<a href="#" onclick="if(typeof openStations==='function')openStations();closeMobileMenu()" data-vi="Xem tất cả 34 tỉnh →" data-en="All 34 provinces →">Xem tất cả 34 tỉnh →</a>
+<a href="#" onclick="if(typeof openCenterStore==='function')openCenterStore('CTR-HN');closeMobileMenu()">🏪 Hà Nội</a>
+<a href="#" onclick="if(typeof openCenterStore==='function')openCenterStore('CTR-HCM');closeMobileMenu()">🏪 TP. Hồ Chí Minh</a>
+<a href="#" onclick="if(typeof openCenterStore==='function')openCenterStore('CTR-DN');closeMobileMenu()">🏪 Đà Nẵng</a>
+<a href="#" onclick="if(typeof openAllStations==='function')openAllStations();closeMobileMenu()">📍 Xem tất cả 34 tỉnh →</a>
 </div>
 </div>
 
