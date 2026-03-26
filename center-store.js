@@ -62,12 +62,12 @@ var PRODUCTS = [
   {sku:'A119-10',name:'ANIMA 119 \u2014 1 H\u1ed9p 10 G\u00f3i',price:1868000,category:'anima119',desc:'Tr\u1ea3i nghi\u1ec7m \u0111\u1ea7u ti\u00ean. Quy lu\u1eadt 30-30-120.',img:'images/anima119-product.jpg'},
   {sku:'A119-30',name:'ANIMA 119 \u2014 3 H\u1ed9p 30 G\u00f3i',price:5604000,category:'anima119',desc:'1 th\u00e1ng li\u1ec7u tr\u00ecnh \u0111\u1ea7y \u0111\u1ee7.'},
   {sku:'A119-120',name:'ANIMA 119 \u2014 12 H\u1ed9p 120 G\u00f3i',price:22416000,category:'anima119',desc:'4 th\u00e1ng ph\u1ee5c h\u01b0ng to\u00e0n di\u1ec7n.'},
-  {sku:'CON-HERB',name:'Th\u1ea3o D\u01b0\u1ee3c X\u00f4ng H\u01a1i (1kg)',price:350000,category:'consumable',desc:'H\u1ed7n h\u1ee3p 12 v\u1ecb th\u1ea3o d\u01b0\u1ee3c cho bu\u1ed3ng x\u00f4ng.'},
-  {sku:'CON-OIL',name:'Tinh D\u1ea7u Kinh L\u1ea1c (100ml)',price:280000,category:'consumable',desc:'Tinh d\u1ea7u massage \u0111\u1ea3 th\u00f4ng kinh m\u1ea1ch.'},
-  {sku:'CON-MOXA',name:'Ng\u1ea3i C\u1ee9u C\u1ee9u M\u1ea1ch (50 \u0111i\u1ebfu)',price:195000,category:'consumable',desc:'\u0110i\u1ebfu ng\u1ea3i c\u1ee9u cao c\u1ea5p cho ch\u00e2m c\u1ee9u.'},
-  {sku:'CON-PATCH',name:'Mi\u1ebfng D\u00e1n Th\u1ea3o D\u01b0\u1ee3c (20 mi\u1ebfng)',price:420000,category:'consumable',desc:'Mi\u1ebfng d\u00e1n h\u1ed7 tr\u1ee3 gi\u1ea3m \u0111au kh\u1edbp.'},
-  {sku:'CON-TEA',name:'Tr\u00e0 D\u01b0\u1ee1ng Sinh Anima (30 g\u00f3i)',price:250000,category:'consumable',desc:'Tr\u00e0 th\u1ea3o d\u01b0\u1ee3c c\u00e2n b\u1eb1ng n\u0103ng l\u01b0\u1ee3ng.'},
-  {sku:'CON-SALT',name:'Mu\u1ed1i Ng\u00e2m Ch\u00e2n Th\u1ea3o D\u01b0\u1ee3c (500g)',price:180000,category:'consumable',desc:'Mu\u1ed1i kho\u00e1ng + th\u1ea3o d\u01b0\u1ee3c ng\u00e2m ch\u00e2n detox.'},
+  {sku:'CON-HERB',name:'Th\u1ea3o D\u01b0\u1ee3c X\u00f4ng H\u01a1i (1kg)',price:350000,category:'healthcare',desc:'H\u1ed7n h\u1ee3p 12 v\u1ecb th\u1ea3o d\u01b0\u1ee3c cho bu\u1ed3ng x\u00f4ng.'},
+  {sku:'CON-OIL',name:'Tinh D\u1ea7u Kinh L\u1ea1c (100ml)',price:280000,category:'healthcare',desc:'Tinh d\u1ea7u massage \u0111\u1ea3 th\u00f4ng kinh m\u1ea1ch.'},
+  {sku:'CON-MOXA',name:'Ng\u1ea3i C\u1ee9u C\u1ee9u M\u1ea1ch (50 \u0111i\u1ebfu)',price:195000,category:'healthcare',desc:'\u0110i\u1ebfu ng\u1ea3i c\u1ee9u cao c\u1ea5p cho ch\u00e2m c\u1ee9u.'},
+  {sku:'CON-PATCH',name:'Mi\u1ebfng D\u00e1n Th\u1ea3o D\u01b0\u1ee3c (20 mi\u1ebfng)',price:420000,category:'healthcare',desc:'Mi\u1ebfng d\u00e1n h\u1ed7 tr\u1ee3 gi\u1ea3m \u0111au kh\u1edbp.'},
+  {sku:'CON-TEA',name:'Tr\u00e0 D\u01b0\u1ee1ng Sinh Anima (30 g\u00f3i)',price:250000,category:'healthcare',desc:'Tr\u00e0 th\u1ea3o d\u01b0\u1ee3c c\u00e2n b\u1eb1ng n\u0103ng l\u01b0\u1ee3ng.'},
+  {sku:'CON-SALT',name:'Mu\u1ed1i Ng\u00e2m Ch\u00e2n Th\u1ea3o D\u01b0\u1ee3c (500g)',price:180000,category:'healthcare',desc:'Mu\u1ed1i kho\u00e1ng + th\u1ea3o d\u01b0\u1ee3c ng\u00e2m ch\u00e2n detox.'},
   {sku:'EQP-STEAM',name:'Bu\u1ed3ng X\u00f4ng H\u01a1i Th\u1ea3o M\u1ed9c',price:45000000,category:'equipment',desc:'Bu\u1ed3ng x\u00f4ng 2 ng\u01b0\u1eddi, \u0111i\u1ec1u khi\u1ec3n nhi\u1ec7t \u0111\u1ed9 t\u1ef1 \u0111\u1ed9ng.',b2b:true},
   {sku:'EQP-BED',name:'Gi\u01b0\u1eddng Tr\u1ecb Li\u1ec7u \u0110a N\u0103ng',price:28000000,category:'equipment',desc:'Gi\u01b0\u1eddng n\u00e2ng h\u1ea1 \u0111i\u1ec7n, 3 kh\u1edbp, \u0111\u1ec7m nh\u1edb h\u00ecnh.',b2b:true},
   {sku:'EQP-LAMP',name:'\u0110\u00e8n H\u1ed3ng Ngo\u1ea1i Tr\u1ecb Li\u1ec7u',price:8500000,category:'equipment',desc:'\u0110\u00e8n TDP h\u1ed3ng ngo\u1ea1i xa, 7 b\u01b0\u1edbc s\u00f3ng.',b2b:true},
@@ -90,7 +90,7 @@ function getStock(centerId,sku){
   return -1; // unknown
 }
 function genId(){ return 'ORD-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).substr(2,4).toUpperCase(); }
-function catIcon(c){ return c==='anima119'?'\u2728':c==='consumable'?'\ud83c\udf3f':'\u2699\ufe0f'; }
+function catIcon(c){ return c==='anima119'?'\u2728':c==='healthcare'?'\ud83c\udf3f':'\u2699\ufe0f'; }
 
 // ── Inject CSS ──
 function injectCSS(){
@@ -127,7 +127,7 @@ function injectCSS(){
   '.cs-card.eqp:hover{box-shadow:0 8px 32px rgba(155,130,255,.1)}',
   '.cs-card-img{height:160px;display:flex;align-items:center;justify-content:center;font-size:48px}',
   '.cs-card-img.anima119{background:linear-gradient(135deg,#0A1628,#1A2940)}',
-  '.cs-card-img.consumable{background:linear-gradient(135deg,#0A1A14,#12302A)}',
+  '.cs-card-img.healthcare{background:linear-gradient(135deg,#0A1A14,#12302A)}',
   '.cs-card-img.equipment{background:linear-gradient(135deg,#14102A,#1E1840)}',
   '.cs-card-body{padding:16px}',
   '.cs-card-name{font-size:15px;font-weight:700;color:#F8F2E0;margin:0 0 6px}',
@@ -244,7 +244,7 @@ function buildHero(c){
 }
 
 function buildTabs(){
-  var tabs=[{k:'all',l:'T\u1ea5t C\u1ea3'},{k:'anima119',l:'ANIMA 119'},{k:'consumable',l:'V\u1eadt T\u01b0 Ti\u00eau Hao'},{k:'equipment',l:'Thi\u1ebft B\u1ecb'}];
+  var tabs=[{k:'all',l:'T\u1ea5t C\u1ea3'},{k:'anima119',l:'ANIMA 119'},{k:'healthcare',l:'Ch\u0103m S\u00f3c S\u1ee9c Kh\u1ecfe'},{k:'equipment',l:'Thi\u1ebft B\u1ecb'}];
   var h='<div class="cs-tabs">';
   tabs.forEach(function(t){
     h+='<button class="cs-tab'+(t.k===_activeCat?' active':'')+'" onclick="window.filterCenterProducts(\''+t.k+'\')">'+t.l+'</button>';
@@ -302,7 +302,7 @@ window.filterCenterProducts = function(cat){
   _activeCat = cat;
   var tabs=document.querySelectorAll('.cs-tab');
   for(var i=0;i<tabs.length;i++) tabs[i].classList.toggle('active',tabs[i].textContent.indexOf(
-    cat==='all'?'T\u1ea5t':cat==='anima119'?'ANIMA':cat==='consumable'?'V\u1eadt':'Thi\u1ebft')>-1);
+    cat==='all'?'T\u1ea5t':cat==='anima119'?'ANIMA':cat==='healthcare'?'CSSK':'Thi\u1ebft')>-1);
   renderProducts();
 };
 
