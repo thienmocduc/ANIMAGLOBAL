@@ -57,6 +57,8 @@ var NAV_ITEMS = [
   {id:'ktv',icon:'M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z',l:'KTV'},
   {id:'inventory',icon:'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',l:'Kho Hàng'},
   {id:'analytics',icon:'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',l:'Analytics'},
+  {id:'gamification',icon:'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3',l:'Gamification'},
+  {id:'affiliate',icon:'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1',l:'Affiliate'},
   {id:'agents',icon:'M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714a2.25 2.25 0 00.659 1.591L19 14.5M14.25 3.104c.251.023.501.05.75.082M19 14.5l-2.47 2.47a2.25 2.25 0 01-1.591.659H9.061a2.25 2.25 0 01-1.591-.659L5 14.5m14 0V5a2 2 0 00-2-2H7a2 2 0 00-2 2v9.5',l:'AI Agent'},
   {id:'settings',icon:'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z',l:'Cài Đặt'}
 ];
@@ -231,6 +233,8 @@ function renderPage(page){
     case 'inventory': pgInventory();break;
     case 'analytics': pgAnalytics();break;
     case 'settings': pgSettings();break;
+    case 'gamification': pgGamification();break;
+    case 'affiliate': pgAffiliate();break;
     case 'agents': pgAgents();break;
     default: c.innerHTML='<div class="empty">Trang không tồn tại</div>';
   }
@@ -1560,6 +1564,177 @@ function pgSettings(){
 
   c.innerHTML=h;
 }
+
+// ═══════════════════════════════════════
+// PAGE 11: GAMIFICATION
+// ═══════════════════════════════════════
+function pgGamification(){
+  var c=el('admV3Content');if(!c) return;
+  c.innerHTML='<div class="empty">Đang tải dữ liệu...</div>';
+  /* Load loyalty data */
+  var loyaltyData=[];var referralData=[];
+  Promise.all([
+    safeLoad('AnimaLoyalty','getAll',[{limit:200}]),
+    safeLoad('AnimaReferrals','getAll',[{limit:200}])
+  ]).then(function(res){
+    loyaltyData=safeArr(res[0]);referralData=safeArr(res[1]);
+    renderGamificationPage(loyaltyData,referralData);
+  }).catch(function(){renderGamificationPage([],[]);});
+}
+function renderGamificationPage(loyalty,referrals){
+  var c=el('admV3Content');if(!c) return;
+  var totalPts=loyalty.reduce(function(s,l){return s+(l.points||0);},0);
+  var plat=loyalty.filter(function(l){return (l.points||0)>=50000;}).length;
+  var gold=loyalty.filter(function(l){var p=l.points||0;return p>=20000&&p<50000;}).length;
+  var silver=loyalty.filter(function(l){var p=l.points||0;return p>=5000&&p<20000;}).length;
+  var totalRefs=referrals.length;
+  var activeRefs=referrals.filter(function(r){return (r.uses||0)>0;}).length;
+
+  var h='<div class="kpis">';
+  h+=kpi(loyalty.length,'Thành Viên','#00C896');
+  h+=kpi(totalPts.toLocaleString(),'Tổng Điểm','#FFC800');
+  h+=kpi(plat,'Platinum','#E8B4FF');
+  h+=kpi(gold,'Gold','#FFC800');
+  h+=kpi(silver,'Silver','#C0C0C0');
+  h+=kpi(totalRefs,'Mã Giới Thiệu','#7B5FFF');
+  h+='</div>';
+
+  /* Tier distribution chart */
+  var bronze=loyalty.length-plat-gold-silver;
+  var total=Math.max(loyalty.length,1);
+  h+='<div class="crd"><div class="crd-h"><span class="crd-t">Phân Bố Tier Thành Viên</span></div>';
+  h+='<div style="display:flex;gap:4px;height:32px;border-radius:8px;overflow:hidden;margin-bottom:16px">';
+  if(bronze>0)h+='<div style="flex:'+bronze+';background:#CD7F32;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff" title="Bronze: '+bronze+'">'+Math.round(bronze/total*100)+'%</div>';
+  if(silver>0)h+='<div style="flex:'+silver+';background:#C0C0C0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#000" title="Silver: '+silver+'">'+Math.round(silver/total*100)+'%</div>';
+  if(gold>0)h+='<div style="flex:'+gold+';background:#FFC800;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#000" title="Gold: '+gold+'">'+Math.round(gold/total*100)+'%</div>';
+  if(plat>0)h+='<div style="flex:'+plat+';background:linear-gradient(90deg,#9B82FF,#E8B4FF);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#000" title="Platinum: '+plat+'">'+Math.round(plat/total*100)+'%</div>';
+  h+='</div>';
+
+  /* Tier benefits */
+  h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">';
+  [{n:'Bronze',pts:'0-4,999',perks:'Tích điểm 1x',clr:'#CD7F32'},{n:'Silver',pts:'5,000-19,999',perks:'Tích 1.5x + Giảm 5%',clr:'#C0C0C0'},{n:'Gold',pts:'20,000-49,999',perks:'Tích 2x + Giảm 15%',clr:'#FFC800'},{n:'Platinum',pts:'50,000+',perks:'Tích 3x + Giảm 25% + VIP',clr:'linear-gradient(135deg,#9B82FF,#E8B4FF)'}].forEach(function(t){
+    h+='<div style="padding:12px;border-radius:10px;background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);text-align:center">';
+    h+='<div style="width:36px;height:36px;border-radius:50%;background:'+t.clr+';margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:14px">⭐</div>';
+    h+='<div style="font-size:14px;font-weight:700;color:#E8F8F4;margin-bottom:2px">'+t.n+'</div>';
+    h+='<div style="font-size:10px;color:#607870;margin-bottom:4px">'+t.pts+' pts</div>';
+    h+='<div style="font-size:11px;color:#00C896">'+t.perks+'</div>';
+    h+='</div>';
+  });
+  h+='</div></div>';
+
+  /* Top members leaderboard */
+  h+='<div class="crd"><div class="crd-h"><span class="crd-t">🏆 Bảng Xếp Hạng Top 20</span></div>';
+  var sorted=loyalty.slice().sort(function(a,b){return (b.points||0)-(a.points||0);}).slice(0,20);
+  if(sorted.length){
+    h+='<div class="tbl-w"><table class="tbl"><thead><tr><th>#</th><th>Thành Viên</th><th>Điểm</th><th>Tier</th></tr></thead><tbody>';
+    sorted.forEach(function(m,i){
+      var pts=m.points||0;var tier=pts>=50000?'Platinum':pts>=20000?'Gold':pts>=5000?'Silver':'Bronze';
+      var tclr=tier==='Platinum'?'#E8B4FF':tier==='Gold'?'#FFC800':tier==='Silver'?'#C0C0C0':'#CD7F32';
+      h+='<tr><td style="font-weight:700;color:'+(i<3?'#FFC800':'#607870')+'">'+(i<3?['🥇','🥈','🥉'][i]:(i+1))+'</td>';
+      h+='<td style="font-weight:500">'+((m.user_name||m.name||'User')+'')+'</td>';
+      h+='<td style="font-weight:700;color:#00C896">'+pts.toLocaleString()+'</td>';
+      h+='<td>'+badge(tier,tclr)+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
+  } else h+='<div class="empty">Chưa có dữ liệu loyalty</div>';
+  h+='</div>';
+
+  /* Referral codes */
+  h+='<div class="crd"><div class="crd-h"><span class="crd-t">🔗 Mã Giới Thiệu ('+referrals.length+')</span></div>';
+  if(referrals.length){
+    h+='<div class="tbl-w"><table class="tbl"><thead><tr><th>Mã</th><th>Người Tạo</th><th>Lượt Dùng</th><th>Trạng Thái</th></tr></thead><tbody>';
+    referrals.slice(0,20).forEach(function(r){
+      h+='<tr><td style="font-family:monospace;color:#7B5FFF;font-weight:600">'+(r.code||'')+'</td>';
+      h+='<td>'+(r.user_name||'')+'</td>';
+      h+='<td style="font-weight:600;color:#00C896">'+(r.uses||0)+'</td>';
+      h+='<td>'+badge((r.uses||0)>0?'Active':'Chưa dùng',(r.uses||0)>0?'#00C896':'#607870')+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
+  } else h+='<div class="empty">Chưa có mã giới thiệu nào</div>';
+  h+='</div>';
+
+  c.innerHTML=h;
+}
+
+// ═══════════════════════════════════════
+// PAGE 12: AFFILIATE
+// ═══════════════════════════════════════
+function pgAffiliate(){
+  var c=el('admV3Content');if(!c) return;
+  var act=el('admV3Actions');
+  if(act) act.innerHTML='<button class="btn btn-p btn-sm" onclick="admV3CreateAffProgram()">+ Tạo Chương Trình</button>';
+
+  /* Load affiliate data from localStorage + orders */
+  var affPrograms=[];try{affPrograms=JSON.parse(localStorage.getItem('anima_aff_programs')||'[]');}catch(e){}
+  var affLinks=[];try{affLinks=JSON.parse(localStorage.getItem('anima_aff_links')||'[]');}catch(e){}
+
+  /* Default programs if empty */
+  if(!affPrograms.length){
+    affPrograms=[
+      {id:'AFF-KTV',name:'KTV Affiliate',desc:'KTV giới thiệu khách → nhận 10% hoa hồng SP',rate:10,type:'ktv',active:true,members:0,revenue:0},
+      {id:'AFF-USER',name:'Giới Thiệu Bạn Bè',desc:'Khách giới thiệu bạn → cả 2 nhận 500 điểm + voucher 200K',rate:5,type:'user',active:true,members:0,revenue:0},
+      {id:'AFF-CENTER',name:'Center Referral',desc:'Cơ sở giới thiệu cơ sở mới → nhận 2% doanh thu 6 tháng đầu',rate:2,type:'center',active:true,members:0,revenue:0},
+      {id:'AFF-KOL',name:'KOL / Influencer',desc:'KOL review sản phẩm → commission theo link tracking',rate:15,type:'kol',active:false,members:0,revenue:0}
+    ];
+    localStorage.setItem('anima_aff_programs',JSON.stringify(affPrograms));
+  }
+
+  var totalMembers=affPrograms.reduce(function(s,p){return s+(p.members||0);},0);
+  var totalRevAff=affPrograms.reduce(function(s,p){return s+(p.revenue||0);},0);
+  var activeProgs=affPrograms.filter(function(p){return p.active;}).length;
+
+  var h='<div class="kpis">';
+  h+=kpi(affPrograms.length,'Chương Trình','#7B5FFF');
+  h+=kpi(activeProgs,'Đang Hoạt Động','#00C896');
+  h+=kpi(totalMembers,'Tổng Thành Viên','#FFC800');
+  h+=kpi(money(totalRevAff),'Doanh Thu Aff','#00C896');
+  h+=kpi(affLinks.length,'Link Tracking','#00B4D8');
+  h+='</div>';
+
+  /* Programs */
+  h+='<div class="crd"><div class="crd-h"><span class="crd-t">Chương Trình Affiliate</span></div>';
+  h+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">';
+  affPrograms.forEach(function(p){
+    var typeLabels={ktv:'👨‍⚕️ KTV',user:'👤 Người Dùng',center:'🏢 Center',kol:'🌟 KOL'};
+    var typeColors={ktv:'#00C896',user:'#7B5FFF',center:'#FFC800',kol:'#FF6B9D'};
+    h+='<div style="padding:16px;background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:12px;border-left:3px solid '+(typeColors[p.type]||'#00C896')+'">';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
+    h+='<span style="font-size:14px;font-weight:700;color:#E8F8F4">'+p.name+'</span>';
+    h+=badge(p.active?'Active':'Tắt',p.active?'#00C896':'#607870');
+    h+='</div>';
+    h+='<div style="font-size:12px;color:#B8D8D0;margin-bottom:10px">'+p.desc+'</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:11px;text-align:center">';
+    h+='<div><div style="font-size:16px;font-weight:700;color:'+(typeColors[p.type]||'#00C896')+'">'+p.rate+'%</div><div style="color:#607870">Commission</div></div>';
+    h+='<div><div style="font-size:16px;font-weight:700;color:#E8F8F4">'+(p.members||0)+'</div><div style="color:#607870">Thành Viên</div></div>';
+    h+='<div><div style="font-size:16px;font-weight:700;color:#00C896">'+money(p.revenue||0)+'</div><div style="color:#607870">Doanh Thu</div></div>';
+    h+='</div>';
+    h+='<div style="margin-top:10px;display:flex;gap:6px">';
+    h+='<span style="font-size:10px;padding:3px 8px;border-radius:6px;background:rgba(0,200,150,.08);color:#00C896">'+(typeLabels[p.type]||p.type)+'</span>';
+    h+='</div></div>';
+  });
+  h+='</div></div>';
+
+  /* Affiliate Policy */
+  h+='<div class="crd"><div class="crd-h"><span class="crd-t">📋 Chính Sách Affiliate</span></div>';
+  h+='<div style="font-size:13px;color:#B8D8D0;line-height:1.8">';
+  h+='<div style="margin-bottom:8px"><b style="color:#FFC800">1. KTV Affiliate:</b> KTV giới thiệu khách mua ANIMA 119 → nhận 10% giá trị đơn. Hoa hồng được tích vào ví sau 48h giao hàng thành công.</div>';
+  h+='<div style="margin-bottom:8px"><b style="color:#7B5FFF">2. Giới Thiệu Bạn Bè:</b> Khách chia sẻ mã giới thiệu → Bạn mới mua hàng → Cả 2 nhận 500 AnimePoint + Voucher 200.000đ.</div>';
+  h+='<div style="margin-bottom:8px"><b style="color:#FFC800">3. Center Referral:</b> Cơ sở L1 giới thiệu đối tác mở L2 → Nhận 2% doanh thu L2 trong 6 tháng đầu.</div>';
+  h+='<div><b style="color:#FF6B9D">4. KOL Program:</b> Influencer review sản phẩm → Commission 15% qua link tracking. Cần duyệt bởi Admin.</div>';
+  h+='</div></div>';
+
+  c.innerHTML=h;
+}
+window.admV3CreateAffProgram=function(){
+  var name=prompt('Tên chương trình:');if(!name)return;
+  var rate=prompt('Tỉ lệ commission (%):');if(!rate)return;
+  var desc=prompt('Mô tả:');
+  var type=prompt('Loại (ktv/user/center/kol):','user');
+  var progs=[];try{progs=JSON.parse(localStorage.getItem('anima_aff_programs')||'[]');}catch(e){}
+  progs.push({id:'AFF-'+Date.now().toString(36).toUpperCase(),name:name,desc:desc||'',rate:parseInt(rate)||5,type:type||'user',active:true,members:0,revenue:0});
+  localStorage.setItem('anima_aff_programs',JSON.stringify(progs));
+  pgAffiliate();
+};
 
 // ═══════════════════════════════════════
 // SAFE LOAD / CALL HELPERS
