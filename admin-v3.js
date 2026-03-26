@@ -388,13 +388,56 @@ function renderOrdersPage(){
   var delivered=_orders.filter(function(o){return o.order_status==='delivered';}).length;
   var totalRev=_orders.reduce(function(s,o){return s+(o.total_amount||0);},0);
 
-  var h='<div class="kpis">';
+  /* Build alerts with contact info */
+  var _alerts=[];
+  var centers={};
+  if(window.AnimaSync){var _cs=AnimaSync.get('centers',[]);_cs.forEach(function(c){centers[c._id]={name:c.name||c.city,phone:c.phone||'0913 156 676',manager:c.manager||c.name||c.city};});}
+  var now=Date.now();
+  _orders.forEach(function(o){
+    var age=Math.round((now-new Date(o.created_at).getTime())/3600000);
+    var ct=centers[o.center_id]||{name:o.center_name||'Online',phone:'0913 156 676',manager:o.center_name||''};
+    if(o.order_status==='pending'&&age>24) _alerts.push({sev:'warn',icon:'⏳',msg:'Đơn <b>'+o.order_code+'</b> chờ duyệt '+age+'h',contact:ct.manager,phone:ct.phone,action:'Gọi '+ct.name});
+    if(o.order_status==='shipped'&&age>72) _alerts.push({sev:'error',icon:'🚨',msg:'Đơn <b>'+o.order_code+'</b> giao '+age+'h chưa xong',contact:ct.manager,phone:ct.phone,action:'Gọi shipper'});
+    if(o.order_status==='delivered'&&o.payment_status!=='paid') _alerts.push({sev:'info',icon:'💰',msg:'Đơn <b>'+o.order_code+'</b> đã giao chưa TT',contact:o.customer_name||'',phone:o.customer_phone||'',action:'Gọi KH thu tiền'});
+  });
+  /* Check warehouse stock */
+  var wh={};try{wh=JSON.parse(localStorage.getItem('anima_warehouses')||'{}');}catch(e){}
+  Object.keys(centers).forEach(function(cid){
+    var w=wh[cid]||{};var stock=(w.a119_10||0)+(w.a119_30||0)+(w.a119_120||0);
+    if(stock<5){var ct=centers[cid];_alerts.push({sev:'error',icon:'📦',msg:'Kho <b>'+ct.name+'</b> gần hết ('+stock+' SP)',contact:ct.manager,phone:ct.phone,action:'Gọi nhập kho'});}
+  });
+
+  var h='<div style="display:grid;grid-template-columns:repeat(4,1fr) 1.2fr 1.5fr;gap:12px;margin-bottom:20px">';
   h+=kpi(pending,'Chờ XN','#FFC800');
   h+=kpi(processing,'Đang XL','#7B5FFF');
   h+=kpi(shipped,'Đang Giao','#00B4D8');
   h+=kpi(delivered,'Hoàn Thành','#00C896');
-  h+=kpi(_orders.length,'Tổng Đơn','#6496FF');
   h+=kpi(money(totalRev),'Doanh Thu','#00C896');
+  /* Agent Alert KPI — clickable */
+  h+='<div class="kpi" style="cursor:pointer;--ac:'+(_alerts.length>0?'#FFC800':'#00C896')+'" onclick="document.getElementById(\'ordAlertPanel\').style.display=document.getElementById(\'ordAlertPanel\').style.display===\'none\'?\'block\':\'none\'">';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center"><div class="kpi-v" style="color:'+(_alerts.length>0?'#FFC800':'#00C896')+'">'+_alerts.length+'</div><span style="font-size:18px">🤖</span></div>';
+  h+='<div class="kpi-l">Agent Cảnh Báo '+(_alerts.length>0?'⚠️':'✅')+'</div>';
+  h+='</div></div>';
+  /* Alert dropdown panel — hidden by default */
+  h+='<div id="ordAlertPanel" style="display:none;margin-bottom:16px">';
+  if(_alerts.length){
+    h+='<div class="crd" style="border-color:rgba(255,184,0,.2);max-height:320px;overflow-y:auto">';
+    h+='<div class="crd-h"><span class="crd-t" style="color:#FFC800">🤖 Agent AI — '+_alerts.length+' Cảnh Báo</span></div>';
+    _alerts.forEach(function(a,i){
+      var bg=a.sev==='error'?'rgba(255,70,70,.08)':a.sev==='warn'?'rgba(255,184,0,.06)':'rgba(0,200,150,.04)';
+      h+='<div style="background:'+bg+';border-radius:10px;padding:12px;margin-bottom:6px;display:flex;align-items:center;gap:10px">';
+      h+='<span style="font-size:18px;flex-shrink:0">'+a.icon+'</span>';
+      h+='<div style="flex:1;min-width:0"><div style="font-size:12px;color:#E8F8F4;line-height:1.5">'+a.msg+'</div>';
+      if(a.contact) h+='<div style="font-size:11px;color:#607870;margin-top:2px">👤 '+a.contact+'</div>';
+      h+='</div>';
+      /* Call button */
+      if(a.phone) h+='<a href="tel:'+a.phone.replace(/\s/g,'')+'" style="flex-shrink:0;display:flex;align-items:center;gap:4px;padding:6px 12px;background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.2);border-radius:8px;color:#00C896;font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap" title="'+a.phone+'">📞 '+a.action+'</a>';
+      h+='</div>';
+    });
+    h+='</div>';
+  } else {
+    h+='<div class="crd" style="border-color:rgba(0,200,150,.2)"><div style="text-align:center;padding:16px;color:#00C896;font-size:13px">✅ Không có cảnh báo — Hệ thống hoạt động bình thường</div></div>';
+  }
   h+='</div>';
 
   h+='<div class="crd"><div class="crd-h"><div style="display:flex;gap:10px;align-items:center">';
