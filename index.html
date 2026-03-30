@@ -108,6 +108,21 @@ if(window.innerWidth<=768){
   }).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
 }
 </script>
+<script>
+/* FIX-1: Process referral link on page load */
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var ref = params.get('ref');
+  if(ref){
+    localStorage.setItem('anima_referral_code', ref);
+    console.log('[Affiliate] Referral code captured:', ref);
+    if(window.history.replaceState){
+      var clean = window.location.pathname + window.location.hash;
+      window.history.replaceState({}, document.title, clean);
+    }
+  }
+})();
+</script>
 <!-- ═══ LIGHT THEME "THIÊN MỘC" — Luân Xa 4-5-6-7 ═══ -->
 <style id="lightThemeCSS">
 /* ═══════════════════════════════════════════
@@ -4910,11 +4925,12 @@ if(window.AnimaOrders){
     notes: 'Đặt hàng: ' + _currentOrder.name + ' - ' + _currentOrder.price,
     tags: ['order', _currentOrder.sku || '']
   }).then(function(l){console.log('[Supabase] Lead created:',l);}).catch(function(e){console.warn('[Supabase] Lead failed:',e);});
-  /* Auto-process affiliate commission */
-  if(window.AnimaAffiliate && window.currentUser && currentUser.referralCode){
-    AnimaAffiliate.processOrderCommission(orderId, total, currentUser.referralCode, 0.10)
-      .then(function(t){console.log('[Supabase] Affiliate commission processed:',t);})
-      .catch(function(e){console.warn('[Supabase] Affiliate commission failed:',e);});
+  /* FIX-3: Auto-process affiliate commission — use REFERRER's code, not current user's own code */
+  var referredBy = localStorage.getItem('anima_referral_code') || (currentUser && currentUser.referred_by) || '';
+  if(window.AnimaAffiliate && referredBy){
+    AnimaAffiliate.processOrderCommission(orderId, total, referredBy, 0.10)
+      .then(function(t){console.log('[Affiliate] Commission for referrer:', referredBy, t);})
+      .catch(function(e){console.warn('[Affiliate] Commission failed:', e);});
   }
 }
 
@@ -8259,10 +8275,12 @@ var emailReg=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 if(!emailReg.test(email)){showToast(lang==='vi'?'Email không hợp lệ':'Invalid email address','#FF7070');return;}
 /* Build user object */
 var uid='USR-'+Date.now().toString(36).toUpperCase();
+var referredBy = localStorage.getItem('anima_referral_code') || referral.trim() || '';
 var newUser={
   id:uid,name:fullName,firstName:first,lastName:last,
   email:email,phone:phone,
   constitution:constitution,referral:referral.trim(),
+  referred_by:referredBy,
   provider:'email',picture:'',
   createdAt:new Date().toISOString()
 };
@@ -8349,6 +8367,22 @@ function verifyOTP(){
   }
   /* Auto-create CRM lead */
   if(window.AnimaCRM) AnimaCRM.createLead({name:reg.user.name,phone:reg.user.phone||'',email:reg.user.email,source:'registration',status:'new',notes:'Đăng ký mới qua web'}).catch(function(){});
+
+  /* FIX-2: Generate referral code for new user */
+  if(window.generateReferralCode && reg.user.id){
+    generateReferralCode(reg.user.id).then(function(code){
+      reg.user.referralCode = code;
+      localStorage.setItem('anima_current_user', JSON.stringify(reg.user));
+      localStorage.setItem('anima_user', JSON.stringify(reg.user));
+      console.log('[Affiliate] Referral code generated for new user:', code);
+    }).catch(function(e){ console.warn('[Affiliate] Failed to generate referral code:', e); });
+  }
+
+  /* FIX-4: Process referred_by — use referral code if user was referred */
+  var referredByCode = reg.user.referred_by || localStorage.getItem('anima_referral_code') || '';
+  if(referredByCode && window.useReferralCode && reg.user.id){
+    useReferralCode(referredByCode, reg.user.id, reg.user.name).catch(function(e){ console.warn('[Affiliate] useReferralCode failed:', e); });
+  }
 
   document.getElementById('otpVerifyBox').remove();
   updateNavUser();closeAuth();
@@ -8441,15 +8475,20 @@ return JSON.parse(jsonPayload);
 
 function handleGoogleCredential(user){
 /* Store user session */
+var gUid='USR-G-'+Date.now().toString(36).toUpperCase();
+var referredByG = localStorage.getItem('anima_referral_code') || '';
 var userData={
+id:gUid,
 name:user.name,
 email:user.email,
 picture:user.picture,
 phone:'',
 provider:'google',
+referred_by:referredByG,
 loginAt:new Date().toISOString()
 };
 localStorage.setItem('anima_user',JSON.stringify(userData));
+localStorage.setItem('anima_current_user',JSON.stringify(userData));
 window.currentUser=userData;
 closeAuth();
 updateNavUser();
@@ -8464,6 +8503,20 @@ if(window.AnimaContacts){
     source:'google_login',status:'active',
     notes:'Google OAuth login',tags:['google','member']
   }).catch(function(){});
+}
+/* FIX-2: Generate referral code for Google user */
+if(window.generateReferralCode && userData.id){
+  generateReferralCode(userData.id).then(function(code){
+    userData.referralCode = code;
+    localStorage.setItem('anima_current_user', JSON.stringify(userData));
+    localStorage.setItem('anima_user', JSON.stringify(userData));
+    window.currentUser = userData;
+    console.log('[Affiliate] Referral code generated for Google user:', code);
+  }).catch(function(){});
+}
+/* FIX-4: Process referred_by for Google user */
+if(referredByG && window.useReferralCode && userData.id){
+  useReferralCode(referredByG, userData.id, userData.name).catch(function(e){ console.warn('[Affiliate] Google referral failed:', e); });
 }
 }
 function showForgot(){showToast(lang==='vi'?'Link khôi phục sẽ gửi qua email':'Password reset link will be sent to your email','var(--g1)');}
@@ -13271,16 +13324,16 @@ function renderUserDashboard(){
   h+='<div style="background:var(--dark3,#0A1218);border:1px solid rgba(0,200,150,.1);border-radius:14px;padding:16px">';
   h+='<div style="font-size:10px;font-weight:700;color:rgba(248,242,224,.45);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">Affiliate</div>';
   if(!affData.code){affData.code=(currentUser&&currentUser.id?currentUser.id:'USR').substring(0,8).toUpperCase();affData.referrals=0;affData.earned=0;}
-  h+='<div style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border:1px solid rgba(0,200,150,.1);border-radius:10px;padding:12px;margin-bottom:10px">';
+  h+='<div id="profAffSection" style="display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.2);border:1px solid rgba(0,200,150,.1);border-radius:10px;padding:12px;margin-bottom:10px">';
   h+='<div style="flex:1"><div style="font-size:8px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px">'+_t('M\u00E3 GT','Code')+'</div>';
-  h+='<div style="font-size:18px;font-weight:700;color:var(--g2,#00E5A8);font-family:\'Roboto Mono\',monospace;letter-spacing:3px">'+(affData.code||'---')+'</div></div>';
-  h+='<button onclick="navigator.clipboard.writeText(\''+(affData.code||'')+'\');if(typeof showToast===\'function\')showToast(\'Copied!\',\'#00C896\')" style="padding:8px 14px;border:1px solid rgba(0,200,150,.15);border-radius:8px;background:rgba(0,200,150,.06);color:var(--g1,#00C896);font-size:11px;font-weight:600;cursor:pointer">Copy</button>';
+  h+='<div id="profAffCode" style="font-size:18px;font-weight:700;color:var(--g2,#00E5A8);font-family:\'Roboto Mono\',monospace;letter-spacing:3px">'+(affData.code||'---')+'</div></div>';
+  h+='<button onclick="var cEl=document.getElementById(\'profAffCode\');navigator.clipboard.writeText(cEl?cEl.textContent:\'\');if(typeof showToast===\'function\')showToast(\'Copied!\',\'#00C896\')" style="padding:8px 14px;border:1px solid rgba(0,200,150,.15);border-radius:8px;background:rgba(0,200,150,.06);color:var(--g1,#00C896);font-size:11px;font-weight:600;cursor:pointer">Copy</button>';
   h+='</div>';
   h+='<div style="display:flex;gap:8px">';
-  h+='<div style="flex:1;background:rgba(0,0,0,.15);border-radius:8px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:700;color:var(--g2,#00E5A8)">'+(affData.referrals||0)+'</div><div style="font-size:8px;color:rgba(248,242,224,.3)">'+_t('Ng\u01B0\u1EDDi GT','Refs')+'</div></div>';
-  h+='<div style="flex:1;background:rgba(0,0,0,.15);border-radius:8px;padding:10px;text-align:center"><div style="font-size:16px;font-weight:700;color:var(--g2,#00E5A8);font-family:\'Roboto Mono\',monospace">'+_fmt(affiliateComm)+'</div><div style="font-size:8px;color:rgba(248,242,224,.3)">'+_t('Hoa h\u1ED3ng','Earned')+'</div></div>';
+  h+='<div style="flex:1;background:rgba(0,0,0,.15);border-radius:8px;padding:10px;text-align:center"><div id="profAffRefs" style="font-size:16px;font-weight:700;color:var(--g2,#00E5A8)">'+(affData.referrals||0)+'</div><div style="font-size:8px;color:rgba(248,242,224,.3)">'+_t('Ng\u01B0\u1EDDi GT','Refs')+'</div></div>';
+  h+='<div style="flex:1;background:rgba(0,0,0,.15);border-radius:8px;padding:10px;text-align:center"><div id="profAffEarned" style="font-size:16px;font-weight:700;color:var(--g2,#00E5A8);font-family:\'Roboto Mono\',monospace">'+_fmt(affiliateComm)+'</div><div style="font-size:8px;color:rgba(248,242,224,.3)">'+_t('Hoa h\u1ED3ng','Earned')+'</div></div>';
   h+='</div>';
-  h+='<button onclick="var u=\'https://animacare.global?ref='+(affData.code||'')+'\';if(navigator.share)navigator.share({title:\'Anima Care\',url:u});else{navigator.clipboard.writeText(u);if(typeof showToast===\'function\')showToast(\'Copied!\',\'#00C896\')}" style="width:100%;margin-top:10px;padding:10px;border:1px solid rgba(0,200,150,.12);border-radius:8px;background:rgba(0,200,150,.04);color:var(--g1,#00C896);font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>'+_t('Chia s\u1EBB link','Share Link')+'</button>';
+  h+='<button onclick="var cEl=document.getElementById(\'profAffCode\');var cc=cEl?cEl.textContent:\'\';var u=\'https://animacare.global?ref=\'+cc;if(navigator.share)navigator.share({title:\'Anima Care\',url:u});else{navigator.clipboard.writeText(u);if(typeof showToast===\'function\')showToast(\'Copied!\',\'#00C896\')}" style="width:100%;margin-top:10px;padding:10px;border:1px solid rgba(0,200,150,.12);border-radius:8px;background:rgba(0,200,150,.04);color:var(--g1,#00C896);font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>'+_t('Chia s\u1EBB link','Share Link')+'</button>';
   h+='</div>';
 
   el.innerHTML=h;
@@ -13422,6 +13475,32 @@ function initAffiliate(){
     affData.code=(u.id||'USR').substring(0,8).toUpperCase();
     affData.referrals=0;affData.earned=0;affData.level='F0';
     localStorage.setItem('anima_affiliate',JSON.stringify(affData));
+  }
+  /* FIX-8: Load real affiliate stats from Supabase */
+  var uid = (u.uid || u.id || u.email || '');
+  if(window.AnimaReferrals && uid){
+    AnimaReferrals.getCode(uid).then(function(refRec){
+      if(refRec && refRec.code){
+        var codeEl = document.getElementById('profAffCode');
+        if(codeEl) codeEl.textContent = refRec.code;
+        affData.code = refRec.code;
+        localStorage.setItem('anima_affiliate', JSON.stringify(affData));
+      }
+    }).catch(function(){});
+  }
+  if(window.AnimaAffiliate && uid){
+    AnimaAffiliate.getTransactions({filter:'member_id=eq.'+encodeURIComponent(uid),limit:100}).then(function(txns){
+      txns = txns || [];
+      var refs = txns.length;
+      var earned = txns.reduce(function(s,t){return s+(t.commission_amount||0);},0);
+      var refEl = document.getElementById('profAffRefs');
+      var earnEl = document.getElementById('profAffEarned');
+      if(refEl) refEl.textContent = refs;
+      if(earnEl) earnEl.textContent = earned.toLocaleString('vi-VN') + '\u0111';
+      affData.referrals = refs;
+      affData.earned = earned;
+      localStorage.setItem('anima_affiliate', JSON.stringify(affData));
+    }).catch(function(){});
   }
 }
 /* ═══ Health Profile Helpers ═══ */

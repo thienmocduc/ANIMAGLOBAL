@@ -1664,66 +1664,145 @@ function pgAffiliate(){
   var act=el('admV3Actions');
   if(act) act.innerHTML='<button class="btn btn-p btn-sm" onclick="admV3CreateAffProgram()">+ Tạo Chương Trình</button>';
 
-  /* Load affiliate data from localStorage + orders */
-  var affPrograms=[];try{affPrograms=JSON.parse(localStorage.getItem('anima_aff_programs')||'[]');}catch(e){}
-  var affLinks=[];try{affLinks=JSON.parse(localStorage.getItem('anima_aff_links')||'[]');}catch(e){}
+  c.innerHTML='<div class="empty">Đang tải dữ liệu Affiliate...</div>';
 
-  /* Default programs if empty */
-  if(!affPrograms.length){
-    affPrograms=[
-      {id:'AFF-KTV',name:'KTV Affiliate',desc:'KTV giới thiệu khách → nhận 10% hoa hồng SP',rate:10,type:'ktv',active:true,members:0,revenue:0},
-      {id:'AFF-USER',name:'Giới Thiệu Bạn Bè',desc:'Khách giới thiệu bạn → cả 2 nhận 500 điểm + voucher 200K',rate:5,type:'user',active:true,members:0,revenue:0},
-      {id:'AFF-CENTER',name:'Center Referral',desc:'Cơ sở giới thiệu cơ sở mới → nhận 2% doanh thu 6 tháng đầu',rate:2,type:'center',active:true,members:0,revenue:0},
-      {id:'AFF-KOL',name:'KOL / Influencer',desc:'KOL review sản phẩm → commission theo link tracking',rate:15,type:'kol',active:false,members:0,revenue:0}
-    ];
-    localStorage.setItem('anima_aff_programs',JSON.stringify(affPrograms));
-  }
+  /* FIX-6: Load affiliate data from Supabase instead of localStorage */
+  Promise.all([
+    safeLoad('AnimaAffiliate','getPrograms',[]),
+    safeLoad('AnimaAffiliate','getMembers',[{limit:500}]),
+    safeLoad('AnimaAffiliate','getTransactions',[{limit:500}])
+  ]).then(function(results){
+    var programs = safeArr(results[0]);
+    var members = safeArr(results[1]);
+    var transactions = safeArr(results[2]);
 
-  var totalMembers=affPrograms.reduce(function(s,p){return s+(p.members||0);},0);
-  var totalRevAff=affPrograms.reduce(function(s,p){return s+(p.revenue||0);},0);
-  var activeProgs=affPrograms.filter(function(p){return p.active;}).length;
+    /* If no programs in DB, seed defaults */
+    if(!programs.length){
+      programs=[
+        {id:'AFF-KTV',name:'KTV Affiliate',commission_rate:0.10,type:'ktv',status:'active'},
+        {id:'AFF-USER',name:'Giới Thiệu Bạn Bè',commission_rate:0.05,type:'user',status:'active'},
+        {id:'AFF-CENTER',name:'Center Referral',commission_rate:0.02,type:'center',status:'active'},
+        {id:'AFF-KOL',name:'KOL / Influencer',commission_rate:0.15,type:'kol',status:'active'}
+      ];
+    }
 
-  var h='<div class="kpis">';
-  h+=kpi(affPrograms.length,'Chương Trình','#7B5FFF');
-  h+=kpi(activeProgs,'Đang Hoạt Động','#00C896');
-  h+=kpi(totalMembers,'Tổng Thành Viên','#FFC800');
-  h+=kpi(money(totalRevAff),'Doanh Thu Aff','#00C896');
-  h+=kpi(affLinks.length,'Link Tracking','#00B4D8');
-  h+='</div>';
+    /* Calculate real stats from transactions */
+    var totalMembers = members.length;
+    var totalRevAff = transactions.reduce(function(s,t){return s+(t.commission_amount||0);},0);
+    var paidOut = transactions.filter(function(t){return t.status==='paid';}).reduce(function(s,t){return s+(t.commission_amount||0);},0);
+    var pendingPay = transactions.filter(function(t){return t.status==='pending';}).reduce(function(s,t){return s+(t.commission_amount||0);},0);
+    var activeProgs = programs.filter(function(p){return p.status==='active';}).length;
 
-  /* Programs */
-  h+='<div class="crd"><div class="crd-h"><span class="crd-t">Chương Trình Affiliate</span></div>';
-  h+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">';
-  affPrograms.forEach(function(p){
-    var typeLabels={ktv:'👨‍⚕️ KTV',user:'👤 Người Dùng',center:'🏢 Center',kol:'🌟 KOL'};
+    var h='<div class="kpis">';
+    h+=kpi(programs.length,'Chương Trình','#7B5FFF');
+    h+=kpi(activeProgs,'Đang Hoạt Động','#00C896');
+    h+=kpi(totalMembers,'Tổng Thành Viên','#FFC800');
+    h+=kpi(money(totalRevAff),'Doanh Thu Aff','#00C896');
+    h+=kpi(money(pendingPay),'Chờ Duyệt','#FF7070');
+    h+=kpi(money(paidOut),'Đã Chi','#00B4D8');
+    h+='</div>';
+
+    /* Programs */
+    h+='<div class="crd"><div class="crd-h"><span class="crd-t">Chương Trình Affiliate</span></div>';
+    h+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px">';
+    var typeLabels={ktv:'KTV',user:'Người Dùng',center:'Center',kol:'KOL'};
     var typeColors={ktv:'#00C896',user:'#7B5FFF',center:'#FFC800',kol:'#FF6B9D'};
-    h+='<div style="padding:16px;background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:12px;border-left:3px solid '+(typeColors[p.type]||'#00C896')+'">';
-    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
-    h+='<span style="font-size:14px;font-weight:700;color:#E8F8F4">'+p.name+'</span>';
-    h+=badge(p.active?'Active':'Tắt',p.active?'#00C896':'#607870');
-    h+='</div>';
-    h+='<div style="font-size:12px;color:#B8D8D0;margin-bottom:10px">'+p.desc+'</div>';
-    h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:11px;text-align:center">';
-    h+='<div><div style="font-size:16px;font-weight:700;color:'+(typeColors[p.type]||'#00C896')+'">'+p.rate+'%</div><div style="color:#607870">Commission</div></div>';
-    h+='<div><div style="font-size:16px;font-weight:700;color:#E8F8F4">'+(p.members||0)+'</div><div style="color:#607870">Thành Viên</div></div>';
-    h+='<div><div style="font-size:16px;font-weight:700;color:#00C896">'+money(p.revenue||0)+'</div><div style="color:#607870">Doanh Thu</div></div>';
-    h+='</div>';
-    h+='<div style="margin-top:10px;display:flex;gap:6px">';
-    h+='<span style="font-size:10px;padding:3px 8px;border-radius:6px;background:rgba(0,200,150,.08);color:#00C896">'+(typeLabels[p.type]||p.type)+'</span>';
+    programs.forEach(function(p){
+      var pType = p.type || 'user';
+      var isActive = p.status==='active' || p.active;
+      var rate = p.commission_rate ? Math.round(p.commission_rate*100) : (p.rate||0);
+      /* Count members and revenue for this program */
+      var progMembers = members.filter(function(m){return m.program_id===p.id;}).length;
+      var progRevenue = transactions.filter(function(t){return t.program_id===p.id;}).reduce(function(s,t){return s+(t.commission_amount||0);},0);
+      h+='<div style="padding:16px;background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:12px;border-left:3px solid '+(typeColors[pType]||'#00C896')+'">';
+      h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
+      h+='<span style="font-size:14px;font-weight:700;color:#E8F8F4">'+(p.name||'Program')+'</span>';
+      h+=badge(isActive?'Active':'Tắt',isActive?'#00C896':'#607870');
+      h+='</div>';
+      h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:11px;text-align:center">';
+      h+='<div><div style="font-size:16px;font-weight:700;color:'+(typeColors[pType]||'#00C896')+'">'+rate+'%</div><div style="color:#607870">Commission</div></div>';
+      h+='<div><div style="font-size:16px;font-weight:700;color:#E8F8F4">'+progMembers+'</div><div style="color:#607870">Thành Viên</div></div>';
+      h+='<div><div style="font-size:16px;font-weight:700;color:#00C896">'+money(progRevenue)+'</div><div style="color:#607870">Doanh Thu</div></div>';
+      h+='</div>';
+      h+='<div style="margin-top:10px;display:flex;gap:6px">';
+      h+='<span style="font-size:10px;padding:3px 8px;border-radius:6px;background:rgba(0,200,150,.08);color:#00C896">'+(typeLabels[pType]||pType)+'</span>';
+      h+='</div></div>';
+    });
     h+='</div></div>';
+
+    /* Members table */
+    h+='<div class="crd"><div class="crd-h"><span class="crd-t">Thành Viên Affiliate ('+totalMembers+')</span></div>';
+    if(members.length){
+      h+='<div class="tbl-w"><table class="tbl"><thead><tr><th>ID</th><th>Tên</th><th>Mã GT</th><th>Tổng HH</th><th>Trạng Thái</th><th>Ngày Tham Gia</th></tr></thead><tbody>';
+      members.forEach(function(m){
+        h+='<tr><td style="font-size:11px;color:#607870">'+(m.id||'').substring(0,8)+'</td>';
+        h+='<td>'+(m.user_name||m.name||'N/A')+'</td>';
+        h+='<td style="font-family:monospace;color:#00C896">'+(m.referral_code||'--')+'</td>';
+        h+='<td style="font-weight:600">'+money(m.total_commission||0)+'</td>';
+        h+='<td>'+badge(m.status||'active',(m.status==='active'?'#00C896':'#607870'))+'</td>';
+        h+='<td style="font-size:11px;color:#607870">'+shortDate(m.created_at)+'</td></tr>';
+      });
+      h+='</tbody></table></div>';
+    } else {
+      h+='<div style="padding:20px;text-align:center;color:#607870;font-size:13px">Chưa có thành viên affiliate</div>';
+    }
+    h+='</div>';
+
+    /* Transactions table */
+    h+='<div class="crd"><div class="crd-h"><span class="crd-t">Giao Dịch Hoa Hồng ('+transactions.length+')</span></div>';
+    if(transactions.length){
+      h+='<div class="tbl-w"><table class="tbl"><thead><tr><th>Đơn Hàng</th><th>Thành Viên</th><th>Giá Trị Đơn</th><th>Hoa Hồng</th><th>Tỉ Lệ</th><th>Trạng Thái</th><th>Ngày</th></tr></thead><tbody>';
+      transactions.slice(0,100).forEach(function(t){
+        var stColor = t.status==='paid'?'#00C896':t.status==='pending'?'#FFC800':'#FF7070';
+        h+='<tr><td style="font-size:11px;font-family:monospace">'+(t.order_id||'--')+'</td>';
+        h+='<td style="font-size:11px">'+(t.member_id||'').substring(0,12)+'</td>';
+        h+='<td>'+money(t.order_amount||0)+'</td>';
+        h+='<td style="font-weight:700;color:#00C896">'+money(t.commission_amount||0)+'</td>';
+        h+='<td>'+Math.round((t.commission_rate||0)*100)+'%</td>';
+        h+='<td>'+badge(t.status||'pending',stColor)+'</td>';
+        h+='<td style="font-size:11px;color:#607870">'+shortDate(t.created_at)+'</td></tr>';
+      });
+      h+='</tbody></table></div>';
+    } else {
+      h+='<div style="padding:20px;text-align:center;color:#607870;font-size:13px">Chưa có giao dịch hoa hồng</div>';
+    }
+    h+='</div>';
+
+    /* FIX-7: MLM Community Tree */
+    var byReferrer = {};
+    members.forEach(function(m){
+      var ref = m.referral_code || 'direct';
+      if(!byReferrer[ref]) byReferrer[ref] = [];
+      byReferrer[ref].push(m);
+    });
+    var refKeys = Object.keys(byReferrer);
+    if(refKeys.length){
+      h+='<div class="crd"><div class="crd-h"><span class="crd-t">Cây Cộng Đồng Affiliate</span></div>';
+      refKeys.forEach(function(ref){
+        h+='<div style="margin:8px 0;padding:8px 12px;background:rgba(0,200,150,.03);border-left:3px solid #00C896;border-radius:0 8px 8px 0">';
+        h+='<div style="font-size:12px;font-weight:600;color:#00C896">' + ref + ' (' + byReferrer[ref].length + ' thành viên)</div>';
+        byReferrer[ref].forEach(function(m){
+          h+='<div style="margin-left:20px;padding:4px 0;font-size:11px;color:#B8D8D0">' + (m.user_name||'N/A') + ' · ' + money(m.total_commission||0) + '</div>';
+        });
+        h+='</div>';
+      });
+      h+='</div>';
+    }
+
+    /* Affiliate Policy */
+    h+='<div class="crd"><div class="crd-h"><span class="crd-t">Chính Sách Affiliate</span></div>';
+    h+='<div style="font-size:13px;color:#B8D8D0;line-height:1.8">';
+    h+='<div style="margin-bottom:8px"><b style="color:#FFC800">1. KTV Affiliate:</b> KTV giới thiệu khách mua ANIMA 119 → nhận 10% giá trị đơn. Hoa hồng được tích vào ví sau 48h giao hàng thành công.</div>';
+    h+='<div style="margin-bottom:8px"><b style="color:#7B5FFF">2. Giới Thiệu Bạn Bè:</b> Khách chia sẻ mã giới thiệu → Bạn mới mua hàng → Cả 2 nhận 500 AnimePoint + Voucher 200.000đ.</div>';
+    h+='<div style="margin-bottom:8px"><b style="color:#FFC800">3. Center Referral:</b> Cơ sở L1 giới thiệu đối tác mở L2 → Nhận 2% doanh thu L2 trong 6 tháng đầu.</div>';
+    h+='<div><b style="color:#FF6B9D">4. KOL Program:</b> Influencer review sản phẩm → Commission 15% qua link tracking. Cần duyệt bởi Admin.</div>';
+    h+='</div></div>';
+
+    c.innerHTML=h;
+  }).catch(function(err){
+    console.error('[AdminV3] pgAffiliate error:', err);
+    c.innerHTML='<div class="empty">Lỗi tải dữ liệu Affiliate. Dữ liệu localStorage sẽ hiển thị.</div>';
   });
-  h+='</div></div>';
-
-  /* Affiliate Policy */
-  h+='<div class="crd"><div class="crd-h"><span class="crd-t">📋 Chính Sách Affiliate</span></div>';
-  h+='<div style="font-size:13px;color:#B8D8D0;line-height:1.8">';
-  h+='<div style="margin-bottom:8px"><b style="color:#FFC800">1. KTV Affiliate:</b> KTV giới thiệu khách mua ANIMA 119 → nhận 10% giá trị đơn. Hoa hồng được tích vào ví sau 48h giao hàng thành công.</div>';
-  h+='<div style="margin-bottom:8px"><b style="color:#7B5FFF">2. Giới Thiệu Bạn Bè:</b> Khách chia sẻ mã giới thiệu → Bạn mới mua hàng → Cả 2 nhận 500 AnimePoint + Voucher 200.000đ.</div>';
-  h+='<div style="margin-bottom:8px"><b style="color:#FFC800">3. Center Referral:</b> Cơ sở L1 giới thiệu đối tác mở L2 → Nhận 2% doanh thu L2 trong 6 tháng đầu.</div>';
-  h+='<div><b style="color:#FF6B9D">4. KOL Program:</b> Influencer review sản phẩm → Commission 15% qua link tracking. Cần duyệt bởi Admin.</div>';
-  h+='</div></div>';
-
-  c.innerHTML=h;
 }
 window.admV3CreateAffProgram=function(){
   var name=prompt('Tên chương trình:');if(!name)return;
