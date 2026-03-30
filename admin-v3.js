@@ -1768,7 +1768,7 @@ function pgAffiliate(){
     }
     h+='</div>';
 
-    /* FIX-7: MLM Community Tree */
+    /* FIX-7: Cộng Đồng Affiliate */
     var byReferrer = {};
     members.forEach(function(m){
       var ref = m.referral_code || 'direct';
@@ -1777,7 +1777,7 @@ function pgAffiliate(){
     });
     var refKeys = Object.keys(byReferrer);
     if(refKeys.length){
-      h+='<div class="crd"><div class="crd-h"><span class="crd-t">Cây Cộng Đồng Affiliate</span></div>';
+      h+='<div class="crd"><div class="crd-h"><span class="crd-t">Cộng Đồng Affiliate</span></div>';
       refKeys.forEach(function(ref){
         h+='<div style="margin:8px 0;padding:8px 12px;background:rgba(0,200,150,.03);border-left:3px solid #00C896;border-radius:0 8px 8px 0">';
         h+='<div style="font-size:12px;font-weight:600;color:#00C896">' + ref + ' (' + byReferrer[ref].length + ' thành viên)</div>';
