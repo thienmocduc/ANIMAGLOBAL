@@ -186,6 +186,84 @@ function runSetup() {
   runNext();
 }
 
+// ── Tighten RLS: replace permissive anon_all with restricted policies ──
+var RLS_TABLES = ['orders', 'users', 'wallet_transactions', 'loyalty_points', 'loyalty_transactions', 'referral_codes', 'referral_uses', 'chat_messages', 'conversations', 'bookings', 'contacts', 'crm_leads', 'crm_activities', 'notifications', 'ratings', 'kyc_requests', 'withdrawals', 'wallets', 'courses', 'enrollments', 'affiliate_programs', 'affiliate_members', 'affiliate_transactions', 'inventory', 'inventory_transactions'];
+var SENSITIVE_TABLES = ['orders', 'users', 'wallet_transactions', 'wallets', 'withdrawals'];
+
+var RLS_SQL = [];
+// Drop overly permissive anon_all policies
+RLS_TABLES.forEach(function(tbl) {
+  RLS_SQL.push('DROP POLICY IF EXISTS "anon_all" ON ' + tbl + ';');
+});
+// Create read-only SELECT policy for all tables
+RLS_TABLES.forEach(function(tbl) {
+  RLS_SQL.push('CREATE POLICY "anon_select" ON ' + tbl + ' FOR SELECT USING (true);');
+});
+// Create INSERT policy for all tables (needed for order creation, chat, etc.)
+RLS_TABLES.forEach(function(tbl) {
+  RLS_SQL.push('CREATE POLICY "anon_insert" ON ' + tbl + ' FOR INSERT WITH CHECK (true);');
+});
+// Create UPDATE policy for all tables (needed for status updates, etc.)
+RLS_TABLES.forEach(function(tbl) {
+  RLS_SQL.push('CREATE POLICY "anon_update" ON ' + tbl + ' FOR UPDATE USING (true) WITH CHECK (true);');
+});
+// REVOKE DELETE on sensitive tables for anon role
+SENSITIVE_TABLES.forEach(function(tbl) {
+  RLS_SQL.push('REVOKE DELETE ON ' + tbl + ' FROM anon;');
+});
+
+var RLS_COMBINED = RLS_SQL.join('\n');
+
+function runTightenRLS() {
+  console.log('════════════════════════════════════════');
+  console.log('AnimaCare — Tightening RLS Policies...');
+  console.log('════════════════════════════════════════');
+
+  var idx = 0;
+  var errors = [];
+
+  function runNextRLS() {
+    if (idx >= RLS_SQL.length) {
+      console.log('');
+      console.log('════════════════════════════════════════');
+      if (errors.length === 0) {
+        console.log('RLS tightening complete! All policies updated.');
+      } else {
+        console.log('Completed with ' + errors.length + ' error(s):');
+        errors.forEach(function(e) { console.warn('  - ' + e); });
+        console.log('');
+        console.log('NOTE: "does not exist" errors on DROP are safe to ignore.');
+      }
+      console.log('════════════════════════════════════════');
+      return;
+    }
+
+    var sql = RLS_SQL[idx];
+    var label = sql.substring(0, 70).replace(/\s+/g, ' ') + '...';
+    console.log('[' + (idx + 1) + '/' + RLS_SQL.length + '] ' + label);
+
+    executeSqlViaRest(sql)
+      .then(function() {
+        console.log('  OK');
+        idx++;
+        runNextRLS();
+      })
+      .catch(function(err) {
+        var msg = err.message || String(err);
+        if (msg.indexOf('does not exist') > -1 || msg.indexOf('already exists') > -1) {
+          console.log('  OK (skipped: ' + msg.substring(0, 40) + ')');
+        } else {
+          console.warn('  Error: ' + msg);
+          errors.push(label + ' => ' + msg);
+        }
+        idx++;
+        runNextRLS();
+      });
+  }
+
+  runNextRLS();
+}
+
 // Export for different environments
 if (typeof window !== 'undefined') {
   // Browser environment
@@ -193,6 +271,8 @@ if (typeof window !== 'undefined') {
     run: runSetup,
     sql: COMBINED_SQL,
     statements: SQL_STATEMENTS,
+    tightenRLS: runTightenRLS,
+    rlsSQL: RLS_COMBINED,
     // Convenience: copy full SQL to clipboard
     copySQL: function() {
       if (navigator.clipboard) {
@@ -203,12 +283,25 @@ if (typeof window !== 'undefined') {
         console.log('Clipboard not available. Full SQL:');
         console.log(COMBINED_SQL);
       }
+    },
+    copyRLSSQL: function() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(RLS_COMBINED).then(function() {
+          console.log('RLS SQL copied to clipboard! Paste in Supabase SQL Editor.');
+        });
+      } else {
+        console.log('Clipboard not available. RLS SQL:');
+        console.log(RLS_COMBINED);
+      }
     }
   };
   console.log('[AnimaSetupTables] Loaded. Use:');
-  console.log('  AnimaSetupTables.run()     — Execute via REST API');
-  console.log('  AnimaSetupTables.copySQL() — Copy SQL to clipboard');
-  console.log('  AnimaSetupTables.sql       — Get full SQL string');
+  console.log('  AnimaSetupTables.run()          — Create tables via REST API');
+  console.log('  AnimaSetupTables.tightenRLS()   — Tighten RLS policies via REST API');
+  console.log('  AnimaSetupTables.copySQL()      — Copy table SQL to clipboard');
+  console.log('  AnimaSetupTables.copyRLSSQL()   — Copy RLS SQL to clipboard');
+  console.log('  AnimaSetupTables.sql            — Get full table SQL string');
+  console.log('  AnimaSetupTables.rlsSQL         — Get full RLS SQL string');
 } else if (typeof module !== 'undefined' && module.exports) {
   // Node.js environment
   module.exports = { run: runSetup, sql: COMBINED_SQL, statements: SQL_STATEMENTS };

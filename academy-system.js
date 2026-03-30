@@ -26,8 +26,8 @@ window.renderAcademyTab=async function(containerId,ktvId,ktvName){
   const {courses,enroll}=db();
   let allC=[],myE=[];
   try{
-    const{data:cd}=await courses.select('*');allC=cd||[];
-    const{data:ed}=await enroll.select('*').eq('ktv_id',ktvId);myE=ed||[];
+    allC=await courses.getAll()||[];
+    myE=await enroll.getByKTV(ktvId)||[];
   }catch(e){console.error('Academy load err',e);}
   const eMap={};myE.forEach(e=>eMap[e.course_id]=e);
   const enrolled=allC.filter(c=>eMap[c.id]&&eMap[c.id].progress<100);
@@ -52,8 +52,7 @@ function section(title,courses,eMap,showEnroll,ktvId,ktvName){
 window.enrollCourse=async function(ktvId,ktvName,courseId,courseTitle){
   const{enroll}=db();
   try{
-    const{error}=await enroll.insert([{ktv_id:ktvId,ktv_name:ktvName,course_id:courseId,course_title:courseTitle,progress:0,status:'enrolled',enrolled_at:new Date().toISOString()}]);
-    if(error)throw error;
+    await enroll.create({ktv_id:ktvId,ktv_name:ktvName,course_id:courseId,course_title:courseTitle,progress:0,status:'enrolled',enrolled_at:new Date().toISOString()});
     alert(t('Đăng ký thành công!','Enrolled successfully!'));
     if(window._academyRefresh)window._academyRefresh();
   }catch(e){alert(t('Lỗi đăng ký','Enrollment error')+': '+e.message);}
@@ -64,8 +63,7 @@ window.updateProgress=async function(enrollmentId,progressPct){
   const pct=Math.max(0,Math.min(100,Number(progressPct)));
   const upd={progress:pct};if(pct>=100){upd.status='completed';upd.completed_at=new Date().toISOString();upd.certificate_id='CERT-'+Date.now().toString(36).toUpperCase();}
   try{
-    const{error}=await enroll.update(upd).eq('id',enrollmentId);
-    if(error)throw error;
+    await enroll.update(enrollmentId,upd);
   }catch(e){console.error('Progress update err',e);}
 };
 
@@ -78,8 +76,8 @@ window.renderAdmAcademy=async function(){
   const{courses,enroll}=db();
   let allC=[],allE=[];
   try{
-    const{data:cd}=await courses.select('*');allC=cd||[];
-    const{data:ed}=await enroll.select('*');allE=ed||[];
+    allC=await courses.getAll()||[];
+    allE=await enroll.getAll()||[];
   }catch(e){console.error(e);}
   const total=allC.length,totalE=allE.length;
   const done=allE.filter(e=>e.progress>=100).length;
@@ -110,7 +108,7 @@ window.renderAdmAcademy=async function(){
 
 window.renderAdmCourseManager=async function(){
   const{courses}=db();let allC=[];
-  try{const{data}=await courses.select('*');allC=data||[];}catch(e){console.error(e);}
+  try{allC=await courses.getAll()||[];}catch(e){console.error(e);}
   const cats=Object.keys(CAT);
   const form=`<div style="background:${S.card};border:1px solid ${S.border};border-radius:12px;padding:16px;margin-bottom:20px">
     <h3 style="color:${S.accent};margin:0 0 12px">${t('Thêm khóa học','Add Course')}</h3>
@@ -132,12 +130,12 @@ window._addCourse=async function(){
   const cat=document.getElementById('ac-cat').value;
   const level=Number(document.getElementById('ac-level').value);
   const{courses}=db();
-  try{const{error}=await courses.insert([{title,category:cat,level,duration:60}]);if(error)throw error;window.renderAdmCourseManager();}catch(e){alert(e.message);}
+  try{await courses.create({title:title,category:cat,level:level,duration:60});window.renderAdmCourseManager();}catch(e){alert(e.message);}
 };
 window._delCourse=async function(id){
   if(!confirm(t('Xóa khóa học?','Delete course?')))return;
   const{courses}=db();
-  try{const{error}=await courses.delete().eq('id',id);if(error)throw error;window.renderAdmCourseManager();}catch(e){alert(e.message);}
+  try{await courses.update(id,{status:'archived'});window.renderAdmCourseManager();}catch(e){alert(e.message);}
 };
 
 function kpiCard(label,value,icon,color){

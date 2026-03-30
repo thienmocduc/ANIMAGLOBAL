@@ -4910,6 +4910,12 @@ if(window.AnimaOrders){
     notes: 'Đặt hàng: ' + _currentOrder.name + ' - ' + _currentOrder.price,
     tags: ['order', _currentOrder.sku || '']
   }).then(function(l){console.log('[Supabase] Lead created:',l);}).catch(function(e){console.warn('[Supabase] Lead failed:',e);});
+  /* Auto-process affiliate commission */
+  if(window.AnimaAffiliate && window.currentUser && currentUser.referralCode){
+    AnimaAffiliate.processOrderCommission(orderId, total, currentUser.referralCode, 0.10)
+      .then(function(t){console.log('[Supabase] Affiliate commission processed:',t);})
+      .catch(function(e){console.warn('[Supabase] Affiliate commission failed:',e);});
+  }
 }
 
 closeOrder();

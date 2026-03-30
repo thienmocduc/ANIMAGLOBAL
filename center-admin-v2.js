@@ -77,18 +77,31 @@ function svgIcon(d,sz){sz=sz||20;return '<svg width="'+sz+'" height="'+sz+'" fil
 function daysBetween(a,b){return Math.floor((b-a)/864e5);}
 
 // ── Data loading ──
-function loadData(){
-  _orders=safe(function(){return window.AnimaOrders?window.AnimaOrders.getAll({filter:'center_id=eq.'+_cid}):[];},[]);
-  if(!_orders||!_orders.length) _orders=lsGet('anima_orders_'+_cid,[]);
-  _bookings=safe(function(){return window.AnimaBookings?window.AnimaBookings.getAll({filter:'center_id=eq.'+_cid}):[];},[]);
-  if(!_bookings||!_bookings.length) _bookings=lsGet('anima_bookings_'+_cid,[]);
+function loadData(callback){
   _ktvs=lsGet('anima_saved_tech',[]).filter(function(k){return k.centerId===_cid;});
   _warehouses=lsGet('anima_warehouses',{})[_cid]||{};
   _l2Centers=safe(function(){return window.AnimaSync?window.AnimaSync.get('centers',[]).filter(function(c){return c.parentId===_cid;}):[];},[]);
   if(!_l2Centers.length) _l2Centers=lsGet('anima_l2_'+_cid,[]);
   _notifications=lsGet('anima_notif_'+_cid,[]);
   _commissions=lsGet('anima_commissions_'+_cid,[]);
-  buildCustomers();
+
+  // Load from localStorage first as fallback
+  _orders=lsGet('anima_orders_'+_cid,[]);
+  _bookings=lsGet('anima_bookings_'+_cid,[]);
+
+  // Fetch from Supabase asynchronously, then re-render
+  var ordersP = window.AnimaOrders ? window.AnimaOrders.getAll({filter:'center_id=eq.'+_cid}) : Promise.resolve(null);
+  var bookingsP = window.AnimaBookings ? window.AnimaBookings.getAll({filter:'center_id=eq.'+_cid}) : Promise.resolve(null);
+
+  Promise.all([ordersP, bookingsP]).then(function(results){
+    if(results[0] && results[0].length) _orders=results[0];
+    if(results[1] && results[1].length) _bookings=results[1];
+  }).catch(function(e){
+    console.warn('[CenterAdmin] Supabase fetch failed, using localStorage:', e);
+  }).then(function(){
+    buildCustomers();
+    if(typeof callback === 'function') callback();
+  });
 }
 
 function buildCustomers(){
@@ -240,13 +253,17 @@ function toggleTheme(){
 function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
 
 // ── Main render ──
-function render(){
-  loadData();renderSidebar();
+function _doRender(){
+  renderSidebar();
   var m=qs('#caMain');if(!m)return;
   var pages={dashboard:pgDashboard,analytics:pgAnalytics,orders:pgOrders,bookings:pgBookings,customers:pgCustomers,ktv:pgKTV,products:pgProducts,l2centers:pgL2,commission:pgCommission,notifications:pgNotifications,settings:pgSettings};
   var fn=pages[_page]||pgDashboard;
   m.innerHTML=fn();
   bindPage();
+}
+
+function render(){
+  loadData(function(){ _doRender(); });
 }
 
 function bindPage(){
@@ -825,7 +842,7 @@ window.openCenterAdminV2=function(centerId,centerName){
   _cid=centerId||'CTR-HN';_cname=centerName||'AnimaCare Center';
   _theme=lsGet('anima_theme','dark');
   if(qs('#centerAdm'))qs('#centerAdm').remove();
-  injectCSS();loadData();renderShell();render();
+  injectCSS();renderShell();render();
   document.body.style.overflow='hidden';
 };
 

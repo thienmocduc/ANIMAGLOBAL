@@ -48,12 +48,11 @@ window.getLoyaltyLevel = function(points) {
 
 // ── Core: Earn Points ──
 window.earnPoints = function(userId, userName, points, type, description, refId) {
-  return Loy().getPoints(userId).then(function(rows) {
-    var current = rows && rows[0] ? rows[0] : null;
-    var newTotal = (current ? current.total_points : 0) + points;
+  return Loy().get(userId).then(function(current) {
+    var newTotal = (current ? (current.total_points || current.points || 0) : 0) + points;
     var lvl = window.getLoyaltyLevel(newTotal);
-    var rec = { user_id: userId, user_name: userName, total_points: newTotal, level: lvl.name, updated_at: new Date().toISOString() };
-    var save = current ? Loy().updatePoints(userId, rec) : Loy().createPoints(Object.assign({ created_at: new Date().toISOString() }, rec));
+    var rec = { user_id: userId, user_name: userName, total_points: newTotal, points: newTotal, level: lvl.name, total_earned: (current ? (current.total_earned || 0) : 0) + points, updated_at: new Date().toISOString() };
+    var save = current ? Loy().update(current.id, rec) : Loy().create(Object.assign({ created_at: new Date().toISOString() }, rec));
     return save.then(function() {
       return Loy().addTransaction({ user_id: userId, points: points, type: type || 'earn', description: description || '', ref_id: refId || null, created_at: new Date().toISOString() });
     }).then(function() { return { total: newTotal, level: lvl }; });
@@ -62,12 +61,12 @@ window.earnPoints = function(userId, userName, points, type, description, refId)
 
 // ── Core: Spend Points ──
 window.spendPoints = function(userId, points, description) {
-  return Loy().getPoints(userId).then(function(rows) {
-    var current = rows && rows[0] ? rows[0] : null;
-    if (!current || current.total_points < points) return Promise.reject(new Error(t('Kh\u00F4ng \u0111\u1EE7 \u0111i\u1EC3m','Not enough points')));
-    var newTotal = current.total_points - points;
+  return Loy().get(userId).then(function(current) {
+    var currentPts = current ? (current.total_points || current.points || 0) : 0;
+    if (!current || currentPts < points) return Promise.reject(new Error(t('Kh\u00F4ng \u0111\u1EE7 \u0111i\u1EC3m','Not enough points')));
+    var newTotal = currentPts - points;
     var lvl = window.getLoyaltyLevel(newTotal);
-    return Loy().updatePoints(userId, { total_points: newTotal, level: lvl.name, updated_at: new Date().toISOString() }).then(function() {
+    return Loy().update(current.id, { total_points: newTotal, points: newTotal, level: lvl.name, total_spent: (current.total_spent || 0) + points, updated_at: new Date().toISOString() }).then(function() {
       return Loy().addTransaction({ user_id: userId, points: -points, type: 'spend', description: description || '', created_at: new Date().toISOString() });
     }).then(function() { return { total: newTotal, level: lvl }; });
   });
@@ -81,12 +80,11 @@ window.generateReferralCode = function(userId) {
 
 // ── Core: Use Referral Code ──
 window.useReferralCode = function(code, newUserId, newUserName) {
-  return Ref().getCode(code).then(function(rows) {
-    if (!rows || !rows[0]) return Promise.reject(new Error(t('M\u00E3 kh\u00F4ng h\u1EE3p l\u1EC7','Invalid code')));
-    var ref = rows[0];
+  return Ref().findByCode(code).then(function(ref) {
+    if (!ref) return Promise.reject(new Error(t('M\u00E3 kh\u00F4ng h\u1EE3p l\u1EC7','Invalid code')));
     if (ref.user_id === newUserId) return Promise.reject(new Error(t('Kh\u00F4ng th\u1EC3 d\u00F9ng m\u00E3 c\u1EE7a ch\u00EDnh b\u1EA1n','Cannot use your own code')));
-    return Ref().recordUse({ code: code, referrer_id: ref.user_id, referred_id: newUserId, created_at: new Date().toISOString() }).then(function() {
-      return Ref().incrementUses(code, ref.uses + 1);
+    return Ref().logUse({ code: code, referrer_id: ref.user_id, referred_id: newUserId, created_at: new Date().toISOString() }).then(function() {
+      return Ref().updateCode(ref.id, { uses: (ref.uses || 0) + 1 });
     }).then(function() {
       return Promise.all([
         window.earnPoints(ref.user_id, '', REFERRAL_BONUS, 'referral', t('Gi\u1EDBi thi\u1EC7u b\u1EA1n b\u00E8','Referral bonus'), code),
@@ -111,14 +109,14 @@ window.renderLoyaltyTab = function() {
   if (!user) { el.innerHTML = '<p style="color:rgba(248,242,224,.4);text-align:center">' + t('\u0110\u0103ng nh\u1EADp \u0111\u1EC3 xem','Sign in to view') + '</p>'; return; }
   el.innerHTML = '<div style="text-align:center;padding:20px"><div class="loader" style="border:3px solid rgba(0,200,150,.2);border-top:3px solid #00C896;border-radius:50%;width:28px;height:28px;animation:spin 1s linear infinite;margin:0 auto"></div></div>';
 
-  Loy().getPoints(user.id || user.email).then(function(rows) {
-    var pts = rows && rows[0] ? rows[0].total_points : 0;
+  Loy().get(user.id || user.email).then(function(lp) {
+    var pts = lp ? (lp.total_points || lp.points || 0) : 0;
     var lvl = window.getLoyaltyLevel(pts);
     var benefits = tierBenefits(lvl.name);
 
     return Loy().getTransactions(user.id || user.email).then(function(txns) {
-      return Ref().getUserCode(user.id || user.email).then(function(codes) {
-        var code = codes && codes[0] ? codes[0].code : null;
+      return Ref().getCode(user.id || user.email).then(function(refRec) {
+        var code = refRec ? refRec.code : null;
         var h = '<div style="padding:4px 0">';
         // Points + Level badge
         h += '<div style="text-align:center;margin-bottom:16px"><div style="font-size:32px;font-weight:700;color:#00C896">' + pts.toLocaleString() + '</div>';
@@ -168,8 +166,8 @@ window.renderAdmLoyalty = function() {
 
   Loy().getAll().then(function(users) {
     users = users || [];
-    var totalPts = 0; users.forEach(function(u) { totalPts += u.total_points || 0; });
-    var sorted = users.slice().sort(function(a, b) { return (b.total_points || 0) - (a.total_points || 0); });
+    var totalPts = 0; users.forEach(function(u) { totalPts += u.total_points || u.points || 0; });
+    var sorted = users.slice().sort(function(a, b) { return (b.total_points || b.points || 0) - (a.total_points || a.points || 0); });
     var h = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:20px">';
     h += card(t('T\u1ED5ng th\u00E0nh vi\u00EAn','Total Members'), users.length, '#00C896');
     h += card(t('T\u1ED5ng \u0111i\u1EC3m','Total Points'), totalPts.toLocaleString(), '#FFD700');
@@ -181,8 +179,9 @@ window.renderAdmLoyalty = function() {
     h += '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="border-bottom:1px solid rgba(0,200,150,.12)">';
     h += '<th style="padding:8px;text-align:left;color:rgba(248,242,224,.4)">#</th><th style="padding:8px;text-align:left;color:rgba(248,242,224,.4)">' + t('T\u00EAn','Name') + '</th><th style="padding:8px;text-align:right;color:rgba(248,242,224,.4)">' + t('\u0110i\u1EC3m','Points') + '</th><th style="padding:8px;text-align:center;color:rgba(248,242,224,.4)">' + t('H\u1EA1ng','Level') + '</th></tr></thead><tbody>';
     sorted.slice(0, 20).forEach(function(u, i) {
-      var lvl = window.getLoyaltyLevel(u.total_points);
-      h += '<tr style="border-bottom:1px solid rgba(248,242,224,.03)"><td style="padding:8px;color:rgba(248,242,224,.3)">' + (i + 1) + '</td><td style="padding:8px;color:#F8F2E0">' + (u.user_name || u.user_id) + '</td><td style="padding:8px;text-align:right;color:#00C896;font-weight:600">' + (u.total_points || 0).toLocaleString() + '</td><td style="padding:8px;text-align:center"><span style="padding:2px 10px;border-radius:10px;font-size:10px;background:' + lvl.color + '20;color:' + lvl.color + '">' + lvl.name + '</span></td></tr>';
+      var uPts = u.total_points || u.points || 0;
+      var lvl = window.getLoyaltyLevel(uPts);
+      h += '<tr style="border-bottom:1px solid rgba(248,242,224,.03)"><td style="padding:8px;color:rgba(248,242,224,.3)">' + (i + 1) + '</td><td style="padding:8px;color:#F8F2E0">' + (u.user_name || u.user_id) + '</td><td style="padding:8px;text-align:right;color:#00C896;font-weight:600">' + uPts.toLocaleString() + '</td><td style="padding:8px;text-align:center"><span style="padding:2px 10px;border-radius:10px;font-size:10px;background:' + lvl.color + '20;color:' + lvl.color + '">' + lvl.name + '</span></td></tr>';
     });
     h += '</tbody></table></div>';
     el.innerHTML = h;

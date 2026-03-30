@@ -1,5 +1,5 @@
 /* ============================================================
-   AnimaCare Chat System — Customer ↔ KTV Messaging
+   AnimaCare Chat System — Customer <-> KTV Messaging
    IIFE, no imports. Depends on window.AnimaChat, window.AnimaConversations
    ============================================================ */
 (function () {
@@ -58,7 +58,7 @@
     panel.innerHTML =
       '<div class="ac-chat-hdr"><h3 id="ac-chat-name"></h3><button id="ac-chat-close">&times;</button></div>' +
       '<div class="ac-chat-msgs" id="ac-chat-msgs"></div>' +
-      '<div class="ac-chat-input"><input id="ac-chat-txt" placeholder="' + t("Nhập tin nhắn...", "Type a message...") + '"/><button id="ac-chat-send">' + t("Gửi", "Send") + '</button></div>';
+      '<div class="ac-chat-input"><input id="ac-chat-txt" placeholder="' + t("Nh\u1EADp tin nh\u1EAFn...", "Type a message...") + '"/><button id="ac-chat-send">' + t("G\u1EEDi", "Send") + '</button></div>';
     document.body.appendChild(panel);
     qs("#ac-chat-close").onclick = closeChatPanel;
     qs("#ac-chat-send").onclick = function () { _sendFromInput(); };
@@ -101,24 +101,25 @@
   }
 
   /* ---------- load & render messages ---------- */
-  async function _loadMessages(convId) {
+  function _loadMessages(convId) {
     if (!window.AnimaChat) return;
-    try {
-      var q = window.AnimaChat.from("chat_messages").select("*").eq("conversation_id", convId).order("created_at", { ascending: true });
-      if (_lastMsgTs) q = q.gt("created_at", _lastMsgTs);
-      var res = await q;
-      var msgs = (res.data || []);
+    AnimaChat.getMessages(convId).then(function(msgs) {
+      msgs = msgs || [];
+      // Filter to only new messages if we have a last timestamp
+      if (_lastMsgTs) {
+        msgs = msgs.filter(function(m) { return m.created_at > _lastMsgTs; });
+      }
       if (!msgs.length) return;
       var container = qs("#ac-chat-msgs"); if (!container) return;
       msgs.forEach(function (m) {
         var cls = m.sender_type === "customer" ? "customer" : "ktv";
         var div = ce("div", "ac-msg " + cls);
-        div.innerHTML = '<div>' + _esc(m.message) + '</div><div class="ac-meta">' + _esc(m.sender_name) + " · " + _fmtTime(m.created_at) + "</div>";
+        div.innerHTML = '<div>' + _esc(m.message) + '</div><div class="ac-meta">' + _esc(m.sender_name) + " \u00B7 " + _fmtTime(m.created_at) + "</div>";
         container.appendChild(div);
       });
       _lastMsgTs = msgs[msgs.length - 1].created_at;
       container.scrollTop = container.scrollHeight;
-    } catch (e) { console.error("chat load err", e); }
+    }).catch(function(e) { console.error("chat load err", e); });
   }
 
   function _esc(s) { var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
@@ -131,49 +132,45 @@
   function _stopPoll() { if (_pollTimer) { clearInterval(_pollTimer); _pollTimer = null; } }
 
   /* ---------- startConversation ---------- */
-  async function startConversation(customerId, customerName, ktvId, ktvName, bookingId) {
-    if (!window.AnimaConversations) return null;
-    try {
-      var existing = await window.AnimaConversations.from("conversations").select("*")
-        .eq("customer_id", customerId).eq("ktv_id", ktvId).limit(1).single();
-      if (existing.data) return existing.data;
-      var ins = await window.AnimaConversations.from("conversations").insert({
+  function startConversation(customerId, customerName, ktvId, ktvName, bookingId) {
+    if (!window.AnimaConversations) return Promise.resolve(null);
+    return AnimaConversations.find(customerId, ktvId).then(function(existing) {
+      if (existing) return existing;
+      return AnimaConversations.create({
         customer_id: customerId, customer_name: customerName,
         ktv_id: ktvId, ktv_name: ktvName,
         booking_id: bookingId || null, status: "active",
         last_message: "", unread_customer: 0, unread_ktv: 0
-      }).select().single();
-      return ins.data;
-    } catch (e) { console.error("startConversation err", e); return null; }
+      });
+    }).catch(function(e) { console.error("startConversation err", e); return null; });
   }
 
   /* ---------- sendChatMessage ---------- */
-  async function sendChatMessage(conversationId, senderId, senderType, senderName, message) {
-    if (!window.AnimaChat) return null;
-    try {
-      var res = await window.AnimaChat.from("chat_messages").insert({
-        conversation_id: conversationId, sender_id: senderId,
-        sender_type: senderType, sender_name: senderName, message: message
-      }).select().single();
+  function sendChatMessage(conversationId, senderId, senderType, senderName, message) {
+    if (!window.AnimaChat) return Promise.resolve(null);
+    return AnimaChat.send({
+      conversation_id: conversationId, sender_id: senderId,
+      sender_type: senderType, sender_name: senderName, message: message
+    }).then(function(res) {
       var unreadCol = senderType === "customer" ? "unread_ktv" : "unread_customer";
-      var upd = {}; upd.last_message = message; upd[unreadCol] = window.AnimaConversations ? 1 : 0;
+      var upd = { last_message: message };
+      upd[unreadCol] = 1;
       if (window.AnimaConversations) {
-        await window.AnimaConversations.from("conversations").update(upd).eq("id", conversationId);
+        AnimaConversations.update(conversationId, upd);
       }
       if (_currentConvId === conversationId) _loadMessages(conversationId);
-      return res.data;
-    } catch (e) { console.error("sendChatMessage err", e); return null; }
+      return res;
+    }).catch(function(e) { console.error("sendChatMessage err", e); return null; });
   }
 
   /* ---------- renderChatList ---------- */
-  async function renderChatList(containerId, userId, userType) {
+  function renderChatList(containerId, userId, userType) {
     var box = document.getElementById(containerId); if (!box || !window.AnimaConversations) return;
-    try {
-      var col = userType === "customer" ? "customer_id" : "ktv_id";
-      var res = await window.AnimaConversations.from("conversations").select("*").eq(col, userId).order("updated_at", { ascending: false });
-      var convs = res.data || [];
+    var col = userType === "customer" ? "customer_id" : "ktv_id";
+    AnimaConversations.getAll({ filter: col + '=eq.' + encodeURIComponent(userId) }).then(function(convs) {
+      convs = convs || [];
       box.innerHTML = "";
-      if (!convs.length) { box.innerHTML = '<p style="color:#8a9bae;text-align:center;padding:20px">' + t("Chưa có cuộc trò chuyện", "No conversations yet") + "</p>"; return; }
+      if (!convs.length) { box.innerHTML = '<p style="color:#8a9bae;text-align:center;padding:20px">' + t("Ch\u01B0a c\u00F3 cu\u1ED9c tr\u00F2 chuy\u1EC7n", "No conversations yet") + "</p>"; return; }
       convs.forEach(function (c) {
         var otherName = userType === "customer" ? c.ktv_name : c.customer_name;
         var otherType = userType === "customer" ? "ktv" : "customer";
@@ -183,35 +180,35 @@
           (unread > 0 ? '<span class="ac-unread">' + unread + "</span>" : "");
         item.onclick = function () {
           if (window.AnimaConversations) {
-            var reset = {}; reset[userType === "customer" ? "unread_customer" : "unread_ktv"] = 0;
-            window.AnimaConversations.from("conversations").update(reset).eq("id", c.id).then(function () { renderChatList(containerId, userId, userType); });
+            var reset = {};
+            reset[userType === "customer" ? "unread_customer" : "unread_ktv"] = 0;
+            AnimaConversations.update(c.id, reset).then(function () { renderChatList(containerId, userId, userType); });
           }
           openChatPanel(c.id, otherName, otherType, { senderId: userId, senderType: userType, senderName: userType === "customer" ? c.customer_name : c.ktv_name });
         };
         box.appendChild(item);
       });
-    } catch (e) { console.error("renderChatList err", e); }
+    }).catch(function(e) { console.error("renderChatList err", e); });
   }
 
   /* ---------- renderAdmChats ---------- */
-  async function renderAdmChats() {
+  function renderAdmChats() {
     injectStyles();
     var box = document.getElementById("admin-chats-container"); if (!box || !window.AnimaConversations) return;
-    try {
-      var res = await window.AnimaConversations.from("conversations").select("*").order("updated_at", { ascending: false });
-      var convs = res.data || [];
+    AnimaConversations.getAll().then(function(convs) {
+      convs = convs || [];
       box.innerHTML = "";
-      if (!convs.length) { box.innerHTML = '<p style="color:#8a9bae;text-align:center;padding:20px">' + t("Không có cuộc trò chuyện", "No conversations") + "</p>"; return; }
+      if (!convs.length) { box.innerHTML = '<p style="color:#8a9bae;text-align:center;padding:20px">' + t("Kh\u00F4ng c\u00F3 cu\u1ED9c tr\u00F2 chuy\u1EC7n", "No conversations") + "</p>"; return; }
       convs.forEach(function (c) {
         var item = ce("div", "ac-conv-item");
-        item.innerHTML = '<div><div class="name">' + _esc(c.customer_name) + " ↔ " + _esc(c.ktv_name) + '</div><div class="last">' + _esc(c.last_message || t("Chưa có tin nhắn", "No messages")) + "</div></div>" +
+        item.innerHTML = '<div><div class="name">' + _esc(c.customer_name) + " \u2194 " + _esc(c.ktv_name) + '</div><div class="last">' + _esc(c.last_message || t("Ch\u01B0a c\u00F3 tin nh\u1EAFn", "No messages")) + "</div></div>" +
           '<span style="font-size:10px;color:#8a9bae">' + _fmtTime(c.updated_at) + "</span>";
         item.onclick = function () {
-          openChatPanel(c.id, c.customer_name + " ↔ " + c.ktv_name, "admin", { readonly: true });
+          openChatPanel(c.id, c.customer_name + " \u2194 " + c.ktv_name, "admin", { readonly: true });
         };
         box.appendChild(item);
       });
-    } catch (e) { console.error("renderAdmChats err", e); }
+    }).catch(function(e) { console.error("renderAdmChats err", e); });
   }
 
   /* ---------- expose on window ---------- */
