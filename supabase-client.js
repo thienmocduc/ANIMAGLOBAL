@@ -461,15 +461,20 @@ window.AnimaChat = {
 };
 
 // ═══════════════════════════════
-// PHASE 2: INVENTORY
+// PHASE 2: INVENTORY (Enhanced)
 // ═══════════════════════════════
 window.AnimaInventory = {
-  getAll: function(opts) { opts = opts || {}; return sbFetch('inventory', 'GET', { select: '*', order: 'updated_at.desc', limit: opts.limit || 200, filter: opts.filter || '' }); },
-  getByCenter: function(centerId) { return this.getAll({ filter: 'center_id=eq.' + encodeURIComponent(centerId) }); },
+  getAll: function(opts){ opts=opts||{}; return sbFetch('inventory','GET',{select:'*',order:'center_id,sku',filter:opts.filter||'',limit:opts.limit||500}); },
+  getByCenter: function(centerId){ return sbFetch('inventory','GET',{select:'*',filter:'center_id=eq.'+centerId,order:'category,sku'}); },
+  upsert: function(data){ return sbFetch('inventory','POST',{body:data}).then(function(r){return r[0];}); },
   create: function(data) { return sbFetch('inventory', 'POST', { body: data }).then(function(r) { return r[0]; }); },
   update: function(id, data) { data.updated_at = new Date().toISOString(); return sbFetch('inventory?id=eq.' + id, 'PATCH', { body: data }); },
-  addTransaction: function(data) { return sbFetch('inventory_transactions', 'POST', { body: data }).then(function(r) { return r[0]; }); },
-  getTransactions: function(centerId, limit) { return sbFetch('inventory_transactions', 'GET', { filter: centerId ? 'center_id=eq.' + encodeURIComponent(centerId) : '', order: 'created_at.desc', limit: limit || 50, select: '*' }); }
+  updateStock: function(centerId, sku, newStock){
+    return sbFetch('inventory?center_id=eq.'+centerId+'&sku=eq.'+sku,'PATCH',{body:{stock:newStock,updated_at:new Date().toISOString()}});
+  },
+  addTransaction: function(data){ return sbFetch('inventory_transactions','POST',{body:data}).then(function(r){return r[0];}); },
+  getTransactions: function(centerId){ return sbFetch('inventory_transactions','GET',{select:'*',filter:'center_id=eq.'+centerId,order:'created_at.desc',limit:100}); },
+  getLowStock: function(){ return sbFetch('inventory','GET',{select:'*',filter:'stock=lt.5',order:'stock'}); }
 };
 
 // ═══════════════════════════════
@@ -487,5 +492,35 @@ window.AnimaEnrollments = {
   update: function(id, data) { return sbFetch('enrollments?id=eq.' + id, 'PATCH', { body: data }); }
 };
 
-console.log('[AnimaCRM] Supabase client loaded — Phase 2 Growth — ' + SUPABASE_URL);
+// ═══════════════════════════════
+// AFFILIATE
+// ═══════════════════════════════
+window.AnimaAffiliate = {
+  getPrograms: function(){ return sbFetch('affiliate_programs','GET',{select:'*',order:'created_at.desc'}); },
+  createProgram: function(data){ return sbFetch('affiliate_programs','POST',{body:data}).then(function(r){return r[0];}); },
+  updateProgram: function(id,data){ return sbFetch('affiliate_programs?id=eq.'+id,'PATCH',{body:data}); },
+
+  getMembers: function(opts){ opts=opts||{}; return sbFetch('affiliate_members','GET',{select:'*',order:'created_at.desc',filter:opts.filter||'',limit:opts.limit||200}); },
+  createMember: function(data){ return sbFetch('affiliate_members','POST',{body:data}).then(function(r){return r[0];}); },
+  updateMember: function(id,data){ return sbFetch('affiliate_members?id=eq.'+id,'PATCH',{body:data}); },
+
+  getTransactions: function(opts){ opts=opts||{}; return sbFetch('affiliate_transactions','GET',{select:'*',order:'created_at.desc',filter:opts.filter||'',limit:opts.limit||200}); },
+  createTransaction: function(data){ return sbFetch('affiliate_transactions','POST',{body:data}).then(function(r){return r[0];}); },
+  updateTransaction: function(id,data){ return sbFetch('affiliate_transactions?id=eq.'+id,'PATCH',{body:data}); },
+
+  // Calculate and release commission for an order
+  processOrderCommission: function(orderId, orderAmount, memberId, commissionRate){
+    var commAmount = Math.round(orderAmount * commissionRate);
+    return this.createTransaction({
+      member_id: memberId,
+      order_id: orderId,
+      order_amount: orderAmount,
+      commission_amount: commAmount,
+      commission_rate: commissionRate,
+      status: 'pending'
+    });
+  }
+};
+
+console.log('[AnimaCRM] Supabase client loaded — Phase 2 Growth + Affiliate — ' + SUPABASE_URL);
 })();

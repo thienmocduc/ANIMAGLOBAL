@@ -8161,7 +8161,7 @@ document.body.style.overflow='';
 (function(){try{var u=localStorage.getItem('anima_current_user')||localStorage.getItem('anima_user');if(u){currentUser=JSON.parse(u);window.currentUser=currentUser;if(!localStorage.getItem('anima_user'))localStorage.setItem('anima_user',u);if(!localStorage.getItem('anima_current_user'))localStorage.setItem('anima_current_user',u);setTimeout(function(){if(typeof updateNavUser==='function')updateNavUser();},500);}}catch(e){}})();
 function openAuth(tab){var m=document.getElementById('authModal');m.style.visibility='visible';m.style.opacity='1';document.body.style.overflow='hidden';switchAuthTab(tab||'login');var l=lang||'vi';m.querySelectorAll('[data-'+l+']').forEach(function(e){var v=e.getAttribute('data-'+l);if(v)e.innerHTML=v});
 /* Auto-fill saved credentials */
-try{var saved=JSON.parse(localStorage.getItem('anima_saved_login'));if(saved&&saved.email){document.getElementById('loginEmail').value=saved.email;document.getElementById('loginPwd').value=atob(saved.pwd);var rb=document.getElementById('loginRemember');if(rb)rb.checked=true;}}catch(ex){}
+try{var saved=JSON.parse(localStorage.getItem('anima_saved_login'));if(saved&&saved.email){document.getElementById('loginEmail').value=saved.email;var rb=document.getElementById('loginRemember');if(rb)rb.checked=true;}}catch(ex){}
 }
 function closeAuth(){var m=document.getElementById('authModal');m.style.opacity='0';setTimeout(function(){m.style.visibility='hidden'},300);document.body.style.overflow='';}
 function switchAuthTab(tab){
@@ -8229,7 +8229,7 @@ window.currentUser=currentUser;
 /* Save credentials if Remember Me checked */
 var remember=document.getElementById('loginRemember');
 if(remember&&remember.checked){
-  localStorage.setItem('anima_saved_login',JSON.stringify({email:e,pwd:btoa(p),ts:Date.now()}));
+  localStorage.setItem('anima_saved_login',JSON.stringify({email:e,token:Array.from(crypto.getRandomValues(new Uint8Array(32))).map(function(b){return b.toString(16).padStart(2,'0')}).join(''),ts:Date.now()}));
 }else{
   localStorage.removeItem('anima_saved_login');
 }
@@ -10106,7 +10106,7 @@ var ADMIN_ACCOUNTS = [
 (function(){var boxes=document.querySelectorAll('#otpGrid .otp-box');boxes.forEach(function(box,i){box.addEventListener('input',function(){this.value=this.value.replace(/[^0-9]/g,'');if(this.value&&i<boxes.length-1)boxes[i+1].focus();});box.addEventListener('keydown',function(e){if(e.key==='Backspace'&&!this.value&&i>0){boxes[i-1].focus();boxes[i-1].value='';}if(e.key==='Enter')handleAdminLogin();});box.addEventListener('paste',function(e){e.preventDefault();var data=(e.clipboardData||window.clipboardData).getData('text').replace(/[^0-9]/g,'');for(var j=0;j<Math.min(data.length,boxes.length-i);j++){boxes[i+j].value=data[j];}boxes[Math.min(i+data.length,boxes.length-1)].focus();});});})();
 function openAdminPortal(){var p=document.getElementById('adminPortal');p.style.display='flex';document.body.style.overflow='hidden';initAdminBg();setTimeout(function(){document.getElementById('adminIdInput').focus()},300);var l=lang||'vi';p.querySelectorAll('[data-'+l+']').forEach(function(e){var v=e.getAttribute('data-'+l);if(v)e.innerHTML=v});
 /* Auto-fill saved admin credentials */
-try{var saved=JSON.parse(localStorage.getItem('anima_saved_admin'));if(saved&&saved.id){document.getElementById('adminIdInput').value=saved.id;document.getElementById('adminPwdInput').value=atob(saved.pwd);}}catch(ex){}
+try{var saved=JSON.parse(localStorage.getItem('anima_saved_admin'));if(saved&&saved.id){document.getElementById('adminIdInput').value=saved.id;}}catch(ex){}
 }
 function closeAdminPortal(){document.getElementById('adminPortal').style.display='none';if(!window._adKeepOverflow)document.body.style.overflow='';window._adKeepOverflow=false;document.getElementById('adminOtpSection').style.display='none';document.getElementById('adminSendOtpBtn').style.display='block';if(adminOtpTimer)clearInterval(adminOtpTimer);adminOtpCode=null;if(window.location.pathname==='/admin'||window.location.hash==='#admin')window.history.pushState({},'','/');}
 function generateOtp(){return String(Math.floor(100000+Math.random()*900000));}
@@ -10133,7 +10133,7 @@ var trusted=localStorage.getItem(trustedKey);
 if(trusted){
   console.log('[Admin] Trusted device — skip OTP');
   localStorage.setItem('anima_admin_user',JSON.stringify({name:account.name,role:account.role,id:id}));
-  localStorage.setItem('anima_saved_admin',JSON.stringify({id:id,pwd:btoa(pwd),ts:Date.now()}));
+  localStorage.setItem('anima_saved_admin',JSON.stringify({id:id,token:Array.from(crypto.getRandomValues(new Uint8Array(32))).map(function(b){return b.toString(16).padStart(2,'0')}).join(''),ts:Date.now()}));
   showAdminSuccess(lang==='vi'?'Đăng nhập thành công! Chào mừng '+account.name:'Login successful! Welcome '+account.name);
   setTimeout(function(){window._adKeepOverflow=true;closeAdminPortal();openAdminDashboard();showToast(lang==='vi'?'Chào mừng Admin!':'Welcome Admin!','var(--g1)');},1000);
   return;
@@ -10206,9 +10206,8 @@ var id=document.getElementById('adminIdInput').value.trim().toUpperCase();
 var account=null;
 for(var i=0;i<ADMIN_ACCOUNTS.length;i++){if(ADMIN_ACCOUNTS[i].id===id){account=ADMIN_ACCOUNTS[i];break;}}
 localStorage.setItem('anima_admin_user',JSON.stringify({name:account?account.name:'Admin',role:account?account.role:'admin',id:id}));
-/* Save admin credentials + mark device as trusted */
-var pwd=document.getElementById('adminPwdInput').value;
-localStorage.setItem('anima_saved_admin',JSON.stringify({id:id,pwd:btoa(pwd),ts:Date.now()}));
+/* Save admin session token + mark device as trusted */
+localStorage.setItem('anima_saved_admin',JSON.stringify({id:id,token:Array.from(crypto.getRandomValues(new Uint8Array(32))).map(function(b){return b.toString(16).padStart(2,'0')}).join(''),ts:Date.now()}));
 localStorage.setItem('anima_admin_trusted_'+id,Date.now().toString());
 showAdminSuccess(lang==='vi'?'Đăng nhập thành công! Chào mừng '+(account?account.name:'Admin'):'Login successful! Welcome '+(account?account.name:'Admin'));
 setTimeout(function(){window._adKeepOverflow=true;closeAdminPortal();openAdminDashboard();showToast(lang==='vi'?'Chào mừng Admin! 🔒':'Welcome Admin! 🔒','var(--g1)');},1500);
@@ -14121,6 +14120,7 @@ document.head.appendChild(st);
 <script src="admin-v3.js?v=20260326d"></script>
 <script src="center-store.js?v=20260326d"></script>
 <script src="center-admin-v2.js?v=20260326d"></script>
+<script src="tongue-scan.js?v=20260327a"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </body>
 </html>
