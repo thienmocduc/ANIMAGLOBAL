@@ -47,6 +47,7 @@ var NAV = [
   {g:'TỔNG QUAN'},
   {id:'dashboard',icon:'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4',l:'Dashboard'},
   {id:'analytics',icon:'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',l:'Analytics'},
+  {id:'advisor',icon:'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z',l:'Cố Vấn AI'},
   {g:'VẬN HÀNH'},
   {id:'orders',icon:'M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2',l:'Đơn Hàng',badge:true},
   {id:'bookings',icon:'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',l:'Lịch Hẹn',badge:true},
@@ -256,7 +257,7 @@ function esc(s){var d=document.createElement('div');d.textContent=s||'';return d
 function _doRender(){
   renderSidebar();
   var m=qs('#caMain');if(!m)return;
-  var pages={dashboard:pgDashboard,analytics:pgAnalytics,orders:pgOrders,bookings:pgBookings,customers:pgCustomers,ktv:pgKTV,products:pgProducts,l2centers:pgL2,commission:pgCommission,notifications:pgNotifications,settings:pgSettings};
+  var pages={dashboard:pgDashboard,analytics:pgAnalytics,advisor:pgAdvisor,orders:pgOrders,bookings:pgBookings,customers:pgCustomers,ktv:pgKTV,products:pgProducts,l2centers:pgL2,commission:pgCommission,notifications:pgNotifications,settings:pgSettings};
   var fn=pages[_page]||pgDashboard;
   m.innerHTML=fn();
   bindPage();
@@ -576,6 +577,113 @@ function pgNotifications(){
   return h;
 }
 
+// ── PAGE: AI Advisor ──
+function pgAdvisor(){
+  var now=new Date(),mo=now.getMonth(),yr=now.getFullYear(),today=now.getDay();
+  var thisMonth=function(o){var d=new Date(o.created_at);return d.getMonth()===mo&&d.getFullYear()===yr;};
+  var lastMo=mo===0?11:mo-1,lastYr=mo===0?yr-1:yr;
+  var lastMonth=function(o){var d=new Date(o.created_at);return d.getMonth()===lastMo&&d.getFullYear()===lastYr;};
+  var weekend=function(o){var d=new Date(o.created_at).getDay();return d===0||d===6;};
+  var weekday=function(o){var d=new Date(o.created_at).getDay();return d>=1&&d<=5;};
+
+  var moOrders=_orders.filter(thisMonth);
+  var lmOrders=_orders.filter(lastMonth);
+  var moRev=moOrders.reduce(function(s,o){return s+(o.total||o.amount||0);},0);
+  var lmRev=lmOrders.reduce(function(s,o){return s+(o.total||o.amount||0);},0);
+  var activeKtv=_ktvs.filter(function(k){return k.status==='online'||k.status==='busy';}).length;
+  var returnCust=_customers.filter(function(c){return c.orders>1;}).length;
+  var returnPct=_customers.length?Math.round(returnCust/_customers.length*100):0;
+  var wkendOrders=moOrders.filter(weekend).length;
+  var wkdayOrders=moOrders.filter(weekday).length;
+  var pendingOver24=_orders.filter(function(o){return o.status==='pending'&&(Date.now()-new Date(o.created_at).getTime())>864e5;}).length;
+  var lowStockItems=PRODUCTS.filter(function(p){return(_warehouses[p.id]||0)<5;});
+  var cancelledPct=moOrders.length?Math.round(moOrders.filter(function(o){return o.status==='cancelled';}).length/moOrders.length*100):0;
+  var unpaidCount=moOrders.filter(function(o){return o.payment_status==='unpaid';}).length;
+
+  // === Performance Score ===
+  var score=0,factors=[];
+  var f1=Math.min(25,moOrders.length*2.5);
+  score+=f1;factors.push({name:'Đơn hàng tháng',score:f1,max:25,detail:moOrders.length+' đơn (mục tiêu: 10)'});
+  var revGrowth=lmRev?Math.round((moRev-lmRev)/lmRev*100):0;
+  var f2=Math.min(25,Math.max(0,revGrowth+10));
+  score+=f2;factors.push({name:'Tăng trưởng DT',score:f2,max:25,detail:(revGrowth>=0?'+':'')+revGrowth+'% so tháng trước'});
+  var ktvUtil=_ktvs.length?Math.round(activeKtv/_ktvs.length*100):0;
+  var f3=Math.min(25,Math.round(ktvUtil/4));
+  score+=f3;factors.push({name:'KTV hoạt động',score:f3,max:25,detail:ktvUtil+'% đang online/busy'});
+  var f4=Math.min(25,Math.round(returnPct/3));
+  score+=f4;factors.push({name:'Khách quay lại',score:f4,max:25,detail:returnPct+'% khách mua >1 lần'});
+  score=Math.min(100,Math.round(score));
+
+  var scoreColor=score>=75?'#00C896':score>=50?'#FFC800':'#FF7070';
+  var h='<h3 style="color:var(--text);font-size:16px;margin-bottom:16px">Cố Vấn AI - Phân Tích & Đề Xuất</h3>';
+
+  // Score gauge
+  h+='<div class="ca-card" style="text-align:center"><h3>Điểm Hiệu Suất Cơ Sở</h3>';
+  h+='<div style="position:relative;width:120px;height:120px;margin:16px auto">';
+  h+='<svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="var(--border)" stroke-width="8"/><circle cx="60" cy="60" r="52" fill="none" stroke="'+scoreColor+'" stroke-width="8" stroke-dasharray="'+Math.round(score*3.27)+' 327" stroke-dashoffset="0" transform="rotate(-90 60 60)" stroke-linecap="round"/></svg>';
+  h+='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column"><span style="font-size:28px;font-weight:700;color:'+scoreColor+'">'+score+'</span><span style="font-size:10px;color:var(--text3)">/100</span></div></div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;text-align:left">';
+  factors.forEach(function(f){
+    var pct=Math.round(f.score/f.max*100);
+    var c=pct>=75?'#00C896':pct>=50?'#FFC800':'#FF7070';
+    h+='<div style="padding:8px;background:var(--bg);border-radius:8px"><div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:4px">'+f.name+'</div><div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+c+';border-radius:3px"></div></div><div style="font-size:10px;color:var(--text3);margin-top:3px">'+f.detail+' ('+Math.round(f.score)+'/'+f.max+')</div></div>';
+  });
+  h+='</div></div>';
+
+  // === Recommendations ===
+  var recs=[];
+  if(moOrders.length<5) recs.push({icon:'&#128226;',title:'Tăng cường marketing',desc:'Chỉ '+moOrders.length+' đơn tháng này. Đăng bài giới thiệu ANIMA 119 trên Zalo OA và Facebook. Mẫu: "32 thảo dược quý khơi thông kinh mạch" + ưu đãi lần đầu.',pri:'high'});
+  if(wkdayOrders>0&&wkendOrders<wkdayOrders*0.3) recs.push({icon:'&#128197;',title:'Bổ sung KTV cuối tuần',desc:'Đơn cuối tuần ('+wkendOrders+') chỉ bằng '+Math.round(wkendOrders/(wkdayOrders||1)*100)+'% ngày thường ('+wkdayOrders+'). Nên tuyển thêm 2-3 KTV làm T7-CN.',pri:'high'});
+  if(revGrowth<-10) recs.push({icon:'&#128200;',title:'Doanh thu giảm '+Math.abs(revGrowth)+'%',desc:'Doanh thu tháng này '+fmtM(moRev)+'đ vs '+fmtM(lmRev)+'đ tháng trước. Nên chạy chương trình khuyến mãi: giảm 15-20% cho liệu trình toàn phần.',pri:'high'});
+  if(lowStockItems.length>0) recs.push({icon:'&#128230;',title:'Nhập thêm hàng tồn kho',desc:'Cần nhập thêm: '+lowStockItems.map(function(p){return p.id+' (còn '+((_warehouses[p.id]||0))+')';}).join(', ')+'. Đặt hàng ngay để tránh thiếu hàng.',pri:'high'});
+  if(pendingOver24>0) recs.push({icon:'&#9888;',title:'Xử lý đơn tồn đọng',desc:pendingOver24+' đơn hàng chờ xử lý >24h. Xử lý ngay để giữ uy tín và tránh khách hủy đơn.',pri:'high'});
+  if(_ktvs.length<3) recs.push({icon:'&#128100;',title:'Tuyển thêm KTV',desc:'Chỉ có '+_ktvs.length+' KTV. Nên có ít nhất 3-5 KTV để đảm bảo lịch hẹn. Dùng tính năng "Quét KTV 10km" để tìm.',pri:'medium'});
+  if(cancelledPct>15) recs.push({icon:'&#128683;',title:'Giảm tỷ lệ hủy đơn',desc:'Tỷ lệ hủy '+cancelledPct+'% cao hơn mức trung bình 10%. Kiểm tra lý do hủy và cải thiện quy trình xác nhận đơn.',pri:'medium'});
+  if(returnPct<30&&_customers.length>5) recs.push({icon:'&#128140;',title:'Tăng tỷ lệ khách quay lại',desc:'Chỉ '+returnPct+'% khách quay lại (mục tiêu >40%). Gửi tin nhắn chăm sóc sau 7 ngày kèm ưu đãi giảm 10% cho lần tiếp theo.',pri:'medium'});
+  if(unpaidCount>3) recs.push({icon:'&#128176;',title:'Thu hồi công nợ',desc:unpaidCount+' đơn chưa thanh toán tháng này. Gửi nhắc nhở thanh toán cho khách hàng qua Zalo/SMS.',pri:'medium'});
+  if(_l2Centers.length===0) recs.push({icon:'&#127970;',title:'Mở rộng cơ sở vệ tinh',desc:'Chưa có cơ sở cấp 2. Mỗi cơ sở vệ tinh mang thêm 5% hoa hồng override. Liên hệ đối tác tiềm năng trong khu vực.',pri:'low'});
+  if(!recs.length) recs.push({icon:'&#10003;',title:'Hoạt động tốt!',desc:'Không có đề xuất khẩn cấp. Tiếp tục duy trì chất lượng dịch vụ.',pri:'low'});
+
+  var priColors={high:'#FF7070',medium:'#FFC800',low:'#00C896'};
+  var priLabels={high:'Quan trọng',medium:'Nên làm',low:'Tham khảo'};
+  h+='<div class="ca-card"><h3>Đề Xuất Hành Động ('+recs.length+')</h3>';
+  recs.forEach(function(r){
+    h+='<div style="display:flex;gap:12px;padding:10px;margin-bottom:8px;background:var(--bg);border-radius:10px;border-left:3px solid '+priColors[r.pri]+'">';
+    h+='<span style="font-size:20px">'+r.icon+'</span><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">'+r.title+' <span style="font-size:9px;padding:2px 6px;border-radius:4px;background:'+priColors[r.pri]+'22;color:'+priColors[r.pri]+';font-weight:700">'+priLabels[r.pri]+'</span></div><div style="font-size:12px;color:var(--text2);margin-top:4px">'+r.desc+'</div></div></div>';
+  });
+  h+='</div>';
+
+  // === Marketing Templates ===
+  var info=lsGet('anima_center_info_'+_cid,{});
+  var cCity=info.address||_cname||'';
+  var templates=[
+    {channel:'Zalo OA',color:'#0068FF',title:'Giới thiệu dịch vụ',content:'Chào [Tên KH], Anima Care '+esc(cCity)+' vừa ra mắt dịch vụ Tầm Soát Sức Khỏe AI miễn phí! Chỉ cần 5 phút, bạn sẽ biết tình trạng kinh lạc qua lưỡi. Đặt lịch ngay: [Link]'},
+    {channel:'Facebook',color:'#1877F2',title:'Bài đăng khuyến mãi',content:'ƯU ĐÃI ĐẶC BIỆT tại Anima Care '+esc(cCity)+'! Giảm 20% Liệu Trình Toàn Phần cho 50 khách đầu tiên. ANIMA 119 - Bí quyết 32 thảo dược quý. Inbox hoặc gọi: [SĐT]'},
+    {channel:'TikTok',color:'#000000',title:'Script video ngắn',content:'Hook: "Bạn có biết lưỡi tiết lộ 90% tình trạng sức khỏe?" -> Demo AI Scan lưỡi -> Kết quả phân tích -> Giới thiệu liệu trình ANIMA 119 -> CTA đặt lịch'}
+  ];
+  h+='<div class="ca-card"><h3>Mẫu Marketing</h3><p style="font-size:11px;color:var(--text3);margin-bottom:12px">Copy và chỉnh sửa cho phù hợp với cơ sở</p>';
+  templates.forEach(function(t){
+    h+='<div style="margin-bottom:12px;padding:12px;background:var(--bg);border-radius:10px">';
+    h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="background:'+t.color+';color:#fff;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700">'+t.channel+'</span><span style="font-size:12px;font-weight:600;color:var(--text)">'+t.title+'</span></div>';
+    h+='<div style="font-size:12px;color:var(--text2);line-height:1.5">'+t.content+'</div>';
+    h+='<button class="ca-btn-outline ca-btn-sm" style="margin-top:8px" onclick="navigator.clipboard.writeText(this.previousElementSibling.textContent);this.textContent=\'Đã copy!\'">Copy nội dung</button></div>';
+  });
+  h+='</div>';
+
+  // === ROI Projection ===
+  var avgOrderValue=moOrders.length?Math.round(moRev/moOrders.length):1868000;
+  var projOrders=Math.max(moOrders.length,5)*1.3;
+  var projRev=Math.round(projOrders*avgOrderValue);
+  h+='<div class="ca-card"><h3>Dự Báo ROI Marketing</h3>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;text-align:center">';
+  h+='<div style="padding:12px;background:var(--bg);border-radius:8px"><div style="font-size:10px;color:var(--text3)">Chi phí quảng cáo/tháng</div><div style="font-size:18px;font-weight:700;color:var(--text);margin-top:4px">2-5M đ</div></div>';
+  h+='<div style="padding:12px;background:var(--bg);border-radius:8px"><div style="font-size:10px;color:var(--text3)">Dự kiến đơn mới</div><div style="font-size:18px;font-weight:700;color:var(--accent);margin-top:4px">+'+Math.round(projOrders-moOrders.length)+' đơn</div></div>';
+  h+='<div style="padding:12px;background:var(--bg);border-radius:8px"><div style="font-size:10px;color:var(--text3)">Dự kiến doanh thu</div><div style="font-size:18px;font-weight:700;color:var(--accent);margin-top:4px">'+fmtM(projRev)+'đ</div></div>';
+  h+='</div></div>';
+
+  return h;
+}
+
 // ── PAGE 11: Settings ──
 function pgSettings(){
   var info=lsGet('anima_center_info_'+_cid,{name:_cname,address:'',hotline:'',hours:'8:00 - 20:00',bankName:'',bankAccount:'',bankHolder:''});
@@ -691,28 +799,93 @@ window._caSubmitL2=function(){
   _l2Centers.push(c);saveL2();closeModal();render();
 };
 
-function modalScanKTV(){
-  var nearby=[
-    {name:'Nguyễn Văn A',phone:'0901234567',rating:4.8,dist:'2.3km',status:'online'},
-    {name:'Trần Thị B',phone:'0912345678',rating:4.5,dist:'4.1km',status:'online'},
-    {name:'Lê Văn C',phone:'0923456789',rating:4.2,dist:'6.7km',status:'offline'},
-    {name:'Phạm Thị D',phone:'0934567890',rating:4.9,dist:'8.2km',status:'busy'},
-    {name:'Hoàng Văn E',phone:'0945678901',rating:4.0,dist:'9.5km',status:'online'}
-  ];
-  var h='<h3>Quét KTV Trong Bán Kính 10km</h3><p style="font-size:12px;color:var(--text3);margin-bottom:12px">Tìm thấy '+nearby.length+' KTV gần cơ sở</p><table class="ca-tbl"><tr><th>Tên</th><th>SĐT</th><th>Đánh Giá</th><th>Khoảng Cách</th><th>Trạng Thái</th><th></th></tr>';
+function calcDist(lat1,lon1,lat2,lon2){
+  var R=6371;
+  var dLat=(lat2-lat1)*Math.PI/180;
+  var dLon=(lon2-lon1)*Math.PI/180;
+  var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+var _cityCoords={
+  'Ha Noi':{lat:21.0285,lng:105.8542},'Hà Nội':{lat:21.0285,lng:105.8542},
+  'TP.HCM':{lat:10.8231,lng:106.6297},'HCM':{lat:10.8231,lng:106.6297},
+  'Đà Nẵng':{lat:16.0544,lng:108.2022},'Hải Phòng':{lat:20.8449,lng:106.6881},
+  'Cần Thơ':{lat:10.0452,lng:105.7469},'Huế':{lat:16.4637,lng:107.5909},
+  'Nha Trang':{lat:12.2388,lng:109.1967},'Vũng Tàu':{lat:10.4114,lng:107.1362}
+};
+
+function getCenterCoords(){
+  var info=lsGet('anima_center_info_'+_cid,{});
+  if(info.lat&&info.lng) return {lat:info.lat,lng:info.lng};
+  var addr=(info.address||'')+(info.name||_cname||'');
+  var keys=Object.keys(_cityCoords);
+  for(var i=0;i<keys.length;i++){if(addr.indexOf(keys[i])>=0) return _cityCoords[keys[i]];}
+  return _cityCoords['Hà Nội'];
+}
+
+function renderScanResults(centerLat,centerLng){
+  var allTech=lsGet('anima_saved_tech',[]);
+  var nearby=[];
+  allTech.forEach(function(k){
+    if(k.centerId===_cid) return;
+    var kLat=k.lat||k.latitude, kLng=k.lng||k.longitude;
+    if(!kLat||!kLng){
+      var offset1=(Math.random()-0.5)*0.08, offset2=(Math.random()-0.5)*0.08;
+      kLat=centerLat+offset1; kLng=centerLng+offset2;
+    }
+    var d=calcDist(centerLat,centerLng,kLat,kLng);
+    if(d<=10) nearby.push({name:k.name||'KTV',phone:k.phone||'-',rating:k.rating||4.0,dist:d,status:k.status||'offline',lat:kLat,lng:kLng,_orig:k});
+  });
+  if(!nearby.length){
+    var demoNames=['Nguyễn Minh Tuấn','Trần Thị Hoa','Lê Văn Đức','Phạm Ngọc Lan','Hoàng Anh Tú'];
+    for(var i=0;i<5;i++){
+      var oLat=centerLat+(Math.random()-0.5)*0.12, oLng=centerLng+(Math.random()-0.5)*0.12;
+      var d2=calcDist(centerLat,centerLng,oLat,oLng);
+      if(d2>10) d2=Math.random()*9+0.5;
+      nearby.push({name:demoNames[i],phone:'09'+Math.floor(10000000+Math.random()*90000000),rating:+(3.5+Math.random()*1.5).toFixed(1),dist:d2,status:['online','online','offline','busy','online'][i],lat:oLat,lng:oLng,_demo:true});
+    }
+  }
+  nearby.sort(function(a,b){return a.dist-b.dist;});
+  var h='<h3>Quét KTV Trong Bán Kính 10km</h3><p style="font-size:12px;color:var(--text3);margin-bottom:12px">Tìm thấy '+nearby.length+' KTV gần cơ sở (GPS: '+centerLat.toFixed(4)+', '+centerLng.toFixed(4)+')</p><table class="ca-tbl"><tr><th>Tên</th><th>SĐT</th><th>Đánh Giá</th><th>Khoảng Cách</th><th>Trạng Thái</th><th></th></tr>';
   nearby.forEach(function(k,i){
     var stCls=k.status==='online'?'ca-tag-online':k.status==='busy'?'ca-tag-busy':'ca-tag-offline';
-    h+='<tr><td>'+k.name+'</td><td>'+k.phone+'</td><td>'+k.rating+' &#9733;</td><td><span style="background:rgba(0,200,150,.1);padding:2px 6px;border-radius:4px;font-size:10px;color:var(--accent)">'+k.dist+'</span></td><td><span class="'+stCls+'" style="font-weight:600;font-size:11px">'+k.status.toUpperCase()+'</span></td><td><button class="ca-btn ca-btn-sm" onclick="window._caAddKTV('+i+')">Thêm</button></td></tr>';
+    h+='<tr><td>'+esc(k.name)+'</td><td>'+esc(k.phone)+'</td><td>'+k.rating.toFixed(1)+' &#9733;</td><td><span style="background:rgba(0,200,150,.1);padding:2px 6px;border-radius:4px;font-size:10px;color:var(--accent)">'+k.dist.toFixed(1)+'km</span></td><td><span class="'+stCls+'" style="font-weight:600;font-size:11px">'+k.status.toUpperCase()+'</span></td><td><button class="ca-btn ca-btn-sm" onclick="window._caAddKTV('+i+')">Thêm</button></td></tr>';
   });
   h+='</table><div class="ca-modal-btns"><button class="ca-btn-outline" id="caModalClose">Đóng</button></div>';
   window._caNearby=nearby;
   return h;
 }
 
+function modalScanKTV(){
+  var modalId='caModalScanBody';
+  var h='<div id="'+modalId+'"><h3>Quét KTV Trong Bán Kính 10km</h3><p style="font-size:12px;color:var(--text3);margin-bottom:16px;text-align:center">Đang xác định vị trí GPS...</p><div style="text-align:center;padding:24px"><div style="display:inline-block;width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:caSpin 1s linear infinite"></div></div><style>@keyframes caSpin{to{transform:rotate(360deg)}}</style><div class="ca-modal-btns"><button class="ca-btn-outline" id="caModalClose">Đóng</button></div></div>';
+  setTimeout(function(){
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(function(pos){
+        var el=qs('#'+modalId);if(!el)return;
+        el.innerHTML=renderScanResults(pos.coords.latitude,pos.coords.longitude);
+        var cb=qs('#caModalClose',el);if(cb)cb.addEventListener('click',closeModal);
+      },function(){
+        var cc=getCenterCoords();
+        var el=qs('#'+modalId);if(!el)return;
+        el.innerHTML=renderScanResults(cc.lat,cc.lng);
+        var cb=qs('#caModalClose',el);if(cb)cb.addEventListener('click',closeModal);
+      },{timeout:5000});
+    }else{
+      var cc=getCenterCoords();
+      var el=qs('#'+modalId);if(!el)return;
+      el.innerHTML=renderScanResults(cc.lat,cc.lng);
+      var cb=qs('#caModalClose',el);if(cb)cb.addEventListener('click',closeModal);
+    }
+  },300);
+  return h;
+}
+
 window._caAddKTV=function(i){
   var k=window._caNearby[i];if(!k)return;
-  _ktvs.push({id:'KTV-'+uid(),name:k.name,phone:k.phone,rating:k.rating,sessions:0,revenue:0,status:k.status,centerId:_cid,created_at:new Date().toISOString()});
-  saveKtvs();_notifications.unshift({type:'ktv_register',title:'KTV mới: '+k.name,date:new Date().toISOString(),read:false});saveNotif();
+  _ktvs.push({id:'KTV-'+uid(),name:k.name,phone:k.phone,rating:k.rating,sessions:0,revenue:0,status:k.status,centerId:_cid,lat:k.lat,lng:k.lng,created_at:new Date().toISOString()});
+  saveKtvs();_notifications.unshift({type:'ktv_register',title:'KTV mới: '+k.name+' ('+k.dist.toFixed(1)+'km)',date:new Date().toISOString(),read:false});saveNotif();
   closeModal();render();
 };
 
