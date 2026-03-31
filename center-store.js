@@ -59,21 +59,31 @@ var CENTERS = {
 
 // ── Product Catalog ──
 var PRODUCTS = [
-  {sku:'A119-10',name:'ANIMA 119 \u2014 1 H\u1ed9p 10 G\u00f3i',price:1868000,category:'anima119',desc:'Tr\u1ea3i nghi\u1ec7m \u0111\u1ea7u ti\u00ean. Quy lu\u1eadt 30-30-120.',img:'images/anima119-product.jpg'},
-  {sku:'A119-30',name:'ANIMA 119 \u2014 3 H\u1ed9p 30 G\u00f3i',price:5604000,category:'anima119',desc:'1 th\u00e1ng li\u1ec7u tr\u00ecnh \u0111\u1ea7y \u0111\u1ee7.'},
-  {sku:'A119-120',name:'ANIMA 119 \u2014 12 H\u1ed9p 120 G\u00f3i',price:22416000,category:'anima119',desc:'4 th\u00e1ng ph\u1ee5c h\u01b0ng to\u00e0n di\u1ec7n.'},
-  {sku:'CON-HERB',name:'Th\u1ea3o D\u01b0\u1ee3c X\u00f4ng H\u01a1i (1kg)',price:350000,category:'healthcare',desc:'H\u1ed7n h\u1ee3p 12 v\u1ecb th\u1ea3o d\u01b0\u1ee3c cho bu\u1ed3ng x\u00f4ng.'},
-  {sku:'CON-OIL',name:'Tinh D\u1ea7u Kinh L\u1ea1c (100ml)',price:280000,category:'healthcare',desc:'Tinh d\u1ea7u massage \u0111\u1ea3 th\u00f4ng kinh m\u1ea1ch.'},
-  {sku:'CON-MOXA',name:'Ng\u1ea3i C\u1ee9u C\u1ee9u M\u1ea1ch (50 \u0111i\u1ebfu)',price:195000,category:'healthcare',desc:'\u0110i\u1ebfu ng\u1ea3i c\u1ee9u cao c\u1ea5p cho ch\u00e2m c\u1ee9u.'},
-  {sku:'CON-PATCH',name:'Mi\u1ebfng D\u00e1n Th\u1ea3o D\u01b0\u1ee3c (20 mi\u1ebfng)',price:420000,category:'healthcare',desc:'Mi\u1ebfng d\u00e1n h\u1ed7 tr\u1ee3 gi\u1ea3m \u0111au kh\u1edbp.'},
-  {sku:'CON-TEA',name:'Tr\u00e0 D\u01b0\u1ee1ng Sinh Anima (30 g\u00f3i)',price:250000,category:'healthcare',desc:'Tr\u00e0 th\u1ea3o d\u01b0\u1ee3c c\u00e2n b\u1eb1ng n\u0103ng l\u01b0\u1ee3ng.'},
-  {sku:'CON-SALT',name:'Mu\u1ed1i Ng\u00e2m Ch\u00e2n Th\u1ea3o D\u01b0\u1ee3c (500g)',price:180000,category:'healthcare',desc:'Mu\u1ed1i kho\u00e1ng + th\u1ea3o d\u01b0\u1ee3c ng\u00e2m ch\u00e2n detox.'},
-  {sku:'EQP-STEAM',name:'Bu\u1ed3ng X\u00f4ng H\u01a1i Th\u1ea3o M\u1ed9c',price:45000000,category:'equipment',desc:'Bu\u1ed3ng x\u00f4ng 2 ng\u01b0\u1eddi, \u0111i\u1ec1u khi\u1ec3n nhi\u1ec7t \u0111\u1ed9 t\u1ef1 \u0111\u1ed9ng.',b2b:true},
-  {sku:'EQP-BED',name:'Gi\u01b0\u1eddng Tr\u1ecb Li\u1ec7u \u0110a N\u0103ng',price:28000000,category:'equipment',desc:'Gi\u01b0\u1eddng n\u00e2ng h\u1ea1 \u0111i\u1ec7n, 3 kh\u1edbp, \u0111\u1ec7m nh\u1edb h\u00ecnh.',b2b:true},
-  {sku:'EQP-LAMP',name:'\u0110\u00e8n H\u1ed3ng Ngo\u1ea1i Tr\u1ecb Li\u1ec7u',price:8500000,category:'equipment',desc:'\u0110\u00e8n TDP h\u1ed3ng ngo\u1ea1i xa, 7 b\u01b0\u1edbc s\u00f3ng.',b2b:true},
-  {sku:'EQP-CUP',name:'B\u1ed9 Gi\u00e1c H\u01a1i Chuy\u00ean D\u1ee5ng (24 c\u1ed1c)',price:1200000,category:'equipment',desc:'Gi\u00e1c h\u01a1i y t\u1ebf cao c\u1ea5p, ch\u1ed1ng v\u1ee1.'},
-  {sku:'EQP-NEEDLE',name:'B\u1ed9 Kim Ch\u00e2m C\u1ee9u V\u00f4 Tr\u00f9ng (1000 kim)',price:650000,category:'equipment',desc:'Kim 1 l\u1ea7n, \u0111\u1ee7 size 0.25-0.35mm.'},
-  {sku:'EQP-SCAN',name:'M\u00e1y AI Scan L\u01b0\u1ee1i Anima',price:15000000,category:'equipment',desc:'Camera AI t\u00edch h\u1ee3p ph\u00e2n t\u00edch th\u1ec3 t\u1ea1ng \u0110\u00f4ng Y.',b2b:true}
+  // ── ANIMA 119 ──
+  {sku:'A119-10',name:'ANIMA 119 — 1 Hộp 10 Gói',price:1868000,category:'anima119',desc:'Trải nghiệm đầu tiên. Quy luật 30-30-120. Cảm nhận cơ chế lên men 3 tầng trong 10-20 ngày đầu.',img:'images/anima119-product.jpg',pills:['10 gói/hộp','1-2 gói/ngày','GMP · ISO 22000']},
+  {sku:'A119-30',name:'ANIMA 119 — 3 Hộp 30 Gói',price:5604000,category:'anima119',desc:'1 tháng liệu trình đầy đủ. Làm sạch toàn diện và phục hồi nền tảng. Tặng tư vấn AI miễn phí.',img:'images/anima119-product.jpg',pills:['30 gói · 3 hộp','Đủ 1 tháng','Tặng tư vấn AI'],featured:true},
+  {sku:'A119-120',name:'ANIMA 119 — 12 Hộp 120 Gói',price:22416000,category:'anima119',desc:'4 tháng phục hưng toàn diện theo Quy Luật 30-30-120: Làm sạch → Sửa chữa → Nạp năng lượng → Duy trì.',img:'images/anima119-product.jpg',pills:['120 gói · 12 hộp','4 tháng đầy đủ','Miễn phí vận chuyển']},
+  // ── SẢN PHẨM CHĂM SÓC SỨC KHỎE ──
+  {sku:'CON-HERB',name:'Thảo Dược Xông Hơi (1kg)',price:350000,category:'healthcare',desc:'Hỗn hợp 12 vị thảo dược quý cho buồng xông. Khơi thông kinh mạch, thải độc tầng sâu.',img:'images/anima119-hero.jpg',pills:['12 vị thảo dược','Xông hơi detox']},
+  {sku:'CON-OIL',name:'Tinh Dầu Kinh Lạc (100ml)',price:280000,category:'healthcare',desc:'Tinh dầu massage đả thông kinh mạch. Chiết xuất từ 8 loại thảo dược quý.',img:'images/anima119-hero.jpg',pills:['100ml','8 thảo dược']},
+  {sku:'CON-MOXA',name:'Ngải Cứu Cứu Mạch (50 điếu)',price:195000,category:'healthcare',desc:'Điếu ngải cứu cao cấp cho châm cứu. Bồi dưỡng nguyên khí, ấm kinh lạc.',img:'images/anima119-hero.jpg',pills:['50 điếu','Cao cấp']},
+  {sku:'CON-PATCH',name:'Miếng Dán Thảo Dược (20 miếng)',price:420000,category:'healthcare',desc:'Miếng dán hỗ trợ giảm đau khớp, thấm thấu thảo dược qua da.',img:'images/anima119-hero.jpg',pills:['20 miếng','Giảm đau khớp']},
+  {sku:'CON-TEA',name:'Trà Dưỡng Sinh Anima (30 gói)',price:250000,category:'healthcare',desc:'Trà thảo dược cân bằng năng lượng. Uống hàng ngày để duy trì sinh khí.',img:'images/anima119-hero.jpg',pills:['30 gói','Hàng ngày']},
+  {sku:'CON-SALT',name:'Muối Ngâm Chân Thảo Dược (500g)',price:180000,category:'healthcare',desc:'Muối khoáng + thảo dược ngâm chân detox. Thư giãn, khơi thông huyệt đạo bàn chân.',img:'images/anima119-hero.jpg',pills:['500g','Ngâm chân detox']},
+  // ── DỊCH VỤ TẠI CƠ SỞ ──
+  {sku:'SVC-SCAN',name:'Tầm Soát Sức Khỏe AI',price:350000,category:'service',desc:'AI scan lưỡi + phân tích thể tạng Đông Y. Khai vấn cá nhân hóa 30 phút.',img:'images/anima119-hero.jpg',pills:['30 phút','AI Scan lưỡi'],service:true},
+  {sku:'SVC-HERB',name:'Thảo Mộc Nhiệt (90 phút)',price:850000,category:'service',desc:'Xông hơi thảo dược + massage kinh lạc. Thải độc tầng sâu, khơi thông khí huyết.',img:'images/anima119-hero.jpg',pills:['90 phút','Xông + Massage'],service:true},
+  {sku:'SVC-SOAK',name:'Bồn Ngâm Thảo Mộc (60 phút)',price:650000,category:'service',desc:'Ngâm chân + toàn thân thảo dược. Thư giãn sâu, cân bằng năng lượng.',img:'images/anima119-hero.jpg',pills:['60 phút','Ngâm thảo mộc'],service:true},
+  {sku:'SVC-ACUP',name:'Châm Cứu Chuẩn (60 phút)',price:750000,category:'service',desc:'Châm cứu + cứu ngải. Bồi dưỡng nguyên khí theo 12 đường kinh.',img:'images/anima119-hero.jpg',pills:['60 phút','12 đường kinh'],service:true},
+  {sku:'SVC-MASS',name:'Massage Kinh Lạc (90 phút)',price:950000,category:'service',desc:'Massage đả thông 12 đường kinh. Giải phóng năng lượng ứ trệ.',img:'images/anima119-hero.jpg',pills:['90 phút','Đả thông kinh lạc'],service:true},
+  {sku:'SVC-FULL',name:'Liệu Trình Toàn Phần (180 phút)',price:2500000,category:'service',desc:'Combo tất cả dịch vụ: Khai vấn AI + Xông + Ngâm + Massage + Châm cứu.',img:'images/anima119-hero.jpg',pills:['180 phút','Full combo'],service:true,featured:true},
+  // ── THIẾT BỊ (B2B) ──
+  {sku:'EQP-STEAM',name:'Buồng Xông Hơi Thảo Mộc',price:45000000,category:'equipment',desc:'Buồng xông 2 người, điều khiển nhiệt độ tự động. Tiêu chuẩn y tế.',img:'images/anima119-hero.jpg',b2b:true,pills:['2 người','Tự động']},
+  {sku:'EQP-BED',name:'Giường Trị Liệu Đa Năng',price:28000000,category:'equipment',desc:'Giường nâng hạ điện, 3 khớp, đệm nhớ hình. Chuyên dụng spa y tế.',img:'images/anima119-hero.jpg',b2b:true,pills:['Nâng hạ điện','3 khớp']},
+  {sku:'EQP-LAMP',name:'Đèn Hồng Ngoại Trị Liệu',price:8500000,category:'equipment',desc:'Đèn TDP hồng ngoại xa, 7 bước sóng. Hỗ trợ phục hồi tế bào sâu.',img:'images/anima119-hero.jpg',b2b:true,pills:['7 bước sóng','Hồng ngoại xa']},
+  {sku:'EQP-CUP',name:'Bộ Giác Hơi Chuyên Dụng (24 cốc)',price:1200000,category:'equipment',desc:'Giác hơi y tế cao cấp, chống vỡ. Đầy đủ size cho mọi vùng cơ thể.',img:'images/anima119-hero.jpg',pills:['24 cốc','Y tế cao cấp']},
+  {sku:'EQP-NEEDLE',name:'Bộ Kim Châm Cứu Vô Trùng (1000 kim)',price:650000,category:'equipment',desc:'Kim 1 lần, đủ size 0.25-0.35mm. Vô trùng tuyệt đối.',img:'images/anima119-hero.jpg',pills:['1000 kim','Vô trùng']},
+  {sku:'EQP-SCAN',name:'Máy AI Scan Lưỡi Anima',price:15000000,category:'equipment',desc:'Camera AI tích hợp phân tích thể tạng Đông Y. Độ chính xác 96.4%.',img:'images/anima119-hero.jpg',b2b:true,pills:['AI 96.4%','Đông Y']}
 ];
 
 var _cart = [];
@@ -244,7 +254,7 @@ function buildHero(c){
 }
 
 function buildTabs(){
-  var tabs=[{k:'all',l:'T\u1ea5t C\u1ea3'},{k:'anima119',l:'ANIMA 119'},{k:'healthcare',l:'Ch\u0103m S\u00f3c S\u1ee9c Kh\u1ecfe'},{k:'equipment',l:'Thi\u1ebft B\u1ecb'}];
+  var tabs=[{k:'all',l:'Tất Cả'},{k:'anima119',l:'ANIMA 119'},{k:'healthcare',l:'CSSK'},{k:'service',l:'Dịch Vụ'},{k:'equipment',l:'Thiết Bị'}];
   var h='<div class="cs-tabs">';
   tabs.forEach(function(t){
     h+='<button class="cs-tab'+(t.k===_activeCat?' active':'')+'" onclick="window.filterCenterProducts(\''+t.k+'\')">'+t.l+'</button>';
@@ -274,25 +284,40 @@ function renderProducts(){
   grid.innerHTML='';
   items.forEach(function(p){
     var isB2B = p.b2b && p.price>10000000;
-    var stock = getStock(_centerId,p.sku);
-    var outOfStock = stock===0;
-    var card=ce('div','cs-card'+(p.category==='equipment'?' eqp':''));
-    card.innerHTML=
-      '<div class="cs-card-img '+p.category+'">'+catIcon(p.category)+'</div>'+
-      '<div class="cs-card-body">'+
-      '<div class="cs-card-name">'+p.name+'</div>'+
-      '<div class="cs-card-desc">'+p.desc+'</div>'+
-      '<div class="cs-card-foot">'+
+    var isService = p.service;
+    var stock = isService ? -1 : getStock(_centerId,p.sku);
+    var outOfStock = !isService && stock===0;
+    var card=ce('div','cs-card'+(p.featured?' featured':'')+(p.category==='equipment'?' eqp':''));
+    var imgH = p.img
+      ? '<div class="cs-card-img" style="background:none;padding:0"><img src="'+p.img+'" style="width:100%;height:100%;object-fit:cover;border-radius:14px 14px 0 0" alt="'+p.name+'"></div>'
+      : '<div class="cs-card-img '+p.category+'">'+catIcon(p.category)+'</div>';
+    var pillsH = '';
+    if(p.pills && p.pills.length){
+      pillsH = '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px">';
+      p.pills.forEach(function(pl){pillsH+='<span style="padding:2px 8px;border-radius:12px;border:1px solid rgba(0,200,150,.15);font-size:11px;color:#00C896">'+pl+'</span>';});
+      pillsH += '</div>';
+    }
+    var btnH = '';
+    if(isB2B){
+      btnH = '<button class="cs-b2b" onclick="window.open(\'tel:0913156676\')">Liên Hệ Đặt Hàng</button>';
+    } else if(isService){
+      btnH = '<button class="cs-add" onclick="window.addToCart(\''+p.sku+'\')">Đặt Lịch</button>';
+    } else {
+      btnH = '<button class="cs-add" onclick="window.addToCart(\''+p.sku+'\')"'+(outOfStock?' disabled':'')+'>Thêm Giỏ</button>';
+    }
+    card.innerHTML = imgH +
+      '<div class="cs-card-body">' +
+      (p.featured?'<div style="position:absolute;top:10px;right:10px;background:#00C896;color:#000;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;letter-spacing:1px">PHỔ BIẾN</div>':'')+
+      '<div class="cs-card-name">'+p.name+'</div>' +
+      '<div class="cs-card-desc">'+p.desc+'</div>' +
+      pillsH +
+      '<div class="cs-card-foot">' +
       (isB2B
-        ?'<span class="cs-price eqp">Li\u00ean H\u1ec7 \u0110\u1eb7t H\u00e0ng</span>'
-        :'<span class="cs-price'+(p.category==='equipment'?' eqp':'')+'">'+fmt(p.price)+'</span>')+
-      (stock>=0?'<span class="cs-stock '+(outOfStock?'out':'in')+'">'+(outOfStock?'H\u1ebft H\u00e0ng':'C\u00f2n '+stock)+'</span>':'')+
-      '</div>'+
-      '<div style="margin-top:10px;text-align:right">'+
-      (isB2B
-        ?'<button class="cs-b2b" onclick="window.open(\'tel:0913156676\')">G\u1ecdi Ngay</button>'
-        :'<button class="cs-add" onclick="window.addToCart(\''+p.sku+'\')"'+(outOfStock?' disabled':'')+'>Th\u00eam Gi\u1ecf</button>')+
-      '</div></div>';
+        ? '<span class="cs-price eqp">Liên Hệ</span>'
+        : '<span class="cs-price">'+fmt(p.price)+(isService?'/buổi':'')+'</span>') +
+      (!isService && stock>=0 ? '<span class="cs-stock '+(outOfStock?'out':'in')+'">'+(outOfStock?'Hết Hàng':'Còn '+stock)+'</span>' : '') +
+      '</div>' +
+      '<div style="margin-top:10px;text-align:right">' + btnH + '</div></div>';
     grid.appendChild(card);
   });
 }
@@ -302,7 +327,7 @@ window.filterCenterProducts = function(cat){
   _activeCat = cat;
   var tabs=document.querySelectorAll('.cs-tab');
   for(var i=0;i<tabs.length;i++) tabs[i].classList.toggle('active',tabs[i].textContent.indexOf(
-    cat==='all'?'T\u1ea5t':cat==='anima119'?'ANIMA':cat==='healthcare'?'CSSK':'Thi\u1ebft')>-1);
+    cat==='all'?'T\u1ea5t':cat==='anima119'?'ANIMA':cat==='healthcare'?'CSSK':cat==='service'?'D\u1ecbch':cat==='equipment'?'Thi\u1ebft':'')>-1);
   renderProducts();
 };
 
