@@ -144,7 +144,7 @@ function t(vi, en) { return cLang === 'vi' ? vi : en; }
 
 // ── Inject HTML ──
 function injectCenterPortal() {
-  var S = 'style', C = 'center', inp = 'width:100%;background:#F5FAF8;border:1px solid rgba(0,200,150,.12);border-radius:8px;padding:11px 14px;color:#0F172A;font-size:14px;outline:none;box-sizing:border-box';
+  var S = 'style', C = 'center', inp = 'width:100%;background:#060C0F;border:1px solid rgba(0,200,150,.12);border-radius:8px;padding:11px 14px;color:#F8F2E0;font-size:14px;outline:none;box-sizing:border-box';
   var lbl = 'font-size:9px;color:rgba(248,242,224,.42);letter-spacing:2px;text-transform:uppercase;font-family:\'Roboto Mono\',monospace;display:block;margin-bottom:4px';
   var btn = 'width:100%;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:600;cursor:pointer';
   var tabBase = 'flex:1;padding:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;border-bottom:2px solid transparent;background:transparent;color:rgba(248,242,224,.42);transition:all .2s';
@@ -154,12 +154,12 @@ function injectCenterPortal() {
   portal.id = 'centerPortal';
   portal.innerHTML =
     '<div style="position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto">' +
-    '<div style="background:#FFFFFF;border:1px solid rgba(0,200,150,.15);border-radius:20px;padding:0;width:100%;max-width:440px;position:relative;overflow-y:auto;max-height:90vh;scrollbar-width:none;-ms-overflow-style:none">' +
+    '<div style="background:#0A1218;border:1px solid rgba(0,200,150,.15);border-radius:20px;padding:0;width:100%;max-width:440px;position:relative;overflow-y:auto;max-height:90vh;scrollbar-width:none;-ms-overflow-style:none">' +
 
     // Header
     '<div style="text-align:center;padding:28px 32px 0">' +
     '<div style="width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,#005A42,#00C896);display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>' +
-    '<h2 style="color:#0F172A;font-size:20px;font-weight:600;margin:0">C\u1ED5ng Qu\u1EA3n L\u00FD C\u01A1 S\u1EDF</h2>' +
+    '<h2 style="color:#F8F2E0;font-size:20px;font-weight:600;margin:0">C\u1ED5ng Qu\u1EA3n L\u00FD C\u01A1 S\u1EDF</h2>' +
     '<p style="color:rgba(248,242,224,.42);font-size:12px;margin-top:4px">Center Management Portal</p></div>' +
 
     // Tabs
@@ -312,7 +312,7 @@ function injectCenterPortal() {
   // Dashboard Container
   var dash = document.createElement('div');
   dash.id = 'centerDashboard';
-  dash.style.cssText = 'display:none;position:fixed;inset:0;z-index:10001;background:#F8FAF9;overflow:hidden;height:100vh;width:100vw';
+  dash.style.cssText = 'display:none;position:fixed;inset:0;z-index:10001;background:#030608;overflow:hidden;height:100vh;width:100vw';
   document.body.appendChild(dash);
 }
 
@@ -552,7 +552,7 @@ function finishRegistration(newId) {
   // Show success with KYC note
   suc.style.display = 'block';
   suc.innerHTML = '<strong>' + t('\u0110\u0103ng k\u00FD th\u00E0nh c\u00F4ng!','Registration successful!') + '</strong><br>' +
-    t('Center ID: ','Center ID: ') + '<strong style="color:#0F172A">' + newId + '</strong><br>' +
+    t('Center ID: ','Center ID: ') + '<strong style="color:#F8F2E0">' + newId + '</strong><br>' +
     '<span style="font-size:11px;opacity:.7">' +
     t('KYC \u0111ang ch\u1EDD x\u00E1c minh. \u0110\u0103ng nh\u1EADp b\u1EB1ng ID/email/S\u0110T + m\u1EADt kh\u1EA9u.','KYC pending verification. Login with ID/email/phone + password.') +
     '</span>';
@@ -845,7 +845,7 @@ function renderDashboard() {
     h += '</div>';
     // Filter bar + New button
     h += '<div class="fbar"><div class="fbar-in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="' + t('T\u00ECm l\u1ECBch h\u1EB9n...','Search bookings...') + '"></div>';
-    h += '<select style="background:rgba(0,0,0,.3);border:1px solid rgba(0,200,150,.12);border-radius:6px;padding:4px 8px;color:#0F172A;font-size:11px"><option value="">' + t('T\u1EA5t c\u1EA3','All Status') + '</option><option>Pending</option><option>Confirmed</option><option>Completed</option></select>';
+    h += '<select style="background:rgba(0,0,0,.3);border:1px solid rgba(0,200,150,.12);border-radius:6px;padding:4px 8px;color:#F8F2E0;font-size:11px"><option value="">' + t('T\u1EA5t c\u1EA3','All Status') + '</option><option>Pending</option><option>Confirmed</option><option>Completed</option></select>';
     h += '<button class="btn btn-p" onclick="window._cAddBooking()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' + t('T\u1EA1o m\u1EDBi','New Booking') + '</button></div>';
     // Table
     h += '<div class="c"><div class="cb"><div class="tw"><table class="dt"><thead><tr><th>ID</th><th>' + t('Kh\u00E1ch h\u00E0ng','Customer') + '</th><th>' + t('D\u1ECBch v\u1EE5','Service') + '</th><th>' + t('Ng\u00E0y','Date') + '</th><th>' + t('Gi\u1EDD','Time') + '</th><th>KTV</th><th>' + t('Tr\u1EA1ng th\u00E1i','Status') + '</th><th></th></tr></thead><tbody>';
@@ -980,7 +980,7 @@ function renderDashboard() {
     h += '</div>';
     // Filter
     h += '<div class="c" style="margin-top:16px"><div class="ch"><span class="ct">' + t('Danh S\u00E1ch KTV','Technician List') + '</span>';
-    h += '<div style="display:flex;gap:6px"><select id="cKtvFilter" onchange="window._cFilterKtv(this.value)" style="background:rgba(0,0,0,.3);border:1px solid rgba(0,200,150,.12);border-radius:6px;padding:4px 8px;color:#0F172A;font-size:11px"><option value="all">' + t('T\u1EA5t c\u1EA3','All') + '</option><option value="online">' + t('Online','Online') + '</option><option value="busy">' + t('B\u1EADn','Busy') + '</option><option value="offline">' + t('Offline','Offline') + '</option></select></div></div>';
+    h += '<div style="display:flex;gap:6px"><select id="cKtvFilter" onchange="window._cFilterKtv(this.value)" style="background:rgba(0,0,0,.3);border:1px solid rgba(0,200,150,.12);border-radius:6px;padding:4px 8px;color:#F8F2E0;font-size:11px"><option value="all">' + t('T\u1EA5t c\u1EA3','All') + '</option><option value="online">' + t('Online','Online') + '</option><option value="busy">' + t('B\u1EADn','Busy') + '</option><option value="offline">' + t('Offline','Offline') + '</option></select></div></div>';
     h += '<div class="cb"><div class="dt-wrap"><table class="dt"><thead><tr>';
     h += '<th>' + t('KTV','Tech') + '</th><th>' + t('Chuy\u00EAn m\u00F4n','Specialty') + '</th><th>S\u0110T</th><th>Rating</th><th>' + t('Bu\u1ED5i','Sessions') + '</th><th>' + t('Tr\u1EA1ng th\u00E1i','Status') + '</th>';
     h += '</tr></thead><tbody id="cKtvList">';
@@ -1291,7 +1291,7 @@ function renderDashboard() {
     h += '</div>';
 
     // Products section
-    h += '<div style="margin-bottom:8px"><div style="font-size:14px;font-weight:600;color:#0F172A;margin-bottom:12px;display:flex;align-items:center;gap:8px">';
+    h += '<div style="margin-bottom:8px"><div style="font-size:14px;font-weight:600;color:#F8F2E0;margin-bottom:12px;display:flex;align-items:center;gap:8px">';
     h += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00C896" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>';
     h += t('S\u1EA3n Ph\u1EA9m','Products') + ' <span style="font-size:11px;color:rgba(248,242,224,.3);font-weight:400">(' + PRODUCTS.length + ')</span></div>';
     h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:20px">';
@@ -1300,10 +1300,10 @@ function renderDashboard() {
       h += '<div class="c" style="cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor=\'rgba(0,200,150,.4)\'" onmouseout="this.style.borderColor=\'rgba(0,200,150,.12)\'">';
       h += '<div style="padding:14px">';
       h += '<div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#005A42,#00C896);display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:18px">\uD83D\uDC8A</div>';
-      h += '<div style="font-size:13px;font-weight:600;color:#0F172A;margin-bottom:2px">' + t(p.name, p.nameEn) + '</div>';
+      h += '<div style="font-size:13px;font-weight:600;color:#F8F2E0;margin-bottom:2px">' + t(p.name, p.nameEn) + '</div>';
       h += '<div style="font-size:10px;color:rgba(248,242,224,.35);margin-bottom:8px;line-height:1.4">' + t(p.desc, p.descEn) + '</div>';
       h += '<div style="display:flex;justify-content:space-between;align-items:flex-end">';
-      h += '<div><div style="font-size:15px;font-weight:700;color:#0F172A">' + money(p.price) + '</div>';
+      h += '<div><div style="font-size:15px;font-weight:700;color:#F8F2E0">' + money(p.price) + '</div>';
       h += '<div style="font-size:9px;color:rgba(248,242,224,.3);font-family:\'Roboto Mono\',monospace">' + p.sku + '</div></div>';
       h += '<div style="text-align:right"><div style="font-size:11px;font-weight:600;color:#00E5A8">+' + money(commAmt) + '</div>';
       h += '<div style="font-size:8px;color:rgba(0,200,150,.5);font-family:\'Roboto Mono\',monospace">COMMISSION ' + Math.round(p.commission*100) + '%</div></div>';
@@ -1312,7 +1312,7 @@ function renderDashboard() {
     h += '</div></div>';
 
     // Services section
-    h += '<div><div style="font-size:14px;font-weight:600;color:#0F172A;margin-bottom:12px;display:flex;align-items:center;gap:8px">';
+    h += '<div><div style="font-size:14px;font-weight:600;color:#F8F2E0;margin-bottom:12px;display:flex;align-items:center;gap:8px">';
     h += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7B5FFF" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>';
     h += t('D\u1ECBch V\u1EE5 Tr\u1ECB Li\u1EC7u','Treatment Services') + ' <span style="font-size:11px;color:rgba(248,242,224,.3);font-weight:400">(' + SERVICES.length + ')</span></div>';
     h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px">';
@@ -1321,10 +1321,10 @@ function renderDashboard() {
       h += '<div class="c" style="cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor=\'rgba(123,95,255,.4)\'" onmouseout="this.style.borderColor=\'rgba(0,200,150,.12)\'">';
       h += '<div style="padding:14px">';
       h += '<div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#4A3AFF,#7B5FFF);display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:18px">\u2728</div>';
-      h += '<div style="font-size:13px;font-weight:600;color:#0F172A;margin-bottom:2px">' + t(s.name, s.nameEn) + '</div>';
+      h += '<div style="font-size:13px;font-weight:600;color:#F8F2E0;margin-bottom:2px">' + t(s.name, s.nameEn) + '</div>';
       h += '<div style="font-size:10px;color:rgba(248,242,224,.35);margin-bottom:8px;line-height:1.4">' + t(s.desc, s.descEn) + '</div>';
       h += '<div style="display:flex;justify-content:space-between;align-items:flex-end">';
-      h += '<div><div style="font-size:15px;font-weight:700;color:#0F172A">' + money(s.price) + '</div>';
+      h += '<div><div style="font-size:15px;font-weight:700;color:#F8F2E0">' + money(s.price) + '</div>';
       h += '<div style="font-size:9px;color:rgba(248,242,224,.3);font-family:\'Roboto Mono\',monospace">' + s.sku + '</div></div>';
       h += '<div style="text-align:right"><div style="font-size:11px;font-weight:600;color:#9B82FF">+' + money(commAmt) + '</div>';
       h += '<div style="font-size:8px;color:rgba(123,95,255,.5);font-family:\'Roboto Mono\',monospace">COMMISSION ' + Math.round(s.commission*100) + '%</div></div>';
@@ -1334,7 +1334,7 @@ function renderDashboard() {
 
     // ── Policy Settings Section ──
     h += '<div style="margin-top:24px;border-top:1px solid rgba(123,95,255,.12);padding-top:20px">';
-    h += '<div style="font-size:16px;font-weight:700;color:#0F172A;margin-bottom:4px;display:flex;align-items:center;gap:10px">';
+    h += '<div style="font-size:16px;font-weight:700;color:#F8F2E0;margin-bottom:4px;display:flex;align-items:center;gap:10px">';
     h += '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B5FFF" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>';
     h += t('Ch\u00EDnh S\u00E1ch Marketplace','Marketplace Policy') + '</div>';
     h += '<div style="font-size:12px;color:rgba(248,242,224,.35);margin-bottom:16px">' + t('T\u00F9y ch\u1EC9nh ch\u00EDnh s\u00E1ch b\u00E1n h\u00E0ng v\u00E0 d\u1ECBch v\u1EE5 cho c\u01A1 s\u1EDF c\u1EE7a b\u1EA1n','Customize sales and service policies for your center') + '</div>';
@@ -1425,7 +1425,7 @@ function renderDashboard() {
     h += '<div class="cb">';
     h += '<div style="display:flex;justify-content:space-between;margin-bottom:12px">';
     h += '<div><div style="font-size:10px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px;font-family:\'Roboto Mono\',monospace;margin-bottom:4px">' + t('DOANH S\u1ED0','SALES') + '</div>';
-    h += '<div style="font-size:20px;font-weight:700;color:#0F172A">' + money(commissionData.productSales) + '</div></div>';
+    h += '<div style="font-size:20px;font-weight:700;color:#F8F2E0">' + money(commissionData.productSales) + '</div></div>';
     h += '<div style="text-align:right"><div style="font-size:10px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px;font-family:\'Roboto Mono\',monospace;margin-bottom:4px">' + t('HOA H\u1ED2NG','COMMISSION') + '</div>';
     h += '<div style="font-size:20px;font-weight:700;color:#00E5A8">' + money(commissionData.productComm) + '</div></div></div>';
     // Progress bar
@@ -1439,7 +1439,7 @@ function renderDashboard() {
     h += '<div class="cb">';
     h += '<div style="display:flex;justify-content:space-between;margin-bottom:12px">';
     h += '<div><div style="font-size:10px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px;font-family:\'Roboto Mono\',monospace;margin-bottom:4px">' + t('DOANH S\u1ED0','SALES') + '</div>';
-    h += '<div style="font-size:20px;font-weight:700;color:#0F172A">' + money(commissionData.serviceSales) + '</div></div>';
+    h += '<div style="font-size:20px;font-weight:700;color:#F8F2E0">' + money(commissionData.serviceSales) + '</div></div>';
     h += '<div style="text-align:right"><div style="font-size:10px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px;font-family:\'Roboto Mono\',monospace;margin-bottom:4px">' + t('HOA H\u1ED2NG','COMMISSION') + '</div>';
     h += '<div style="font-size:20px;font-weight:700;color:#9B82FF">' + money(commissionData.serviceComm) + '</div></div></div>';
     var pctSvc = commissionData.totalCommission ? Math.round(commissionData.serviceComm / commissionData.totalCommission * 100) : 0;
@@ -1476,11 +1476,11 @@ function renderDashboard() {
     h += '<div class="c" style="margin-top:12px"><div class="ch"><span class="ct">' + t('Th\u00F4ng Tin Khu V\u1EF1c \u0110\u1ED9c Quy\u1EC1n','Exclusive Territory Info') + '</span></div>';
     h += '<div class="cb"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">';
     h += '<div><div style="font-size:10px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px;font-family:\'Roboto Mono\',monospace;margin-bottom:4px">' + t('KHU V\u1EF0C','TERRITORY') + '</div>';
-    h += '<div style="font-size:14px;font-weight:600;color:#0F172A">' + cUser.city + '</div></div>';
+    h += '<div style="font-size:14px;font-weight:600;color:#F8F2E0">' + cUser.city + '</div></div>';
     h += '<div><div style="font-size:10px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px;font-family:\'Roboto Mono\',monospace;margin-bottom:4px">' + t('LO\u1EA0I','TYPE') + '</div>';
     h += '<div style="font-size:14px;font-weight:600;color:#00E5A8">' + t('\u0110\u1ED9c quy\u1EC1n','Exclusive') + '</div></div>';
     h += '<div><div style="font-size:10px;color:rgba(248,242,224,.3);text-transform:uppercase;letter-spacing:1px;font-family:\'Roboto Mono\',monospace;margin-bottom:4px">' + t('T\u1EEB NG\u00C0Y','SINCE') + '</div>';
-    h += '<div style="font-size:14px;font-weight:600;color:#0F172A">' + (cUser.createdAt ? cUser.createdAt.substr(0,10) : '2026-03-01') + '</div></div>';
+    h += '<div style="font-size:14px;font-weight:600;color:#F8F2E0">' + (cUser.createdAt ? cUser.createdAt.substr(0,10) : '2026-03-01') + '</div></div>';
     h += '</div></div></div>';
 
     h += '</div>';
@@ -1513,16 +1513,16 @@ function renderDashboard() {
   var html = '<div class="app" style="display:grid;grid-template-columns:220px 1fr;height:100vh;overflow:hidden">';
 
   // Sidebar
-  html += '<aside class="sb" style="background:#F5FAF8;border-right:0.5px solid rgba(0,200,150,.12);display:flex;flex-direction:column;height:100vh;overflow:hidden">';
+  html += '<aside class="sb" style="background:#060C0F;border-right:0.5px solid rgba(0,200,150,.12);display:flex;flex-direction:column;height:100vh;overflow:hidden">';
   html += '<div class="sb-logo" style="padding:18px;border-bottom:0.5px solid rgba(0,200,150,.06);display:flex;align-items:center;gap:10px">';
   html += '<div class="sb-logo-gem" style="width:34px;height:34px;border-radius:9px;background:linear-gradient(145deg,#005A42,#00C896);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>';
-  html += '<div><div style="font-size:14px;font-weight:600;color:#0F172A">' + t(cUser.centerName, cUser.centerNameEn || cUser.centerName) + '</div>';
+  html += '<div><div style="font-size:14px;font-weight:600;color:#F8F2E0">' + t(cUser.centerName, cUser.centerNameEn || cUser.centerName) + '</div>';
   html += '<div style="font-family:\'Roboto Mono\',monospace;font-size:8.5px;color:#00C896;letter-spacing:2px;text-transform:uppercase">' + t('Qu\u1EA3n l\u00FD c\u01A1 s\u1EDF','Center Manager') + '</div></div></div>';
 
   // User section
   html += '<div class="sb-user" style="padding:11px 14px;border-bottom:0.5px solid rgba(0,200,150,.06);display:flex;align-items:center;gap:10px">';
   html += '<div class="sb-av" style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#7B5FFF,#9B82FF);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff">' + initials + '</div>';
-  html += '<div style="flex:1;min-width:0"><div class="sb-un" style="font-size:12.5px;font-weight:600;color:#0F172A">' + cUser.name + '</div>';
+  html += '<div style="flex:1;min-width:0"><div class="sb-un" style="font-size:12.5px;font-weight:600;color:#F8F2E0">' + cUser.name + '</div>';
   html += '<div class="sb-ur" style="font-family:\'Roboto Mono\',monospace;font-size:8.5px;color:#00C896;letter-spacing:1px">' + cUser.centerId + '</div></div>';
   html += '<div style="width:6px;height:6px;border-radius:50%;background:#00C896;box-shadow:0 0 0 2px rgba(0,200,150,.18)"></div></div>';
 
@@ -1548,10 +1548,10 @@ function renderDashboard() {
   html += '<div class="main" style="display:flex;flex-direction:column;overflow:hidden;min-width:0">';
 
   // Topbar
-  html += '<div class="top" style="height:50px;border-bottom:0.5px solid rgba(0,200,150,.06);display:flex;align-items:center;padding:0 22px;gap:14px;background:#F8FAF9;flex-shrink:0">';
+  html += '<div class="top" style="height:50px;border-bottom:0.5px solid rgba(0,200,150,.06);display:flex;align-items:center;padding:0 22px;gap:14px;background:#030608;flex-shrink:0">';
   html += '<button class="adm-mob-toggle" style="display:none;background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.25);color:#00E5A8;cursor:pointer;padding:8px 10px;border-radius:8px;flex-shrink:0" onclick="document.querySelector(\'#centerDashboard .sb\').classList.toggle(\'mob-open\');document.getElementById(\'cMobOverlay\').classList.toggle(\'show\')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>';
-  html += '<div style="flex:1;font-size:12.5px;color:rgba(248,242,224,.42)">' + t(cUser.centerName, cUser.centerNameEn) + ' <span style="color:rgba(248,242,224,.22);font-size:10px">\u203A</span> <span style="color:#0F172A;font-weight:500" id="cBcPage">Dashboard</span></div>';
-  html += '<div class="lang-sw" style="display:flex;background:#FFFFFF;border:0.5px solid rgba(0,200,150,.12);border-radius:7px;overflow:hidden">';
+  html += '<div style="flex:1;font-size:12.5px;color:rgba(248,242,224,.42)">' + t(cUser.centerName, cUser.centerNameEn) + ' <span style="color:rgba(248,242,224,.22);font-size:10px">\u203A</span> <span style="color:#F8F2E0;font-weight:500" id="cBcPage">Dashboard</span></div>';
+  html += '<div class="lang-sw" style="display:flex;background:#0A1218;border:0.5px solid rgba(0,200,150,.12);border-radius:7px;overflow:hidden">';
   html += '<button class="lang-btn' + (cLang==='vi' ? ' on' : '') + '" style="padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;color:' + (cLang==='vi'?'#00E5A8':'rgba(248,242,224,.22)') + ';background:' + (cLang==='vi'?'rgba(0,200,150,.12)':'transparent') + ';border:none" onclick="window._cSetLang(\'vi\')">VI</button>';
   html += '<button class="lang-btn' + (cLang==='en' ? ' on' : '') + '" style="padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;color:' + (cLang==='en'?'#00E5A8':'rgba(248,242,224,.22)') + ';background:' + (cLang==='en'?'rgba(0,200,150,.12)':'transparent') + ';border:none" onclick="window._cSetLang(\'en\')">EN</button>';
   html += '</div>';
@@ -1577,12 +1577,12 @@ function renderDashboard() {
     + '#centerDashboard{height:100vh!important;width:100vw!important}'
     + '#centerDashboard *{margin:0;padding:0;box-sizing:border-box}'
     + '#centerDashboard .app{display:grid!important;grid-template-columns:220px 1fr!important;height:100vh!important;overflow:hidden}'
-    + '#centerDashboard .sb{background:#F5FAF8;border-right:0.5px solid rgba(0,200,150,.12);display:flex!important;flex-direction:column;height:100vh!important;overflow:hidden;width:220px!important;min-width:220px!important;position:relative;z-index:20}'
+    + '#centerDashboard .sb{background:#060C0F;border-right:0.5px solid rgba(0,200,150,.12);display:flex!important;flex-direction:column;height:100vh!important;overflow:hidden;width:220px!important;min-width:220px!important;position:relative;z-index:20}'
     + '#centerDashboard .sb::before{content:"";position:absolute;top:0;left:0;right:0;height:160px;background:radial-gradient(ellipse 140% 100% at 20% 0%,rgba(0,200,150,.09),transparent);pointer-events:none}'
     + '#centerDashboard .sb-logo{padding:18px 18px 14px;border-bottom:0.5px solid rgba(0,200,150,.06);flex-shrink:0;display:flex;align-items:center;gap:10px}'
     + '#centerDashboard .sb-user{padding:11px 14px;border-bottom:0.5px solid rgba(0,200,150,.06);display:flex;align-items:center;gap:10px;flex-shrink:0}'
     + '#centerDashboard .sb-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#7B5FFF,#9B82FF);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}'
-    + '#centerDashboard .sb-un{font-size:12.5px;font-weight:600;color:#0F172A}'
+    + '#centerDashboard .sb-un{font-size:12.5px;font-weight:600;color:#F8F2E0}'
     + '#centerDashboard .sb-ur{font-family:"Roboto Mono",monospace;font-size:8.5px;color:#00C896;letter-spacing:1px}'
     + '#centerDashboard nav{flex:1;overflow-y:auto;padding:10px 8px;display:flex;flex-direction:column;gap:1px}'
     + '#centerDashboard .sb-grp{font-family:"Roboto Mono",monospace;font-size:8px;font-weight:600;color:rgba(248,242,224,.22);letter-spacing:2px;text-transform:uppercase;padding:10px 10px 4px;margin-top:2px}'
@@ -1597,24 +1597,24 @@ function renderDashboard() {
     + '#centerDashboard .sb-ft-b{flex:1;padding:7px 6px;border-radius:7px;background:transparent;border:0.5px solid rgba(0,200,150,.12);cursor:pointer;color:rgba(248,242,224,.42);font-size:11px;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .16s}'
     + '#centerDashboard .sb-ft-b:hover{background:rgba(0,200,150,.06);color:rgba(248,242,224,.72)}'
     + '#centerDashboard .main{display:flex;flex-direction:column;overflow:hidden;min-width:0}'
-    + '#centerDashboard .top{height:50px;border-bottom:0.5px solid rgba(0,200,150,.06);display:flex;align-items:center;padding:0 22px;gap:14px;background:#F8FAF9;flex-shrink:0}'
+    + '#centerDashboard .top{height:50px;border-bottom:0.5px solid rgba(0,200,150,.06);display:flex;align-items:center;padding:0 22px;gap:14px;background:#030608;flex-shrink:0}'
     + '#centerDashboard .pages{flex:1;overflow:hidden;position:relative}'
     + '#centerDashboard .pg{position:absolute;inset:0;overflow-y:auto;padding:22px 24px;opacity:0;visibility:hidden;transition:opacity .18s}'
     + '#centerDashboard .pg.on{opacity:1;visibility:visible}'
     + '#centerDashboard .pg-hd{margin-bottom:20px}'
-    + '#centerDashboard .pg-title{font-size:22px;font-weight:600;color:#0F172A;margin-bottom:3px}'
+    + '#centerDashboard .pg-title{font-size:22px;font-weight:600;color:#F8F2E0;margin-bottom:3px}'
     + '#centerDashboard .pg-title em{font-style:italic;color:#00E5A8}'
     + '#centerDashboard .pg-sub{font-size:12.5px;color:rgba(248,242,224,.42)}'
     + '#centerDashboard .kpi-g{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}'
-    + '#centerDashboard .kpi{background:#FFFFFF;border:0.5px solid rgba(0,200,150,.12);border-radius:13px;padding:16px 14px;cursor:pointer;transition:all .18s}'
+    + '#centerDashboard .kpi{background:#0A1218;border:0.5px solid rgba(0,200,150,.12);border-radius:13px;padding:16px 14px;cursor:pointer;transition:all .18s}'
     + '#centerDashboard .kpi:hover{border-color:rgba(0,200,150,.3);transform:translateY(-1px)}'
     + '#centerDashboard .kpi-ic{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}'
     + '#centerDashboard .kpi-l{font-family:"Roboto Mono",monospace;font-size:9px;color:rgba(248,242,224,.22);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}'
-    + '#centerDashboard .kpi-v{font-size:24px;font-weight:700;color:#0F172A;line-height:1;margin-bottom:7px}'
+    + '#centerDashboard .kpi-v{font-size:24px;font-weight:700;color:#F8F2E0;line-height:1;margin-bottom:7px}'
     + '#centerDashboard .kpi-v sub{font-size:13px;font-weight:400;color:rgba(248,242,224,.42)}'
     + '#centerDashboard .kpi-tr{display:flex;align-items:center;gap:4px;font-size:11px}'
     + '#centerDashboard .kpi-tr.up{color:#22c55e}'
-    + '#centerDashboard .c{background:#FFFFFF;border:0.5px solid rgba(0,200,150,.12);border-radius:13px;overflow:hidden}'
+    + '#centerDashboard .c{background:#0A1218;border:0.5px solid rgba(0,200,150,.12);border-radius:13px;overflow:hidden}'
     + '#centerDashboard .ch{padding:14px 16px 12px;border-bottom:0.5px solid rgba(0,200,150,.06);display:flex;align-items:center;justify-content:space-between}'
     + '#centerDashboard .ct{font-size:12.5px;font-weight:600;color:rgba(248,242,224,.72)}'
     + '#centerDashboard .cs{font-family:"Roboto Mono",monospace;font-size:9px;color:rgba(248,242,224,.22);letter-spacing:1px;text-transform:uppercase}'
@@ -1644,18 +1644,18 @@ function renderDashboard() {
     + '#centerDashboard .srow{display:flex;gap:0;border:0.5px solid rgba(0,200,150,.12);border-radius:11px;overflow:hidden;margin-bottom:18px}'
     + '#centerDashboard .sc{flex:1;padding:12px 14px;border-right:0.5px solid rgba(0,200,150,.06);text-align:center}'
     + '#centerDashboard .sc:last-child{border-right:none}'
-    + '#centerDashboard .sc-v{font-size:18px;font-weight:700;color:#0F172A}'
+    + '#centerDashboard .sc-v{font-size:18px;font-weight:700;color:#F8F2E0}'
     + '#centerDashboard .sc-l{font-family:"Roboto Mono",monospace;font-size:8.5px;color:rgba(248,242,224,.22);letter-spacing:1px;text-transform:uppercase;margin-top:3px}'
     + '#centerDashboard .act{display:flex;flex-direction:column}'
     + '#centerDashboard .act-i{display:flex;gap:9px;padding:9px 0;border-bottom:0.5px solid rgba(0,200,150,.06)}'
     + '#centerDashboard .act-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:3px}'
     + '#centerDashboard .act-txt{font-size:12.5px;color:rgba(248,242,224,.72);line-height:1.5;flex:1}'
-    + '#centerDashboard .act-txt strong{color:#0F172A;font-weight:600}'
+    + '#centerDashboard .act-txt strong{color:#F8F2E0;font-weight:600}'
     + '#centerDashboard .act-time{font-family:"Roboto Mono",monospace;font-size:10px;color:rgba(248,242,224,.22);margin-top:2px}'
-    + '#centerDashboard .lang-sw{display:flex;background:#FFFFFF;border:0.5px solid rgba(0,200,150,.12);border-radius:7px;overflow:hidden;flex-shrink:0}'
+    + '#centerDashboard .lang-sw{display:flex;background:#0A1218;border:0.5px solid rgba(0,200,150,.12);border-radius:7px;overflow:hidden;flex-shrink:0}'
     + '#centerDashboard .lang-btn{padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;color:rgba(248,242,224,.22);background:transparent;border:none}'
     + '#centerDashboard .lang-btn.on{background:rgba(0,200,150,.12);color:#00E5A8}'
-    + '#centerDashboard .adm-mob-toggle{display:none;background:none;border:none;color:#0F172A;cursor:pointer;padding:8px}'
+    + '#centerDashboard .adm-mob-toggle{display:none;background:none;border:none;color:#F8F2E0;cursor:pointer;padding:8px}'
     + '#centerDashboard .fu{animation:fadeUp .28s ease forwards;opacity:0}'
     + '#centerDashboard .mb4{margin-bottom:16px}'
     + '#centerDashboard .flex{display:flex}'
@@ -1669,7 +1669,7 @@ function renderDashboard() {
   + '@media(max-width:1024px){#centerDashboard .kpi-g{grid-template-columns:1fr 1fr!important}#centerDashboard .g2,#centerDashboard .g23{grid-template-columns:1fr!important}}'
   + '@media(max-width:768px){'
   + '#centerDashboard .app{grid-template-columns:1fr!important}'
-  + '#centerDashboard .sb{position:fixed!important;left:-260px!important;top:0!important;bottom:0!important;width:250px!important;min-width:250px!important;z-index:100!important;transition:left .3s ease!important;background:#F5FAF8!important;box-shadow:4px 0 30px rgba(0,0,0,.7)}'
+  + '#centerDashboard .sb{position:fixed!important;left:-260px!important;top:0!important;bottom:0!important;width:250px!important;min-width:250px!important;z-index:100!important;transition:left .3s ease!important;background:#060C0F!important;box-shadow:4px 0 30px rgba(0,0,0,.7)}'
   + '#centerDashboard .sb.mob-open{left:0!important}'
   + '#centerDashboard .adm-mob-toggle{display:flex!important}'
   + '#centerDashboard #cMobOverlay.show{display:block!important}'

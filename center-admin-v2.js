@@ -134,7 +134,7 @@ function injectCSS(){
   if(qs('#cadm-css'))return;
   var s=document.createElement('style');s.id='cadm-css';
   s.textContent=`
-#centerAdm{--bg:#F8FAF9;--bg2:#FFFFFF;--card:#FFFFFF;--text:#F8F2E0;--text2:#B8D8D0;--text3:#607870;--accent:#00C896;--border:rgba(0,200,150,.08);--shadow:0 2px 12px rgba(0,0,0,.3);position:fixed;inset:0;z-index:99999;font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;overflow:hidden;transition:all .3s}
+#centerAdm{--bg:#070E1E;--bg2:#0D1520;--card:#0D1520;--text:#F8F2E0;--text2:#B8D8D0;--text3:#607870;--accent:#00C896;--border:rgba(0,200,150,.08);--shadow:0 2px 12px rgba(0,0,0,.3);position:fixed;inset:0;z-index:99999;font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;overflow:hidden;transition:all .3s}
 #centerAdm.light{--bg:#FAFAFA;--bg2:#F5F3FF;--card:#FFFFFF;--text:#1A1A2E;--text2:#374151;--text3:#6B7280;--accent:#2D8F6F;--border:rgba(0,0,0,.08);--shadow:0 2px 12px rgba(0,0,0,.06)}
 #centerAdm *{box-sizing:border-box;margin:0;padding:0}
 .ca-side{width:240px;min-width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100%;overflow-y:auto;transition:all .3s}
@@ -149,7 +149,7 @@ function injectCSS(){
 .ca-nav-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(0,200,150,.06)}
 .ca-nav-item svg{flex-shrink:0;opacity:.7}
 .ca-nav-item.active svg{opacity:1}
-.ca-badge{background:var(--accent);color:#F8FAF9;font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:auto}
+.ca-badge{background:var(--accent);color:#070E1E;font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:auto}
 .ca-side-foot{padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px}
 .ca-side-foot button{background:none;border:1px solid var(--border);color:var(--text3);padding:6px 10px;border-radius:8px;cursor:pointer;font-size:11px;transition:all .15s}
 .ca-side-foot button:hover{color:var(--accent);border-color:var(--accent)}
