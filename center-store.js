@@ -60,9 +60,9 @@ var CENTERS = {
 // ── Product Catalog ──
 var PRODUCTS = [
   // ── ANIMA 119 ──
-  {sku:'A119-10',name:'ANIMA 119 — 1 Hộp 10 Gói',price:1868000,category:'anima119',desc:'Trải nghiệm đầu tiên. Quy luật 30-30-120. Cảm nhận cơ chế lên men 3 tầng trong 10-20 ngày đầu.',img:'images/anima119-product.jpg',pills:['10 gói/hộp','1-2 gói/ngày','GMP · ISO 22000']},
-  {sku:'A119-30',name:'ANIMA 119 — 3 Hộp 30 Gói',price:5604000,category:'anima119',desc:'1 tháng liệu trình đầy đủ. Làm sạch toàn diện và phục hồi nền tảng. Tặng tư vấn AI miễn phí.',img:'images/anima119-product.jpg',pills:['30 gói · 3 hộp','Đủ 1 tháng','Tặng tư vấn AI'],featured:true},
-  {sku:'A119-120',name:'ANIMA 119 — 12 Hộp 120 Gói',price:22416000,category:'anima119',desc:'4 tháng phục hưng toàn diện theo Quy Luật 30-30-120: Làm sạch → Sửa chữa → Nạp năng lượng → Duy trì.',img:'images/anima119-product.jpg',pills:['120 gói · 12 hộp','4 tháng đầy đủ','Miễn phí vận chuyển']},
+  {sku:'A119-10',name:'ANIMA 119 — 1 Hộp 10 Gói',price:1868000,category:'anima119',desc:'Trải nghiệm đầu tiên. Quy luật 30-30-120. Cảm nhận cơ chế lên men 3 tầng trong 10-20 ngày đầu.',img:'images/slide-03.jpg',pills:['10 gói/hộp','1-2 gói/ngày','GMP · ISO 22000']},
+  {sku:'A119-30',name:'ANIMA 119 — 3 Hộp 30 Gói',price:5604000,category:'anima119',desc:'1 tháng liệu trình đầy đủ. Làm sạch toàn diện và phục hồi nền tảng. Tặng tư vấn AI miễn phí.',img:'images/slide-03.jpg',pills:['30 gói · 3 hộp','Đủ 1 tháng','Tặng tư vấn AI'],featured:true},
+  {sku:'A119-120',name:'ANIMA 119 — 12 Hộp 120 Gói',price:22416000,category:'anima119',desc:'4 tháng phục hưng toàn diện theo Quy Luật 30-30-120: Làm sạch → Sửa chữa → Nạp năng lượng → Duy trì.',img:'images/slide-03.jpg',pills:['120 gói · 12 hộp','4 tháng đầy đủ','Miễn phí vận chuyển']},
   // ── SẢN PHẨM CHĂM SÓC SỨC KHỎE ──
   {sku:'CON-HERB',name:'Thảo Dược Xông Hơi (1kg)',price:350000,category:'healthcare',desc:'Hỗn hợp 12 vị thảo dược quý cho buồng xông. Khơi thông kinh mạch, thải độc tầng sâu.',pills:['12 vị thảo dược','Xông hơi detox']},
   {sku:'CON-OIL',name:'Tinh Dầu Kinh Lạc (100ml)',price:280000,category:'healthcare',desc:'Tinh dầu massage đả thông kinh mạch. Chiết xuất từ 8 loại thảo dược quý.',pills:['100ml','8 thảo dược']},
