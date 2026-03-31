@@ -12128,13 +12128,10 @@ if(window.AnimaSync){
   });
 }
 
+/* Admin chỉ mở khi user click — không auto-open */
 function checkAdminSession(){
-var u;
-try{u=JSON.parse(localStorage.getItem('anima_admin_user'));}catch(e){return;}
-if(u)window.openAdminDashboard();
+  /* Giữ session nhưng KHÔNG tự mở dashboard */
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',checkAdminSession);
-else setTimeout(checkAdminSession,300);
 })();</script>
 </div>
 <!-- ====== END ADMIN DASHBOARD ====== -->
