@@ -77,70 +77,70 @@ function injectCSS(){
   if(document.getElementById('admV3CSS')) return;
   var s=document.createElement('style');s.id='admV3CSS';
   s.textContent='\
-#admV3{position:fixed;inset:0;z-index:10000;background:#070E1E;font-family:"Roboto","Segoe UI",sans-serif;color:#F8F2E0;display:none;overflow:hidden}\
+#admV3{position:fixed;inset:0;z-index:10000;background:var(--bg-primary,#070E1E);font-family:"Roboto","Segoe UI",sans-serif;color:var(--text-primary,#F8F2E0);display:none;overflow:hidden}\
 #admV3 *{box-sizing:border-box;margin:0;padding:0}\
 #admV3 .sb{position:fixed;left:0;top:0;bottom:0;width:250px;background:linear-gradient(180deg,#0A1218,#0D1820);border-right:1px solid rgba(0,200,150,.08);display:flex;flex-direction:column;z-index:10;transition:transform .3s}\
-#admV3 .sb-hd{padding:12px 12px;border-bottom:1px solid rgba(0,200,150,.08)}\
-#admV3 .sb-logo{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#00C896}\
+#admV3 .sb-hd{padding:12px 12px;border-bottom:1px solid var(--border-default,rgba(0,200,150,.08))}\
+#admV3 .sb-logo{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--accent-primary,#00C896)}\
 #admV3 .sb-usr{margin-top:12px;padding:10px;border-radius:10px;background:rgba(0,200,150,.04);border:1px solid rgba(0,200,150,.06)}\
-#admV3 .sb-usr-n{font-size:13px;font-weight:600;color:#E8F8F4}\
-#admV3 .sb-usr-r{font-size:10px;color:#00C896;text-transform:uppercase;letter-spacing:1px;margin-top:2px}\
+#admV3 .sb-usr-n{font-size:13px;font-weight:600;color:var(--text-primary,#E8F8F4)}\
+#admV3 .sb-usr-r{font-size:10px;color:var(--accent-primary,#00C896);text-transform:uppercase;letter-spacing:1px;margin-top:2px}\
 #admV3 .sb-nav{flex:1;overflow-y:auto;padding:12px 10px}\
-#admV3 .sb-it{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;cursor:pointer;color:#B8D8D0;font-size:13px;transition:all .2s;border:1px solid transparent;margin-bottom:1px}\
-#admV3 .sb-it:hover{background:rgba(0,200,150,.06);color:#E8F8F4}\
-#admV3 .sb-it.act{background:rgba(0,200,150,.1);color:#00C896;border-color:rgba(0,200,150,.15);font-weight:600}\
+#admV3 .sb-it{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;cursor:pointer;color:var(--text-secondary,#B8D8D0);font-size:13px;transition:all .2s;border:1px solid transparent;margin-bottom:1px}\
+#admV3 .sb-it:hover{background:rgba(0,200,150,.06);color:var(--text-primary,#E8F8F4)}\
+#admV3 .sb-it.act{background:rgba(0,200,150,.1);color:var(--accent-primary,#00C896);border-color:rgba(0,200,150,.15);font-weight:600}\
 #admV3 .sb-it svg{width:18px;height:18px;flex-shrink:0;opacity:.7}\
 #admV3 .sb-it.act svg{opacity:1}\
-#admV3 .sb-it .bdg{margin-left:auto;background:rgba(0,200,150,.15);color:#00C896;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600}\
+#admV3 .sb-it .bdg{margin-left:auto;background:rgba(0,200,150,.15);color:var(--accent-primary,#00C896);font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600}\
 #admV3 .sb-ft{padding:8px 10px;border-top:1px solid rgba(0,200,150,.08)}\
 #admV3 .sb-close{display:flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;background:rgba(255,70,70,.06);border:1px solid rgba(255,70,70,.12);color:#FF7070;border-radius:8px;cursor:pointer;font-size:11px;font-family:inherit}\
 #admV3 .sb-close svg{width:16px;height:16px}\
 #admV3 .sb-close:hover{background:rgba(255,70,70,.12)}\
-#admV3 .mn{margin-left:250px;height:100vh;overflow-y:auto;background:#070E1E}\
+#admV3 .mn{margin-left:250px;height:100vh;overflow-y:auto;background:var(--bg-primary,#070E1E)}\
 #admV3 .topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:rgba(7,14,30,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,200,150,.05)}\
-#admV3 .topbar h1{font-size:20px;font-weight:700;color:#F8F2E0}\
+#admV3 .topbar h1{font-size:20px;font-weight:700;color:var(--text-primary,#F8F2E0)}\
 #admV3 .topbar-act{display:flex;align-items:center;gap:10px}\
 #admV3 .pg{padding:20px 28px 50px}\
 #admV3 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px}\
-#admV3 .kpi{background:#0D1520;border:1px solid rgba(0,200,150,.08);border-radius:12px;padding:16px;position:relative;overflow:hidden}\
+#admV3 .kpi{background:var(--bg-card,#0D1520);border:1px solid rgba(0,200,150,.08);border-radius:12px;padding:16px;position:relative;overflow:hidden}\
 #admV3 .kpi::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--ac,#00C896),transparent)}\
-#admV3 .kpi-v{font-size:24px;font-weight:700;color:#F8F2E0}\
-#admV3 .kpi-l{font-size:11px;color:#607870;margin-top:3px;text-transform:uppercase;letter-spacing:.5px}\
-#admV3 .crd{background:#0D1520;border:1px solid rgba(0,200,150,.08);border-radius:12px;padding:18px;margin-bottom:16px}\
+#admV3 .kpi-v{font-size:24px;font-weight:700;color:var(--text-primary,#F8F2E0)}\
+#admV3 .kpi-l{font-size:11px;color:var(--text-tertiary,#607870);margin-top:3px;text-transform:uppercase;letter-spacing:.5px}\
+#admV3 .crd{background:var(--bg-card,#0D1520);border:1px solid rgba(0,200,150,.08);border-radius:12px;padding:18px;margin-bottom:16px}\
 #admV3 .crd-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}\
-#admV3 .crd-t{font-size:15px;font-weight:600;color:#E8F8F4}\
+#admV3 .crd-t{font-size:15px;font-weight:600;color:var(--text-primary,#E8F8F4)}\
 #admV3 .tbl-w{overflow-x:auto}\
 #admV3 table{width:100%;border-collapse:collapse;font-size:12px}\
-#admV3 th{text-align:left;padding:8px 12px;color:#607870;font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.5px;border-bottom:1px solid rgba(0,200,150,.08);white-space:nowrap}\
-#admV3 td{padding:10px 12px;border-bottom:1px solid rgba(0,200,150,.04);color:#B8D8D0;white-space:nowrap}\
-#admV3 tr:hover td{background:rgba(0,200,150,.02)}\
+#admV3 th{text-align:left;padding:8px 12px;color:var(--text-tertiary,#607870);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.5px;border-bottom:1px solid var(--border-default,rgba(0,200,150,.08));white-space:nowrap}\
+#admV3 td{padding:10px 12px;border-bottom:1px solid var(--border-default,rgba(0,200,150,.04));color:var(--text-secondary,#B8D8D0);white-space:nowrap}\
+#admV3 tr:hover td{background:var(--bg-card-hover,rgba(0,200,150,.02))}\
 #admV3 .bdg{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600}\
 #admV3 .btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:all .2s}\
 #admV3 .btn-p{background:linear-gradient(135deg,#005A42,#00C896);color:#000;font-weight:600}\
 #admV3 .btn-p:hover{box-shadow:0 0 16px rgba(0,200,150,.3)}\
-#admV3 .btn-s{background:transparent;border:1px solid rgba(0,200,150,.2);color:#00C896}\
+#admV3 .btn-s{background:transparent;border:1px solid rgba(0,200,150,.2);color:var(--accent-primary,#00C896)}\
 #admV3 .btn-s:hover{background:rgba(0,200,150,.08)}\
 #admV3 .btn-sm{padding:4px 10px;font-size:11px;border-radius:6px}\
-#admV3 select.f-sel{background:#0A1218;border:1px solid rgba(0,200,150,.15);color:#B8D8D0;font-size:11px;padding:5px 8px;border-radius:6px;font-family:inherit;outline:none}\
-#admV3 .srch{display:flex;align-items:center;gap:8px;background:rgba(0,200,150,.04);border:1px solid rgba(0,200,150,.1);border-radius:10px;padding:7px 12px}\
-#admV3 .srch input{background:none;border:none;outline:none;color:#E8F8F4;font-size:13px;font-family:inherit;width:200px}\
-#admV3 .srch input::placeholder{color:#607870}\
+#admV3 select.f-sel{background:var(--bg-input,#0A1218);border:1px solid var(--border-default,rgba(0,200,150,.15));color:var(--text-secondary,#B8D8D0);font-size:11px;padding:5px 8px;border-radius:6px;font-family:inherit;outline:none}\
+#admV3 .srch{display:flex;align-items:center;gap:8px;background:var(--bg-input,rgba(0,200,150,.04));border:1px solid var(--border-default,rgba(0,200,150,.1));border-radius:10px;padding:7px 12px}\
+#admV3 .srch input{background:none;border:none;outline:none;color:var(--text-primary,#E8F8F4);font-size:13px;font-family:inherit;width:200px}\
+#admV3 .srch input::placeholder{color:var(--text-tertiary,#607870)}\
 #admV3 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}\
 #admV3 .bar-ch{display:flex;align-items:flex-end;gap:6px;height:160px;padding:10px 0}\
 #admV3 .bar-ch .bar{flex:1;background:linear-gradient(to top,#005A42,#00C896);border-radius:4px 4px 0 0;min-height:4px;position:relative;transition:height .5s}\
-#admV3 .bar-ch .bar span{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:9px;color:#607870;white-space:nowrap}\
-#admV3 .bar-ch .bar .bv{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:9px;color:#00C896;white-space:nowrap}\
+#admV3 .bar-ch .bar span{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--text-tertiary,#607870);white-space:nowrap}\
+#admV3 .bar-ch .bar .bv{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--accent-primary,#00C896);white-space:nowrap}\
 #admV3 .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:20;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}\
 #admV3 .modal-ov.show{opacity:1;pointer-events:auto}\
-#admV3 .modal{background:#0D1520;border:1px solid rgba(0,200,150,.12);border-radius:14px;padding:24px;width:92%;max-width:500px;max-height:80vh;overflow-y:auto}\
-#admV3 .modal h3{font-size:17px;margin-bottom:18px;color:#E8F8F4}\
+#admV3 .modal{background:var(--bg-card,#0D1520);border:1px solid rgba(0,200,150,.12);border-radius:14px;padding:24px;width:92%;max-width:500px;max-height:80vh;overflow-y:auto}\
+#admV3 .modal h3{font-size:17px;margin-bottom:18px;color:var(--text-primary,#E8F8F4)}\
 #admV3 .fg{margin-bottom:14px}\
-#admV3 .fg label{display:block;font-size:11px;color:#607870;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}\
-#admV3 .fg input,.fg select,.fg textarea{width:100%;padding:9px 12px;background:rgba(0,200,150,.04);border:1px solid rgba(0,200,150,.1);border-radius:8px;color:#E8F8F4;font-size:13px;font-family:inherit;outline:none}\
+#admV3 .fg label{display:block;font-size:11px;color:var(--text-tertiary,#607870);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}\
+#admV3 .fg input,.fg select,.fg textarea{width:100%;padding:9px 12px;background:rgba(0,200,150,.04);border:1px solid rgba(0,200,150,.1);border-radius:8px;color:var(--text-primary,#E8F8F4);font-size:13px;font-family:inherit;outline:none}\
 #admV3 .fg input:focus,#admV3 .fg select:focus{border-color:rgba(0,200,150,.3)}\
-#admV3 .empty{text-align:center;padding:40px;color:#607870;font-size:13px}\
+#admV3 .empty{text-align:center;padding:40px;color:var(--text-tertiary,#607870);font-size:13px}\
 #admV3 .row-act{display:flex;gap:4px}\
-#admV3 .ham{display:none;position:fixed;top:14px;left:14px;z-index:11;width:36px;height:36px;border-radius:8px;background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.12);color:#00C896;cursor:pointer;align-items:center;justify-content:center;font-size:18px}\
+#admV3 .ham{display:none;position:fixed;top:14px;left:14px;z-index:11;width:36px;height:36px;border-radius:8px;background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.12);color:var(--accent-primary,#00C896);cursor:pointer;align-items:center;justify-content:center;font-size:18px}\
 @media(max-width:768px){\
   #admV3 .sb{transform:translateX(-100%)}\
   #admV3 .sb.open{transform:translateX(0)}\
@@ -178,6 +178,10 @@ window.openAdminV3 = function(){
   }
   root.style.display='block';
   document.body.style.overflow='hidden';
+  /* Restore theme preference */
+  var savedTheme=localStorage.getItem('anima_theme');
+  if(savedTheme==='light') document.documentElement.classList.add('light-mode');
+  else document.documentElement.classList.remove('light-mode');
   _page='dashboard';_loaded={};_search='';_filterStatus='';_filterSource='';
   renderSidebar();
   renderPage('dashboard');
@@ -205,8 +209,20 @@ function renderSidebar(){
     var cls=it.id===_page?'sb-it act':'sb-it';
     h+='<div class="'+cls+'" onclick="admV3Go(\''+it.id+'\')" data-en="'+it.id+'">'+svgIcon(it.icon)+'<span>'+it.l+'</span></div>';
   });
+  /* Theme toggle button */
+  var isLight=document.documentElement.classList.contains('light-mode');
+  h+='<div style="padding:10px 12px;margin-top:8px;border-top:1px solid rgba(0,200,150,.08)">';
+  h+='<div class="sb-it" onclick="admV3ToggleTheme()" style="display:flex;align-items:center;gap:8px;justify-content:space-between">';
+  h+='<div style="display:flex;align-items:center;gap:8px">'+(isLight?'☀️':'🌙')+' <span>'+(isLight?'Sáng':'Tối')+'</span></div>';
+  h+='<div style="width:36px;height:20px;border-radius:10px;background:'+(isLight?'#2D8F6F':'rgba(255,255,255,.15)')+';position:relative;transition:.3s;cursor:pointer"><div style="width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;'+(isLight?'right:2px':'left:2px')+';transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div></div>';
+  h+='</div></div>';
   nav.innerHTML=h;
 }
+window.admV3ToggleTheme=function(){
+  document.documentElement.classList.toggle('light-mode');
+  localStorage.setItem('anima_theme',document.documentElement.classList.contains('light-mode')?'light':'dark');
+  renderSidebar();
+};
 
 window.admV3Go = function(page){
   _page=page;_search='';_filterStatus='';_filterSource='';
@@ -288,11 +304,11 @@ function pgDashboard(){
       }
     });
     if(commReady.length){
-      h+='<div class="crd" style="border-color:rgba(0,200,150,.25);background:rgba(0,200,150,.04)"><div class="crd-h"><span class="crd-t" style="color:#00C896">💰 Hoa Hồng Sẵn Sàng Giải Ngân (48h+)</span><button class="btn btn-p btn-sm" onclick="admV3ReleaseAllComm()">Giải Ngân '+money(commTotal)+'</button></div>';
+      h+='<div class="crd" style="border-color:rgba(0,200,150,.25);background:rgba(0,200,150,.04)"><div class="crd-h"><span class="crd-t" style="color:var(--accent-primary,#00C896)">💰 Hoa Hồng Sẵn Sàng Giải Ngân (48h+)</span><button class="btn btn-p btn-sm" onclick="admV3ReleaseAllComm()">Giải Ngân '+money(commTotal)+'</button></div>';
       commReady.slice(0,5).forEach(function(cr){
-        h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;margin-bottom:4px;background:rgba(0,200,150,.04);border-radius:8px;font-size:12px"><span><b style="color:#00C896">'+cr.code+'</b> → '+cr.center+'</span><span style="font-weight:700;color:#00C896">'+money(cr.amount)+'</span></div>';
+        h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;margin-bottom:4px;background:rgba(0,200,150,.04);border-radius:8px;font-size:12px"><span><b style="color:var(--accent-primary,#00C896)">'+cr.code+'</b> → '+cr.center+'</span><span style="font-weight:700;color:var(--accent-primary,#00C896)">'+money(cr.amount)+'</span></div>';
       });
-      if(commReady.length>5) h+='<div style="font-size:11px;color:#607870;padding:4px 12px">...và '+(commReady.length-5)+' đơn nữa</div>';
+      if(commReady.length>5) h+='<div style="font-size:11px;color:var(--text-tertiary,#607870);padding:4px 12px">...và '+(commReady.length-5)+' đơn nữa</div>';
       h+='</div>';
     }
 
@@ -320,7 +336,7 @@ function pgDashboard(){
     h+='<div class="tbl-w"><table><tr><th>Mã</th><th>Khách</th><th>Thành Tiền</th><th>Trạng Thái</th></tr>';
     _orders.slice(0,10).forEach(function(o){
       var st=statusLabel(o.order_status,ORDER_STATUSES);
-      h+='<tr><td style="color:#00C896;font-weight:600">'+(o.order_code||'-')+'</td><td>'+(o.customer_name||'-')+'</td><td>'+money(o.total_amount)+'</td><td>'+badge(st.l,st.c)+'</td></tr>';
+      h+='<tr><td style="color:var(--accent-primary,#00C896);font-weight:600">'+(o.order_code||'-')+'</td><td>'+(o.customer_name||'-')+'</td><td>'+money(o.total_amount)+'</td><td>'+badge(st.l,st.c)+'</td></tr>';
     });
     if(!_orders.length) h+='<tr><td colspan="4" class="empty">Không có dữ liệu</td></tr>';
     h+='</table></div></div>';
@@ -431,16 +447,16 @@ function renderOrdersPage(){
       var bg=a.sev==='error'?'rgba(255,70,70,.08)':a.sev==='warn'?'rgba(255,184,0,.06)':'rgba(0,200,150,.04)';
       h+='<div style="background:'+bg+';border-radius:10px;padding:12px;margin-bottom:6px;display:flex;align-items:center;gap:10px">';
       h+='<span style="font-size:18px;flex-shrink:0">'+a.icon+'</span>';
-      h+='<div style="flex:1;min-width:0"><div style="font-size:12px;color:#E8F8F4;line-height:1.5">'+a.msg+'</div>';
-      if(a.contact) h+='<div style="font-size:11px;color:#607870;margin-top:2px">👤 '+a.contact+'</div>';
+      h+='<div style="flex:1;min-width:0"><div style="font-size:12px;color:var(--text-primary,#E8F8F4);line-height:1.5">'+a.msg+'</div>';
+      if(a.contact) h+='<div style="font-size:11px;color:var(--text-tertiary,#607870);margin-top:2px">👤 '+a.contact+'</div>';
       h+='</div>';
       /* Call button */
-      if(a.phone) h+='<a href="tel:'+a.phone.replace(/\s/g,'')+'" style="flex-shrink:0;display:flex;align-items:center;gap:4px;padding:6px 12px;background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.2);border-radius:8px;color:#00C896;font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap" title="'+a.phone+'">📞 '+a.action+'</a>';
+      if(a.phone) h+='<a href="tel:'+a.phone.replace(/\s/g,'')+'" style="flex-shrink:0;display:flex;align-items:center;gap:4px;padding:6px 12px;background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.2);border-radius:8px;color:var(--accent-primary,#00C896);font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap" title="'+a.phone+'">📞 '+a.action+'</a>';
       h+='</div>';
     });
     h+='</div>';
   } else {
-    h+='<div class="crd" style="border-color:rgba(0,200,150,.2)"><div style="text-align:center;padding:16px;color:#00C896;font-size:13px">✅ Không có cảnh báo — Hệ thống hoạt động bình thường</div></div>';
+    h+='<div class="crd" style="border-color:rgba(0,200,150,.2)"><div style="text-align:center;padding:16px;color:var(--accent-primary,#00C896);font-size:13px">✅ Không có cảnh báo — Hệ thống hoạt động bình thường</div></div>';
   }
   h+='</div>';
 
@@ -448,7 +464,7 @@ function renderOrdersPage(){
   h+='<div class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Tìm tên, SĐT, mã đơn..." value="'+(_search||'')+'" oninput="admV3OrderSearch(this.value)"/></div>';
   h+='<select class="f-sel" onchange="admV3OrderFilter(this.value)"><option value="">Tất Cả Trạng Thái</option>';
   ORDER_STATUSES.forEach(function(s){h+='<option value="'+s.v+'"'+(_filterStatus===s.v?' selected':'')+'>'+s.l+'</option>';});
-  h+='</select></div><span style="color:#607870;font-size:12px">'+filtered.length+' đơn</span></div>';
+  h+='</select></div><span style="color:var(--text-tertiary,#607870);font-size:12px">'+filtered.length+' đơn</span></div>';
 
   /* ── AGENT AI ALERTS ── */
   var alerts=[];
@@ -463,7 +479,7 @@ function renderOrdersPage(){
     h+='<div class="crd" style="border-color:rgba(255,184,0,.2);background:rgba(255,184,0,.03)"><div class="crd-h"><span class="crd-t" style="color:#FFC800">🤖 Agent AI Cảnh Báo ('+alerts.length+')</span></div>';
     alerts.slice(0,8).forEach(function(a){
       var bg=a.type==='error'?'rgba(255,70,70,.08)':a.type==='warn'?'rgba(255,184,0,.06)':'rgba(0,200,150,.04)';
-      h+='<div style="background:'+bg+';border-radius:8px;padding:10px 14px;margin-bottom:6px;font-size:12px;color:#E8F8F4;line-height:1.5">'+a.msg+'</div>';
+      h+='<div style="background:'+bg+';border-radius:8px;padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--text-primary,#E8F8F4);line-height:1.5">'+a.msg+'</div>';
     });
     h+='</div>';
   }
@@ -472,18 +488,18 @@ function renderOrdersPage(){
   h+='<div class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Tìm tên, SĐT, mã đơn..." value="'+(_search||'')+'" oninput="admV3OrderSearch(this.value)"/></div>';
   h+='<select class="f-sel" onchange="admV3OrderFilter(this.value)"><option value="">Tất Cả Trạng Thái</option>';
   ORDER_STATUSES.forEach(function(s){h+='<option value="'+s.v+'"'+(_filterStatus===s.v?' selected':'')+'>'+s.l+'</option>';});
-  h+='</select></div><span style="color:#607870;font-size:12px">'+filtered.length+' đơn</span></div>';
+  h+='</select></div><span style="color:var(--text-tertiary,#607870);font-size:12px">'+filtered.length+' đơn</span></div>';
 
   h+='<div class="tbl-w"><table><tr><th>Mã Đơn</th><th>Khách Hàng</th><th>SP</th><th>Tỉnh/Cơ Sở</th><th>Thành Tiền</th><th>TT</th><th>Ngày</th><th>Trạng Thái</th><th></th></tr>';
   filtered.forEach(function(o){
     var items='-';try{var it=typeof o.items==='string'?JSON.parse(o.items):o.items;if(Array.isArray(it)&&it.length)items=it.map(function(i){return i.name||i.sku;}).join(', ');}catch(e){}
     var centerName=o.center_name||o.center_id||'Online';
 
-    h+='<tr><td style="color:#00C896;font-weight:600;font-size:11px">'+(o.order_code||'-')+'</td>';
-    h+='<td><div style="font-weight:600">'+(o.customer_name||'-')+'</div><div style="font-size:10px;color:#607870">'+(o.customer_phone||'')+'</div></td>';
+    h+='<tr><td style="color:var(--accent-primary,#00C896);font-weight:600;font-size:11px">'+(o.order_code||'-')+'</td>';
+    h+='<td><div style="font-weight:600">'+(o.customer_name||'-')+'</div><div style="font-size:10px;color:var(--text-tertiary,#607870)">'+(o.customer_phone||'')+'</div></td>';
     h+='<td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;font-size:11px">'+items+'</td>';
     h+='<td style="font-size:11px;color:#9B82FF">'+centerName+'</td>';
-    h+='<td style="font-weight:600;color:#00C896">'+money(o.total_amount)+'</td>';
+    h+='<td style="font-weight:600;color:var(--accent-primary,#00C896)">'+money(o.total_amount)+'</td>';
     h+='<td><select class="f-sel" style="font-size:10px" onchange="admV3UpdatePayment(\''+o.id+'\',this.value)">';
     PAY_STATUSES.forEach(function(p){h+='<option value="'+p.v+'"'+(o.payment_status===p.v?' selected':'')+'>'+p.l+'</option>';});
     h+='</select></td>';
@@ -536,19 +552,19 @@ window.admV3ViewOrder=function(id){
   if(!o) return;
   var items=[];try{items=typeof o.items==='string'?JSON.parse(o.items):o.items||[];}catch(e){}
   var h='<div style="display:grid;gap:10px">';
-  h+='<div><span style="color:#607870">Mã đơn:</span> <b style="color:#00C896">'+(o.order_code||'-')+'</b></div>';
-  h+='<div><span style="color:#607870">Khách:</span> '+(o.customer_name||'-')+' - '+(o.customer_phone||'-')+'</div>';
-  h+='<div><span style="color:#607870">Email:</span> '+(o.customer_email||'-')+'</div>';
-  h+='<div><span style="color:#607870">Địa chỉ:</span> '+(o.address||'-')+'</div>';
-  h+='<div><span style="color:#607870">Sản phẩm:</span></div>';
-  items.forEach(function(it){h+='<div style="padding-left:12px;font-size:12px;color:#B8D8D0">- '+(it.name||it.sku)+' x'+(it.qty||1)+' = '+money(it.price)+'</div>';});
-  h+='<div><span style="color:#607870">Thành tiền:</span> <b style="color:#00C896">'+money(o.total_amount)+'</b></div>';
-  h+='<div><span style="color:#607870">Thanh toán:</span> '+(o.payment_method||'-')+' / '+badge(statusLabel(o.payment_status,PAY_STATUSES).l,statusLabel(o.payment_status,PAY_STATUSES).c)+'</div>';
-  h+='<div><span style="color:#607870">Trạng thái:</span> '+badge(statusLabel(o.order_status,ORDER_STATUSES).l,statusLabel(o.order_status,ORDER_STATUSES).c)+'</div>';
-  h+='<div><span style="color:#607870">Ghi chú:</span> '+(o.notes||'-')+'</div>';
-  h+='<div><span style="color:#607870">Ngày tạo:</span> '+shortDateTime(o.created_at)+'</div>';
-  if(o.tracking_code) h+='<div><span style="color:#607870">Tracking:</span> '+o.tracking_code+'</div>';
-  if(o.cancel_reason) h+='<div><span style="color:#607870">Lý do hủy:</span> <span style="color:#FF7070">'+o.cancel_reason+'</span></div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Mã đơn:</span> <b style="color:var(--accent-primary,#00C896)">'+(o.order_code||'-')+'</b></div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Khách:</span> '+(o.customer_name||'-')+' - '+(o.customer_phone||'-')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Email:</span> '+(o.customer_email||'-')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Địa chỉ:</span> '+(o.address||'-')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Sản phẩm:</span></div>';
+  items.forEach(function(it){h+='<div style="padding-left:12px;font-size:12px;color:var(--text-secondary,#B8D8D0)">- '+(it.name||it.sku)+' x'+(it.qty||1)+' = '+money(it.price)+'</div>';});
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Thành tiền:</span> <b style="color:var(--accent-primary,#00C896)">'+money(o.total_amount)+'</b></div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Thanh toán:</span> '+(o.payment_method||'-')+' / '+badge(statusLabel(o.payment_status,PAY_STATUSES).l,statusLabel(o.payment_status,PAY_STATUSES).c)+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Trạng thái:</span> '+badge(statusLabel(o.order_status,ORDER_STATUSES).l,statusLabel(o.order_status,ORDER_STATUSES).c)+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Ghi chú:</span> '+(o.notes||'-')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Ngày tạo:</span> '+shortDateTime(o.created_at)+'</div>';
+  if(o.tracking_code) h+='<div><span style="color:var(--text-tertiary,#607870)">Tracking:</span> '+o.tracking_code+'</div>';
+  if(o.cancel_reason) h+='<div><span style="color:var(--text-tertiary,#607870)">Lý do hủy:</span> <span style="color:#FF7070">'+o.cancel_reason+'</span></div>';
   h+='</div>';
   admV3Modal('Chi Tiết Đơn #'+(o.order_code||''),h);
 };
@@ -734,8 +750,8 @@ function buildCRMCenters(){
 
 function renderCRMTabs(){
   var c=el('admV3Content');if(!c) return;
-  var tabStyle='background:#0D1520;border:1px solid rgba(0,200,150,.08);border-radius:8px;padding:8px 16px;cursor:pointer;font-size:12px;color:#607870;font-family:inherit;transition:all .2s';
-  var activeStyle='background:rgba(0,200,150,.1);color:#00C896;font-weight:600;border-color:rgba(0,200,150,.2)';
+  var tabStyle='background:var(--bg-card,#0D1520);border:1px solid rgba(0,200,150,.08);border-radius:8px;padding:8px 16px;cursor:pointer;font-size:12px;color:var(--text-tertiary,#607870);font-family:inherit;transition:all .2s';
+  var activeStyle='background:rgba(0,200,150,.1);color:var(--accent-primary,#00C896);font-weight:600;border-color:rgba(0,200,150,.2)';
 
   var h='<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">';
   h+='<button id="crmTabCustomers" style="'+tabStyle+(_crmTab==='customers'?';'+activeStyle:'')+'" onclick="crmSwitchTab(\'customers\')">&#128100; Khach Hang ('+_crmCustomers.length+')</button>';
@@ -793,17 +809,17 @@ function renderCRMCustomersTab(){
   h+='<div class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Tim ten, SDT, email..." value="'+(_crmSearch||'')+'" oninput="crmSearch(this.value)"/></div>';
   h+='<select class="f-sel" onchange="crmFilterTier(this.value)"><option value="">Tat Ca Tier</option>';
   ['Bronze','Silver','Gold','Platinum'].forEach(function(t){h+='<option value="'+t+'"'+(_crmTierFilter===t?' selected':'')+'>'+t+'</option>';});
-  h+='</select></div><span style="color:#607870;font-size:12px">'+filtered.length+' khach hang</span></div>';
+  h+='</select></div><span style="color:var(--text-tertiary,#607870);font-size:12px">'+filtered.length+' khach hang</span></div>';
 
   h+='<div class="tbl-w"><table><tr><th>Ten</th><th>SDT</th><th>Email</th><th>Tinh</th><th>Tong Chi Tieu</th><th>So Don</th><th>Tier</th><th>Lan Cuoi</th></tr>';
   filtered.forEach(function(cu){
     var tierColor=cu.tier==='Platinum'?'#E0C068':cu.tier==='Gold'?'#FFC800':cu.tier==='Silver'?'#B8D8D0':'#A08060';
     h+='<tr>';
-    h+='<td style="font-weight:600;color:#E8F8F4">'+(cu.name||'-')+'</td>';
+    h+='<td style="font-weight:600;color:var(--text-primary,#E8F8F4)">'+(cu.name||'-')+'</td>';
     h+='<td>'+(cu.phone||'-')+'</td>';
     h+='<td style="max-width:140px;overflow:hidden;text-overflow:ellipsis">'+(cu.email||'-')+'</td>';
     h+='<td>'+(cu.province||'-')+'</td>';
-    h+='<td style="color:#00C896;font-weight:600">'+money(cu.totalSpent)+'</td>';
+    h+='<td style="color:var(--accent-primary,#00C896);font-weight:600">'+money(cu.totalSpent)+'</td>';
     h+='<td>'+cu.orderCount+'</td>';
     h+='<td>'+badge(cu.tier,tierColor)+'</td>';
     h+='<td>'+shortDate(cu.lastOrder)+'</td>';
@@ -836,7 +852,7 @@ function renderCRMKTVTab(){
 
   h+='<div class="crd"><div class="crd-h"><div style="display:flex;gap:10px;align-items:center">';
   h+='<div class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Tim KTV..." value="'+(_crmSearch||'')+'" oninput="crmSearch(this.value)"/></div>';
-  h+='</div><span style="color:#607870;font-size:12px">'+filtered.length+' KTV</span></div>';
+  h+='</div><span style="color:var(--text-tertiary,#607870);font-size:12px">'+filtered.length+' KTV</span></div>';
 
   h+='<div class="tbl-w"><table><tr><th>Ten</th><th>SDT</th><th>Co So</th><th>Rating</th><th>Buoi</th><th>Doanh Thu</th><th>Chung Chi</th><th>Trang Thai</th></tr>';
   filtered.forEach(function(k){
@@ -844,12 +860,12 @@ function renderCRMKTVTab(){
     var stColor=st==='active'?'#00C896':st==='inactive'?'#FF7070':'#FFC800';
     var stLabel=st==='active'?'Active':st==='inactive'?'Inactive':'Pending';
     h+='<tr>';
-    h+='<td style="font-weight:600;color:#E8F8F4">'+(k.name||k.full_name||'-')+'</td>';
+    h+='<td style="font-weight:600;color:var(--text-primary,#E8F8F4)">'+(k.name||k.full_name||'-')+'</td>';
     h+='<td>'+(k.phone||'-')+'</td>';
     h+='<td>'+(k.center||k.branch||k.facility||'-')+'</td>';
     h+='<td style="color:#FFC800;font-weight:600">'+(k.rating||k.avg_rating||0).toFixed?parseFloat(k.rating||k.avg_rating||0).toFixed(1):(k.rating||k.avg_rating||0)+'</td>';
     h+='<td>'+(k.sessions||k.total_sessions||0)+'</td>';
-    h+='<td style="color:#00C896">'+money(k.revenue||k.total_revenue||0)+'</td>';
+    h+='<td style="color:var(--accent-primary,#00C896)">'+money(k.revenue||k.total_revenue||0)+'</td>';
     h+='<td>'+(k.cert||k.certificate||k.certifications||'-')+'</td>';
     h+='<td>'+badge(stLabel,stColor)+'</td>';
     h+='</tr>';
@@ -875,7 +891,7 @@ function renderCRMCentersTab(){
 
   h+='<div class="crd"><div class="crd-h"><div style="display:flex;gap:10px;align-items:center">';
   h+='<div class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input placeholder="Tim center..." value="'+(_crmSearch||'')+'" oninput="crmSearch(this.value)"/></div>';
-  h+='</div><span style="color:#607870;font-size:12px">'+_crmCentersData.length+' centers</span></div>';
+  h+='</div><span style="color:var(--text-tertiary,#607870);font-size:12px">'+_crmCentersData.length+' centers</span></div>';
 
   var filtered=_crmCentersData.filter(function(ct){
     if(_crmSearch){
@@ -891,12 +907,12 @@ function renderCRMCentersTab(){
     var stLabel=ct.status==='active'?'Active':'Pending';
     var lvlColor=ct.level==='L1'?'#6496FF':'#9B82FF';
     h+='<tr>';
-    h+='<td style="color:#00C896;font-weight:600">'+ct.id+'</td>';
+    h+='<td style="color:var(--accent-primary,#00C896);font-weight:600">'+ct.id+'</td>';
     h+='<td>'+(ct.name||'-')+'</td>';
     h+='<td>'+(ct.province||'-')+'</td>';
     h+='<td>'+badge(ct.level,lvlColor)+'</td>';
     h+='<td>'+ct.orders+'</td>';
-    h+='<td style="color:#00C896;font-weight:600">'+money(ct.revenue)+'</td>';
+    h+='<td style="color:var(--accent-primary,#00C896);font-weight:600">'+money(ct.revenue)+'</td>';
     h+='<td>'+ct.ktv+'</td>';
     h+='<td>'+badge(stLabel,stColor)+'</td>';
     h+='</tr>';
@@ -919,15 +935,15 @@ window.admV3ViewLead=function(id){
   var l=_leads.filter(function(x){return x.id===id;})[0];
   if(!l) return;
   var h='<div style="display:grid;gap:10px">';
-  h+='<div><span style="color:#607870">Ten:</span> <b>'+(l.name||l.full_name||'-')+'</b></div>';
-  h+='<div><span style="color:#607870">SDT:</span> '+(l.phone||'-')+'</div>';
-  h+='<div><span style="color:#607870">Email:</span> '+(l.email||'-')+'</div>';
-  h+='<div><span style="color:#607870">Loai:</span> '+(l.lead_type||l.type||'-')+'</div>';
-  h+='<div><span style="color:#607870">San pham quan tam:</span> '+(l.product||l.interest||'-')+'</div>';
-  h+='<div><span style="color:#607870">Nguon:</span> '+(l.source||'-')+'</div>';
-  h+='<div><span style="color:#607870">Trang thai:</span> '+badge(statusLabel(l.status,LEAD_STATUSES).l,statusLabel(l.status,LEAD_STATUSES).c)+'</div>';
-  h+='<div><span style="color:#607870">Ghi chu:</span> '+(l.notes||l.note||'-')+'</div>';
-  h+='<div><span style="color:#607870">Ngay tao:</span> '+shortDateTime(l.created_at)+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Ten:</span> <b>'+(l.name||l.full_name||'-')+'</b></div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">SDT:</span> '+(l.phone||'-')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Email:</span> '+(l.email||'-')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Loai:</span> '+(l.lead_type||l.type||'-')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">San pham quan tam:</span> '+(l.product||l.interest||'-')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Nguon:</span> '+(l.source||'-')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Trang thai:</span> '+badge(statusLabel(l.status,LEAD_STATUSES).l,statusLabel(l.status,LEAD_STATUSES).c)+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Ghi chu:</span> '+(l.notes||l.note||'-')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Ngay tao:</span> '+shortDateTime(l.created_at)+'</div>';
   h+='</div>';
   admV3Modal('Lead: '+(l.name||l.full_name||''),h);
 };
@@ -1007,7 +1023,7 @@ function renderCustomersPage(){
   h+=kpi(money(avgRev),'Doanh Thu TB/KH','#FFC800');
   h+='</div>';
 
-  h+='<div class="crd"><div class="crd-h"><span class="crd-t">Danh Sách Khách Hàng</span><span style="color:#607870;font-size:12px">'+customers.length+' khách</span></div>';
+  h+='<div class="crd"><div class="crd-h"><span class="crd-t">Danh Sách Khách Hàng</span><span style="color:var(--text-tertiary,#607870);font-size:12px">'+customers.length+' khách</span></div>';
   h+='<div class="tbl-w"><table><tr><th>Tên</th><th>SĐT</th><th>Email</th><th>Tổng Chi Tiêu</th><th>Số Đơn</th><th>Lần Cuối</th><th>Tier</th></tr>';
   customers.forEach(function(cu){
     var tier='Bronze';var tierC='#CD7F32';
@@ -1015,7 +1031,7 @@ function renderCustomersPage(){
     else if(cu.totalSpent>=5000000){tier='Gold';tierC='#FFD700';}
     else if(cu.totalSpent>=2000000){tier='Silver';tierC='#C0C0C0';}
     h+='<tr><td>'+(cu.name||'-')+'</td><td>'+(cu.phone||'-')+'</td><td>'+(cu.email||'-')+'</td>';
-    h+='<td style="font-weight:600;color:#00C896">'+money(cu.totalSpent)+'</td>';
+    h+='<td style="font-weight:600;color:var(--accent-primary,#00C896)">'+money(cu.totalSpent)+'</td>';
     h+='<td>'+cu.orderCount+'</td><td>'+shortDate(cu.lastOrder)+'</td>';
     h+='<td>'+badge(tier,tierC)+'</td></tr>';
   });
@@ -1056,14 +1072,14 @@ function renderBookingsPage(){
   });
   var dates=Object.keys(byDate).sort().reverse();
 
-  h+='<div class="crd"><div class="crd-h"><span class="crd-t">Lịch Hẹn</span><span style="color:#607870;font-size:12px">'+_bookings.length+' booking</span></div>';
+  h+='<div class="crd"><div class="crd-h"><span class="crd-t">Lịch Hẹn</span><span style="color:var(--text-tertiary,#607870);font-size:12px">'+_bookings.length+' booking</span></div>';
 
   dates.forEach(function(dk){
-    h+='<div style="margin-bottom:14px"><div style="font-size:13px;font-weight:600;color:#00C896;padding:8px 0;border-bottom:1px solid rgba(0,200,150,.06)">'+dk+'</div>';
+    h+='<div style="margin-bottom:14px"><div style="font-size:13px;font-weight:600;color:var(--accent-primary,#00C896);padding:8px 0;border-bottom:1px solid rgba(0,200,150,.06)">'+dk+'</div>';
     h+='<table><tr><th>Giờ</th><th>Khách</th><th>SĐT</th><th>Dịch Vụ</th><th>Cơ Sở</th><th>KTV</th><th>Trạng Thái</th><th>Action</th></tr>';
     byDate[dk].forEach(function(b){
       var st=statusLabel(b.status,BOOKING_STATUSES);
-      h+='<tr><td style="color:#00C896;font-weight:600">'+(b.time_slot||b.time||'-')+'</td>';
+      h+='<tr><td style="color:var(--accent-primary,#00C896);font-weight:600">'+(b.time_slot||b.time||'-')+'</td>';
       h+='<td>'+(b.customer_name||'-')+'</td>';
       h+='<td>'+(b.customer_phone||'-')+'</td>';
       h+='<td>'+(b.service_name||b.service||'-')+'</td>';
@@ -1096,15 +1112,15 @@ window.admV3AssignKTV=function(id,ktvName){
 window.admV3ViewBooking=function(id){
   var b=_bookings.filter(function(x){return x.id===id;})[0];if(!b) return;
   var h='<div style="display:grid;gap:10px">';
-  h+='<div><span style="color:#607870">Khách:</span> <b>'+(b.customer_name||'-')+'</b></div>';
-  h+='<div><span style="color:#607870">SĐT:</span> '+(b.customer_phone||'-')+'</div>';
-  h+='<div><span style="color:#607870">Dịch vụ:</span> '+(b.service_name||b.service||'-')+'</div>';
-  h+='<div><span style="color:#607870">Ngày:</span> '+(b.booking_date||b.date||'-')+'</div>';
-  h+='<div><span style="color:#607870">Giờ:</span> '+(b.time_slot||b.time||'-')+'</div>';
-  h+='<div><span style="color:#607870">Cơ sở:</span> '+(b.center_name||b.center||'-')+'</div>';
-  h+='<div><span style="color:#607870">KTV:</span> '+(b.ktv_name||b.ktv||'Chưa phân công')+'</div>';
-  h+='<div><span style="color:#607870">Trạng thái:</span> '+badge(statusLabel(b.status,BOOKING_STATUSES).l,statusLabel(b.status,BOOKING_STATUSES).c)+'</div>';
-  h+='<div><span style="color:#607870">Ghi chú:</span> '+(b.notes||b.note||'-')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Khách:</span> <b>'+(b.customer_name||'-')+'</b></div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">SĐT:</span> '+(b.customer_phone||'-')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Dịch vụ:</span> '+(b.service_name||b.service||'-')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Ngày:</span> '+(b.booking_date||b.date||'-')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Giờ:</span> '+(b.time_slot||b.time||'-')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Cơ sở:</span> '+(b.center_name||b.center||'-')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">KTV:</span> '+(b.ktv_name||b.ktv||'Chưa phân công')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Trạng thái:</span> '+badge(statusLabel(b.status,BOOKING_STATUSES).l,statusLabel(b.status,BOOKING_STATUSES).c)+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Ghi chú:</span> '+(b.notes||b.note||'-')+'</div>';
   h+='</div>';
   admV3Modal('Chi Tiết Lịch Hẹn',h);
 };
@@ -1129,7 +1145,7 @@ function pgCenters(){
     var stColor=ct.status==='active'?'#00C896':'#FFC800';
     var stLabel=ct.status==='active'?'Hoạt Động':'Chờ Kích Hoạt';
     var region=ct.region==='north'?'Bắc':ct.region==='south'?'Nam':'Trung';
-    h+='<tr><td style="color:#00C896;font-weight:600">'+ct._id+'</td>';
+    h+='<tr><td style="color:var(--accent-primary,#00C896);font-weight:600">'+ct._id+'</td>';
     h+='<td>'+ct.name+'</td>';
     h+='<td>'+ct.city+'</td>';
     h+='<td>'+badge(region,ct.region==='north'?'#6496FF':ct.region==='south'?'#00C896':'#FFC800')+'</td>';
@@ -1194,13 +1210,13 @@ window.admV3ViewCenter=function(id){
   var centerOrders=_orders.filter(function(o){return o.center_id===id||o.center_name===ct.city;});
   var rev=centerOrders.reduce(function(s,o){return s+(o.total_amount||0);},0);
   var h='<div style="display:grid;gap:10px">';
-  h+='<div><span style="color:#607870">Mã:</span> <b style="color:#00C896">'+ct._id+'</b></div>';
-  h+='<div><span style="color:#607870">Tên:</span> '+ct.name+'</div>';
-  h+='<div><span style="color:#607870">Thành phố:</span> '+ct.city+'</div>';
-  h+='<div><span style="color:#607870">Vùng:</span> '+(ct.region==='north'?'Miền Bắc':ct.region==='south'?'Miền Nam':'Miền Trung')+'</div>';
-  h+='<div><span style="color:#607870">Trạng thái:</span> '+badge(ct.status==='active'?'Hoạt Động':'Chờ Kích Hoạt',ct.status==='active'?'#00C896':'#FFC800')+'</div>';
-  h+='<div><span style="color:#607870">Tổng đơn hàng:</span> '+centerOrders.length+'</div>';
-  h+='<div><span style="color:#607870">Doanh thu:</span> <b style="color:#00C896">'+money(rev)+'</b></div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Mã:</span> <b style="color:var(--accent-primary,#00C896)">'+ct._id+'</b></div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Tên:</span> '+ct.name+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Thành phố:</span> '+ct.city+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Vùng:</span> '+(ct.region==='north'?'Miền Bắc':ct.region==='south'?'Miền Nam':'Miền Trung')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Trạng thái:</span> '+badge(ct.status==='active'?'Hoạt Động':'Chờ Kích Hoạt',ct.status==='active'?'#00C896':'#FFC800')+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Tổng đơn hàng:</span> '+centerOrders.length+'</div>';
+  h+='<div><span style="color:var(--text-tertiary,#607870)">Doanh thu:</span> <b style="color:var(--accent-primary,#00C896)">'+money(rev)+'</b></div>';
   h+='</div>';
   admV3Modal('Chi Tiết Cơ Sở: '+ct.name,h);
 };
@@ -1237,7 +1253,7 @@ function pgKTV(){
       h+='<td>'+(k.center_name||k.center||'-')+'</td>';
       h+='<td style="color:#FFC800">'+(k.rating||'-')+' ★</td>';
       h+='<td>'+(k.sessions||k.total_sessions||0)+'</td>';
-      h+='<td style="color:#00C896">'+money(k.revenue||k.total_revenue||0)+'</td>';
+      h+='<td style="color:var(--accent-primary,#00C896)">'+money(k.revenue||k.total_revenue||0)+'</td>';
       h+='<td>'+badge(stLabel,stColor)+'</td></tr>';
     });
   } else {
@@ -1312,7 +1328,7 @@ function pgInventory(){
       h+='<div class="crd" style="border-color:rgba(255,184,0,.2);background:rgba(255,184,0,.03)"><div class="crd-h"><span class="crd-t" style="color:#FFC800">🤖 Agent Cảnh Báo Kho ('+stockAlerts.length+')</span></div>';
       stockAlerts.slice(0,6).forEach(function(a){
         var bg=a.type==='error'?'rgba(255,70,70,.08)':'rgba(255,184,0,.06)';
-        h+='<div style="background:'+bg+';border-radius:8px;padding:10px 14px;margin-bottom:6px;font-size:12px;color:#E8F8F4;line-height:1.5">'+a.msg+'</div>';
+        h+='<div style="background:'+bg+';border-radius:8px;padding:10px 14px;margin-bottom:6px;font-size:12px;color:var(--text-primary,#E8F8F4);line-height:1.5">'+a.msg+'</div>';
       });
       h+='</div>';
     }
@@ -1327,7 +1343,7 @@ function pgInventory(){
       var isLow=stock<10;
       var region=ct.region||'';
       var regionColor=region==='Bắc'?'#6496FF':region==='Trung'?'#FFC800':'#00C896';
-      h+='<tr><td style="color:#00C896;font-size:11px;font-weight:600">'+ct._id+'</td>';
+      h+='<tr><td style="color:var(--accent-primary,#00C896);font-size:11px;font-weight:600">'+ct._id+'</td>';
       h+='<td><span style="font-weight:600">'+ct.city+'</span> '+badge(region,regionColor)+'</td>';
       h+='<td style="font-size:11px;color:#9B82FF">'+(ct.manager||ct.name||'—')+'</td>';
       h+='<td style="text-align:center">'+(wh.a119_10||0)+'</td>';
@@ -1335,7 +1351,7 @@ function pgInventory(){
       h+='<td style="text-align:center">'+(wh.a119_120||0)+'</td>';
       h+='<td style="font-weight:600;color:'+(isLow?'#FF7070':'#B8D8D0')+'">'+stock+'</td>';
       h+='<td style="text-align:center">'+co.count+'</td>';
-      h+='<td style="color:#00C896;font-size:11px">'+money(co.revenue)+'</td>';
+      h+='<td style="color:var(--accent-primary,#00C896);font-size:11px">'+money(co.revenue)+'</td>';
       h+='<td>'+badge(isLow?'Thấp':'OK',isLow?'#FF7070':'#00C896')+'</td>';
       h+='<td><button class="btn btn-s btn-sm" onclick="admV3EditWarehouse(\''+ct._id+'\',\''+ct.city+'\')">✏️</button></td></tr>';
     });
@@ -1349,9 +1365,9 @@ window.admV3EditWarehouse=function(centerId,cityName){
   try{warehouses=JSON.parse(localStorage.getItem('anima_warehouses')||'{}');}catch(e){}
   var wh=warehouses[centerId]||{a119_10:20,a119_30:10,a119_120:5};
   var formH='<div style="display:grid;gap:12px">';
-  formH+='<div><label style="font-size:11px;color:#607870;display:block;margin-bottom:4px">ANIMA 119 — 1 Hộp (10 Gói)</label><input id="wh-10" type="number" class="f-inp" value="'+(wh.a119_10||0)+'"></div>';
-  formH+='<div><label style="font-size:11px;color:#607870;display:block;margin-bottom:4px">ANIMA 119 — 3 Hộp (30 Gói)</label><input id="wh-30" type="number" class="f-inp" value="'+(wh.a119_30||0)+'"></div>';
-  formH+='<div><label style="font-size:11px;color:#607870;display:block;margin-bottom:4px">ANIMA 119 — 12 Hộp (120 Gói)</label><input id="wh-120" type="number" class="f-inp" value="'+(wh.a119_120||0)+'"></div>';
+  formH+='<div><label style="font-size:11px;color:var(--text-tertiary,#607870);display:block;margin-bottom:4px">ANIMA 119 — 1 Hộp (10 Gói)</label><input id="wh-10" type="number" class="f-inp" value="'+(wh.a119_10||0)+'"></div>';
+  formH+='<div><label style="font-size:11px;color:var(--text-tertiary,#607870);display:block;margin-bottom:4px">ANIMA 119 — 3 Hộp (30 Gói)</label><input id="wh-30" type="number" class="f-inp" value="'+(wh.a119_30||0)+'"></div>';
+  formH+='<div><label style="font-size:11px;color:var(--text-tertiary,#607870);display:block;margin-bottom:4px">ANIMA 119 — 12 Hộp (120 Gói)</label><input id="wh-120" type="number" class="f-inp" value="'+(wh.a119_120||0)+'"></div>';
   formH+='<button class="btn btn-p" onclick="admV3SaveWarehouse(\''+centerId+'\')">💾 Lưu Kho '+cityName+'</button>';
   formH+='</div>';
   admV3Modal('Kho Hàng — '+cityName,formH);
@@ -1454,7 +1470,7 @@ function renderAnalyticsPage(){
     var maxProdRev=topProds[0].rev||1;
     topProds.forEach(function(p){
       var pct=Math.round(p.rev/maxProdRev*100);
-      h+='<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:#B8D8D0">'+p.name+'</span><span style="color:#00C896;font-weight:600">'+money(p.rev)+'</span></div>';
+      h+='<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text-secondary,#B8D8D0)">'+p.name+'</span><span style="color:var(--accent-primary,#00C896);font-weight:600">'+money(p.rev)+'</span></div>';
       h+='<div style="height:6px;background:rgba(0,200,150,.1);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#005A42,#00C896);border-radius:3px"></div></div></div>';
     });
   } else {h+='<div class="empty">Không có dữ liệu</div>';}
@@ -1474,7 +1490,7 @@ function renderAnalyticsPage(){
     var maxCRev=topCenters[0].rev||1;
     topCenters.forEach(function(ct){
       var pct=Math.round(ct.rev/maxCRev*100);
-      h+='<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:#B8D8D0">'+ct.name+' ('+ct.count+' đơn)</span><span style="color:#00C896;font-weight:600">'+money(ct.rev)+'</span></div>';
+      h+='<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text-secondary,#B8D8D0)">'+ct.name+' ('+ct.count+' đơn)</span><span style="color:var(--accent-primary,#00C896);font-weight:600">'+money(ct.rev)+'</span></div>';
       h+='<div style="height:6px;background:rgba(0,200,150,.1);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#005A42,#00C896);border-radius:3px"></div></div></div>';
     });
   } else {h+='<div class="empty">Không có dữ liệu</div>';}
@@ -1494,7 +1510,7 @@ function renderAnalyticsPage(){
   funnelStages.forEach(function(stage,i){
     var pct=Math.max(8,Math.round(stage.v/maxFunnel*100));
     h+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">';
-    h+='<span style="width:100px;font-size:12px;color:#607870;text-align:right">'+stage.l+'</span>';
+    h+='<span style="width:100px;font-size:12px;color:var(--text-tertiary,#607870);text-align:right">'+stage.l+'</span>';
     h+='<div style="flex:1;height:28px;background:rgba(0,200,150,.04);border-radius:6px;overflow:hidden;position:relative">';
     h+='<div style="height:100%;width:'+pct+'%;background:'+stage.c+'30;border-radius:6px;display:flex;align-items:center;padding-left:10px">';
     h+='<span style="font-size:12px;font-weight:600;color:'+stage.c+'">'+stage.v+'</span></div></div></div>';
@@ -1532,9 +1548,9 @@ function pgSettings(){
   gateways.forEach(function(gw){
     h+='<div style="padding:14px;background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:10px">';
     h+='<div style="display:flex;justify-content:space-between;align-items:center">';
-    h+='<span style="font-size:13px;font-weight:600;color:#E8F8F4">'+gw.name+'</span>';
+    h+='<span style="font-size:13px;font-weight:600;color:var(--text-primary,#E8F8F4)">'+gw.name+'</span>';
     h+=badge(gw.active?'Bật':'Tắt',gw.active?'#00C896':'#607870');
-    h+='</div><div style="font-size:11px;color:#607870;margin-top:6px">'+gw.desc+'</div></div>';
+    h+='</div><div style="font-size:11px;color:var(--text-tertiary,#607870);margin-top:6px">'+gw.desc+'</div></div>';
   });
   h+='</div></div>';
 
@@ -1547,7 +1563,7 @@ function pgSettings(){
   ];
   notifs.forEach(function(n){
     h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(0,200,150,.04)">';
-    h+='<span style="font-size:13px;color:#B8D8D0">'+n.l+'</span>';
+    h+='<span style="font-size:13px;color:var(--text-secondary,#B8D8D0)">'+n.l+'</span>';
     h+='<div style="width:40px;height:22px;border-radius:11px;background:'+(n.v?'#00C896':'rgba(0,200,150,.1)')+';position:relative;cursor:pointer">';
     h+='<div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;'+(n.v?'right:2px':'left:2px')+';transition:all .2s"></div></div></div>';
   });
@@ -1555,11 +1571,11 @@ function pgSettings(){
 
   // System info
   h+='<div class="crd"><div class="crd-h"><span class="crd-t">Thông Tin Hệ Thống</span></div>';
-  h+='<div style="display:grid;gap:8px;font-size:12px;color:#607870">';
-  h+='<div>Version: <span style="color:#00C896">Admin Dashboard v3.0</span></div>';
-  h+='<div>Platform: <span style="color:#B8D8D0">AnimaCare Global</span></div>';
-  h+='<div>Database: <span style="color:#B8D8D0">Supabase (PostgreSQL)</span></div>';
-  h+='<div>Last Updated: <span style="color:#B8D8D0">'+new Date().toLocaleDateString('vi-VN')+'</span></div>';
+  h+='<div style="display:grid;gap:8px;font-size:12px;color:var(--text-tertiary,#607870)">';
+  h+='<div>Version: <span style="color:var(--accent-primary,#00C896)">Admin Dashboard v3.0</span></div>';
+  h+='<div>Platform: <span style="color:var(--text-secondary,#B8D8D0)">AnimaCare Global</span></div>';
+  h+='<div>Database: <span style="color:var(--text-secondary,#B8D8D0)">Supabase (PostgreSQL)</span></div>';
+  h+='<div>Last Updated: <span style="color:var(--text-secondary,#B8D8D0)">'+new Date().toLocaleDateString('vi-VN')+'</span></div>';
   h+='</div></div>';
 
   c.innerHTML=h;
@@ -1615,9 +1631,9 @@ function renderGamificationPage(loyalty,referrals){
   [{n:'Bronze',pts:'0-4,999',perks:'Tích điểm 1x',clr:'#CD7F32'},{n:'Silver',pts:'5,000-19,999',perks:'Tích 1.5x + Giảm 5%',clr:'#C0C0C0'},{n:'Gold',pts:'20,000-49,999',perks:'Tích 2x + Giảm 15%',clr:'#FFC800'},{n:'Platinum',pts:'50,000+',perks:'Tích 3x + Giảm 25% + VIP',clr:'linear-gradient(135deg,#9B82FF,#E8B4FF)'}].forEach(function(t){
     h+='<div style="padding:12px;border-radius:10px;background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);text-align:center">';
     h+='<div style="width:36px;height:36px;border-radius:50%;background:'+t.clr+';margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:14px">⭐</div>';
-    h+='<div style="font-size:14px;font-weight:700;color:#E8F8F4;margin-bottom:2px">'+t.n+'</div>';
-    h+='<div style="font-size:10px;color:#607870;margin-bottom:4px">'+t.pts+' pts</div>';
-    h+='<div style="font-size:11px;color:#00C896">'+t.perks+'</div>';
+    h+='<div style="font-size:14px;font-weight:700;color:var(--text-primary,#E8F8F4);margin-bottom:2px">'+t.n+'</div>';
+    h+='<div style="font-size:10px;color:var(--text-tertiary,#607870);margin-bottom:4px">'+t.pts+' pts</div>';
+    h+='<div style="font-size:11px;color:var(--accent-primary,#00C896)">'+t.perks+'</div>';
     h+='</div>';
   });
   h+='</div></div>';
@@ -1632,7 +1648,7 @@ function renderGamificationPage(loyalty,referrals){
       var tclr=tier==='Platinum'?'#E8B4FF':tier==='Gold'?'#FFC800':tier==='Silver'?'#C0C0C0':'#CD7F32';
       h+='<tr><td style="font-weight:700;color:'+(i<3?'#FFC800':'#607870')+'">'+(i<3?['🥇','🥈','🥉'][i]:(i+1))+'</td>';
       h+='<td style="font-weight:500">'+((m.user_name||m.name||'User')+'')+'</td>';
-      h+='<td style="font-weight:700;color:#00C896">'+pts.toLocaleString()+'</td>';
+      h+='<td style="font-weight:700;color:var(--accent-primary,#00C896)">'+pts.toLocaleString()+'</td>';
       h+='<td>'+badge(tier,tclr)+'</td></tr>';
     });
     h+='</tbody></table></div>';
@@ -1646,7 +1662,7 @@ function renderGamificationPage(loyalty,referrals){
     referrals.slice(0,20).forEach(function(r){
       h+='<tr><td style="font-family:monospace;color:#7B5FFF;font-weight:600">'+(r.code||'')+'</td>';
       h+='<td>'+(r.user_name||'')+'</td>';
-      h+='<td style="font-weight:600;color:#00C896">'+(r.uses||0)+'</td>';
+      h+='<td style="font-weight:600;color:var(--accent-primary,#00C896)">'+(r.uses||0)+'</td>';
       h+='<td>'+badge((r.uses||0)>0?'Active':'Chưa dùng',(r.uses||0)>0?'#00C896':'#607870')+'</td></tr>';
     });
     h+='</tbody></table></div>';
@@ -1716,16 +1732,16 @@ function pgAffiliate(){
       var progRevenue = transactions.filter(function(t){return t.program_id===p.id;}).reduce(function(s,t){return s+(t.commission_amount||0);},0);
       h+='<div style="padding:16px;background:rgba(0,200,150,.03);border:1px solid rgba(0,200,150,.08);border-radius:12px;border-left:3px solid '+(typeColors[pType]||'#00C896')+'">';
       h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
-      h+='<span style="font-size:14px;font-weight:700;color:#E8F8F4">'+(p.name||'Program')+'</span>';
+      h+='<span style="font-size:14px;font-weight:700;color:var(--text-primary,#E8F8F4)">'+(p.name||'Program')+'</span>';
       h+=badge(isActive?'Active':'Tắt',isActive?'#00C896':'#607870');
       h+='</div>';
       h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:11px;text-align:center">';
-      h+='<div><div style="font-size:16px;font-weight:700;color:'+(typeColors[pType]||'#00C896')+'">'+rate+'%</div><div style="color:#607870">Commission</div></div>';
-      h+='<div><div style="font-size:16px;font-weight:700;color:#E8F8F4">'+progMembers+'</div><div style="color:#607870">Thành Viên</div></div>';
-      h+='<div><div style="font-size:16px;font-weight:700;color:#00C896">'+money(progRevenue)+'</div><div style="color:#607870">Doanh Thu</div></div>';
+      h+='<div><div style="font-size:16px;font-weight:700;color:'+(typeColors[pType]||'#00C896')+'">'+rate+'%</div><div style="color:var(--text-tertiary,#607870)">Commission</div></div>';
+      h+='<div><div style="font-size:16px;font-weight:700;color:var(--text-primary,#E8F8F4)">'+progMembers+'</div><div style="color:var(--text-tertiary,#607870)">Thành Viên</div></div>';
+      h+='<div><div style="font-size:16px;font-weight:700;color:var(--accent-primary,#00C896)">'+money(progRevenue)+'</div><div style="color:var(--text-tertiary,#607870)">Doanh Thu</div></div>';
       h+='</div>';
       h+='<div style="margin-top:10px;display:flex;gap:6px">';
-      h+='<span style="font-size:10px;padding:3px 8px;border-radius:6px;background:rgba(0,200,150,.08);color:#00C896">'+(typeLabels[pType]||pType)+'</span>';
+      h+='<span style="font-size:10px;padding:3px 8px;border-radius:6px;background:rgba(0,200,150,.08);color:var(--accent-primary,#00C896)">'+(typeLabels[pType]||pType)+'</span>';
       h+='</div></div>';
     });
     h+='</div></div>';
@@ -1735,16 +1751,16 @@ function pgAffiliate(){
     if(members.length){
       h+='<div class="tbl-w"><table class="tbl"><thead><tr><th>ID</th><th>Tên</th><th>Mã GT</th><th>Tổng HH</th><th>Trạng Thái</th><th>Ngày Tham Gia</th></tr></thead><tbody>';
       members.forEach(function(m){
-        h+='<tr><td style="font-size:11px;color:#607870">'+(m.id||'').substring(0,8)+'</td>';
+        h+='<tr><td style="font-size:11px;color:var(--text-tertiary,#607870)">'+(m.id||'').substring(0,8)+'</td>';
         h+='<td>'+(m.user_name||m.name||'N/A')+'</td>';
-        h+='<td style="font-family:monospace;color:#00C896">'+(m.referral_code||'--')+'</td>';
+        h+='<td style="font-family:monospace;color:var(--accent-primary,#00C896)">'+(m.referral_code||'--')+'</td>';
         h+='<td style="font-weight:600">'+money(m.total_commission||0)+'</td>';
         h+='<td>'+badge(m.status||'active',(m.status==='active'?'#00C896':'#607870'))+'</td>';
-        h+='<td style="font-size:11px;color:#607870">'+shortDate(m.created_at)+'</td></tr>';
+        h+='<td style="font-size:11px;color:var(--text-tertiary,#607870)">'+shortDate(m.created_at)+'</td></tr>';
       });
       h+='</tbody></table></div>';
     } else {
-      h+='<div style="padding:20px;text-align:center;color:#607870;font-size:13px">Chưa có thành viên affiliate</div>';
+      h+='<div style="padding:20px;text-align:center;color:var(--text-tertiary,#607870);font-size:13px">Chưa có thành viên affiliate</div>';
     }
     h+='</div>';
 
@@ -1757,14 +1773,14 @@ function pgAffiliate(){
         h+='<tr><td style="font-size:11px;font-family:monospace">'+(t.order_id||'--')+'</td>';
         h+='<td style="font-size:11px">'+(t.member_id||'').substring(0,12)+'</td>';
         h+='<td>'+money(t.order_amount||0)+'</td>';
-        h+='<td style="font-weight:700;color:#00C896">'+money(t.commission_amount||0)+'</td>';
+        h+='<td style="font-weight:700;color:var(--accent-primary,#00C896)">'+money(t.commission_amount||0)+'</td>';
         h+='<td>'+Math.round((t.commission_rate||0)*100)+'%</td>';
         h+='<td>'+badge(t.status||'pending',stColor)+'</td>';
-        h+='<td style="font-size:11px;color:#607870">'+shortDate(t.created_at)+'</td></tr>';
+        h+='<td style="font-size:11px;color:var(--text-tertiary,#607870)">'+shortDate(t.created_at)+'</td></tr>';
       });
       h+='</tbody></table></div>';
     } else {
-      h+='<div style="padding:20px;text-align:center;color:#607870;font-size:13px">Chưa có giao dịch hoa hồng</div>';
+      h+='<div style="padding:20px;text-align:center;color:var(--text-tertiary,#607870);font-size:13px">Chưa có giao dịch hoa hồng</div>';
     }
     h+='</div>';
 
@@ -1780,9 +1796,9 @@ function pgAffiliate(){
       h+='<div class="crd"><div class="crd-h"><span class="crd-t">Cộng Đồng Affiliate</span></div>';
       refKeys.forEach(function(ref){
         h+='<div style="margin:8px 0;padding:8px 12px;background:rgba(0,200,150,.03);border-left:3px solid #00C896;border-radius:0 8px 8px 0">';
-        h+='<div style="font-size:12px;font-weight:600;color:#00C896">' + ref + ' (' + byReferrer[ref].length + ' thành viên)</div>';
+        h+='<div style="font-size:12px;font-weight:600;color:var(--accent-primary,#00C896)">' + ref + ' (' + byReferrer[ref].length + ' thành viên)</div>';
         byReferrer[ref].forEach(function(m){
-          h+='<div style="margin-left:20px;padding:4px 0;font-size:11px;color:#B8D8D0">' + (m.user_name||'N/A') + ' · ' + money(m.total_commission||0) + '</div>';
+          h+='<div style="margin-left:20px;padding:4px 0;font-size:11px;color:var(--text-secondary,#B8D8D0)">' + (m.user_name||'N/A') + ' · ' + money(m.total_commission||0) + '</div>';
         });
         h+='</div>';
       });
@@ -1791,7 +1807,7 @@ function pgAffiliate(){
 
     /* Affiliate Policy */
     h+='<div class="crd"><div class="crd-h"><span class="crd-t">Chính Sách Affiliate</span></div>';
-    h+='<div style="font-size:13px;color:#B8D8D0;line-height:1.8">';
+    h+='<div style="font-size:13px;color:var(--text-secondary,#B8D8D0);line-height:1.8">';
     h+='<div style="margin-bottom:8px"><b style="color:#FFC800">1. KTV Affiliate:</b> KTV giới thiệu khách mua ANIMA 119 → nhận 10% giá trị đơn. Hoa hồng được tích vào ví sau 48h giao hàng thành công.</div>';
     h+='<div style="margin-bottom:8px"><b style="color:#7B5FFF">2. Giới Thiệu Bạn Bè:</b> Khách chia sẻ mã giới thiệu → Bạn mới mua hàng → Cả 2 nhận 500 AnimePoint + Voucher 200.000đ.</div>';
     h+='<div style="margin-bottom:8px"><b style="color:#FFC800">3. Center Referral:</b> Cơ sở L1 giới thiệu đối tác mở L2 → Nhận 2% doanh thu L2 trong 6 tháng đầu.</div>';
@@ -1880,15 +1896,15 @@ function renderAgentsDashboard(){
   agents.forEach(function(a){
     var statusBg=a.status==='active'?'rgba(0,200,150,.1)':'rgba(255,200,0,.06)';
     var statusBorder=a.status==='active'?'rgba(0,200,150,.2)':'rgba(255,200,0,.15)';
-    var statusText=a.status==='active'?'<span style="color:#00C896;font-weight:600">&#9679; Hoat dong</span>':'<span style="color:#FFC800;font-weight:600">&#9684; Dang phat trien</span>';
+    var statusText=a.status==='active'?'<span style="color:var(--accent-primary,#00C896);font-weight:600">&#9679; Hoat dong</span>':'<span style="color:#FFC800;font-weight:600">&#9684; Dang phat trien</span>';
     h+='<div style="background:'+statusBg+';border:1px solid '+statusBorder+';border-radius:12px;padding:16px;margin-bottom:10px">';
     h+='<div style="display:flex;align-items:flex-start;gap:14px">';
     h+='<div style="width:44px;height:44px;min-width:44px;border-radius:12px;background:'+a.color+'18;border:1px solid '+a.color+'30;display:flex;align-items:center;justify-content:center">'+svgIcon(a.icon).replace('width="18"','width="22"').replace('height="18"','height="22"').replace('stroke="currentColor"','stroke="'+a.color+'"')+'</div>';
     h+='<div style="flex:1;min-width:0">';
-    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:15px;font-weight:700;color:#F8F2E0">'+a.name+'</span>'+statusText+'</div>';
-    h+='<div style="font-size:13px;color:#B8D8D0;line-height:1.6;margin-bottom:8px">'+a.desc+'</div>';
-    h+='<div style="display:flex;gap:12px;font-size:11px;color:#607870">';
-    h+='<span>Model: <b style="color:#00C896">'+a.model+'</b></span>';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:15px;font-weight:700;color:var(--text-primary,#F8F2E0)">'+a.name+'</span>'+statusText+'</div>';
+    h+='<div style="font-size:13px;color:var(--text-secondary,#B8D8D0);line-height:1.6;margin-bottom:8px">'+a.desc+'</div>';
+    h+='<div style="display:flex;gap:12px;font-size:11px;color:var(--text-tertiary,#607870)">';
+    h+='<span>Model: <b style="color:var(--accent-primary,#00C896)">'+a.model+'</b></span>';
     h+='<span>Token: <b style="color:#FFC800">'+a.tokens+'</b></span>';
     h+='<span>Metric: <b style="color:#00B4D8">'+a.metric+'</b></span>';
     h+='</div></div></div></div>';
@@ -1932,10 +1948,10 @@ function renderAgentsDashboard(){
     {l:'Khach quay lai',v:returnRate+'%',desc:returningCustomers+'/'+totalCustomers+' khach',pct:parseFloat(returnRate),c:'#FFC800'}
   ];
   perfMetrics.forEach(function(m){
-    h+='<div style="background:#0D1520;border:1px solid rgba(0,200,150,.06);border-radius:10px;padding:14px">';
-    h+='<div style="font-size:11px;color:#607870;margin-bottom:6px">'+m.l+'</div>';
+    h+='<div style="background:var(--bg-card,#0D1520);border:1px solid rgba(0,200,150,.06);border-radius:10px;padding:14px">';
+    h+='<div style="font-size:11px;color:var(--text-tertiary,#607870);margin-bottom:6px">'+m.l+'</div>';
     h+='<div style="font-size:22px;font-weight:700;color:'+m.c+';margin-bottom:4px">'+m.v+'</div>';
-    h+='<div style="font-size:10px;color:#607870;margin-bottom:8px">'+m.desc+'</div>';
+    h+='<div style="font-size:10px;color:var(--text-tertiary,#607870);margin-bottom:8px">'+m.desc+'</div>';
     h+='<div style="height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+Math.min(100,m.pct)+'%;background:'+m.c+';border-radius:2px;transition:width .5s"></div></div>';
     h+='</div>';
   });
@@ -2030,18 +2046,18 @@ function renderAgentsDashboard(){
       h+='<div style="background:'+bgColor+';border:1px solid '+borderColor+';border-radius:8px;padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;gap:10px;font-size:12px">';
       h+='<span style="font-size:16px">'+a.icon+'</span>';
       h+='<span style="flex:1;color:'+textColor+'">'+a.msg+'</span>';
-      h+='<span style="color:#607870;font-size:10px;white-space:nowrap">'+shortDate(a.time)+'</span>';
+      h+='<span style="color:var(--text-tertiary,#607870);font-size:10px;white-space:nowrap">'+shortDate(a.time)+'</span>';
       h+='</div>';
     });
     h+='</div>';
   }else{
-    h+='<div style="text-align:center;padding:20px;color:#00C896;font-size:13px">&#9989; Khong co canh bao nao. He thong hoat dong binh thuong.</div>';
+    h+='<div style="text-align:center;padding:20px;color:var(--accent-primary,#00C896);font-size:13px">&#9989; Khong co canh bao nao. He thong hoat dong binh thuong.</div>';
   }
   h+='</div>';
 
   // === SECTION 4: Bao Mat ===
   h+='<div class="crd"><div class="crd-h"><span class="crd-t">&#128274; Quy Tac Bao Mat Agent AI</span></div>';
-  h+='<div style="font-family:monospace;font-size:12px;line-height:2;color:#B8D8D0;background:#0A1218;border-radius:8px;padding:16px">';
+  h+='<div style="font-family:monospace;font-size:12px;line-height:2;color:var(--text-secondary,#B8D8D0);background:#0A1218;border-radius:8px;padding:16px">';
   var rules=[
     {icon:'&#9989;',text:'Chi tra loi ve he sinh thai AnimaCare'},
     {icon:'&#9989;',text:'KHONG tiet lo doanh thu, data khach hang'},
@@ -2095,7 +2111,7 @@ function renderAgentsDashboard(){
       h+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(0,200,150,.04);font-size:12px">';
       h+='<span style="font-size:14px">'+log.icon+'</span>';
       h+='<span style="flex:1;color:'+log.color+'">'+log.msg+'</span>';
-      h+='<span style="color:#607870;font-size:10px;white-space:nowrap">'+(log.time?shortDateTime(log.time):'-')+'</span>';
+      h+='<span style="color:var(--text-tertiary,#607870);font-size:10px;white-space:nowrap">'+(log.time?shortDateTime(log.time):'-')+'</span>';
       h+='</div>';
     });
   }
