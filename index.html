@@ -110,6 +110,8 @@ if(window.innerWidth<=768){
 }
 </script>
 <script>
+/* Restore theme preference */
+(function(){var t=localStorage.getItem('anima_theme');if(t==='light')document.documentElement.classList.add('light-mode');})();
 /* FIX-1: Process referral link on page load */
 (function(){
   var params = new URLSearchParams(window.location.search);
@@ -634,9 +636,9 @@ window.setThemeMode=function(mode){
       <button class="lb active" id="btnVI" onclick="setLang('vi')" style="padding:3px 8px;font-size:11px;border-radius:12px">VI</button>
       <button class="lb" id="btnEN" onclick="setLang('en')" style="padding:3px 8px;font-size:11px;border-radius:12px">EN</button>
     </div>
-    <button id="navAuthBtn" onclick="openAuth('login')" title="Tài khoản" style="background:linear-gradient(135deg,rgba(0,90,66,.8),rgba(0,200,150,.8));border:none;border-radius:20px;padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:#000;font-family:var(--fb);font-size:12px;font-weight:700;letter-spacing:.5px;transition:all .2s;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;position:relative;z-index:310;white-space:nowrap" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span data-vi="Đăng nhập" data-en="Sign in">Đăng nhập</span>
+    <button id="navThemeBtn" onclick="document.documentElement.classList.toggle('light-mode');localStorage.setItem('anima_theme',document.documentElement.classList.contains('light-mode')?'light':'dark');this.textContent=document.documentElement.classList.contains('light-mode')?'☀️':'🌙'" title="Sáng/Tối" style="background:var(--bg-input,rgba(0,0,0,.2));border:1px solid var(--border-default,rgba(0,200,150,.1));border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:all .2s;flex-shrink:0">🌙</button>
+    <button id="navAuthBtn" onclick="openAuth('login')" title="Tài khoản" style="background:linear-gradient(135deg,var(--accent-primary,#00C896),var(--accent-secondary,#4EAAAB));border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#000;transition:all .2s;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;position:relative;z-index:310" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     </button>
     <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
