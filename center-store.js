@@ -64,26 +64,26 @@ var PRODUCTS = [
   {sku:'A119-30',name:'ANIMA 119 — 3 Hộp 30 Gói',price:5604000,category:'anima119',desc:'1 tháng liệu trình đầy đủ. Làm sạch toàn diện và phục hồi nền tảng. Tặng tư vấn AI miễn phí.',img:'images/anima119-product.jpg',pills:['30 gói · 3 hộp','Đủ 1 tháng','Tặng tư vấn AI'],featured:true},
   {sku:'A119-120',name:'ANIMA 119 — 12 Hộp 120 Gói',price:22416000,category:'anima119',desc:'4 tháng phục hưng toàn diện theo Quy Luật 30-30-120: Làm sạch → Sửa chữa → Nạp năng lượng → Duy trì.',img:'images/anima119-product.jpg',pills:['120 gói · 12 hộp','4 tháng đầy đủ','Miễn phí vận chuyển']},
   // ── SẢN PHẨM CHĂM SÓC SỨC KHỎE ──
-  {sku:'CON-HERB',name:'Thảo Dược Xông Hơi (1kg)',price:350000,category:'healthcare',desc:'Hỗn hợp 12 vị thảo dược quý cho buồng xông. Khơi thông kinh mạch, thải độc tầng sâu.',img:'images/anima119-hero.jpg',pills:['12 vị thảo dược','Xông hơi detox']},
-  {sku:'CON-OIL',name:'Tinh Dầu Kinh Lạc (100ml)',price:280000,category:'healthcare',desc:'Tinh dầu massage đả thông kinh mạch. Chiết xuất từ 8 loại thảo dược quý.',img:'images/anima119-hero.jpg',pills:['100ml','8 thảo dược']},
-  {sku:'CON-MOXA',name:'Ngải Cứu Cứu Mạch (50 điếu)',price:195000,category:'healthcare',desc:'Điếu ngải cứu cao cấp cho châm cứu. Bồi dưỡng nguyên khí, ấm kinh lạc.',img:'images/anima119-hero.jpg',pills:['50 điếu','Cao cấp']},
-  {sku:'CON-PATCH',name:'Miếng Dán Thảo Dược (20 miếng)',price:420000,category:'healthcare',desc:'Miếng dán hỗ trợ giảm đau khớp, thấm thấu thảo dược qua da.',img:'images/anima119-hero.jpg',pills:['20 miếng','Giảm đau khớp']},
-  {sku:'CON-TEA',name:'Trà Dưỡng Sinh Anima (30 gói)',price:250000,category:'healthcare',desc:'Trà thảo dược cân bằng năng lượng. Uống hàng ngày để duy trì sinh khí.',img:'images/anima119-hero.jpg',pills:['30 gói','Hàng ngày']},
-  {sku:'CON-SALT',name:'Muối Ngâm Chân Thảo Dược (500g)',price:180000,category:'healthcare',desc:'Muối khoáng + thảo dược ngâm chân detox. Thư giãn, khơi thông huyệt đạo bàn chân.',img:'images/anima119-hero.jpg',pills:['500g','Ngâm chân detox']},
+  {sku:'CON-HERB',name:'Thảo Dược Xông Hơi (1kg)',price:350000,category:'healthcare',desc:'Hỗn hợp 12 vị thảo dược quý cho buồng xông. Khơi thông kinh mạch, thải độc tầng sâu.',pills:['12 vị thảo dược','Xông hơi detox']},
+  {sku:'CON-OIL',name:'Tinh Dầu Kinh Lạc (100ml)',price:280000,category:'healthcare',desc:'Tinh dầu massage đả thông kinh mạch. Chiết xuất từ 8 loại thảo dược quý.',pills:['100ml','8 thảo dược']},
+  {sku:'CON-MOXA',name:'Ngải Cứu Cứu Mạch (50 điếu)',price:195000,category:'healthcare',desc:'Điếu ngải cứu cao cấp cho châm cứu. Bồi dưỡng nguyên khí, ấm kinh lạc.',pills:['50 điếu','Cao cấp']},
+  {sku:'CON-PATCH',name:'Miếng Dán Thảo Dược (20 miếng)',price:420000,category:'healthcare',desc:'Miếng dán hỗ trợ giảm đau khớp, thấm thấu thảo dược qua da.',pills:['20 miếng','Giảm đau khớp']},
+  {sku:'CON-TEA',name:'Trà Dưỡng Sinh Anima (30 gói)',price:250000,category:'healthcare',desc:'Trà thảo dược cân bằng năng lượng. Uống hàng ngày để duy trì sinh khí.',pills:['30 gói','Hàng ngày']},
+  {sku:'CON-SALT',name:'Muối Ngâm Chân Thảo Dược (500g)',price:180000,category:'healthcare',desc:'Muối khoáng + thảo dược ngâm chân detox. Thư giãn, khơi thông huyệt đạo bàn chân.',pills:['500g','Ngâm chân detox']},
   // ── DỊCH VỤ TẠI CƠ SỞ ──
-  {sku:'SVC-SCAN',name:'Tầm Soát Sức Khỏe AI',price:350000,category:'service',desc:'AI scan lưỡi + phân tích thể tạng Đông Y. Khai vấn cá nhân hóa 30 phút.',img:'images/anima119-hero.jpg',pills:['30 phút','AI Scan lưỡi'],service:true},
-  {sku:'SVC-HERB',name:'Thảo Mộc Nhiệt (90 phút)',price:850000,category:'service',desc:'Xông hơi thảo dược + massage kinh lạc. Thải độc tầng sâu, khơi thông khí huyết.',img:'images/anima119-hero.jpg',pills:['90 phút','Xông + Massage'],service:true},
-  {sku:'SVC-SOAK',name:'Bồn Ngâm Thảo Mộc (60 phút)',price:650000,category:'service',desc:'Ngâm chân + toàn thân thảo dược. Thư giãn sâu, cân bằng năng lượng.',img:'images/anima119-hero.jpg',pills:['60 phút','Ngâm thảo mộc'],service:true},
-  {sku:'SVC-ACUP',name:'Châm Cứu Chuẩn (60 phút)',price:750000,category:'service',desc:'Châm cứu + cứu ngải. Bồi dưỡng nguyên khí theo 12 đường kinh.',img:'images/anima119-hero.jpg',pills:['60 phút','12 đường kinh'],service:true},
-  {sku:'SVC-MASS',name:'Massage Kinh Lạc (90 phút)',price:950000,category:'service',desc:'Massage đả thông 12 đường kinh. Giải phóng năng lượng ứ trệ.',img:'images/anima119-hero.jpg',pills:['90 phút','Đả thông kinh lạc'],service:true},
-  {sku:'SVC-FULL',name:'Liệu Trình Toàn Phần (180 phút)',price:2500000,category:'service',desc:'Combo tất cả dịch vụ: Khai vấn AI + Xông + Ngâm + Massage + Châm cứu.',img:'images/anima119-hero.jpg',pills:['180 phút','Full combo'],service:true,featured:true},
+  {sku:'SVC-SCAN',name:'Tầm Soát Sức Khỏe AI',price:350000,category:'service',desc:'AI scan lưỡi + phân tích thể tạng Đông Y. Khai vấn cá nhân hóa 30 phút.',pills:['30 phút','AI Scan lưỡi'],service:true},
+  {sku:'SVC-HERB',name:'Thảo Mộc Nhiệt (90 phút)',price:850000,category:'service',desc:'Xông hơi thảo dược + massage kinh lạc. Thải độc tầng sâu, khơi thông khí huyết.',pills:['90 phút','Xông + Massage'],service:true},
+  {sku:'SVC-SOAK',name:'Bồn Ngâm Thảo Mộc (60 phút)',price:650000,category:'service',desc:'Ngâm chân + toàn thân thảo dược. Thư giãn sâu, cân bằng năng lượng.',pills:['60 phút','Ngâm thảo mộc'],service:true},
+  {sku:'SVC-ACUP',name:'Châm Cứu Chuẩn (60 phút)',price:750000,category:'service',desc:'Châm cứu + cứu ngải. Bồi dưỡng nguyên khí theo 12 đường kinh.',pills:['60 phút','12 đường kinh'],service:true},
+  {sku:'SVC-MASS',name:'Massage Kinh Lạc (90 phút)',price:950000,category:'service',desc:'Massage đả thông 12 đường kinh. Giải phóng năng lượng ứ trệ.',pills:['90 phút','Đả thông kinh lạc'],service:true},
+  {sku:'SVC-FULL',name:'Liệu Trình Toàn Phần (180 phút)',price:2500000,category:'service',desc:'Combo tất cả dịch vụ: Khai vấn AI + Xông + Ngâm + Massage + Châm cứu.',pills:['180 phút','Full combo'],service:true,featured:true},
   // ── THIẾT BỊ (B2B) ──
-  {sku:'EQP-STEAM',name:'Buồng Xông Hơi Thảo Mộc',price:45000000,category:'equipment',desc:'Buồng xông 2 người, điều khiển nhiệt độ tự động. Tiêu chuẩn y tế.',img:'images/anima119-hero.jpg',b2b:true,pills:['2 người','Tự động']},
-  {sku:'EQP-BED',name:'Giường Trị Liệu Đa Năng',price:28000000,category:'equipment',desc:'Giường nâng hạ điện, 3 khớp, đệm nhớ hình. Chuyên dụng spa y tế.',img:'images/anima119-hero.jpg',b2b:true,pills:['Nâng hạ điện','3 khớp']},
-  {sku:'EQP-LAMP',name:'Đèn Hồng Ngoại Trị Liệu',price:8500000,category:'equipment',desc:'Đèn TDP hồng ngoại xa, 7 bước sóng. Hỗ trợ phục hồi tế bào sâu.',img:'images/anima119-hero.jpg',b2b:true,pills:['7 bước sóng','Hồng ngoại xa']},
-  {sku:'EQP-CUP',name:'Bộ Giác Hơi Chuyên Dụng (24 cốc)',price:1200000,category:'equipment',desc:'Giác hơi y tế cao cấp, chống vỡ. Đầy đủ size cho mọi vùng cơ thể.',img:'images/anima119-hero.jpg',pills:['24 cốc','Y tế cao cấp']},
-  {sku:'EQP-NEEDLE',name:'Bộ Kim Châm Cứu Vô Trùng (1000 kim)',price:650000,category:'equipment',desc:'Kim 1 lần, đủ size 0.25-0.35mm. Vô trùng tuyệt đối.',img:'images/anima119-hero.jpg',pills:['1000 kim','Vô trùng']},
-  {sku:'EQP-SCAN',name:'Máy AI Scan Lưỡi Anima',price:15000000,category:'equipment',desc:'Camera AI tích hợp phân tích thể tạng Đông Y. Độ chính xác 96.4%.',img:'images/anima119-hero.jpg',b2b:true,pills:['AI 96.4%','Đông Y']}
+  {sku:'EQP-STEAM',name:'Buồng Xông Hơi Thảo Mộc',price:45000000,category:'equipment',desc:'Buồng xông 2 người, điều khiển nhiệt độ tự động. Tiêu chuẩn y tế.',b2b:true,pills:['2 người','Tự động']},
+  {sku:'EQP-BED',name:'Giường Trị Liệu Đa Năng',price:28000000,category:'equipment',desc:'Giường nâng hạ điện, 3 khớp, đệm nhớ hình. Chuyên dụng spa y tế.',b2b:true,pills:['Nâng hạ điện','3 khớp']},
+  {sku:'EQP-LAMP',name:'Đèn Hồng Ngoại Trị Liệu',price:8500000,category:'equipment',desc:'Đèn TDP hồng ngoại xa, 7 bước sóng. Hỗ trợ phục hồi tế bào sâu.',b2b:true,pills:['7 bước sóng','Hồng ngoại xa']},
+  {sku:'EQP-CUP',name:'Bộ Giác Hơi Chuyên Dụng (24 cốc)',price:1200000,category:'equipment',desc:'Giác hơi y tế cao cấp, chống vỡ. Đầy đủ size cho mọi vùng cơ thể.',pills:['24 cốc','Y tế cao cấp']},
+  {sku:'EQP-NEEDLE',name:'Bộ Kim Châm Cứu Vô Trùng (1000 kim)',price:650000,category:'equipment',desc:'Kim 1 lần, đủ size 0.25-0.35mm. Vô trùng tuyệt đối.',pills:['1000 kim','Vô trùng']},
+  {sku:'EQP-SCAN',name:'Máy AI Scan Lưỡi Anima',price:15000000,category:'equipment',desc:'Camera AI tích hợp phân tích thể tạng Đông Y. Độ chính xác 96.4%.',b2b:true,pills:['AI 96.4%','Đông Y']}
 ];
 
 var _cart = [];
