@@ -93,8 +93,12 @@ main::-webkit-scrollbar,
 .claim-note{font-size:10px;color:rgba(220,232,255,0.35);font-style:italic;display:block;margin-top:2px}
 </style>
 
-<link rel="stylesheet" href="theme-light.css?v=20260331b">
+<link rel="stylesheet" href="anima-theme.css?v=20260401a">
 <link rel="stylesheet" href="mobile.css?v=20260321b">
+<script>
+/* Theme: restore saved preference, default=dark */
+(function(){var t=localStorage.getItem('anima_theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();
+</script>
 <script>
 /* Restore theme */
 (function(){if(localStorage.getItem('anima_theme')==='light')document.documentElement.classList.add('light-mode');})();
