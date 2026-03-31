@@ -1,0 +1,329 @@
+/* ═══════════════════════════════════════════════════════════
+   AnimaCare Light Theme — WellKOC Style
+   Override CSS custom properties only — no inline style overrides
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── LIGHT MODE: Override :root variables ── */
+html.light-mode {
+  color-scheme: light;
+
+  /* Backgrounds — WellKOC: #FAFAFE body, white cards */
+  --blk: #FAFAFE;
+  --dark: #F5F5FA;
+  --dark2: #F0F0F8;
+  --dark3: #FFFFFF;
+  --dark4: #F8F8FC;
+  --dark5: #F2F2FA;
+
+  /* Text — WellKOC: #0F172A dark, #64748B secondary */
+  --t1: #0F172A;
+  --t2: #334155;
+  --t3: #64748B;
+  --t4: #94A3B8;
+
+  /* Green accent — keep brand but slightly deeper for light bg */
+  --g1: #00B386;
+  --g2: #009973;
+  --g3: #66D4B0;
+  --g4: #007A5E;
+  --g-dark: #006B52;
+  --g-deep: #004D3B;
+
+  /* Purple accent */
+  --pu1: #6366F1;
+  --pu2: #818CF8;
+  --pu3: #A5B4FC;
+}
+
+/* ── BODY ── */
+html.light-mode body {
+  background: #FAFAFE !important;
+  color: #0F172A !important;
+}
+
+/* ── CANVAS (background animation) — very subtle ── */
+html.light-mode #bgCanvas {
+  opacity: 0.02 !important;
+}
+
+/* ── NAV — WellKOC style: white bg, subtle border ── */
+html.light-mode nav#mainNav {
+  background: rgba(250, 250, 254, 0.92) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Nav links — dark text */
+html.light-mode .nav-link {
+  color: #475569 !important;
+}
+html.light-mode .nav-link:hover {
+  color: #00B386 !important;
+}
+html.light-mode .nav-link-cta {
+  color: #00B386 !important;
+}
+
+/* Nav logo — remove dark-bg blend */
+html.light-mode .nav-logo {
+  background: transparent !important;
+}
+html.light-mode .nav-logo-img {
+  mix-blend-mode: multiply !important;
+  filter: brightness(0.7) contrast(1.5) !important;
+}
+
+/* Lang buttons */
+html.light-mode .lb {
+  color: #64748B !important;
+}
+html.light-mode .lb.active {
+  background: #00B386 !important;
+  color: #fff !important;
+}
+
+/* Auth button */
+html.light-mode #navAuthBtn {
+  background: linear-gradient(135deg, #00B386, #06B6D4) !important;
+}
+
+/* ── HERO — keep dark (image-based) ── */
+html.light-mode .hero,
+html.light-mode section.hero {
+  /* Hero keeps its own dark bg/image — don't override */
+}
+
+/* ── SECTIONS — alternating white/gray ── */
+html.light-mode section {
+  background: #FAFAFE !important;
+}
+html.light-mode .intro-section {
+  background: #FAFAFE !important;
+}
+
+/* ── CARDS — WellKOC: white bg, subtle border, rounded 20px ── */
+html.light-mode .eco-card,
+html.light-mode .step-card,
+html.light-mode .ip-card,
+html.light-mode .tech-card {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(0, 0, 0, 0.07) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+html.light-mode .eco-card:hover,
+html.light-mode .step-card:hover,
+html.light-mode .ip-card:hover,
+html.light-mode .tech-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Card text */
+html.light-mode .eco-ttl,
+html.light-mode .step-ttl {
+  color: #0F172A !important;
+}
+html.light-mode .eco-sub {
+  color: #6366F1 !important;
+}
+html.light-mode .eco-desc,
+html.light-mode .step-desc {
+  color: #475569 !important;
+}
+
+/* ── IPO / INVESTOR SECTION ── */
+html.light-mode .ipo-right {
+  background: #0F172A !important;
+  /* Keep dark for contrast — like WellKOC stat cards */
+}
+
+/* ── STATS ROW ── */
+html.light-mode .is-card {
+  background: transparent !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+html.light-mode .is-lbl {
+  color: #64748B !important;
+}
+
+/* ── BUTTONS — WellKOC gradient: green→cyan→indigo→purple ── */
+html.light-mode .btn-p,
+html.light-mode .nav-cta,
+html.light-mode .st-buy-btn {
+  background: linear-gradient(135deg, #00B386, #06B6D4) !important;
+  color: #fff !important;
+}
+html.light-mode .btn-g {
+  background: transparent !important;
+  border: 1.5px solid rgba(0, 0, 0, 0.12) !important;
+  color: #0F172A !important;
+}
+html.light-mode .btn-g:hover {
+  border-color: #00B386 !important;
+  color: #00B386 !important;
+}
+
+/* ── PILLS / BADGES — WellKOC style ── */
+html.light-mode .st-pill,
+html.light-mode .step-tag {
+  background: rgba(99, 102, 241, 0.08) !important;
+  border-color: rgba(99, 102, 241, 0.15) !important;
+  color: #6366F1 !important;
+}
+
+/* ── SECTION HEADINGS ── */
+html.light-mode .sec-ttl {
+  color: #0F172A !important;
+}
+html.light-mode .sec-sub {
+  color: #475569 !important;
+}
+html.light-mode .sec-lbl {
+  color: #00B386 !important;
+}
+
+/* ── GRADIENT DIVIDERS — WellKOC multi-color ── */
+html.light-mode .gdiv,
+html.light-mode hr {
+  background: linear-gradient(90deg, #22C55E, #06B6D4, #6366F1, #A855F7) !important;
+  height: 2px !important;
+  border: none !important;
+  opacity: 0.4;
+}
+
+/* ── INTRO SECTION ── */
+html.light-mode .intro-headline {
+  color: #0F172A !important;
+}
+html.light-mode .intro-headline em {
+  color: #00B386 !important;
+}
+html.light-mode .intro-quote {
+  color: #475569 !important;
+}
+html.light-mode .intro-eyebrow {
+  color: #6366F1 !important;
+}
+
+/* ── FOOTER — keep dark like WellKOC ── */
+html.light-mode footer {
+  background: #0F172A !important;
+}
+html.light-mode footer * {
+  color: #94A3B8 !important;
+}
+html.light-mode footer a {
+  color: #00B386 !important;
+}
+html.light-mode .f-logo-img {
+  mix-blend-mode: screen !important;
+  filter: brightness(1.2) !important;
+}
+
+/* ── STORE OVERLAY ── */
+html.light-mode #storeOverlay {
+  background: #FAFAFE !important;
+}
+html.light-mode .st-card {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(0, 0, 0, 0.07) !important;
+}
+html.light-mode .st-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+html.light-mode .st-name {
+  color: #0F172A !important;
+}
+html.light-mode .st-desc {
+  color: #475569 !important;
+}
+html.light-mode .st-cat {
+  color: #6366F1 !important;
+}
+
+/* ── OVERLAYS (Anima 119, AnimaCare, etc.) ── */
+html.light-mode [id$="Overlay"] {
+  background: #FAFAFE !important;
+}
+html.light-mode [id$="Overlay"] .mob-back-bar {
+  background: rgba(250, 250, 254, 0.95) !important;
+}
+
+/* ── AUTH MODAL ── */
+html.light-mode #authModal > div:nth-child(2) {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ── ORDER MODAL ── */
+html.light-mode #orderBox {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+html.light-mode #orderBox input,
+html.light-mode #orderBox select,
+html.light-mode #orderBox textarea {
+  background: #F5F5FA !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #0F172A !important;
+}
+
+/* ── PROFILE OVERLAY ── */
+html.light-mode #profileOverlay {
+  background: rgba(250, 250, 254, 0.98) !important;
+}
+html.light-mode #profSidebar {
+  background: #F5F5FA !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ── CHATBOT ── */
+html.light-mode #acBotPanel {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ── SCROLLBAR ── */
+html.light-mode ::-webkit-scrollbar-track {
+  background: #F0F0F8;
+}
+html.light-mode ::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+}
+
+/* ── BOTTOM BAR (patent/GMP) ── */
+html.light-mode .trust-bar {
+  background: #F0F0F8 !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ── MOBILE NAV OVERLAY ── */
+html.light-mode .mobile-nav-overlay {
+  background: rgba(250, 250, 254, 0.98) !important;
+}
+html.light-mode .mobile-nav-overlay a,
+html.light-mode .mobile-nav-overlay .dropdown-label {
+  color: #0F172A !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+html.light-mode .mobile-nav-overlay .dropdown-label {
+  color: #00B386 !important;
+}
+html.light-mode .mobile-nav-overlay .mob-sub a {
+  color: #475569 !important;
+}
+
+/* ── CONTACT OVERLAY ── */
+html.light-mode #contactOverlay > div:nth-child(2) {
+  background: #FFFFFF !important;
+}
+
+/* ── SMOOTH TRANSITION ── */
+html {
+  transition: none;
+}
+html * {
+  transition: color 0s, background-color 0s, border-color 0s;
+}
