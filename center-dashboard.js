@@ -144,7 +144,7 @@ function t(vi, en) { return cLang === 'vi' ? vi : en; }
 
 // ── Inject HTML ──
 function injectCenterPortal() {
-  var S = 'style', C = 'center', inp = 'width:100%;background:#060C0F;border:1px solid rgba(0,200,150,.12);border-radius:8px;padding:11px 14px;color:#F8F2E0;font-size:14px;outline:none;box-sizing:border-box';
+  var S = 'style', C = 'center', inp = 'width:100%;background:#0B1D38;border:1px solid rgba(0,200,150,.12);border-radius:8px;padding:11px 14px;color:#F8F2E0;font-size:14px;outline:none;box-sizing:border-box';
   var lbl = 'font-size:9px;color:rgba(248,242,224,.42);letter-spacing:2px;text-transform:uppercase;font-family:\'Roboto Mono\',monospace;display:block;margin-bottom:4px';
   var btn = 'width:100%;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:600;cursor:pointer';
   var tabBase = 'flex:1;padding:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;border-bottom:2px solid transparent;background:transparent;color:rgba(248,242,224,.42);transition:all .2s';
@@ -154,7 +154,7 @@ function injectCenterPortal() {
   portal.id = 'centerPortal';
   portal.innerHTML =
     '<div style="position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto">' +
-    '<div style="background:#0A1218;border:1px solid rgba(0,200,150,.15);border-radius:20px;padding:0;width:100%;max-width:440px;position:relative;overflow-y:auto;max-height:90vh;scrollbar-width:none;-ms-overflow-style:none">' +
+    '<div style="background:#0F2645;border:1px solid rgba(0,200,150,.15);border-radius:20px;padding:0;width:100%;max-width:440px;position:relative;overflow-y:auto;max-height:90vh;scrollbar-width:none;-ms-overflow-style:none">' +
 
     // Header
     '<div style="text-align:center;padding:28px 32px 0">' +
@@ -312,7 +312,7 @@ function injectCenterPortal() {
   // Dashboard Container
   var dash = document.createElement('div');
   dash.id = 'centerDashboard';
-  dash.style.cssText = 'display:none;position:fixed;inset:0;z-index:10001;background:#030608;overflow:hidden;height:100vh;width:100vw';
+  dash.style.cssText = 'display:none;position:fixed;inset:0;z-index:10001;background:#071428;overflow:hidden;height:100vh;width:100vw';
   document.body.appendChild(dash);
 }
 
@@ -1513,7 +1513,7 @@ function renderDashboard() {
   var html = '<div class="app" style="display:grid;grid-template-columns:220px 1fr;height:100vh;overflow:hidden">';
 
   // Sidebar
-  html += '<aside class="sb" style="background:#060C0F;border-right:0.5px solid rgba(0,200,150,.12);display:flex;flex-direction:column;height:100vh;overflow:hidden">';
+  html += '<aside class="sb" style="background:#0B1D38;border-right:0.5px solid rgba(0,200,150,.12);display:flex;flex-direction:column;height:100vh;overflow:hidden">';
   html += '<div class="sb-logo" style="padding:18px;border-bottom:0.5px solid rgba(0,200,150,.06);display:flex;align-items:center;gap:10px">';
   html += '<div class="sb-logo-gem" style="width:34px;height:34px;border-radius:9px;background:linear-gradient(145deg,#005A42,#00C896);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>';
   html += '<div><div style="font-size:14px;font-weight:600;color:#F8F2E0">' + t(cUser.centerName, cUser.centerNameEn || cUser.centerName) + '</div>';
@@ -1548,10 +1548,10 @@ function renderDashboard() {
   html += '<div class="main" style="display:flex;flex-direction:column;overflow:hidden;min-width:0">';
 
   // Topbar
-  html += '<div class="top" style="height:50px;border-bottom:0.5px solid rgba(0,200,150,.06);display:flex;align-items:center;padding:0 22px;gap:14px;background:#030608;flex-shrink:0">';
+  html += '<div class="top" style="height:50px;border-bottom:0.5px solid rgba(0,200,150,.06);display:flex;align-items:center;padding:0 22px;gap:14px;background:#071428;flex-shrink:0">';
   html += '<button class="adm-mob-toggle" style="display:none;background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.25);color:#00E5A8;cursor:pointer;padding:8px 10px;border-radius:8px;flex-shrink:0" onclick="document.querySelector(\'#centerDashboard .sb\').classList.toggle(\'mob-open\');document.getElementById(\'cMobOverlay\').classList.toggle(\'show\')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>';
   html += '<div style="flex:1;font-size:12.5px;color:rgba(248,242,224,.42)">' + t(cUser.centerName, cUser.centerNameEn) + ' <span style="color:rgba(248,242,224,.22);font-size:10px">\u203A</span> <span style="color:#F8F2E0;font-weight:500" id="cBcPage">Dashboard</span></div>';
-  html += '<div class="lang-sw" style="display:flex;background:#0A1218;border:0.5px solid rgba(0,200,150,.12);border-radius:7px;overflow:hidden">';
+  html += '<div class="lang-sw" style="display:flex;background:#0F2645;border:0.5px solid rgba(0,200,150,.12);border-radius:7px;overflow:hidden">';
   html += '<button class="lang-btn' + (cLang==='vi' ? ' on' : '') + '" style="padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;color:' + (cLang==='vi'?'#00E5A8':'rgba(248,242,224,.22)') + ';background:' + (cLang==='vi'?'rgba(0,200,150,.12)':'transparent') + ';border:none" onclick="window._cSetLang(\'vi\')">VI</button>';
   html += '<button class="lang-btn' + (cLang==='en' ? ' on' : '') + '" style="padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;color:' + (cLang==='en'?'#00E5A8':'rgba(248,242,224,.22)') + ';background:' + (cLang==='en'?'rgba(0,200,150,.12)':'transparent') + ';border:none" onclick="window._cSetLang(\'en\')">EN</button>';
   html += '</div>';
@@ -1577,7 +1577,7 @@ function renderDashboard() {
     + '#centerDashboard{height:100vh!important;width:100vw!important}'
     + '#centerDashboard *{margin:0;padding:0;box-sizing:border-box}'
     + '#centerDashboard .app{display:grid!important;grid-template-columns:220px 1fr!important;height:100vh!important;overflow:hidden}'
-    + '#centerDashboard .sb{background:#060C0F;border-right:0.5px solid rgba(0,200,150,.12);display:flex!important;flex-direction:column;height:100vh!important;overflow:hidden;width:220px!important;min-width:220px!important;position:relative;z-index:20}'
+    + '#centerDashboard .sb{background:#0B1D38;border-right:0.5px solid rgba(0,200,150,.12);display:flex!important;flex-direction:column;height:100vh!important;overflow:hidden;width:220px!important;min-width:220px!important;position:relative;z-index:20}'
     + '#centerDashboard .sb::before{content:"";position:absolute;top:0;left:0;right:0;height:160px;background:radial-gradient(ellipse 140% 100% at 20% 0%,rgba(0,200,150,.09),transparent);pointer-events:none}'
     + '#centerDashboard .sb-logo{padding:18px 18px 14px;border-bottom:0.5px solid rgba(0,200,150,.06);flex-shrink:0;display:flex;align-items:center;gap:10px}'
     + '#centerDashboard .sb-user{padding:11px 14px;border-bottom:0.5px solid rgba(0,200,150,.06);display:flex;align-items:center;gap:10px;flex-shrink:0}'
@@ -1597,7 +1597,7 @@ function renderDashboard() {
     + '#centerDashboard .sb-ft-b{flex:1;padding:7px 6px;border-radius:7px;background:transparent;border:0.5px solid rgba(0,200,150,.12);cursor:pointer;color:rgba(248,242,224,.42);font-size:11px;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .16s}'
     + '#centerDashboard .sb-ft-b:hover{background:rgba(0,200,150,.06);color:rgba(248,242,224,.72)}'
     + '#centerDashboard .main{display:flex;flex-direction:column;overflow:hidden;min-width:0}'
-    + '#centerDashboard .top{height:50px;border-bottom:0.5px solid rgba(0,200,150,.06);display:flex;align-items:center;padding:0 22px;gap:14px;background:#030608;flex-shrink:0}'
+    + '#centerDashboard .top{height:50px;border-bottom:0.5px solid rgba(0,200,150,.06);display:flex;align-items:center;padding:0 22px;gap:14px;background:#071428;flex-shrink:0}'
     + '#centerDashboard .pages{flex:1;overflow:hidden;position:relative}'
     + '#centerDashboard .pg{position:absolute;inset:0;overflow-y:auto;padding:22px 24px;opacity:0;visibility:hidden;transition:opacity .18s}'
     + '#centerDashboard .pg.on{opacity:1;visibility:visible}'
@@ -1606,7 +1606,7 @@ function renderDashboard() {
     + '#centerDashboard .pg-title em{font-style:italic;color:#00E5A8}'
     + '#centerDashboard .pg-sub{font-size:12.5px;color:rgba(248,242,224,.42)}'
     + '#centerDashboard .kpi-g{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}'
-    + '#centerDashboard .kpi{background:#0A1218;border:0.5px solid rgba(0,200,150,.12);border-radius:13px;padding:16px 14px;cursor:pointer;transition:all .18s}'
+    + '#centerDashboard .kpi{background:#0F2645;border:0.5px solid rgba(0,200,150,.12);border-radius:13px;padding:16px 14px;cursor:pointer;transition:all .18s}'
     + '#centerDashboard .kpi:hover{border-color:rgba(0,200,150,.3);transform:translateY(-1px)}'
     + '#centerDashboard .kpi-ic{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}'
     + '#centerDashboard .kpi-l{font-family:"Roboto Mono",monospace;font-size:9px;color:rgba(248,242,224,.22);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}'
@@ -1614,7 +1614,7 @@ function renderDashboard() {
     + '#centerDashboard .kpi-v sub{font-size:13px;font-weight:400;color:rgba(248,242,224,.42)}'
     + '#centerDashboard .kpi-tr{display:flex;align-items:center;gap:4px;font-size:11px}'
     + '#centerDashboard .kpi-tr.up{color:#22c55e}'
-    + '#centerDashboard .c{background:#0A1218;border:0.5px solid rgba(0,200,150,.12);border-radius:13px;overflow:hidden}'
+    + '#centerDashboard .c{background:#0F2645;border:0.5px solid rgba(0,200,150,.12);border-radius:13px;overflow:hidden}'
     + '#centerDashboard .ch{padding:14px 16px 12px;border-bottom:0.5px solid rgba(0,200,150,.06);display:flex;align-items:center;justify-content:space-between}'
     + '#centerDashboard .ct{font-size:12.5px;font-weight:600;color:rgba(248,242,224,.72)}'
     + '#centerDashboard .cs{font-family:"Roboto Mono",monospace;font-size:9px;color:rgba(248,242,224,.22);letter-spacing:1px;text-transform:uppercase}'
@@ -1652,7 +1652,7 @@ function renderDashboard() {
     + '#centerDashboard .act-txt{font-size:12.5px;color:rgba(248,242,224,.72);line-height:1.5;flex:1}'
     + '#centerDashboard .act-txt strong{color:#F8F2E0;font-weight:600}'
     + '#centerDashboard .act-time{font-family:"Roboto Mono",monospace;font-size:10px;color:rgba(248,242,224,.22);margin-top:2px}'
-    + '#centerDashboard .lang-sw{display:flex;background:#0A1218;border:0.5px solid rgba(0,200,150,.12);border-radius:7px;overflow:hidden;flex-shrink:0}'
+    + '#centerDashboard .lang-sw{display:flex;background:#0F2645;border:0.5px solid rgba(0,200,150,.12);border-radius:7px;overflow:hidden;flex-shrink:0}'
     + '#centerDashboard .lang-btn{padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;color:rgba(248,242,224,.22);background:transparent;border:none}'
     + '#centerDashboard .lang-btn.on{background:rgba(0,200,150,.12);color:#00E5A8}'
     + '#centerDashboard .adm-mob-toggle{display:none;background:none;border:none;color:#F8F2E0;cursor:pointer;padding:8px}'
@@ -1669,7 +1669,7 @@ function renderDashboard() {
   + '@media(max-width:1024px){#centerDashboard .kpi-g{grid-template-columns:1fr 1fr!important}#centerDashboard .g2,#centerDashboard .g23{grid-template-columns:1fr!important}}'
   + '@media(max-width:768px){'
   + '#centerDashboard .app{grid-template-columns:1fr!important}'
-  + '#centerDashboard .sb{position:fixed!important;left:-260px!important;top:0!important;bottom:0!important;width:250px!important;min-width:250px!important;z-index:100!important;transition:left .3s ease!important;background:#060C0F!important;box-shadow:4px 0 30px rgba(0,0,0,.7)}'
+  + '#centerDashboard .sb{position:fixed!important;left:-260px!important;top:0!important;bottom:0!important;width:250px!important;min-width:250px!important;z-index:100!important;transition:left .3s ease!important;background:#0B1D38!important;box-shadow:4px 0 30px rgba(0,0,0,.7)}'
   + '#centerDashboard .sb.mob-open{left:0!important}'
   + '#centerDashboard .adm-mob-toggle{display:flex!important}'
   + '#centerDashboard #cMobOverlay.show{display:block!important}'
