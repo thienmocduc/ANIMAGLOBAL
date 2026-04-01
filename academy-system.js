@@ -2,7 +2,7 @@
 (function(){
 const t=(v,e)=>((window._lang||'vi')==='en'?e:v);
 const CAT={foundation:'🏛',technique:'💆',technology:'🤖',product:'💊',soft_skill:'🤝',management:'📊'};
-const S={bg:'#0A1218',accent:'#00C896',purple:'#9B82FF',txt:'#F8F2E0',card:'#111C25',border:'#1E2D3A',blue:'#3B82F6',green:'#22C55E',gray:'#6B7280'};
+const S={bg:'#0B1A2E',accent:'#00C896',purple:'#9B82FF',txt:'#F8F2E0',card:'#111C25',border:'#1E2D3A',blue:'#3B82F6',green:'#22C55E',gray:'#6B7280'};
 const db=()=>({courses:window.AnimaCourses,enroll:window.AnimaEnrollments});
 
 function courseCard(c,enrollment,showEnroll,ktvId,ktvName){

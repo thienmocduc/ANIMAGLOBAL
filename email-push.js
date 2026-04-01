@@ -94,7 +94,7 @@ window.showEmailVerification = function(email, name){
   var d = document.createElement('div');
   d.id = 'emailVerifyModal';
   d.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.85);backdrop-filter:blur(10px)';
-  d.innerHTML = '<div style="background:#0A1218;border:1px solid rgba(0,200,150,.2);border-radius:20px;padding:28px;max-width:400px;width:100%;text-align:center">'
+  d.innerHTML = '<div style="background:#0B1A2E;border:1px solid rgba(0,200,150,.2);border-radius:20px;padding:28px;max-width:400px;width:100%;text-align:center">'
     +'<div style="font-size:40px;margin-bottom:12px">📧</div>'
     +'<div style="font-size:18px;font-weight:700;color:#F8F2E0;margin-bottom:8px">Xác thực Email</div>'
     +'<div style="font-size:13px;color:rgba(248,242,224,.4);margin-bottom:20px">Mã xác thực đã gửi đến<br><strong style="color:#00C896">'+email+'</strong></div>'

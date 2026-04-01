@@ -68,7 +68,7 @@ window.showRatingPopup = function(bookingId, ktvId, ktvName){
   d.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.85);backdrop-filter:blur(10px)';
 
   var stars = 0;
-  d.innerHTML = '<div style="background:#0A1218;border:1px solid rgba(0,200,150,.2);border-radius:20px;padding:28px;max-width:400px;width:100%;text-align:center">'
+  d.innerHTML = '<div style="background:#0B1A2E;border:1px solid rgba(0,200,150,.2);border-radius:20px;padding:28px;max-width:400px;width:100%;text-align:center">'
     +'<div style="font-size:40px;margin-bottom:12px">⭐</div>'
     +'<div style="font-size:18px;font-weight:700;color:#F8F2E0;margin-bottom:4px">'+t('Đánh giá buổi trị liệu','Rate your session')+'</div>'
     +'<div style="font-size:13px;color:rgba(248,242,224,.4);margin-bottom:16px">KTV: <strong style="color:#00C896">'+(ktvName||t('Kỹ thuật viên','Technician'))+'</strong></div>'
@@ -151,7 +151,7 @@ window.showKYCForm = function(){
   var d = document.createElement('div');
   d.id = 'kycModal';
   d.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:flex-start;justify-content:center;padding:20px;padding-top:5vh;overflow-y:auto;background:rgba(0,0,0,.85);backdrop-filter:blur(10px)';
-  d.innerHTML = '<div style="background:#0A1218;border:1px solid rgba(0,200,150,.2);border-radius:20px;padding:28px;max-width:480px;width:100%">'
+  d.innerHTML = '<div style="background:#0B1A2E;border:1px solid rgba(0,200,150,.2);border-radius:20px;padding:28px;max-width:480px;width:100%">'
     +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><div style="font-size:18px;font-weight:700;color:#F8F2E0">'+t('Đăng Ký Kỹ Thuật Viên','KTV Registration')+'</div><button onclick="document.getElementById(\'kycModal\').remove()" style="background:none;border:none;color:#FF4D6D;font-size:18px;cursor:pointer">✕</button></div>'
     +'<div style="font-size:13px;color:rgba(248,242,224,.4);margin-bottom:16px">'+t('Hoàn thành hồ sơ để trở thành KTV chính thức của Anima Care','Complete your profile to become an official Anima Care technician')+'</div>'
     +'<div style="display:flex;flex-direction:column;gap:12px">'
@@ -373,7 +373,7 @@ window.renderAdmBookings = function(){
       h+='<td style="font-size:11px">'+b.booking_date+'</td>';
       h+='<td style="font-size:11px;color:#00C896;font-weight:600">'+b.booking_time+'</td>';
       h+='<td style="font-size:11px;color:#FFB800;font-weight:600">'+money(b.service_price)+'</td>';
-      h+='<td><select onchange="window._admUpdateBooking(\''+b.id+'\',this.value)" style="font-size:10px;background:#0A1218;color:#B8D8D0;border:1px solid rgba(0,200,150,.15);border-radius:4px;padding:2px 4px">';
+      h+='<td><select onchange="window._admUpdateBooking(\''+b.id+'\',this.value)" style="font-size:10px;background:#0B1A2E;color:#B8D8D0;border:1px solid rgba(0,200,150,.15);border-radius:4px;padding:2px 4px">';
       ['pending','confirmed','in_progress','completed','cancelled','no_show'].forEach(function(s){
         h+='<option value="'+s+'"'+(b.status===s?' selected':'')+'>'+(statusLabels[s]||s)+'</option>';
       });

@@ -33,7 +33,7 @@ function t(vi, en) { return tLang === 'vi' ? vi : en; }
 // INJECT PORTAL + DASHBOARD HTML
 // ═══════════════════════════════════════════
 function injectTechPortal() {
-  var inp = 'width:100%;background:#0E1425;border:1px solid rgba(123,95,255,.15);border-radius:8px;padding:11px 14px;color:#F8F2E0;font-size:14px;outline:none;box-sizing:border-box';
+  var inp = 'width:100%;background:#0B1A2E;border:1px solid rgba(123,95,255,.15);border-radius:8px;padding:11px 14px;color:#F8F2E0;font-size:14px;outline:none;box-sizing:border-box';
   var lbl = 'font-size:9px;color:rgba(248,242,224,.42);letter-spacing:2px;text-transform:uppercase;font-family:\'Roboto Mono\',monospace;display:block;margin-bottom:4px';
   var btnStyle = 'width:100%;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:600;cursor:pointer';
 
@@ -41,7 +41,7 @@ function injectTechPortal() {
   portal.id = 'techPortal';
   portal.innerHTML =
     '<div style="position:fixed;inset:0;z-index:9997;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto">' +
-    '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.2);border-radius:20px;padding:0;width:100%;max-width:440px;position:relative;max-height:90vh;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none">' +
+    '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.2);border-radius:20px;padding:0;width:100%;max-width:440px;position:relative;max-height:90vh;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none">' +
 
     // Header
     '<div style="text-align:center;padding:28px 32px 0">' +
@@ -114,7 +114,7 @@ function injectTechPortal() {
   // Dashboard container
   var dash = document.createElement('div');
   dash.id = 'techDashboard';
-  dash.style.cssText = 'display:none;position:fixed;inset:0;z-index:10002;background:#0A0E1E;overflow:hidden';
+  dash.style.cssText = 'display:none;position:fixed;inset:0;z-index:10002;background:#0B1A2E;overflow:hidden';
   document.body.appendChild(dash);
 }
 
@@ -263,10 +263,10 @@ function renderTechDash() {
   var statusColors = { online:'#00C896', busy:'#F59E0B', offline:'#607870' };
   var statusLabels = { online:{ vi:'Tr\u1EF1c tuy\u1EBFn', en:'Online' }, busy:{ vi:'\u0110ang b\u1EADn', en:'Busy' }, offline:{ vi:'Ngo\u1EA1i tuy\u1EBFn', en:'Offline' } };
 
-  var html = '<div style="display:grid;grid-template-columns:180px 1fr;height:100vh;background:#0A0E1E;color:#F8F2E0;font-family:\'Roboto\',sans-serif;overflow:hidden">';
+  var html = '<div style="display:grid;grid-template-columns:180px 1fr;height:100vh;background:#0B1A2E;color:#F8F2E0;font-family:\'Roboto\',sans-serif;overflow:hidden">';
 
   // ── SIDEBAR ──
-  html += '<aside style="background:#0E1425;border-right:1px solid rgba(123,95,255,.08);display:flex;flex-direction:column;overflow-y:auto;padding:0">';
+  html += '<aside style="background:#0B1A2E;border-right:1px solid rgba(123,95,255,.08);display:flex;flex-direction:column;overflow-y:auto;padding:0">';
   // Back + Close
   html += '<div style="padding:8px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(123,95,255,.08)">';
   html += '<div onclick="window._closeTechDash()" style="display:flex;align-items:center;gap:4px;cursor:pointer;color:#9B82FF;font-size:12px;font-weight:600">';
@@ -344,7 +344,7 @@ function renderTechDash() {
       html += '<div style="text-align:center;padding:48px 20px;color:rgba(248,242,224,.3)"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" style="margin-bottom:12px;opacity:.4"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg><div style="font-size:14px">' + t('Kh\u00F4ng c\u00F3 l\u1ECBch ch\u1EDD','No pending bookings') + '</div></div>';
     }
     pending.forEach(function(b) {
-      html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.15);border-radius:14px;padding:16px;margin-bottom:12px">';
+      html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.15);border-radius:14px;padding:16px;margin-bottom:12px">';
       html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">';
       html += '<div><div style="font-size:15px;font-weight:600">' + b.customer + '</div>';
       html += '<div style="font-size:12px;color:#9B82FF;margin-top:2px">' + b.service + '</div></div>';
@@ -365,7 +365,7 @@ function renderTechDash() {
         var elapsed = isCheckedIn ? Math.floor((Date.now() - new Date(b.checkedInAt).getTime())/60000) : 0;
         var elapsedH = Math.floor(elapsed/60);
         var elapsedM = elapsed % 60;
-        html += '<div style="background:#121A2E;border:1px solid rgba(0,200,150,.15);border-radius:14px;padding:16px;margin-bottom:10px">';
+        html += '<div style="background:#0B1A2E;border:1px solid rgba(0,200,150,.15);border-radius:14px;padding:16px;margin-bottom:10px">';
         html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">';
         html += '<div><div style="font-weight:600;font-size:14px">' + b.customer + '</div><div style="font-size:12px;color:rgba(248,242,224,.42)">' + b.service + ' \u00B7 ' + b.date + ' ' + (b.time||'') + '</div></div>';
         if(isCheckedIn) {
@@ -462,7 +462,7 @@ function renderTechDash() {
       if(!tUser.lat) distTxt = '--';
       var borderColor = isMyCenter ? 'rgba(0,200,150,.3)' : 'rgba(123,95,255,.1)';
 
-      html += '<div style="background:#121A2E;border:1px solid ' + borderColor + ';border-radius:14px;padding:14px;margin-bottom:10px">';
+      html += '<div style="background:#0B1A2E;border:1px solid ' + borderColor + ';border-radius:14px;padding:14px;margin-bottom:10px">';
 
       // Header row
       html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">';
@@ -505,9 +505,9 @@ function renderTechDash() {
       var ini = tech.name.split(' ').map(function(w) { return w[0]; }).join('').substr(0,2);
       var techDist = calcDist(tUser.lat||0, tUser.lng||0, tech.lat||0, tech.lng||0);
       var techDistTxt = (!tUser.lat || !tech.lat) ? '--' : (techDist < 1 ? (techDist*1000).toFixed(0) + 'm' : techDist.toFixed(1) + 'km');
-      html += '<div style="display:flex;align-items:center;gap:12px;padding:12px;background:#121A2E;border:1px solid rgba(123,95,255,.1);border-radius:12px;margin-bottom:8px">';
+      html += '<div style="display:flex;align-items:center;gap:12px;padding:12px;background:#0B1A2E;border:1px solid rgba(123,95,255,.1);border-radius:12px;margin-bottom:8px">';
       html += '<div style="position:relative"><div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#5B3FDF,#7B5FFF);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff">' + ini + '</div>';
-      html += '<div style="position:absolute;bottom:-1px;right:-1px;width:10px;height:10px;border-radius:50%;background:' + sc + ';border:2px solid #121A2E"></div></div>';
+      html += '<div style="position:absolute;bottom:-1px;right:-1px;width:10px;height:10px;border-radius:50%;background:' + sc + ';border:2px solid #0B1A2E"></div></div>';
       html += '<div style="flex:1"><div style="font-size:14px;font-weight:600">' + tech.name + '</div>';
       html += '<div style="font-size:11px;color:rgba(248,242,224,.42)">' + tech.specialty + '</div>';
       html += '<div style="font-size:11px;color:rgba(248,242,224,.32);margin-top:2px">\u2605 ' + tech.rating + ' \u00B7 ' + tech.sessions + ' sessions</div></div>';
@@ -540,9 +540,9 @@ function renderTechDash() {
     var totalEarned = completedClients.reduce(function(s,c) { return s + (c.sessionFee||150000); }, 0);
 
     html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">';
-    html += '<div style="background:#121A2E;border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;color:#00E5A8">' + allClients.length + '</div><div style="font-size:9px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:1px">' + t('Kh\u00E1ch h\u00E0ng','Clients') + '</div></div>';
-    html += '<div style="background:#121A2E;border:1px solid rgba(245,158,11,.15);border-radius:10px;padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;color:#F59E0B">' + incompleteClients.length + '</div><div style="font-size:9px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:1px">' + t('Ch\u01B0a xong','Incomplete') + '</div></div>';
-    html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.15);border-radius:10px;padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;color:#9B82FF">' + (totalEarned/1000000).toFixed(1) + 'M</div><div style="font-size:9px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:1px">' + t('Th\u00F9 lao','Earned') + '</div></div>';
+    html += '<div style="background:#0B1A2E;border:1px solid rgba(0,200,150,.15);border-radius:10px;padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;color:#00E5A8">' + allClients.length + '</div><div style="font-size:9px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:1px">' + t('Kh\u00E1ch h\u00E0ng','Clients') + '</div></div>';
+    html += '<div style="background:#0B1A2E;border:1px solid rgba(245,158,11,.15);border-radius:10px;padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;color:#F59E0B">' + incompleteClients.length + '</div><div style="font-size:9px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:1px">' + t('Ch\u01B0a xong','Incomplete') + '</div></div>';
+    html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.15);border-radius:10px;padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;color:#9B82FF">' + (totalEarned/1000000).toFixed(1) + 'M</div><div style="font-size:9px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:1px">' + t('Th\u00F9 lao','Earned') + '</div></div>';
     html += '</div>';
 
     if(incompleteClients.length > 0) {
@@ -582,7 +582,7 @@ function renderTechDash() {
           improveTxt = diff > 0 ? ('\u2193' + diff + ' ' + t('\u0111i\u1EC3m \u0111au','pain pts')) : (diff < 0 ? ('\u2191' + Math.abs(diff)) : '\u2194 0');
         }
 
-        html += '<div onclick="window._tViewClient(\'' + cl._id + '\')" style="background:#121A2E;border:1px solid ' + (isComplete?'rgba(0,200,150,.15)':'rgba(245,158,11,.2)') + ';border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px">';
+        html += '<div onclick="window._tViewClient(\'' + cl._id + '\')" style="background:#0B1A2E;border:1px solid ' + (isComplete?'rgba(0,200,150,.15)':'rgba(245,158,11,.2)') + ';border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px">';
 
         // Avatar
         html += '<div style="width:42px;height:42px;border-radius:50%;background:' + (isComplete?'linear-gradient(135deg,#00896A,#00C896)':'linear-gradient(135deg,#B8860B,#F59E0B)') + ';display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0">' + initials + '</div>';
@@ -623,7 +623,7 @@ function renderTechDash() {
         html += '</div>';
 
         // Health overview card
-        html += '<div style="background:#121A2E;border:1px solid rgba(0,200,150,.12);border-radius:14px;padding:16px;margin-bottom:12px">';
+        html += '<div style="background:#0B1A2E;border:1px solid rgba(0,200,150,.12);border-radius:14px;padding:16px;margin-bottom:12px">';
         html += '<div style="font-size:13px;font-weight:600;color:#00E5A8;margin-bottom:10px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>' + t('T\u00ECnh Tr\u1EA1ng S\u1EE9c Kh\u1ECFe','Health Status') + '</div>';
 
         var hFields = [
@@ -644,7 +644,7 @@ function renderTechDash() {
         html += '</div>';
 
         // Session history
-        html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px;margin-bottom:12px">';
+        html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px;margin-bottom:12px">';
         html += '<div style="font-size:13px;font-weight:600;color:#9B82FF;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center"><span>' + t('L\u1ECBch S\u1EED Bu\u1ED5i Tr\u1ECB Li\u1EC7u','Session History') + ' (' + sessions.length + ')</span>';
         html += '<button onclick="window._tAddSession(\'' + cl._id + '\')" style="background:rgba(123,95,255,.1);border:1px solid rgba(123,95,255,.2);border-radius:6px;padding:4px 10px;color:#9B82FF;font-size:11px;font-weight:600;cursor:pointer">+ ' + t('Th\u00EAm bu\u1ED5i','Add Session') + '</button></div>';
 
@@ -704,9 +704,9 @@ function renderTechDash() {
       var isNew = !cl;
       html += '<div style="font-size:16px;font-weight:600;margin-bottom:14px">' + (isNew ? t('Th\u00EAm Kh\u00E1ch H\u00E0ng M\u1EDBi','Add New Client') : t('C\u1EADp Nh\u1EADt H\u1ED3 S\u01A1','Update Record')) + '</div>';
 
-      var fStyle = 'width:100%;background:#0E1425;border:1px solid rgba(123,95,255,.15);border-radius:8px;padding:10px 12px;color:#F8F2E0;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:10px';
+      var fStyle = 'width:100%;background:#0B1A2E;border:1px solid rgba(123,95,255,.15);border-radius:8px;padding:10px 12px;color:#F8F2E0;font-size:13px;outline:none;box-sizing:border-box;margin-bottom:10px';
       var lStyle = 'font-size:9px;color:rgba(248,242,224,.42);letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:3px;font-family:\'Roboto Mono\',monospace';
-      var secStyle = 'background:#121A2E;border:1px solid rgba(123,95,255,.1);border-radius:12px;padding:14px;margin-bottom:12px';
+      var secStyle = 'background:#0B1A2E;border:1px solid rgba(123,95,255,.1);border-radius:12px;padding:14px;margin-bottom:12px';
 
       // Personal info
       html += '<div style="' + secStyle + '">';
@@ -819,7 +819,7 @@ function renderTechDash() {
         {label:t('Ch\u1EDD duy\u1EC7t','Pending'),val:formatVND(incData.pendingAmount),color:'#FF4D6D',icon:'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'}
       ];
       kpis.forEach(function(k){
-        html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.12);border-radius:12px;padding:14px">';
+        html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.12);border-radius:12px;padding:14px">';
         html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="' + k.color + '" stroke-width="2" stroke-linecap="round"><path d="' + k.icon + '"/></svg><span style="font-size:10px;color:rgba(248,242,224,.42);text-transform:uppercase;letter-spacing:1px">' + k.label + '</span></div>';
         html += '<div style="font-size:18px;font-weight:700;color:' + k.color + ';font-family:\'Roboto Mono\',monospace">' + k.val + '</div>';
         html += '</div>';
@@ -827,7 +827,7 @@ function renderTechDash() {
       html += '</div>';
 
       // Income per session breakdown
-      html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px;margin-bottom:16px">';
+      html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px;margin-bottom:16px">';
       html += '<div style="font-size:13px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9B82FF" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>' + t('Thu nh\u1EADp theo phi\u00EAn','Income per Session') + '</div>';
       // Last 5 completed sessions
       var last5 = myCompleted.slice(-5).reverse();
@@ -846,7 +846,7 @@ function renderTechDash() {
       html += '</div>';
 
       // Monthly chart (simple bar)
-      html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px">';
+      html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px">';
       html += '<div style="font-size:13px;font-weight:600;margin-bottom:12px">' + t('Bi\u1EC3u \u0111\u1ED3 th\u00E1ng','Monthly Chart') + '</div>';
       var months = [];
       for(var mi=5; mi>=0; mi--) {
@@ -879,11 +879,11 @@ function renderTechDash() {
       html += '</div>';
 
       // Bank account setup
-      html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px;margin-bottom:16px">';
+      html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px;margin-bottom:16px">';
       html += '<div style="font-size:13px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9B82FF" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>' + t('T\u00E0i kho\u1EA3n ng\u00E2n h\u00E0ng','Bank Account') + '</div>';
 
       var bankLbl = 'font-size:9px;color:rgba(248,242,224,.42);letter-spacing:1.5px;text-transform:uppercase;font-family:\'Roboto Mono\',monospace;display:block;margin-bottom:4px';
-      var bankInp = 'width:100%;background:#0E1425;border:1px solid rgba(123,95,255,.15);border-radius:8px;padding:10px 12px;color:#F8F2E0;font-size:13px;outline:none;box-sizing:border-box';
+      var bankInp = 'width:100%;background:#0B1A2E;border:1px solid rgba(123,95,255,.15);border-radius:8px;padding:10px 12px;color:#F8F2E0;font-size:13px;outline:none;box-sizing:border-box';
 
       html += '<div style="margin-bottom:10px"><label style="' + bankLbl + '">' + t('Ng\u00E2n h\u00E0ng','Bank') + '</label>';
       html += '<select id="ktvBankName" style="' + bankInp + ';cursor:pointer;-webkit-appearance:none">';
@@ -902,7 +902,7 @@ function renderTechDash() {
       html += '</div>';
 
       // Withdrawal form
-      html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px;margin-bottom:16px">';
+      html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px;margin-bottom:16px">';
       html += '<div style="font-size:13px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00E5A8" stroke-width="2" stroke-linecap="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>' + t('Y\u00EAu c\u1EA7u r\u00FAt ti\u1EC1n','Withdrawal Request') + '</div>';
 
       html += '<div style="margin-bottom:12px"><label style="' + bankLbl + '">' + t('S\u1ED1 ti\u1EC1n (VN\u0110)','Amount (VND)') + '</label>';
@@ -921,7 +921,7 @@ function renderTechDash() {
       html += '<div style="margin-bottom:14px"><label style="' + bankLbl + '">' + t('Ghi ch\u00FA','Note') + '</label>';
       html += '<input id="ktvWithdrawNote" style="' + bankInp + '" placeholder="' + t('Tu\u1EF3 ch\u1ECDn','Optional') + '"></div>';
 
-      html += '<button onclick="window._ktvRequestWithdraw()" style="width:100%;padding:12px;border:none;border-radius:8px;background:linear-gradient(135deg,#00C896,#00E5A8);color:#0E1425;font-size:14px;font-weight:700;cursor:pointer">' + t('G\u1EEDi y\u00EAu c\u1EA7u r\u00FAt ti\u1EC1n','Submit Withdrawal') + '</button>';
+      html += '<button onclick="window._ktvRequestWithdraw()" style="width:100%;padding:12px;border:none;border-radius:8px;background:linear-gradient(135deg,#00C896,#00E5A8);color:#0B1A2E;font-size:14px;font-weight:700;cursor:pointer">' + t('G\u1EEDi y\u00EAu c\u1EA7u r\u00FAt ti\u1EC1n','Submit Withdrawal') + '</button>';
 
       html += '<div style="margin-top:10px;font-size:10px;color:rgba(248,242,224,.3);text-align:center;line-height:1.6">' + t('T\u1ED1i thi\u1EC3u 50,000\u0111. X\u1EED l\u00FD trong 1-3 ng\u00E0y l\u00E0m vi\u1EC7c.','Min 50,000d. Processed in 1-3 business days.') + '</div>';
       html += '</div>';
@@ -929,7 +929,7 @@ function renderTechDash() {
       // Pending withdrawals
       var pendingW = incData.pendingWithdrawals.filter(function(w){return w.status==='pending';});
       if(pendingW.length > 0) {
-        html += '<div style="background:#121A2E;border:1px solid rgba(255,77,109,.12);border-radius:14px;padding:16px">';
+        html += '<div style="background:#0B1A2E;border:1px solid rgba(255,77,109,.12);border-radius:14px;padding:16px">';
         html += '<div style="font-size:13px;font-weight:600;margin-bottom:10px;color:#F59E0B">' + t('\u0110ang ch\u1EDD duy\u1EC7t','Pending Approval') + ' (' + pendingW.length + ')</div>';
         pendingW.forEach(function(w){
           html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(123,95,255,.06)">';
@@ -947,7 +947,7 @@ function renderTechDash() {
       var allTx = (incData.transactions || []).concat(incData.pendingWithdrawals || []);
       allTx.sort(function(a,b){ return (b.date||'').localeCompare(a.date||''); });
 
-      html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px">';
+      html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:16px">';
       html += '<div style="font-size:13px;font-weight:600;margin-bottom:12px">' + t('L\u1ECBch s\u1EED giao d\u1ECBch','Transaction History') + '</div>';
 
       if(allTx.length === 0) {
@@ -1043,7 +1043,7 @@ function renderTechDash() {
     html += '</div></div>';
 
     // ── Performance Gauges ──
-    html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.1);border-radius:14px;padding:16px;margin-bottom:12px">';
+    html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.1);border-radius:14px;padding:16px;margin-bottom:12px">';
     html += '<div style="font-size:11px;font-weight:700;color:rgba(248,242,224,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px">' + t('\u0110o L\u01B0\u1EDDng Hi\u1EC7u Su\u1EA5t','Performance Metrics') + '</div>';
     html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">';
     html += '<div>' + gauge(completionRate,'#00E5A8',80,t('Ho\u00E0n th\u00E0nh','Complete'),completionRate+'%') + '</div>';
@@ -1052,7 +1052,7 @@ function renderTechDash() {
     html += '</div></div>';
 
     // ── Revenue Stats (vertical cards) ──
-    html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.1);border-radius:14px;padding:16px;margin-bottom:12px">';
+    html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.1);border-radius:14px;padding:16px;margin-bottom:12px">';
     html += '<div style="font-size:11px;font-weight:700;color:rgba(248,242,224,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">' + t('Th\u1ED1ng K\u00EA Doanh Thu','Revenue Statistics') + '</div>';
     // Revenue rows
     var revRows = [
@@ -1073,7 +1073,7 @@ function renderTechDash() {
     html += '</div>';
 
     // ── Monthly Income Chart ──
-    html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.1);border-radius:14px;padding:16px;margin-bottom:12px">';
+    html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.1);border-radius:14px;padding:16px;margin-bottom:12px">';
     html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
     html += '<div style="font-size:11px;font-weight:700;color:rgba(248,242,224,.5);text-transform:uppercase;letter-spacing:1.5px">' + t('Bi\u1EC3u \u0110\u1ED3 Thu Nh\u1EADp','Income Chart') + '</div>';
     html += '<div style="font-size:9px;color:rgba(248,242,224,.3)">' + t('6 th\u00E1ng g\u1EA7n nh\u1EA5t','Last 6 months') + '</div></div>';
@@ -1098,7 +1098,7 @@ function renderTechDash() {
     html += '</div></div>';
 
     // ── Customer Overview ──
-    html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.1);border-radius:14px;padding:16px;margin-bottom:12px">';
+    html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.1);border-radius:14px;padding:16px;margin-bottom:12px">';
     html += '<div style="font-size:11px;font-weight:700;color:rgba(248,242,224,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px">' + t('Kh\u00E1ch H\u00E0ng','Customers') + '</div>';
     html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
     var custCards=[
@@ -1119,7 +1119,7 @@ function renderTechDash() {
     // Affiliate moved to separate tab (t-affiliate)
 
     // ── Personal Info ──
-    html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.08);border-radius:14px;padding:16px;margin-bottom:14px">';
+    html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.08);border-radius:14px;padding:16px;margin-bottom:14px">';
     html += '<div style="font-size:11px;font-weight:700;color:rgba(248,242,224,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px">' + t('Th\u00F4ng Tin C\u00E1 Nh\u00E2n','Personal Info') + '</div>';
     [[t('H\u1ECD t\u00EAn','Name'),tUser.name],[t('SĐT','Phone'),tUser.phone],['Email',tUser.email],[t('Chuy\u00EAn m\u00F4n','Spec'),tUser.specialty||'KTV'],[t('C\u01A1 s\u1EDF','Center'),tUser.centerName]].forEach(function(f){
       html += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(123,95,255,.04)">';
@@ -1129,7 +1129,7 @@ function renderTechDash() {
     html += '</div>';
 
     // ── Leaderboard ──
-    html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.08);border-radius:14px;padding:16px;margin-bottom:14px">';
+    html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.08);border-radius:14px;padding:16px;margin-bottom:14px">';
     html += '<div style="font-size:11px;font-weight:700;color:rgba(248,242,224,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px">\uD83C\uDFC6 ' + t('B\u1EA3ng X\u1EBFp H\u1EA1ng KTV','KTV Leaderboard') + '</div>';
     var allKtv = TECH_ACCOUNTS.filter(function(k){return k.centerId===tUser.centerId;});
     allKtv.sort(function(a,b){return (b.sessions||0)-(a.sessions||0);});
@@ -1146,7 +1146,7 @@ function renderTechDash() {
     html += '</div>';
 
     // ── Product Recommendations ──
-    html += '<div style="background:#121A2E;border:1px solid rgba(0,200,150,.08);border-radius:14px;padding:16px;margin-bottom:14px">';
+    html += '<div style="background:#0B1A2E;border:1px solid rgba(0,200,150,.08);border-radius:14px;padding:16px;margin-bottom:14px">';
     html += '<div style="font-size:11px;font-weight:700;color:rgba(248,242,224,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px">\uD83D\uDCE6 ' + t('G\u1EE3i \u00DD SP Cho Kh\u00E1ch','Product Suggestions') + '</div>';
     html += '<div style="font-size:12px;color:rgba(248,242,224,.5);margin-bottom:12px">' + t('Sau bu\u1ED5i tr\u1ECB li\u1EC7u, g\u1EE3i \u00FD kh\u00E1ch s\u1EA3n ph\u1EA9m ph\u00F9 h\u1EE3p th\u1EC3 t\u1EA1ng','After session, suggest products matching constitution') + '</div>';
     var products = [
@@ -1177,7 +1177,7 @@ function renderTechDash() {
     html += '<div style="font-size:18px;font-weight:600;margin-bottom:4px">' + t('Ch\u01B0\u01A1ng Tr\u00ECnh Affiliate','Affiliate Program') + '</div>';
     html += '<div style="font-size:12px;color:rgba(248,242,224,.42);margin-bottom:16px">' + t('Gi\u1EDBi thi\u1EC7u kh\u00E1ch h\u00E0ng, nh\u1EADn hoa h\u1ED3ng tr\u1ECDn \u0111\u1EDDi','Refer customers, earn lifetime commission') + '</div>';
     // Referral Code Card
-    html += '<div style="background:linear-gradient(135deg,rgba(37,99,235,.08),#121A2E);border:1px solid rgba(77,166,255,.2);border-radius:16px;padding:20px;margin-bottom:16px">';
+    html += '<div style="background:linear-gradient(135deg,rgba(37,99,235,.08),#0B1A2E);border:1px solid rgba(77,166,255,.2);border-radius:16px;padding:20px;margin-bottom:16px">';
     html += '<div style="text-align:center;margin-bottom:16px"><div style="font-size:10px;color:rgba(248,242,224,.4);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px">' + t('M\u00E3 Gi\u1EDBi Thi\u1EC7u C\u1EE7a B\u1EA1n','Your Referral Code') + '</div>';
     html += '<div style="font-size:32px;font-weight:700;color:#4DA6FF;font-family:\'Roboto Mono\',monospace;letter-spacing:6px">' + affData.code + '</div></div>';
     html += '<div style="display:flex;gap:8px;justify-content:center">';
@@ -1186,12 +1186,12 @@ function renderTechDash() {
     html += '</div></div>';
     // KPIs
     html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">';
-    html += '<div style="background:#121A2E;border:1px solid rgba(77,166,255,.12);border-radius:12px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:700;color:#4DA6FF">'+(affData.referrals||0)+'</div><div style="font-size:10px;color:rgba(248,242,224,.35);margin-top:4px">'+t('Ng\u01B0\u1EDDi Gi\u1EDBi Thi\u1EC7u','Referrals')+'</div></div>';
-    html += '<div style="background:#121A2E;border:1px solid rgba(0,200,150,.12);border-radius:12px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:700;color:#00E5A8;font-family:\'Roboto Mono\',monospace">'+formatVND(affiliateComm)+'</div><div style="font-size:10px;color:rgba(248,242,224,.35);margin-top:4px">'+t('Hoa H\u1ED3ng','Commission')+'</div></div>';
-    html += '<div style="background:#121A2E;border:1px solid rgba(255,184,0,.12);border-radius:12px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:700;color:#FFB800">'+(affData.level||'F0')+'</div><div style="font-size:10px;color:rgba(248,242,224,.35);margin-top:4px">'+t('C\u1EA5p B\u1EADc','Level')+'</div></div>';
+    html += '<div style="background:#0B1A2E;border:1px solid rgba(77,166,255,.12);border-radius:12px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:700;color:#4DA6FF">'+(affData.referrals||0)+'</div><div style="font-size:10px;color:rgba(248,242,224,.35);margin-top:4px">'+t('Ng\u01B0\u1EDDi Gi\u1EDBi Thi\u1EC7u','Referrals')+'</div></div>';
+    html += '<div style="background:#0B1A2E;border:1px solid rgba(0,200,150,.12);border-radius:12px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:700;color:#00E5A8;font-family:\'Roboto Mono\',monospace">'+formatVND(affiliateComm)+'</div><div style="font-size:10px;color:rgba(248,242,224,.35);margin-top:4px">'+t('Hoa H\u1ED3ng','Commission')+'</div></div>';
+    html += '<div style="background:#0B1A2E;border:1px solid rgba(255,184,0,.12);border-radius:12px;padding:16px;text-align:center"><div style="font-size:24px;font-weight:700;color:#FFB800">'+(affData.level||'F0')+'</div><div style="font-size:10px;color:rgba(248,242,224,.35);margin-top:4px">'+t('C\u1EA5p B\u1EADc','Level')+'</div></div>';
     html += '</div>';
     // Commission tiers
-    html += '<div style="background:#121A2E;border:1px solid rgba(77,166,255,.08);border-radius:14px;padding:16px;margin-bottom:16px">';
+    html += '<div style="background:#0B1A2E;border:1px solid rgba(77,166,255,.08);border-radius:14px;padding:16px;margin-bottom:16px">';
     html += '<div style="font-size:12px;font-weight:700;color:#4DA6FF;margin-bottom:12px">' + t('B\u1EA3ng Hoa H\u1ED3ng','Commission Tiers') + '</div>';
     var tiers = [
       {level:'F0',desc:t('Gi\u1EDBi thi\u1EC7u tr\u1EF1c ti\u1EBFp','Direct referral'),rate:'10%',color:'#4DA6FF'},
@@ -1208,7 +1208,7 @@ function renderTechDash() {
     });
     html += '</div>';
     // Referral history
-    html += '<div style="background:#121A2E;border:1px solid rgba(77,166,255,.08);border-radius:14px;padding:16px">';
+    html += '<div style="background:#0B1A2E;border:1px solid rgba(77,166,255,.08);border-radius:14px;padding:16px">';
     html += '<div style="font-size:12px;font-weight:700;color:rgba(248,242,224,.5);margin-bottom:12px">' + t('L\u1ECBch S\u1EED Gi\u1EDBi Thi\u1EC7u','Referral History') + '</div>';
     var refHistory = affData.history || [];
     if(refHistory.length === 0) {
@@ -1231,7 +1231,7 @@ function renderTechDash() {
     html += '<div style="font-size:12px;color:rgba(248,242,224,.42);margin-bottom:16px">' + t('Ph\u1EA3n h\u1ED3i t\u1EEB kh\u00E1ch \u0111\u00E3 ph\u1EE5c v\u1EE5','Feedback from served customers') + '</div>';
     // Average rating
     var avgRating = allReviews.length ? (allReviews.reduce(function(s,r){return s+(r.rating||0);},0)/allReviews.length).toFixed(1) : '0';
-    html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:20px;margin-bottom:16px;text-align:center">';
+    html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.12);border-radius:14px;padding:20px;margin-bottom:16px;text-align:center">';
     html += '<div style="font-size:42px;font-weight:700;color:#FFB800">' + avgRating + '</div>';
     html += '<div style="font-size:20px;color:#FFB800;margin:4px 0">' + '\u2605'.repeat(Math.round(avgRating)) + '\u2606'.repeat(5-Math.round(avgRating)) + '</div>';
     html += '<div style="font-size:12px;color:rgba(248,242,224,.42)">' + allReviews.length + ' ' + t('\u0111\u00E1nh gi\u00E1','reviews') + '</div></div>';
@@ -1240,7 +1240,7 @@ function renderTechDash() {
       html += '<div style="text-align:center;padding:40px;color:rgba(248,242,224,.3)"><div style="font-size:36px;opacity:.4;margin-bottom:8px">\u2605</div>' + t('Ch\u01B0a c\u00F3 \u0111\u00E1nh gi\u00E1','No reviews yet') + '</div>';
     }
     allReviews.sort(function(a,b){return (b.createdAt||'').localeCompare(a.createdAt||'');}).forEach(function(r){
-      html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.08);border-radius:12px;padding:14px;margin-bottom:8px">';
+      html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.08);border-radius:12px;padding:14px;margin-bottom:8px">';
       html += '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><div style="font-weight:600;font-size:13px">' + (r.customerName||t('Kh\u00E1ch','Customer')) + '</div>';
       html += '<div style="font-size:14px;color:#FFB800">' + '\u2605'.repeat(r.rating||0) + '</div></div>';
       if(r.comment) html += '<div style="font-size:13px;color:rgba(248,242,224,.7);line-height:1.5">' + r.comment + '</div>';
@@ -1266,7 +1266,7 @@ function renderTechDash() {
       var status = ktvCerts[c.id] || 'locked';
       var statusLabel = status==='completed'?t('\u0110\u00E3 ho\u00E0n th\u00E0nh','Completed'):status==='progress'?t('\u0110ang h\u1ECDc','In Progress'):t('Ch\u01B0a m\u1EDF','Locked');
       var statusColor = status==='completed'?'#00E676':status==='progress'?'#FFB800':'rgba(248,242,224,.25)';
-      html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,.1);border-radius:14px;padding:16px;margin-bottom:10px;display:flex;gap:14px;align-items:center">';
+      html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,.1);border-radius:14px;padding:16px;margin-bottom:10px;display:flex;gap:14px;align-items:center">';
       html += '<div style="font-size:28px;width:44px;text-align:center;flex-shrink:0">' + c.icon + '</div>';
       html += '<div style="flex:1"><div style="font-size:14px;font-weight:600;margin-bottom:3px">' + c.name + '</div>';
       html += '<div style="display:flex;gap:8px;font-size:11px;color:rgba(248,242,224,.42)">';
@@ -1292,7 +1292,7 @@ function renderTechDash() {
       html += '<div style="text-align:center;padding:40px;color:rgba(248,242,224,.3)"><div style="font-size:36px;opacity:.4;margin-bottom:8px">\uD83D\uDD14</div>' + t('Ch\u01B0a c\u00F3 th\u00F4ng b\u00E1o','No notifications') + '</div>';
     }
     autoNotifs.forEach(function(n){
-      html += '<div style="background:#121A2E;border:1px solid rgba(123,95,255,' + (n.read?'.04':'.15') + ');border-radius:12px;padding:12px 14px;margin-bottom:6px;display:flex;gap:10px;align-items:flex-start;opacity:' + (n.read?'.6':'1') + '">';
+      html += '<div style="background:#0B1A2E;border:1px solid rgba(123,95,255,' + (n.read?'.04':'.15') + ');border-radius:12px;padding:12px 14px;margin-bottom:6px;display:flex;gap:10px;align-items:flex-start;opacity:' + (n.read?'.6':'1') + '">';
       html += '<div style="font-size:20px;flex-shrink:0;margin-top:2px">' + (n.icon||'\uD83D\uDD14') + '</div>';
       html += '<div style="flex:1"><div style="font-size:13px;font-weight:' + (n.read?'400':'600') + '">' + n.title + '</div>';
       html += '<div style="font-size:12px;color:rgba(248,242,224,.5);margin-top:2px">' + n.msg + '</div>';

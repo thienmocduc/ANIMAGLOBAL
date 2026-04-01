@@ -284,7 +284,7 @@ function injectBookingModal(){
   d.id = 'bookingModal';
   d.style.cssText = 'position:fixed;inset:0;z-index:900;display:flex;align-items:flex-start;justify-content:center;padding:20px;padding-top:5vh;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;overflow-y:auto';
   d.innerHTML = '<div onclick="closeBooking()" style="position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(10px)"></div>'
-    +'<div style="position:relative;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;background:#0A1218;border:1px solid rgba(0,200,150,.2);border-radius:20px;padding:24px;box-shadow:0 40px 100px rgba(0,0,0,.9)">'
+    +'<div style="position:relative;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;background:#0B1A2E;border:1px solid rgba(0,200,150,.2);border-radius:20px;padding:24px;box-shadow:0 40px 100px rgba(0,0,0,.9)">'
     +'<button onclick="closeBooking()" style="position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#FF4D6D;font-size:14px">✕</button>'
     +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">'
     +'<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#005A42,#00C896);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>'

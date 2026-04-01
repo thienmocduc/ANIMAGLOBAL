@@ -135,9 +135,9 @@ window.renderLoyaltyTab = function() {
         h += '<div style="background:rgba(0,200,150,.04);border:1px solid rgba(0,200,150,.1);border-radius:12px;padding:12px;margin-bottom:16px"><div style="font-size:12px;font-weight:600;color:#F8F2E0;margin-bottom:8px">' + t('M\u00E3 gi\u1EDBi thi\u1EC7u','Referral Code') + '</div>';
         if (code) {
           h += '<div style="display:flex;align-items:center;gap:8px"><code style="flex:1;background:rgba(248,242,224,.05);padding:8px 12px;border-radius:8px;color:#00C896;font-size:14px;font-weight:600;letter-spacing:1px">' + code + '</code>';
-          h += '<button onclick="navigator.clipboard.writeText(\'' + code + '\');this.textContent=\'' + t('\u0110\u00E3 copy','Copied') + '\'" style="background:#00C896;color:#0A1218;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">' + t('Chia s\u1EBB','Share') + '</button></div>';
+          h += '<button onclick="navigator.clipboard.writeText(\'' + code + '\');this.textContent=\'' + t('\u0110\u00E3 copy','Copied') + '\'" style="background:#00C896;color:#0B1A2E;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer">' + t('Chia s\u1EBB','Share') + '</button></div>';
         } else {
-          h += '<button onclick="generateReferralCode(\'' + (user.id || user.email) + '\').then(function(){renderLoyaltyTab()})" style="background:linear-gradient(135deg,#005A42,#00C896);border:none;border-radius:10px;padding:10px 20px;color:#0A1218;font-weight:600;cursor:pointer;font-size:12px">' + t('T\u1EA1o m\u00E3','Generate Code') + '</button>';
+          h += '<button onclick="generateReferralCode(\'' + (user.id || user.email) + '\').then(function(){renderLoyaltyTab()})" style="background:linear-gradient(135deg,#005A42,#00C896);border:none;border-radius:10px;padding:10px 20px;color:#0B1A2E;font-weight:600;cursor:pointer;font-size:12px">' + t('T\u1EA1o m\u00E3','Generate Code') + '</button>';
         }
         h += '</div>';
         // Transaction history

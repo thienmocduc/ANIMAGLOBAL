@@ -134,7 +134,7 @@ function injectCSS(){
   if(qs('#cadm-css'))return;
   var s=document.createElement('style');s.id='cadm-css';
   s.textContent=`
-#centerAdm{--bg:#070E1E;--bg2:#0D1520;--card:#0D1520;--text:#F8F2E0;--text2:#B8D8D0;--text3:#607870;--accent:#00C896;--border:rgba(0,200,150,.08);--shadow:0 2px 12px rgba(0,0,0,.3);position:fixed;inset:0;z-index:99999;font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;overflow:hidden;transition:all .3s}
+#centerAdm{--bg:#070E1E;--bg2:#0B1A2E;--card:#0B1A2E;--text:#F8F2E0;--text2:#B8D8D0;--text3:#607870;--accent:#00C896;--border:rgba(0,200,150,.08);--shadow:0 2px 12px rgba(0,0,0,.3);position:fixed;inset:0;z-index:99999;font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;overflow:hidden;transition:all .3s}
 #centerAdm.light{--bg:#FAFAFA;--bg2:#F5F3FF;--card:#FFFFFF;--text:#1A1A2E;--text2:#374151;--text3:#6B7280;--accent:#2D8F6F;--border:rgba(0,0,0,.08);--shadow:0 2px 12px rgba(0,0,0,.06)}
 #centerAdm *{box-sizing:border-box;margin:0;padding:0}
 .ca-side{width:240px;min-width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100%;overflow-y:auto;transition:all .3s}
@@ -659,7 +659,7 @@ function pgAdvisor(){
   var templates=[
     {channel:'Zalo OA',color:'#0068FF',title:'Giới thiệu dịch vụ',content:'Chào [Tên KH], Anima Care '+esc(cCity)+' vừa ra mắt dịch vụ Tầm Soát Sức Khỏe AI miễn phí! Chỉ cần 5 phút, bạn sẽ biết tình trạng kinh lạc qua lưỡi. Đặt lịch ngay: [Link]'},
     {channel:'Facebook',color:'#1877F2',title:'Bài đăng khuyến mãi',content:'ƯU ĐÃI ĐẶC BIỆT tại Anima Care '+esc(cCity)+'! Giảm 20% Liệu Trình Toàn Phần cho 50 khách đầu tiên. ANIMA 119 - Bí quyết 32 thảo dược quý. Inbox hoặc gọi: [SĐT]'},
-    {channel:'TikTok',color:'#060A18',title:'Script video ngắn',content:'Hook: "Bạn có biết lưỡi tiết lộ 90% tình trạng sức khỏe?" -> Demo AI Scan lưỡi -> Kết quả phân tích -> Giới thiệu liệu trình ANIMA 119 -> CTA đặt lịch'}
+    {channel:'TikTok',color:'#0B1A2E',title:'Script video ngắn',content:'Hook: "Bạn có biết lưỡi tiết lộ 90% tình trạng sức khỏe?" -> Demo AI Scan lưỡi -> Kết quả phân tích -> Giới thiệu liệu trình ANIMA 119 -> CTA đặt lịch'}
   ];
   h+='<div class="ca-card"><h3>Mẫu Marketing</h3><p style="font-size:11px;color:var(--text3);margin-bottom:12px">Copy và chỉnh sửa cho phù hợp với cơ sở</p>';
   templates.forEach(function(t){
