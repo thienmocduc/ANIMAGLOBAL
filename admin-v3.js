@@ -79,7 +79,7 @@ function injectCSS(){
   s.textContent='\
 #admV3{position:fixed;inset:0;z-index:10000;background:var(--bg-primary,#070E1E);font-family:"Roboto","Segoe UI",sans-serif;color:var(--text-primary,#F8F2E0);display:none;overflow:hidden}\
 #admV3 *{box-sizing:border-box;margin:0;padding:0}\
-#admV3 .sb{position:fixed;left:0;top:0;bottom:0;width:250px;background:var(--bg-sidebar,linear-gradient(180deg,#0F2645,#0D1820));border-right:1px solid var(--border-default,rgba(0,200,150,.08));display:flex;flex-direction:column;z-index:10;transition:transform .3s,background .3s}\
+#admV3 .sb{position:fixed;left:0;top:0;bottom:0;width:250px;background:var(--bg-sidebar,linear-gradient(180deg,#121A2E,#0D1820));border-right:1px solid var(--border-default,rgba(0,200,150,.08));display:flex;flex-direction:column;z-index:10;transition:transform .3s,background .3s}\
 #admV3 .sb-hd{padding:12px 12px;border-bottom:1px solid var(--border-default,rgba(0,200,150,.08))}\
 #admV3 .sb-logo{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--accent-primary,#00C896)}\
 #admV3 .sb-usr{margin-top:12px;padding:10px;border-radius:10px;background:rgba(0,200,150,.04);border:1px solid rgba(0,200,150,.06)}\
@@ -121,7 +121,7 @@ function injectCSS(){
 #admV3 .btn-s{background:transparent;border:1px solid rgba(0,200,150,.2);color:var(--accent-primary,#00C896)}\
 #admV3 .btn-s:hover{background:rgba(0,200,150,.08)}\
 #admV3 .btn-sm{padding:4px 10px;font-size:11px;border-radius:6px}\
-#admV3 select.f-sel{background:var(--bg-input,#0F2645);border:1px solid var(--border-default,rgba(0,200,150,.15));color:var(--text-secondary,#B8D8D0);font-size:11px;padding:5px 8px;border-radius:6px;font-family:inherit;outline:none}\
+#admV3 select.f-sel{background:var(--bg-input,#121A2E);border:1px solid var(--border-default,rgba(0,200,150,.15));color:var(--text-secondary,#B8D8D0);font-size:11px;padding:5px 8px;border-radius:6px;font-family:inherit;outline:none}\
 #admV3 .srch{display:flex;align-items:center;gap:8px;background:var(--bg-input,rgba(0,200,150,.04));border:1px solid var(--border-default,rgba(0,200,150,.1));border-radius:10px;padding:7px 12px}\
 #admV3 .srch input{background:none;border:none;outline:none;color:var(--text-primary,#E8F8F4);font-size:13px;font-family:inherit;width:200px}\
 #admV3 .srch input::placeholder{color:var(--text-tertiary,#607870)}\
@@ -2042,7 +2042,7 @@ function renderAgentsDashboard(){
 
   // === SECTION 4: Bao Mat ===
   h+='<div class="crd"><div class="crd-h"><span class="crd-t">&#128274; Quy Tac Bao Mat Agent AI</span></div>';
-  h+='<div style="font-family:monospace;font-size:12px;line-height:2;color:var(--text-secondary,#B8D8D0);background:#0F2645;border-radius:8px;padding:16px">';
+  h+='<div style="font-family:monospace;font-size:12px;line-height:2;color:var(--text-secondary,#B8D8D0);background:#121A2E;border-radius:8px;padding:16px">';
   var rules=[
     {icon:'&#9989;',text:'Chi tra loi ve he sinh thai AnimaCare'},
     {icon:'&#9989;',text:'KHONG tiet lo doanh thu, data khach hang'},
