@@ -13532,17 +13532,33 @@ overlayIds.forEach(function(id){
 })();
 </script>
 
-<!-- ═══ 2 FLOATING BUTTONS: Tư Vấn (xanh) + Tầm Soát (tím) ═══ -->
-<div id="acBotButtons" style="position:fixed;bottom:24px;right:24px;z-index:800;display:flex;flex-direction:column;gap:10px;align-items:flex-end">
-  <!-- Nút 2: Tầm Soát Sức Khỏe (avatar Thầy Anima + viền tím) -->
-  <button id="acScanBtn" onclick="acScanToggle()" style="width:52px;height:52px;border-radius:50%;background:none;border:2px solid rgba(155,130,255,.4);cursor:pointer;box-shadow:0 6px 24px rgba(155,130,255,.35);display:flex;align-items:center;justify-content:center;transition:transform .2s;position:relative;overflow:hidden;padding:0" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
-    <img src="images/chatbot-avatar.jpg" alt="Tầm Soát AI" style="width:100%;height:100%;object-fit:cover;border-radius:50%;filter:hue-rotate(60deg) brightness(1.1)">
-    <div style="position:absolute;right:58px;white-space:nowrap;background:rgba(59,45,139,.95);padding:6px 12px;border-radius:8px;font-size:11px;color:#fff;font-weight:600;pointer-events:none;opacity:0;transition:opacity .2s" class="acBtnLabel">Tầm Soát AI</div>
+<!-- ═══ PULSE ANIMATION ═══ -->
+<style>
+@keyframes acPulse67 {
+  0%,100% { transform:scale(1); box-shadow:0 0 0 0 rgba(148,103,255,.5), 0 6px 30px rgba(148,103,255,.3); }
+  50% { transform:scale(1.08); box-shadow:0 0 0 12px rgba(148,103,255,0), 0 8px 40px rgba(148,103,255,.4); }
+}
+@keyframes acPulse45 {
+  0%,100% { transform:scale(1); box-shadow:0 0 0 0 rgba(0,200,150,.5), 0 6px 30px rgba(56,189,248,.3); }
+  50% { transform:scale(1.08); box-shadow:0 0 0 12px rgba(0,200,150,0), 0 8px 40px rgba(56,189,248,.4); }
+}
+</style>
+
+<!-- ═══ 2 FLOATING BUTTONS ═══ -->
+<div id="acBotButtons" style="position:fixed;bottom:24px;right:24px;z-index:800;display:flex;flex-direction:column;gap:16px;align-items:flex-end">
+  <!-- Nút TRÊN: Chuyên Gia Thiệt Chẩn — Luân Xa 6,7 (Indigo #4F46E5 + Violet #9467FF) — lớn hơn -->
+  <button id="acScanBtn" onclick="acScanToggle()" style="width:110px;height:110px;border-radius:50%;background:conic-gradient(from 0deg,#4F46E5,#9467FF,#7C3AED,#4F46E5);padding:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;overflow:visible;border:none;animation:acPulse67 2.5s ease-in-out infinite">
+    <div style="width:100%;height:100%;border-radius:50%;overflow:hidden;background:#0B1A2E">
+      <img src="images/chatbot-avatar.jpg" alt="Chuyên Gia Thiệt Chẩn" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+    </div>
+    <div style="position:absolute;right:116px;white-space:nowrap;background:rgba(79,70,229,.95);padding:8px 14px;border-radius:10px;font-size:12px;color:#fff;font-weight:700;pointer-events:none;opacity:0;transition:opacity .2s;letter-spacing:.3px" class="acBtnLabel">Chuyên Gia Thiệt Chẩn</div>
   </button>
-  <!-- Nút 1: Tư Vấn (avatar Thầy Anima) -->
-  <button id="acBotBtn" onclick="acBotToggle()" style="width:58px;height:58px;border-radius:50%;background:none;border:2px solid rgba(0,200,150,.4);cursor:pointer;box-shadow:0 6px 24px rgba(0,200,150,.35);display:flex;align-items:center;justify-content:center;transition:transform .2s;position:relative;overflow:hidden;padding:0" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
-    <img src="images/chatbot-avatar.jpg" alt="Thầy Anima" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
-    <div style="position:absolute;right:64px;white-space:nowrap;background:rgba(0,90,66,.95);padding:6px 12px;border-radius:8px;font-size:11px;color:#fff;font-weight:600;pointer-events:none;opacity:0;transition:opacity .2s" class="acBtnLabel">Tư Vấn Anima</div>
+  <!-- Nút DƯỚI: Chatbot Hỏi Đáp — Luân Xa 4,5 (Green #00C896 + Blue #38BDF8) — nhỏ hơn chút -->
+  <button id="acBotBtn" onclick="acBotToggle()" style="width:100px;height:100px;border-radius:50%;background:conic-gradient(from 0deg,#00C896,#38BDF8,#22D3EE,#00C896);padding:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;overflow:visible;border:none;animation:acPulse45 3s ease-in-out infinite">
+    <div style="width:100%;height:100%;border-radius:50%;overflow:hidden;background:#0B1A2E">
+      <img src="images/chatbot-qa-avatar.jpg" alt="Chatbot Hỏi Đáp" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentElement.innerHTML='<div style=\'width:100%;height:100%;background:linear-gradient(135deg,#00C896,#38BDF8);display:flex;align-items:center;justify-content:center;border-radius:50%\'><svg width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'#000\' stroke-width=\'2\'><path d=\'M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z\'/></svg></div>'">
+    </div>
+    <div style="position:absolute;right:106px;white-space:nowrap;background:rgba(0,90,66,.95);padding:8px 14px;border-radius:10px;font-size:12px;color:#fff;font-weight:700;pointer-events:none;opacity:0;transition:opacity .2s;letter-spacing:.3px" class="acBtnLabel">Tư Vấn Anima</div>
   </button>
 </div>
 
