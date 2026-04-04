@@ -13583,8 +13583,45 @@ overlayIds.forEach(function(id){
 }
 </style>
 
-<!-- ═══ 2 FLOATING BUTTONS ═══ -->
-<div id="acBotButtons" style="position:fixed;bottom:24px;right:24px;z-index:800;display:flex;flex-direction:column;gap:16px;align-items:flex-end">
+<!-- ═══ DRAGGABLE CHATBOT BUTTONS ═══ -->
+<script>
+(function(){
+  var el,ox,oy,mx,my,dragging=false,moved=false;
+  function onDown(e){
+    el=document.getElementById('acBotButtons');if(!el)return;
+    var t=e.touches?e.touches[0]:e;
+    ox=el.offsetLeft;oy=el.offsetTop;mx=t.clientX;my=t.clientY;
+    dragging=true;moved=false;
+    el.style.transition='none';
+  }
+  function onMove(e){
+    if(!dragging)return;
+    var t=e.touches?e.touches[0]:e;
+    var dx=t.clientX-mx,dy=t.clientY-my;
+    if(Math.abs(dx)>5||Math.abs(dy)>5)moved=true;
+    if(!moved)return;
+    e.preventDefault();
+    var nx=ox+dx,ny=oy+dy;
+    var w=el.offsetWidth,h=el.offsetHeight;
+    nx=Math.max(0,Math.min(window.innerWidth-w,nx));
+    ny=Math.max(0,Math.min(window.innerHeight-h,ny));
+    el.style.left=nx+'px';el.style.top=ny+'px';
+    el.style.right='auto';el.style.bottom='auto';
+  }
+  function onUp(){
+    if(dragging){el.style.transition='';dragging=false;}
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    var b=document.getElementById('acBotButtons');if(!b)return;
+    b.addEventListener('mousedown',onDown);b.addEventListener('touchstart',onDown,{passive:false});
+    document.addEventListener('mousemove',onMove);document.addEventListener('touchmove',onMove,{passive:false});
+    document.addEventListener('mouseup',onUp);document.addEventListener('touchend',onUp);
+    // Block click khi drag
+    b.addEventListener('click',function(e){if(moved){e.stopPropagation();e.preventDefault();moved=false;}},true);
+  });
+})();
+</script>
+<div id="acBotButtons" style="position:fixed;bottom:24px;right:24px;z-index:800;display:flex;flex-direction:column;gap:16px;align-items:flex-end;cursor:grab;touch-action:none;user-select:none">
   <!-- Nút TRÊN: Chuyên Gia Thiệt Chẩn — Luân Xa 6,7 (Indigo #4F46E5 + Violet #9467FF) — lớn hơn -->
   <button id="acScanBtn" onclick="acScanToggle()" style="width:110px;height:110px;border-radius:50%;background:conic-gradient(from 0deg,#4F46E5,#9467FF,#7C3AED,#4F46E5);padding:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;overflow:visible;border:none;animation:acPulse67 2.5s ease-in-out infinite">
     <div style="width:100%;height:100%;border-radius:50%;overflow:hidden;background:#0B1A2E">
