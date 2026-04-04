@@ -12433,14 +12433,49 @@ updateCartUI();
 </script>
 
 
-<!-- ═══ USER PROFILE OVERLAY ═══ -->
-<div id="profileOverlay" style="position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;display:flex;flex-direction:column;overflow:hidden">
+<!-- ═══ MOBILE PROFILE RESPONSIVE ═══ -->
+<style>
+@media(max-width:768px){
+  #profApp{grid-template-columns:1fr!important;grid-template-rows:auto 1fr!important;}
+  #profSidebar{
+    border-right:none!important;border-bottom:1px solid rgba(0,200,150,.1)!important;
+    padding:0!important;overflow:visible!important;max-height:none!important;
+  }
+  #profSidebar .prof-nav{
+    flex-direction:row!important;overflow-x:auto!important;padding:8px 12px!important;
+    gap:6px!important;flex-wrap:nowrap!important;scrollbar-width:none!important;
+    -ms-overflow-style:none!important;
+  }
+  #profSidebar .prof-nav::-webkit-scrollbar{display:none!important;}
+  #profSidebar .prof-tab{
+    padding:8px 14px!important;font-size:12px!important;white-space:nowrap!important;
+    border-radius:20px!important;flex-shrink:0!important;gap:5px!important;
+    background:rgba(0,200,150,.06)!important;border:1px solid rgba(0,200,150,.12)!important;
+  }
+  #profSidebar .prof-tab.on{
+    background:rgba(0,200,150,.15)!important;border-color:rgba(0,200,150,.3)!important;
+    color:#00C896!important;
+  }
+  #profSidebar .prof-tab svg{width:14px!important;height:14px!important;}
+  #profSidebar .prof-tab span{font-size:11px!important;}
+}
+/* Đồng bộ màu xanh thủy */
+#profileOverlay{background:rgba(3,15,25,.97)!important;}
+#profSidebar{background:#071520!important;}
+#profApp main{background:#0A1E30!important;}
+.prof-panel .ov-card,.prof-panel [style*="background:#0D1E36"],.prof-panel [style*="background: #0D1E36"]{
+  background:#0C2438!important;border-color:rgba(0,200,150,.12)!important;
+}
+</style>
 
-  <!-- Layout: Sidebar + Content (header removed — close button is in sidebar) -->
+<!-- ═══ USER PROFILE OVERLAY ═══ -->
+<div id="profileOverlay" style="position:fixed;inset:0;z-index:800;background:rgba(3,15,25,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;display:flex;flex-direction:column;overflow:hidden">
+
+  <!-- Layout: Sidebar + Content -->
   <div id="profApp" style="display:grid;grid-template-columns:200px 1fr;flex:1;min-height:0;overflow:hidden">
 
     <!-- SIDEBAR -->
-    <aside id="profSidebar" style="background:#0B1A2E;border-right:1px solid rgba(0,200,150,.08);display:flex;flex-direction:column;overflow-y:auto;padding:0">
+    <aside id="profSidebar" style="background:#071520;border-right:1px solid rgba(0,200,150,.1);display:flex;flex-direction:column;overflow-y:auto;padding:0">
       <!-- Back to home + Close -->
       <div style="padding:8px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,200,150,.08)">
         <div onclick="closeProfile()" style="display:flex;align-items:center;gap:4px;cursor:pointer;color:#00C896;font-size:12px;font-weight:600">
