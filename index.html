@@ -298,9 +298,7 @@ window.setThemeMode=function(mode){
       <div class="dd">
         <div class="ddg">
           <div class="ddg-lbl" data-vi="Tài Liệu" data-en="Investor Documents">Tài Liệu</div>
-          <div class="ddi" onclick="openIPO()"><div class="ddi-ico"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Lộ Trình IPO SGX 2031" data-en="SGX IPO Roadmap 2031">Lộ Trình IPO SGX 2031</div></div><span class="ddi-arr">↗</span></div>
-          <div class="ddi" onclick="openRevenue()"><div class="ddi-ico"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/><circle cx="12" cy="12" r="0.8" fill="currentColor" stroke="none" opacity="0.3"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Mô Hình Doanh Thu" data-en="Revenue Model">Mô Hình Doanh Thu</div></div><span class="ddi-arr">↗</span></div>
-          <div class="ddi" onclick="openKPI()"><div class="ddi-ico"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/><circle cx="15" cy="12" r="0.5" fill="currentColor" stroke="none" opacity="0.6"/><circle cx="9" cy="12" r="0.5" fill="currentColor" stroke="none" opacity="0.6"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="KPI & Tăng Trưởng" data-en="KPI & Growth">KPI & Tăng Trưởng</div></div><span class="ddi-arr">↗</span></div>
+          <div class="ddi" onclick="window.open('https://ios.animacare.global','_blank')"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="IOS Portal — Nhà Đầu Tư" data-en="IOS Portal — Investors">IOS Portal — Nhà Đầu Tư</div><div class="ddi-s" data-vi="Đăng nhập để xem tài liệu nội bộ" data-en="Login to view internal documents">Đăng nhập để xem tài liệu nội bộ</div></div><span class="ddi-arr">↗</span></div>
         </div>
       </div>
     </div>
@@ -476,7 +474,7 @@ window.setThemeMode=function(mode){
     </div>
     <div><div class="f-ct" data-vi="Hệ Sinh Thái" data-en="Ecosystem">Hệ Sinh Thái</div><div class="f-links"><div class="f-lk" onclick="openA119()">Anima 119</div><div class="f-lk" onclick="openAnimaCare()">Anima Care</div><div class="f-lk" onclick="openAnimaTech()">Anima Tech</div><div class="f-lk" onclick="openAAI()">Anima AI</div></div></div>
     <div><div class="f-ct" data-vi="Dịch Vụ" data-en="Services">Dịch Vụ</div><div class="f-links"><div class="f-lk" onclick="openA119()" data-vi="Hướng Dẫn Anima 119" data-en="Anima 119 Guide">Hướng Dẫn Anima 119</div><div class="f-lk" onclick="openS3()" data-vi="Thảo Mộc Nhiệt" data-en="Herbal Heat">Thảo Mộc Nhiệt</div><div class="f-lk" onclick="openS4to8()" data-vi="Đả Thông Kinh Lạc" data-en="Meridian Unblocking">Đả Thông Kinh Lạc</div><div class="f-lk" onclick="openFranchise()" data-vi="Nhượng Quyền" data-en="Franchise">Nhượng Quyền</div></div></div>
-    <div><div class="f-ct" data-vi="Nhà Đầu Tư" data-en="Investors">Nhà Đầu Tư</div><div class="f-links"><div class="f-lk" onclick="openIPO()" data-vi="Lộ Trình IPO 2031" data-en="IPO Roadmap 2031">Lộ Trình IPO 2031</div><div class="f-lk" onclick="openRevenue()" data-vi="Mô Hình Doanh Thu" data-en="Revenue Model">Mô Hình Doanh Thu</div><div class="f-lk" onclick="openKPI()" data-vi="KPI & Tăng Trưởng" data-en="KPI & Growth">KPI & Tăng Trưởng</div><div class="f-lk" onclick="openContact()" data-vi="Liên Hệ" data-en="Contact">Liên Hệ</div></div></div>
+    <div><div class="f-ct" data-vi="Nhà Đầu Tư" data-en="Investors">Nhà Đầu Tư</div><div class="f-links"><div class="f-lk" onclick="window.open('https://ios.animacare.global','_blank')" data-vi="IOS Portal (Đăng nhập)" data-en="IOS Portal (Login)">IOS Portal (Đăng nhập)</div><div class="f-lk" onclick="openContact()" data-vi="Liên Hệ" data-en="Contact">Liên Hệ</div></div></div>
   </div>
   <div class="f-bot">
     <div class="f-copy" data-vi="© 2026 Anima Care Global JSC — Bảo lưu mọi quyền" data-en="© 2026 Anima Care Global JSC — All rights reserved">&copy; <span id="copyrightYear">2026</span> Anima Care Global JSC — <span data-vi="Bảo lưu mọi quyền" data-en="All rights reserved">Bảo lưu mọi quyền</span></div>
@@ -5108,20 +5106,8 @@ if(e.key==='Escape'){closeOrder();closeSuccess();closeStore()}
   </div>
 </div>
 
-<script>function openKPI(){{
-var el=document.getElementById('kpiOverlay');
-el.style.visibility='visible';el.style.opacity='1';
-el.scrollTop=0;document.body.style.overflow='hidden';
-if(lang==='en') setTimeout(function(){applyOverlayTranslations('en');},50);
-var l=lang||'vi';
-el.querySelectorAll('[data-'+l+']').forEach(function(e){{var v=e.getAttribute('data-'+l);if(v)e.innerHTML=v}});
-}}
-function closeKPI(){{
-var el=document.getElementById('kpiOverlay');
-el.style.opacity='0';
-setTimeout(function(){{el.style.visibility='hidden'}},300);
-document.body.style.overflow='';
-}}</script>
+<script>function openKPI(){window.open('https://ios.animacare.global','_blank');}
+function closeKPI(){}</script>
 
 <div id="khaiVanOverlay" style="position:fixed;inset:0;z-index:700;background:var(--dark2);overflow-y:auto;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;-webkit-overflow-scrolling:touch">
 
@@ -6460,19 +6446,8 @@ function checkInvestorSession(){
   if(stored && INVESTOR_IDS.indexOf(stored)!==-1) showInvestorContent();
 }
 
-function openIPO(){
-var el=document.getElementById('ipoOverlay');
-el.style.visibility='visible';el.style.opacity='1';
-el.scrollTop=0;document.body.style.overflow='hidden';
-checkInvestorSession();
-if(lang==='en') setTimeout(function(){applyOverlayTranslations('en');},50);
-}
-function closeIPO(){
-var el=document.getElementById('ipoOverlay');
-el.style.opacity='0';
-setTimeout(function(){el.style.visibility='hidden'},300);
-document.body.style.overflow='';
-}</script>
+function openIPO(){window.open('https://ios.animacare.global','_blank');}
+function closeIPO(){}</script>
 
 <div id="revenueOverlay" style="position:fixed;inset:0;z-index:700;background:var(--dark2);overflow-y:auto;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;-webkit-overflow-scrolling:touch">
 
@@ -6842,18 +6817,8 @@ document.body.style.overflow='';
   </div>
 </div>
 
-<script>function openRevenue(){
-var el=document.getElementById('revenueOverlay');
-el.style.visibility='visible';el.style.opacity='1';
-el.scrollTop=0;document.body.style.overflow='hidden';
-if(lang==='en') setTimeout(function(){applyOverlayTranslations('en');},50);
-}
-function closeRevenue(){
-var el=document.getElementById('revenueOverlay');
-el.style.opacity='0';
-setTimeout(function(){el.style.visibility='hidden'},300);
-document.body.style.overflow='';
-}</script>
+<script>function openRevenue(){window.open('https://ios.animacare.global','_blank');}
+function closeRevenue(){}</script>
 
 <div id="s3Overlay" style="position:fixed;inset:0;z-index:700;background:var(--dark2);overflow-y:auto;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;-webkit-overflow-scrolling:touch">
 
