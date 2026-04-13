@@ -1000,95 +1000,23 @@ footer {
 </style>
 
 <style id="sidebarCSS">
-/* ── GitHub-style Sidebar ── */
-#appSidebar{position:fixed;top:0;left:0;width:260px;height:100vh;background:#0D1117;border-right:1px solid #30363d;z-index:9999;display:flex;flex-direction:column;transform:translateX(-100%);transition:transform .25s ease}
-#appSidebar.open{transform:translateX(0)}
-#sidebarOverlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998;display:none}
-#sidebarOverlay.open{display:block}
-.sb-header{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid #30363d}
-.sb-logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#00C896,#06b6d4);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px}
-.sb-brand{font-size:14px;font-weight:600;color:#e6edf3}
-.sb-close{margin-left:auto;background:none;border:none;color:#8b949e;cursor:pointer;padding:4px;border-radius:6px}
-.sb-close:hover{background:#161b22;color:#e6edf3}
-.sb-nav{flex:1;overflow-y:auto;padding:8px 12px}
-.sb-section{margin-bottom:4px}
-.sb-label{padding:6px 8px;font-size:11px;font-weight:600;color:#8b949e;text-transform:uppercase;letter-spacing:.5px}
-.sb-item{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:6px;color:#c9d1d9;font-size:13px;cursor:pointer;transition:background .15s,color .15s;text-decoration:none}
-.sb-item:hover{background:#161b22;color:#e6edf3}
-.sb-item svg{width:16px;height:16px;opacity:.7;flex-shrink:0}
-.sb-item:hover svg{opacity:1}
-.sb-divider{height:1px;background:#21262d;margin:8px 8px}
-.sb-footer{border-top:1px solid #30363d;padding:12px 16px}
-.sb-footer a{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;color:#c9d1d9;font-size:13px;text-decoration:none;transition:background .15s}
-.sb-footer a:hover{background:#161b22;color:#e6edf3}
-/* Toggle button in nav */
-#sidebarToggle{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:rgba(0,200,150,.08);border:1px solid rgba(0,200,150,.15);cursor:pointer;color:#8b949e;transition:all .15s;margin-right:8px}
-#sidebarToggle:hover{background:rgba(0,200,150,.15);color:#e6edf3}
-@media(max-width:768px){
-  #sidebarToggle{width:32px;height:32px}
-}
+/* ── Topbar: gop Cai dat + App + IOS thanh 1 nut "menu nhanh" ── */
+#quickMenuBtn{display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,#00C896,#06b6d4);border:none;border-radius:14px;padding:5px 12px;cursor:pointer;color:#fff;font-size:11px;font-weight:700;letter-spacing:.3px;position:relative}
+#quickMenuBtn:hover{opacity:.85}
+#quickMenuPanel{display:none;position:absolute;top:100%;right:0;margin-top:8px;background:#0D1117;border:1px solid #30363d;border-radius:12px;padding:6px;min-width:180px;box-shadow:0 8px 30px rgba(0,0,0,.4);z-index:9999}
+#quickMenuPanel.open{display:block}
+.qm-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;color:#c9d1d9;font-size:13px;text-decoration:none;transition:background .15s;cursor:pointer;border:none;background:none;width:100%;text-align:left}
+.qm-item:hover{background:#161b22;color:#e6edf3}
+.qm-item svg{width:16px;height:16px;opacity:.7;flex-shrink:0}
+.qm-divider{height:1px;background:#21262d;margin:4px 8px}
 </style>
 </head>
 <body>
 
-<!-- GitHub-style Sidebar -->
-<div id="sidebarOverlay" onclick="closeSidebar()"></div>
-<aside id="appSidebar">
-  <div class="sb-header">
-    <div class="sb-logo">A</div>
-    <span class="sb-brand">ANIMA Care</span>
-    <button class="sb-close" onclick="closeSidebar()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
-  </div>
-  <nav class="sb-nav">
-    <div class="sb-section">
-      <div class="sb-label">Về Chúng Tôi</div>
-      <div class="sb-item" onclick="openGovernance();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21V7l9-4 9 4v14"/><path d="M9 21v-6h6v6"/></svg>Hồ Sơ Công Ty</div>
-      <div class="sb-item" onclick="openMission();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>Sứ Mệnh & Tầm Nhìn</div>
-      <div class="sb-item" onclick="openGovernance();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Ban Lãnh Đạo</div>
-    </div>
-    <div class="sb-divider"></div>
-    <div class="sb-section">
-      <div class="sb-label">Hệ Sinh Thái</div>
-      <div class="sb-item" onclick="openA119();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Anima 119</div>
-      <div class="sb-item" onclick="openAnimaCare();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Anima Care</div>
-      <div class="sb-item" onclick="openAnimaTech();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Anima Tech</div>
-      <div class="sb-item" onclick="openAAI();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a4 4 0 014 4v2a4 4 0 01-8 0V6a4 4 0 014-4z"/><path d="M6 12a6 6 0 0012 0"/></svg>Anima AI</div>
-    </div>
-    <div class="sb-divider"></div>
-    <div class="sb-section">
-      <div class="sb-label">Dịch Vụ</div>
-      <div class="sb-item" onclick="openKhaiVan();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Bước 1 — Khai Vấn</div>
-      <div class="sb-item" onclick="openA119();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Bước 2 — Anima 119</div>
-      <div class="sb-item" onclick="openS3();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 002.5 2.5z"/></svg>Bước 3 — Thảo Mộc Nhiệt</div>
-      <div class="sb-item" onclick="openS4to8();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Bước 4–8</div>
-      <div class="sb-item" onclick="openFranchise();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Nhượng Quyền</div>
-      <div class="sb-item" onclick="openStations();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Chuỗi Cơ Sở</div>
-      <div class="sb-item" onclick="openTraining();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Đào Tạo</div>
-    </div>
-    <div class="sb-divider"></div>
-    <div class="sb-section">
-      <div class="sb-label">Công Nghệ</div>
-      <div class="sb-item" onclick="openFerm();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>Lên Men 3 Tầng</div>
-      <div class="sb-item" onclick="openAAI();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="3"/></svg>Anima AI Engine</div>
-      <div class="sb-item" onclick="openO2O();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="2"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>Nền Tảng O2O</div>
-    </div>
-    <div class="sb-divider"></div>
-    <div class="sb-section">
-      <div class="sb-label">Marketplace</div>
-      <div class="sb-item" onclick="openStore();closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 7v11a2 2 0 002 2h14a2 2 0 002-2V7l-3-5zM3 7h18"/><path d="M16 11a4 4 0 01-8 0"/></svg>Cửa Hàng ANIMA 119</div>
-      <div class="sb-item" onclick="openCenterStore('CTR-HN');closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Hà Nội</div>
-      <div class="sb-item" onclick="openCenterStore('CTR-HCM');closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>TP. Hồ Chí Minh</div>
-      <div class="sb-item" onclick="openCenterStore('CTR-DN');closeSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Đà Nẵng</div>
-    </div>
-  </nav>
-  <div class="sb-footer">
-    <a href="https://app.animacare.global"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>Mở App</a>
-    <a href="https://ios.animacare.global"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>IOS Portal</a>
-  </div>
-</aside>
+<!-- Quick Menu: gop Cai dat + App + IOS -->
 <script>
-function openSidebar(){document.getElementById('appSidebar').classList.add('open');document.getElementById('sidebarOverlay').classList.add('open');document.body.style.overflow='hidden'}
-function closeSidebar(){document.getElementById('appSidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('open');document.body.style.overflow=''}
+function toggleQuickMenu(){var p=document.getElementById('quickMenuPanel');p.classList.toggle('open');if(p.classList.contains('open')){document.addEventListener('click',closeQuickMenuOutside,true)}}
+function closeQuickMenuOutside(e){var p=document.getElementById('quickMenuPanel');var b=document.getElementById('quickMenuBtn');if(!p.contains(e.target)&&!b.contains(e.target)){p.classList.remove('open');document.removeEventListener('click',closeQuickMenuOutside,true)}}
 </script>
 
 <svg width="0" height="0" style="position:absolute">
@@ -1150,7 +1078,6 @@ function closeSidebar(){document.getElementById('appSidebar').classList.remove('
 </script>
 
 <nav id="mainNav">
-  <button id="sidebarToggle" onclick="openSidebar()" title="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
   <a class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">
     <img class="nav-logo-img" id="navLogo" src="images/img-52d87bf94f.png" alt="ANIMA">
   </a>
@@ -1189,28 +1116,17 @@ function closeSidebar(){document.getElementById('appSidebar').classList.remove('
     </div>
 
     <div class="nav-item">
-      <div class="nav-link" data-vi="Dịch Vụ" data-en="Services">Dịch Vụ <span class="nc">▾</span></div>
+      <div class="nav-link" data-vi="Dịch Vụ & Công Nghệ" data-en="Services & Tech">Dịch Vụ <span class="nc">▾</span></div>
       <div class="dd">
         <div class="ddg">
           <div class="ddg-lbl" data-vi="8 Bước Phục Hưng" data-en="8 Revival Steps">8 Bước Phục Hưng</div>
-          <div class="ddi" onclick="openKhaiVan()"><div class="ddi-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Bước 1 — Khai Vấn" data-en="Step 1 — Assessment">Bước 1 — Khai Vấn</div></div><span class="ddi-arr">↗</span></div>
-          <div class="ddi" onclick="openA119()"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4m0 0l2 2m-2-2l-2 2" stroke-opacity="0.5"/><circle cx="12" cy="8" r="0.5" fill="currentColor" stroke="none"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Bước 2 — Anima 119" data-en="Step 2 — Anima 119">Bước 2 — Anima 119</div></div><span class="ddi-arr">↗</span></div>
-          <div class="ddi" onclick="openS3()"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Bước 3 — Thảo Mộc Nhiệt" data-en="Step 3 — Herbal Heat">Bước 3 — Thảo Mộc Nhiệt</div></div><span class="ddi-arr">↗</span></div>
-          <div class="ddi" onclick="openS4to8()"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Bước 4–8 — Chi Tiết" data-en="Steps 4–8 — Details">Bước 4–8 — Chi Tiết</div></div><span class="ddi-arr">↗</span></div>
-        </div>
-        <div class="ddg">
+          <div class="ddi" onclick="openKhaiVan()"><div class="ddi-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Khai Vấn · Anima 119 · Thảo Mộc Nhiệt" data-en="Assessment · Anima 119 · Herbal Heat">Khai Vấn · Anima 119 · Thảo Mộc Nhiệt</div></div><span class="ddi-arr">↗</span></div>
+          <div class="ddi" onclick="openS4to8()"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Đả Thông · Xương Khớp · Cứu Mạch · Tĩnh Tâm" data-en="Meridian · Joint · Vascular · Meditation">Đả Thông · Xương Khớp · Cứu Mạch · Tĩnh Tâm</div></div><span class="ddi-arr">↗</span></div>
           <div class="ddi" onclick="openFranchise()"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Nhượng Quyền" data-en="Franchise">Nhượng Quyền</div></div><span class="ddi-arr">↗</span></div>
-          <div class="ddi" onclick="openStations()"><div class="ddi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Trạm Anima Care" data-en="Anima Care Stations">Trạm Anima Care</div></div><span class="ddi-arr">↗</span></div>
-          <div class="ddi" onclick="openTraining()"><div class="ddi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Đào Tạo & Chứng Chỉ" data-en="Training & Certification">Đào Tạo & Chứng Chỉ</div><div class="ddi-s" data-vi="Anima Care Academy" data-en="Anima Care Academy">Anima Care Academy</div></div><span class="ddi-arr">↗</span></div>
+          <div class="ddi" onclick="openTraining()"><div class="ddi-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Đào Tạo & Chứng Chỉ" data-en="Training">Đào Tạo & Chứng Chỉ</div></div><span class="ddi-arr">↗</span></div>
         </div>
-      </div>
-    </div>
-
-    <div class="nav-item">
-      <div class="nav-link" data-vi="Công Nghệ" data-en="Technology">Công Nghệ <span class="nc">▾</span></div>
-      <div class="dd">
         <div class="ddg">
-          <div class="ddg-lbl" data-vi="Sản Phẩm Công Nghệ" data-en="Tech Products">Sản Phẩm Công Nghệ</div>
+          <div class="ddg-lbl" data-vi="Công Nghệ" data-en="Technology">Công Nghệ</div>
           <div class="ddi" onclick="openFerm()"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Lên Men 3 Tầng" data-en="3-Layer Fermentation">Lên Men 3 Tầng</div></div><span class="ddi-arr">↗</span></div>
           <div class="ddi" onclick="openAAI()"><div class="ddi-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="3"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Anima AI Engine" data-en="Anima AI Engine">Anima AI Engine</div></div><span class="ddi-arr">↗</span></div>
           <div class="ddi" onclick="openO2O()"><div class="ddi-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Nền Tảng O2O" data-en="O2O Platform">Nền Tảng O2O</div></div><span class="ddi-arr">↗</span></div>
@@ -1219,17 +1135,7 @@ function closeSidebar(){document.getElementById('appSidebar').classList.remove('
     </div>
 
     <div class="nav-item">
-      <div class="nav-link" data-vi="Nhà Đầu Tư" data-en="Investors">Nhà Đầu Tư <span class="nc">▾</span></div>
-      <div class="dd">
-        <div class="ddg">
-          <div class="ddg-lbl" data-vi="Tài Liệu" data-en="Investor Documents">Tài Liệu</div>
-          <div class="ddi" onclick="window.open('https://ios.animacare.global','_blank')"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="IOS Portal — Nhà Đầu Tư" data-en="IOS Portal — Investors">IOS Portal — Nhà Đầu Tư</div><div class="ddi-s" data-vi="Đăng nhập để xem tài liệu nội bộ" data-en="Login to view internal documents">Đăng nhập để xem tài liệu nội bộ</div></div><span class="ddi-arr">↗</span></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="nav-item">
-      <div class="nav-link" data-vi="Chuỗi Anima Care" data-en="Anima Care Chain">Chuỗi Anima Care <span class="nc">▾</span></div>
+      <div class="nav-link" data-vi="Chuỗi Trạm" data-en="Centers">Chuỗi Trạm <span class="nc">▾</span></div>
       <div class="dd">
         <div class="ddg">
           <div class="ddg-lbl" data-vi="Sản Phẩm" data-en="Products">Sản Phẩm</div>
@@ -1240,15 +1146,16 @@ function closeSidebar(){document.getElementById('appSidebar').classList.remove('
           <div class="ddi" onclick="openCenterStore('CTR-HN')"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ddi-b"><div class="ddi-t">Hà Nội</div><div class="ddi-s">Sản phẩm · Vật tư · Thiết bị</div></div><span class="ddi-arr">↗</span></div>
           <div class="ddi" onclick="openCenterStore('CTR-HCM')"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ddi-b"><div class="ddi-t">TP. Hồ Chí Minh</div><div class="ddi-s">Sản phẩm · Vật tư · Thiết bị</div></div><span class="ddi-arr">↗</span></div>
           <div class="ddi" onclick="openCenterStore('CTR-DN')"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="ddi-b"><div class="ddi-t">Đà Nẵng</div><div class="ddi-s">Sản phẩm · Vật tư · Thiết bị</div></div><span class="ddi-arr">↗</span></div>
-          <div class="ddi" onclick="openAllStations?openAllStations():void(0)"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Xem tất cả 34 tỉnh →" data-en="All 34 provinces →">Xem tất cả 34 tỉnh →</div></div><span class="ddi-arr">↗</span></div>
+          <div class="ddi" onclick="openStations()"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="Xem tất cả 34 tỉnh →" data-en="All 34 provinces →">Xem tất cả 34 tỉnh →</div></div><span class="ddi-arr">↗</span></div>
+        </div>
+        <div class="ddg">
+          <div class="ddg-lbl" data-vi="Nhà Đầu Tư" data-en="Investors">Nhà Đầu Tư</div>
+          <div class="ddi" onclick="window.open('https://ios.animacare.global','_blank')"><div class="ddi-ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="ddi-b"><div class="ddi-t" data-vi="IOS Portal" data-en="IOS Portal">IOS Portal</div></div><span class="ddi-arr">↗</span></div>
         </div>
       </div>
     </div>
     <div class="nav-item">
       <div class="nav-link" onclick="openBlog?openBlog():scrollToSection('blog')" style="cursor:pointer" data-vi="Blog" data-en="Blog">Blog</div>
-    </div>
-    <div class="nav-item">
-      <div class="nav-link nav-link-cta" onclick="openContact()" style="cursor:pointer;color:var(--g1);font-weight:600" data-vi="Kết Nối" data-en="Contact">Kết Nối</div>
     </div>
   </div>
 
@@ -1258,18 +1165,19 @@ function closeSidebar(){document.getElementById('appSidebar').classList.remove('
       <button class="lb" id="btnEN" onclick="setLang('en')" style="padding:3px 8px;font-size:11px;border-radius:12px">EN</button>
     </div>
     <button id="navThemeBtn" onclick="document.documentElement.classList.toggle('light-mode');localStorage.setItem('anima_theme',document.documentElement.classList.contains('light-mode')?'light':'dark');this.textContent=document.documentElement.classList.contains('light-mode')?'☀️':'🌙'" title="Sáng/Tối" style="background:rgba(0,0,0,.15);border:1px solid rgba(255,255,255,.1);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;flex-shrink:0">🌙</button>
-    <button onclick="document.getElementById('installModal').style.display='flex'" title="Cài đặt ứng dụng ANIMA Care" style="background:linear-gradient(135deg,#22c55e,#06b6d4);border:none;border-radius:14px;padding:5px 12px;display:flex;align-items:center;gap:5px;cursor:pointer;color:#fff;flex-shrink:0;font-size:11px;font-weight:700;letter-spacing:.3px" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Cài đặt
-    </button>
-    <a href="https://ios.animacare.global" title="IOS Portal — Investor & Operations System" style="background:linear-gradient(135deg,#C9A84C,#E8C96A);border:none;border-radius:14px;padding:5px 12px;display:flex;align-items:center;gap:5px;cursor:pointer;color:#03060F;flex-shrink:0;text-decoration:none;font-size:11px;font-weight:700;letter-spacing:.3px" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      IOS
-    </a>
-    <a href="https://app.animacare.global" title="Mở App" style="background:linear-gradient(135deg,#6366f1,#a855f7);border:none;border-radius:14px;padding:5px 12px;display:flex;align-items:center;gap:5px;cursor:pointer;color:#fff;flex-shrink:0;text-decoration:none;font-size:11px;font-weight:700;letter-spacing:.3px" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
-      App
-    </a>
+    <div style="position:relative">
+      <button id="quickMenuBtn" onclick="toggleQuickMenu()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Menu
+      </button>
+      <div id="quickMenuPanel">
+        <a class="qm-item" href="https://app.animacare.global"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>Mở App</a>
+        <a class="qm-item" href="https://ios.animacare.global"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>IOS Portal</a>
+        <div class="qm-divider"></div>
+        <div class="qm-item" onclick="document.getElementById('installModal').style.display='flex';toggleQuickMenu()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Cài đặt App</div>
+        <div class="qm-item" onclick="openContact();toggleQuickMenu()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>Liên Hệ</div>
+      </div>
+    </div>
     <button id="navAuthBtn" onclick="openAuth('login')" title="Tài khoản" style="background:linear-gradient(135deg,#00C896,#06B6D4);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;position:relative;z-index:310" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     </button>
