@@ -150,6 +150,16 @@ window.setThemeMode=function(mode){
   if(mode==='light') html.classList.add('light-mode');
   else html.classList.remove('light-mode');
   localStorage.setItem('anima_theme',mode);
+  /* Fix inline styles for light mode */
+  if(mode==='light'){
+    document.querySelectorAll('[style*="color"]').forEach(function(el){
+      var s=el.style;
+      var c=s.color;
+      if(c&&(c.includes('#F8F2E0')||c.includes('#E8F8F4')||c.includes('#fff')||c.includes('rgb(248')||c.includes('rgb(232')||c.includes('#B8D8D0')))s.color='#1a1a2e';
+    });
+    document.querySelectorAll('.sec-tl,.intro-headline,.eco-name,.step-name,.tech-name,.ip-tl').forEach(function(el){el.style.color='#1a1a2e';});
+    document.querySelectorAll('.sec-sub,.intro-desc,.eco-desc,.step-desc,.tech-desc,.ip-desc,.intro-tagline,.intro-quote').forEach(function(el){el.style.color='#444';});
+  }
   /* Update profile settings buttons */
   var darkBtn=document.getElementById('themeDarkBtn');
   var lightBtn=document.getElementById('themeLightBtn');
@@ -1423,6 +1433,37 @@ html.light-mode body {
 
 /* Hide stars in light mode */
 .light-mode #bgCanvas, .light-mode #starsOverlay { display: none !important; }
+
+/* Light mode: force ALL text readable */
+.light-mode [style*="color:#F8F2E0"],
+.light-mode [style*="color:#E8F8F4"],
+.light-mode [style*="color:#B8D8D0"],
+.light-mode [style*="color: #F8F2E0"],
+.light-mode [style*="color: #E8F8F4"],
+.light-mode [style*="color: #B8D8D0"],
+.light-mode [style*="color:var(--t1)"],
+.light-mode [style*="color:var(--t2)"] { color: #1a1a2e !important; }
+
+.light-mode [style*="color:var(--t3)"],
+.light-mode [style*="color:#607870"],
+.light-mode [style*="color:rgba(248,242,224"] { color: #555 !important; }
+
+/* Light mode overlays */
+.light-mode .doc-panel,
+.light-mode [id$="Overlay"] > div,
+.light-mode [id$="Modal"] > div { background: rgba(255,255,255,0.97) !important; border-color: rgba(0,0,0,0.08) !important; }
+.light-mode .doc-panel *, .light-mode [id$="Overlay"] * { color: #1a1a2e; }
+.light-mode .doc-panel h1, .light-mode .doc-panel h2, .light-mode .doc-panel h3 { color: #0f172a !important; }
+
+/* Light mode hero text */
+.light-mode .hero-title, .light-mode .hero-sub, .light-mode .hero-cta-text { color: #1a1a2e !important; }
+
+/* Light mode nav buttons in right */
+.light-mode #quickMenuBtn { background: linear-gradient(135deg,#059669,#0891b2) !important; }
+
+/* Light mode scrollbar */
+.light-mode::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15) !important; }
+.light-mode::-webkit-scrollbar-track { background: rgba(0,0,0,0.03) !important; }
 </style>
 </head>
 <body>
