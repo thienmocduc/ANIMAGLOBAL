@@ -409,7 +409,7 @@ if(btn){
 var l=typeof lang!=='undefined'?lang:'vi';
 btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>'+(l==='vi'?'Đăng nhập':'Sign in')+'</span>';
 btn.style.cssText='background:linear-gradient(135deg,rgba(0,90,66,.8),rgba(0,200,150,.8));border:none;border-radius:20px;padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:#000;font-family:var(--fb);font-size:12px;font-weight:700;letter-spacing:.5px;transition:all .2s;flex-shrink:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent;position:relative;z-index:310;white-space:nowrap';
-btn.onclick=function(){openAuth('login');};
+btn.onclick=function(){window.open('https://app.animacare.global','_blank');};
 btn.onmouseover=function(){this.style.opacity='.85';};
 btn.onmouseout=function(){this.style.opacity='1';};
 }
@@ -1023,7 +1023,7 @@ function openProfile(){
   if(!u)try{u=JSON.parse(localStorage.getItem('anima_current_user'));}catch(e){}
   if(!u&&window.currentUser)u=window.currentUser;
   if(!u){
-    if(typeof openAuth==='function')openAuth('login');
+    window.open('https://app.animacare.global','_blank');
     return;
   }
   loadProfileData(u);
@@ -2009,7 +2009,7 @@ var acScanOpen=false;
 var acScanHistory=[];
 
 function _acGate(){
-  if(!currentUser){if(typeof openAuth==='function')openAuth('login');return false;}
+  if(!currentUser){window.open('https://app.animacare.global','_blank');return false;}
   return true;
 }
 function _acHideBtns(){document.getElementById('acBotButtons').style.display='none';}
