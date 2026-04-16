@@ -25,29 +25,50 @@ img{max-width:100%}
 
 /* === COSMIC BG === */
 .cosmic{position:fixed;inset:0;pointer-events:none;z-index:0}
-.orb{position:absolute;border-radius:50%;filter:blur(80px);animation:fl 15s ease-in-out infinite}
-@keyframes fl{0%{transform:translate(0,0) scale(1)}25%{transform:translate(30px,-40px) scale(1.1)}50%{transform:translate(-20px,30px) scale(.95)}75%{transform:translate(40px,20px) scale(1.05)}100%{transform:translate(0,0) scale(1)}}
-@keyframes tw{0%,100%{opacity:.15;transform:scale(.8)}50%{opacity:.8;transform:scale(1.2)}}
-@keyframes sf{0%{opacity:0;transform:translateY(-10px) translateX(0) rotate(-35deg)}10%{opacity:1}40%{opacity:0;transform:translateY(200px) translateX(150px) rotate(-35deg)}100%{opacity:0}}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);animation:chakra 20s ease-in-out infinite}
+/* Chakra 4-7 moving back and forth — representing energy flow */
+@keyframes chakra4{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(120px,40px) scale(1.15)}50%{transform:translate(200px,-30px) scale(.95)}75%{transform:translate(60px,-60px) scale(1.1)}}
+@keyframes chakra5{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-140px,30px) scale(1.1)}50%{transform:translate(-220px,-40px) scale(.92)}75%{transform:translate(-80px,50px) scale(1.08)}}
+@keyframes chakra6{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(100px,-50px) scale(1.12)}50%{transform:translate(-50px,-120px) scale(.88)}75%{transform:translate(-120px,30px) scale(1.05)}}
+@keyframes chakra7{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-80px,80px) scale(.95)}50%{transform:translate(70px,150px) scale(1.18)}75%{transform:translate(130px,40px) scale(1.02)}}
+@keyframes tw{0%,100%{opacity:.15;transform:scale(.8)}50%{opacity:.9;transform:scale(1.3)}}
+/* Sao bang thuan chieu: roi tu goc trai-tren xuong goc phai-duoi (nghieng 35deg) */
+@keyframes sf{0%{opacity:0;transform:translate(-150px,-150px) rotate(35deg)}8%{opacity:1}45%{opacity:1}80%{opacity:0;transform:translate(450px,450px) rotate(35deg)}100%{opacity:0}}
 .st{position:absolute;width:2px;height:2px;border-radius:50%;animation:tw 3s ease-in-out infinite}
-.sh{position:absolute;width:60px;height:1px;animation:sf 5s ease-out infinite;transform:rotate(-35deg)}
+.sh{position:absolute;width:80px;height:1.5px;animation:sf 6s ease-in-out infinite;transform:rotate(35deg);border-radius:2px}
 
 /* === NAV === */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:rgba(10,10,32,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05)}
-.nl{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px}
-.nl img{width:34px;height:34px;border-radius:10px}
-.nm{display:flex;gap:20px;align-items:center}
-.nm a{font-size:12px;font-weight:600;opacity:.6;transition:.2s;letter-spacing:.3px}
-.nm a:hover{opacity:1;color:var(--c5)}
-.nb{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--c5),var(--c6));padding:8px 18px;border-radius:20px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.3px;transition:.2s;white-space:nowrap}
-.nb:hover{opacity:.9;transform:scale(1.02)}
-.menu-btn{display:none;background:none;border:none;color:#fff;cursor:pointer;padding:4px}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:72px;background:rgba(10,10,32,.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav-left{display:flex;align-items:center;gap:36px}
+.nl{display:flex;align-items:center;gap:12px;font-weight:800;font-size:20px}
+.nl img{width:52px;height:52px;border-radius:0;background:transparent;filter:drop-shadow(0 0 16px rgba(16,185,129,.35))}
+.nm{display:flex;gap:4px;align-items:center}
+.nm-item{position:relative}
+.nm-item > a{display:flex;align-items:center;gap:5px;padding:10px 14px;border-radius:10px;font-size:14px;font-weight:600;opacity:.75;transition:.2s;letter-spacing:.2px;cursor:pointer}
+.nm-item:hover > a{opacity:1;background:rgba(255,255,255,.05);color:var(--c5)}
+.nm-item > a svg{transition:.2s}
+.nm-item:hover > a svg{transform:rotate(180deg);color:var(--c5)}
+.dropdown{position:absolute;top:calc(100% + 8px);left:0;min-width:300px;background:rgba(12,14,38,.98);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px;opacity:0;visibility:hidden;transform:translateY(-10px);transition:.25s cubic-bezier(.4,0,.2,1);box-shadow:0 24px 64px rgba(0,0,0,.6),0 0 40px rgba(16,185,129,.05);pointer-events:none}
+.nm-item:hover .dropdown{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
+.dropdown::before{content:"";position:absolute;top:-8px;left:0;right:0;height:8px}
+.dropdown a{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;font-size:13px;border-radius:10px;transition:.18s;opacity:.85;font-weight:500;color:#e2e8f0}
+.dropdown a:hover{background:rgba(16,185,129,.1);color:var(--c5);opacity:1;transform:translateX(2px)}
+.dropdown a .di{flex-shrink:0;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;background:rgba(255,255,255,.05)}
+.dropdown a .dt{display:flex;flex-direction:column;gap:2px}
+.dropdown a .dt strong{font-size:13px;font-weight:700}
+.dropdown a .dt span{font-size:11px;opacity:.55;font-weight:400;line-height:1.4}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nb{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--c5),var(--c6));padding:10px 22px;border-radius:22px;font-size:13px;font-weight:700;color:#fff;letter-spacing:.3px;transition:.2s;white-space:nowrap;box-shadow:0 4px 16px rgba(16,185,129,.25)}
+.nb:hover{opacity:.95;transform:scale(1.03)}
+.menu-btn{display:none;background:none;border:none;color:#fff;cursor:pointer;padding:6px}
 
 /* === SECTIONS === */
 .s{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:80px 24px;text-align:center}
-.s:first-of-type{padding-top:100px}
-.st2{font-size:clamp(26px,5vw,40px);font-weight:800;line-height:1.2;margin-bottom:12px}
-.ss{font-size:14px;opacity:.55;max-width:580px;line-height:1.8;margin-bottom:36px;margin-left:auto;margin-right:auto}
+/* Hero full viewport — khong lan noi dung duoi */
+#intro{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding-top:72px;padding-bottom:40px;max-width:1100px}
+#intro > *{width:100%}
+.st2{font-size:clamp(28px,5.2vw,48px);font-weight:800;line-height:1.15;margin-bottom:14px}
+.ss{font-size:14px;opacity:.6;max-width:620px;line-height:1.8;margin-bottom:36px;margin-left:auto;margin-right:auto}
 .gt{background:linear-gradient(135deg,var(--c4),var(--c5),var(--c6));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .gd{color:var(--gold)}
 .tag{font-size:11px;opacity:.35;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
@@ -88,16 +109,19 @@ footer p{font-size:11px;opacity:.25;line-height:1.8}
 .fl a:hover{opacity:1;color:var(--c5)}
 
 /* === MOBILE === */
-@media(max-width:768px){
+@media(max-width:900px){
   .nm{display:none}
   .menu-btn{display:block}
   .s{padding:60px 16px}
-  .s:first-of-type{padding-top:90px}
+  #intro{padding-top:80px;min-height:100vh}
+  .nl{font-size:17px}
+  .nl img{width:42px;height:42px}
   .g4,.steps{grid-template-columns:1fr 1fr}
   .stats{gap:16px}
   .sn{font-size:26px}
   .cta{padding:32px 20px}
-  nav{padding:0 16px}
+  nav{padding:0 16px;height:60px}
+  .nav-left{gap:0}
 }
 @media(max-width:480px){
   .g4,.steps{grid-template-columns:1fr}
@@ -113,34 +137,77 @@ footer p{font-size:11px;opacity:.25;line-height:1.8}
 </head>
 <body>
 
-<!-- Cosmic Background -->
+<!-- Cosmic Background — Luan xa 4,5,6,7 di chuyen qua lai -->
 <div class="cosmic">
-  <div class="orb" style="width:400px;height:400px;top:-10%;right:-5%;background:radial-gradient(circle,rgba(99,102,241,.2),transparent 70%)"></div>
-  <div class="orb" style="width:350px;height:350px;bottom:-5%;left:-5%;background:radial-gradient(circle,rgba(16,185,129,.18),transparent 70%);animation-delay:-5s"></div>
-  <div class="orb" style="width:300px;height:300px;top:40%;left:30%;background:radial-gradient(circle,rgba(139,92,246,.12),transparent 70%);animation-delay:-10s"></div>
-  <div class="orb" style="width:250px;height:250px;top:20%;left:60%;background:radial-gradient(circle,rgba(20,184,166,.12),transparent 70%);animation-delay:-7s"></div>
+  <!-- Luan xa 4 (Tim — Green c5) -->
+  <div class="orb" style="width:420px;height:420px;top:30%;left:15%;background:radial-gradient(circle,rgba(16,185,129,.22),transparent 70%);animation:chakra4 18s ease-in-out infinite"></div>
+  <!-- Luan xa 5 (Co hong — Blue c4) -->
+  <div class="orb" style="width:380px;height:380px;top:20%;right:10%;background:radial-gradient(circle,rgba(99,102,241,.2),transparent 70%);animation:chakra5 22s ease-in-out infinite;animation-delay:-4s"></div>
+  <!-- Luan xa 6 (Tran — Teal c6) -->
+  <div class="orb" style="width:340px;height:340px;bottom:15%;left:35%;background:radial-gradient(circle,rgba(20,184,166,.18),transparent 70%);animation:chakra6 20s ease-in-out infinite;animation-delay:-8s"></div>
+  <!-- Luan xa 7 (Dinh dau — Violet c7) -->
+  <div class="orb" style="width:460px;height:460px;top:10%;left:40%;background:radial-gradient(circle,rgba(139,92,246,.16),transparent 70%);animation:chakra7 24s ease-in-out infinite;animation-delay:-12s"></div>
 </div>
 <div class="cosmic" id="starsEl"></div>
-<script>!function(){for(var e=document.getElementById("starsEl"),t=["#a78bfa","#818cf8","#10b981","#14b8a6"],n=0;n<25;n++){var o=document.createElement("div");o.className="st";o.style.cssText="left:"+(.05+Math.random()*.9)*100+"%;top:"+(.05+Math.random()*.9)*100+"%;animation-delay:"+Math.random()*5+"s;animation-duration:"+(2+Math.random()*4)+"s;background:"+t[n%4]+";width:"+(Math.random()>.7?3:2)+"px;height:"+(Math.random()>.7?3:2)+"px";e.appendChild(o)}for(var i=0;i<3;i++){var s=document.createElement("div");s.className="sh";s.style.cssText="top:"+(10+25*i)+"%;left:"+(10+20*i)+"%;animation-delay:"+(3*i+1)+"s;animation-duration:"+(4+i)+"s;background:linear-gradient(90deg,"+t[i]+",transparent)";e.appendChild(s)}}();</script>
+<script>!function(){var e=document.getElementById("starsEl"),t=["#a78bfa","#818cf8","#10b981","#14b8a6","#6366f1","#8b5cf6"];for(var n=0;n<32;n++){var o=document.createElement("div");o.className="st";o.style.cssText="left:"+(.03+Math.random()*.94)*100+"%;top:"+(.03+Math.random()*.94)*100+"%;animation-delay:"+Math.random()*5+"s;animation-duration:"+(2+Math.random()*4)+"s;background:"+t[n%6]+";width:"+(Math.random()>.7?3:2)+"px;height:"+(Math.random()>.7?3:2)+"px;box-shadow:0 0 6px "+t[n%6];e.appendChild(o)}for(var i=0;i<5;i++){var s=document.createElement("div");s.className="sh";var col=t[i%t.length];s.style.cssText="top:"+(5+15*i)+"%;left:"+(5+12*i)+"%;animation-delay:"+(2*i+1)+"s;animation-duration:"+(5+i*.5)+"s;background:linear-gradient(135deg,transparent,"+col+",transparent);box-shadow:0 0 10px "+col;e.appendChild(s)}}();</script>
 
-<!-- Nav -->
+<!-- Nav — Menu dich sang canh logo, co dropdown kieu GitHub -->
 <nav>
-  <div class="nl">
-    <img src="images/img-52d87bf94f.png" alt="ANIMA" onerror="this.outerHTML='<div style=&quot;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--c5),var(--c6));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px&quot;>A</div>'">
-    <span>ANIMA <span class="gt">Care</span></span>
+  <div class="nav-left">
+    <a href="#top" class="nl">
+      <img src="images/img-52d87bf94f.png" alt="ANIMA" style="mix-blend-mode:screen" onerror="this.outerHTML='<div style=&quot;width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--c5),var(--c6));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:22px&quot;>A</div>'">
+      <span>ANIMA <span class="gt">Care</span></span>
+    </a>
+    <div class="nm">
+      <!-- Hệ Sinh Thái -->
+      <div class="nm-item">
+        <a>Hệ Sinh Thái <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
+        <div class="dropdown">
+          <a href="#eco"><div class="di" style="background:rgba(99,102,241,.15)">🧬</div><div class="dt"><strong>Anima 119</strong><span>Đông dược lên men 3 tầng — 32 thảo dược quý</span></div></a>
+          <a href="#eco"><div class="di" style="background:rgba(16,185,129,.15)">🏥</div><div class="dt"><strong>Anima Care</strong><span>Chuỗi trung tâm chữa lành — 34 tỉnh thành</span></div></a>
+          <a href="#eco"><div class="di" style="background:rgba(20,184,166,.15)">⚡</div><div class="dt"><strong>Anima Tech</strong><span>Nền tảng O2O — App đặt lịch & marketplace</span></div></a>
+          <a href="#eco"><div class="di" style="background:rgba(139,92,246,.15)">🤖</div><div class="dt"><strong>Anima AI</strong><span>AI Engine — Tầm soát da, thiệt chẩn, mống mắt</span></div></a>
+        </div>
+      </div>
+      <!-- Anima 119 -->
+      <div class="nm-item">
+        <a>Anima 119 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
+        <div class="dropdown">
+          <a href="#product"><div class="di" style="background:rgba(16,185,129,.15)">🧪</div><div class="dt"><strong>Công nghệ Lên Men 3 Tầng</strong><span>Vi sinh · Enzyme · Năng lượng</span></div></a>
+          <a href="#product"><div class="di" style="background:rgba(200,168,78,.15)">✨</div><div class="dt"><strong>8 Công dụng chính</strong><span>Hấp thu · Thải độc · Trẻ hóa · Cân bằng</span></div></a>
+        </div>
+      </div>
+      <!-- Dịch Vụ -->
+      <div class="nm-item">
+        <a>Dịch Vụ <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
+        <div class="dropdown">
+          <a href="#svc"><div class="di" style="background:rgba(16,185,129,.15)">🧘</div><div class="dt"><strong>8 Bước Phục Hưng Sự Sống</strong><span>Khai vấn → Tái sinh năng lượng nguyên sơ</span></div></a>
+          <a href="https://app.animacare.global/app/booking" target="_blank"><div class="di" style="background:rgba(99,102,241,.15)">📅</div><div class="dt"><strong>Đặt lịch ngay</strong><span>Mở App ANIMA để đặt dịch vụ</span></div></a>
+        </div>
+      </div>
+      <!-- Chuỗi Trạm -->
+      <div class="nm-item">
+        <a>Chuỗi Trạm <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
+        <div class="dropdown">
+          <a href="chain.html"><div class="di" style="background:rgba(16,185,129,.15)">🗺️</div><div class="dt"><strong>34 Tỉnh thành</strong><span>Bản đồ chuỗi trung tâm toàn quốc</span></div></a>
+          <a href="chain.html#franchise"><div class="di" style="background:rgba(200,168,78,.15)">🏢</div><div class="dt"><strong>Nhượng quyền Lite & Full</strong><span>Royalty 5% — Đào tạo KTV chuyên nghiệp</span></div></a>
+          <a href="dai-ly.html"><div class="di" style="background:rgba(99,102,241,.15)">🤝</div><div class="dt"><strong>Đăng ký đại lý</strong><span>Trở thành đối tác phân phối ANIMA</span></div></a>
+        </div>
+      </div>
+      <!-- Nhà Đầu Tư -->
+      <div class="nm-item">
+        <a>Nhà Đầu Tư <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
+        <div class="dropdown">
+          <a href="#inv"><div class="di" style="background:rgba(200,168,78,.15)">📈</div><div class="dt"><strong>Lộ trình IPO SGX 2031</strong><span>Seed · Series A · Series B · Pre-IPO</span></div></a>
+          <a href="https://ios.animacare.global" target="_blank"><div class="di" style="background:rgba(139,92,246,.15)">🔐</div><div class="dt"><strong>IOS Portal</strong><span>Pitch deck · Cap table · Data room</span></div></a>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="nm">
-    <a href="#eco">Hệ Sinh Thái</a>
-    <a href="#product">Anima 119</a>
-    <a href="#svc">Dịch Vụ</a>
-    <a href="chain.html">Chuỗi Trạm</a>
-    <a href="#inv">Nhà Đầu Tư</a>
-    <a href="https://ios.animacare.global" target="_blank">IOS Portal</a>
-  </div>
-  <div style="display:flex;align-items:center;gap:8px">
+  <div class="nav-right">
     <a href="https://app.animacare.global/app/login" target="_blank" class="nb">Đăng nhập ↗</a>
     <button class="menu-btn" onclick="document.getElementById('mob').classList.toggle('open')" aria-label="Menu">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
     </button>
   </div>
 </nav>
