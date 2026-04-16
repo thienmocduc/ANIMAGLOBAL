@@ -44,10 +44,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .menu-btn{display:none;background:none;border:none;color:#fff;cursor:pointer;padding:4px}
 
 /* === SECTIONS === */
-.s{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:80px 24px}
+.s{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:80px 24px;text-align:center}
 .s:first-of-type{padding-top:100px}
 .st2{font-size:clamp(26px,5vw,40px);font-weight:800;line-height:1.2;margin-bottom:12px}
-.ss{font-size:14px;opacity:.55;max-width:580px;line-height:1.8;margin-bottom:36px}
+.ss{font-size:14px;opacity:.55;max-width:580px;line-height:1.8;margin-bottom:36px;margin-left:auto;margin-right:auto}
 .gt{background:linear-gradient(135deg,var(--c4),var(--c5),var(--c6));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .gd{color:var(--gold)}
 .tag{font-size:11px;opacity:.35;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
@@ -58,15 +58,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .c{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:24px;transition:.3s}
 .c:hover{border-color:rgba(16,185,129,.25);transform:translateY(-3px)}
 .ci{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:22px}
-.c h3{font-size:16px;font-weight:700;margin-bottom:6px}
-.c p{font-size:13px;opacity:.55;line-height:1.7}
+.c h3{font-size:16px;font-weight:700;margin-bottom:6px;text-align:left}
+.c p{font-size:13px;opacity:.55;line-height:1.7;text-align:left}
 
 /* === STEPS === */
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;counter-reset:stp}
 .sp{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:20px;counter-increment:stp;position:relative;overflow:hidden}
 .sp::before{content:counter(stp);position:absolute;top:8px;right:12px;font-size:40px;font-weight:800;opacity:.06}
-.sp h4{font-size:14px;font-weight:700;margin-bottom:4px;color:var(--c5)}
-.sp p{font-size:12px;opacity:.45;line-height:1.5}
+.sp h4{font-size:14px;font-weight:700;margin-bottom:4px;color:var(--c5);text-align:left}
+.sp p{font-size:12px;opacity:.45;line-height:1.5;text-align:left}
 
 /* === STATS === */
 .stats{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;margin:32px 0}
@@ -167,7 +167,7 @@ footer p{font-size:11px;opacity:.25;line-height:1.8}
     <div class="stat"><div class="sn gt">34</div><div class="sl">Tỉnh thành</div></div>
     <div class="stat"><div class="sn gd">2031</div><div class="sl">IPO SGX</div></div>
   </div>
-  <div style="display:flex;gap:12px;flex-wrap:wrap">
+  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
     <a href="https://app.animacare.global" target="_blank" class="btn">Mở App ANIMA Care ↗</a>
     <a href="#eco" class="btn btn2">Khám phá ↓</a>
   </div>
