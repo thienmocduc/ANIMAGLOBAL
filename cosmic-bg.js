@@ -1,16 +1,10 @@
 // Cosmic Background — Luan xa 4,5,6,7 + sao bang cheo ngang
 // Dung chung: animacare.global, app.animacare.global, ios.animacare.global
+// Auto mount vao body, va re-mount vao #cosmic-target neu co (cho app co fixed layout)
 (function() {
   if (typeof document === 'undefined') return;
 
-  function mount() {
-    if (document.getElementById('cosmic-bg-root')) return;
-
-    const root = document.createElement('div');
-    root.id = 'cosmic-bg-root';
-    root.className = 'cosmic-bg-wrap';
-    root.setAttribute('aria-hidden', 'true');
-
+  function populate(root) {
     // Orbs luan xa 4-7
     const orbs = [
       { c: 'rgba(16,185,129,.22)',  s: 420, pos: 'top:30%;left:15%', anim: 'cosmic-chakra4', dur: 18, delay: 0 },
@@ -25,7 +19,6 @@
       root.appendChild(d);
     });
 
-    // Stars twinkle
     const colors = ['#a78bfa','#818cf8','#10b981','#14b8a6','#6366f1','#8b5cf6'];
     for (let i = 0; i < 32; i++) {
       const s = document.createElement('div');
@@ -36,7 +29,6 @@
       root.appendChild(s);
     }
 
-    // Shooting stars — bay cheo ngang
     for (let i = 0; i < 6; i++) {
       const s = document.createElement('div');
       s.className = 'cosmic-shoot';
@@ -44,13 +36,44 @@
       s.style.cssText = `top:${8 + 14*i}%;animation-delay:${1.5*i}s;animation-duration:${6 + i*.4}s;background:linear-gradient(90deg,transparent,${col} 40%,#fff 50%,${col} 60%,transparent);box-shadow:0 0 12px ${col},0 0 24px ${col}`;
       root.appendChild(s);
     }
-
-    document.body.insertBefore(root, document.body.firstChild);
   }
 
+  function mountTo(parent, id) {
+    if (document.getElementById(id)) return;
+    const root = document.createElement('div');
+    root.id = id;
+    root.className = 'cosmic-bg-wrap';
+    root.setAttribute('aria-hidden', 'true');
+    // Neu mount vao element tuy chinh (khong phai body), dung absolute de fit parent
+    if (parent !== document.body) {
+      root.style.position = 'absolute';
+    }
+    populate(root);
+    parent.insertBefore(root, parent.firstChild);
+  }
+
+  function mountAll() {
+    // Neu trang co #cosmic-target (app layout), mount vao do
+    const target = document.getElementById('cosmic-target');
+    if (target) {
+      mountTo(target, 'cosmic-bg-root-app');
+    } else {
+      mountTo(document.body, 'cosmic-bg-root');
+    }
+  }
+
+  // Re-mount khi SPA router navigate (Next.js doi URL khong reload)
+  let lastPath = location.pathname;
+  setInterval(() => {
+    if (location.pathname !== lastPath) {
+      lastPath = location.pathname;
+      mountAll();
+    }
+  }, 500);
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', mount);
+    document.addEventListener('DOMContentLoaded', mountAll);
   } else {
-    mount();
+    mountAll();
   }
 })();
