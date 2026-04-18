@@ -1,11 +1,12 @@
 // Cosmic Background — Luan xa 4,5,6,7 + sao bang cheo ngang
 // Dung chung: animacare.global, app.animacare.global, ios.animacare.global
-// Auto mount vao body, va re-mount vao #cosmic-target neu co (cho app co fixed layout)
 (function() {
   if (typeof document === 'undefined') return;
 
   function populate(root) {
-    // Orbs luan xa 4-7
+    if (root.dataset.cosmicMounted === '1') return;
+    root.dataset.cosmicMounted = '1';
+
     const orbs = [
       { c: 'rgba(16,185,129,.22)',  s: 420, pos: 'top:30%;left:15%', anim: 'cosmic-chakra4', dur: 18, delay: 0 },
       { c: 'rgba(99,102,241,.2)',   s: 380, pos: 'top:20%;right:10%', anim: 'cosmic-chakra5', dur: 22, delay: -4 },
@@ -38,42 +39,52 @@
     }
   }
 
-  function mountTo(parent, id) {
-    if (document.getElementById(id)) return;
+  function mountTo(target) {
+    if (!target || target.dataset.cosmicMounted === '1') return;
+    // target duoc du an mark san san — populate directly
+    populate(target);
+  }
+
+  function mountDefaultBody() {
+    // Neu body khong co cosmic-target thi mount vao body
+    if (document.getElementById('cosmic-target')) return;
+    if (document.getElementById('cosmic-bg-root')) return;
     const root = document.createElement('div');
-    root.id = id;
+    root.id = 'cosmic-bg-root';
     root.className = 'cosmic-bg-wrap';
     root.setAttribute('aria-hidden', 'true');
-    // Neu mount vao element tuy chinh (khong phai body), dung absolute de fit parent
-    if (parent !== document.body) {
-      root.style.position = 'absolute';
-    }
     populate(root);
-    parent.insertBefore(root, parent.firstChild);
+    document.body.insertBefore(root, document.body.firstChild);
   }
 
-  function mountAll() {
-    // Neu trang co #cosmic-target (app layout), mount vao do
-    const target = document.getElementById('cosmic-target');
-    if (target) {
-      mountTo(target, 'cosmic-bg-root-app');
-    } else {
-      mountTo(document.body, 'cosmic-bg-root');
-    }
+  function scan() {
+    // Tat ca cosmic-target tren trang (co the co nhieu layout long nhau)
+    const targets = document.querySelectorAll('#cosmic-target, [data-cosmic-target]');
+    let found = false;
+    targets.forEach(t => {
+      // Them class cosmic-bg-wrap neu chua co
+      if (!t.classList.contains('cosmic-bg-wrap')) t.classList.add('cosmic-bg-wrap');
+      t.style.position = t.style.position || 'absolute';
+      mountTo(t);
+      found = true;
+    });
+    if (!found) mountDefaultBody();
   }
 
-  // Re-mount khi SPA router navigate (Next.js doi URL khong reload)
-  let lastPath = location.pathname;
-  setInterval(() => {
-    if (location.pathname !== lastPath) {
-      lastPath = location.pathname;
-      mountAll();
-    }
-  }, 500);
+  // Quan sat DOM changes — khi React swap layout se co cosmic-target moi
+  function observeDOM() {
+    const obs = new MutationObserver(() => scan());
+    obs.observe(document.documentElement, { childList: true, subtree: true });
+  }
+
+  function init() {
+    scan();
+    observeDOM();
+  }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', mountAll);
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    mountAll();
+    init();
   }
 })();

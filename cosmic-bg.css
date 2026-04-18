@@ -14,6 +14,9 @@
   --cosmic-bg: #0a0a20;
 }
 
+/* Dark mode: body nen #0a0a20 de dong bo voi cosmic bg */
+html.dark body { background: #0a0a20; }
+
 .cosmic-bg-wrap {
   position: fixed;
   inset: 0;

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -16,6 +16,7 @@
 <link rel="canonical" href="https://animacare.global/">
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site-features.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--c4:#6366f1;--c5:#10b981;--c6:#14b8a6;--c7:#8b5cf6;--dk:#0a0a20;--gold:#C8A84E}
@@ -159,7 +160,7 @@ footer p{font-size:11px;opacity:.25;line-height:1.8}
     <div class="nm">
       <!-- Hệ Sinh Thái -->
       <div class="nm-item">
-        <a>Hệ Sinh Thái <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
+        <a><span data-i18n="nav_eco">Hệ Sinh Thái</span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
         <div class="dropdown">
           <a href="#eco"><div class="di" style="background:rgba(99,102,241,.15)">🧬</div><div class="dt"><strong>Anima 119</strong><span>Đông dược lên men 3 tầng — 32 thảo dược quý</span></div></a>
           <a href="#eco"><div class="di" style="background:rgba(16,185,129,.15)">🏥</div><div class="dt"><strong>Anima Care</strong><span>Chuỗi trung tâm chữa lành — 34 tỉnh thành</span></div></a>
@@ -169,7 +170,7 @@ footer p{font-size:11px;opacity:.25;line-height:1.8}
       </div>
       <!-- Anima 119 -->
       <div class="nm-item">
-        <a>Anima 119 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
+        <a><span data-i18n="nav_119">Anima 119</span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
         <div class="dropdown">
           <a href="#product"><div class="di" style="background:rgba(16,185,129,.15)">🧪</div><div class="dt"><strong>Công nghệ Lên Men 3 Tầng</strong><span>Vi sinh · Enzyme · Năng lượng</span></div></a>
           <a href="#product"><div class="di" style="background:rgba(200,168,78,.15)">✨</div><div class="dt"><strong>8 Công dụng chính</strong><span>Hấp thu · Thải độc · Trẻ hóa · Cân bằng</span></div></a>
@@ -177,7 +178,7 @@ footer p{font-size:11px;opacity:.25;line-height:1.8}
       </div>
       <!-- Dịch Vụ -->
       <div class="nm-item">
-        <a>Dịch Vụ <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
+        <a><span data-i18n="nav_svc">Dịch Vụ</span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
         <div class="dropdown">
           <a href="#svc"><div class="di" style="background:rgba(16,185,129,.15)">🧘</div><div class="dt"><strong>8 Bước Phục Hưng Sự Sống</strong><span>Khai vấn → Tái sinh năng lượng nguyên sơ</span></div></a>
           <a href="https://app.animacare.global/app/booking" target="_blank"><div class="di" style="background:rgba(99,102,241,.15)">📅</div><div class="dt"><strong>Đặt lịch ngay</strong><span>Mở App ANIMA để đặt dịch vụ</span></div></a>
@@ -185,7 +186,7 @@ footer p{font-size:11px;opacity:.25;line-height:1.8}
       </div>
       <!-- Chuỗi Trạm -->
       <div class="nm-item">
-        <a>Chuỗi Trạm <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
+        <a><span data-i18n="nav_chain">Chuỗi Trạm</span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
         <div class="dropdown">
           <a href="chain.html"><div class="di" style="background:rgba(16,185,129,.15)">🗺️</div><div class="dt"><strong>34 Tỉnh thành</strong><span>Bản đồ chuỗi trung tâm toàn quốc</span></div></a>
           <a href="chain.html#franchise"><div class="di" style="background:rgba(200,168,78,.15)">🏢</div><div class="dt"><strong>Nhượng quyền Lite & Full</strong><span>Royalty 5% — Đào tạo KTV chuyên nghiệp</span></div></a>
@@ -194,7 +195,7 @@ footer p{font-size:11px;opacity:.25;line-height:1.8}
       </div>
       <!-- Nhà Đầu Tư -->
       <div class="nm-item">
-        <a>Nhà Đầu Tư <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
+        <a><span data-i18n="nav_inv">Nhà Đầu Tư</span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
         <div class="dropdown">
           <a href="#inv"><div class="di" style="background:rgba(200,168,78,.15)">📈</div><div class="dt"><strong>Lộ trình IPO SGX 2031</strong><span>Seed · Series A · Series B · Pre-IPO</span></div></a>
           <a href="https://ios.animacare.global" target="_blank"><div class="di" style="background:rgba(139,92,246,.15)">🔐</div><div class="dt"><strong>IOS Portal</strong><span>Pitch deck · Cap table · Data room</span></div></a>
@@ -203,7 +204,7 @@ footer p{font-size:11px;opacity:.25;line-height:1.8}
     </div>
   </div>
   <div class="nav-right">
-    <a href="https://app.animacare.global/app/login" target="_blank" class="nb">Đăng nhập ↗</a>
+    <a href="https://app.animacare.global/app/login" target="_blank" class="nb" data-i18n="nav_login">Đăng nhập ↗</a>
     <button class="menu-btn" onclick="document.getElementById('mob').classList.toggle('open')" aria-label="Menu">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
     </button>
@@ -223,46 +224,48 @@ footer p{font-size:11px;opacity:.25;line-height:1.8}
 
 <!-- ========== INTRO ========== -->
 <div class="s" id="intro">
-  <p class="tag">Công Ty Cổ Phần Anima Care Global · Thức Tỉnh Năng Lượng Nguyên Sơ</p>
-  <h1 class="st2">Phục Hưng Sự Sống Bên Trong<br>Qua <span class="gt">Đông Dược Lên Men</span><br>& Trí Tuệ Nhân Tạo</h1>
-  <p class="ss">"Chúng tôi kiến tạo một nền văn minh chăm sóc sức khỏe mới — nơi 5.000 năm trí tuệ Đông Y gặp gỡ Trí Tuệ Nhân Tạo để chữa lành và phục hưng sức sống nguyên sơ cho người Việt và toàn cõi ASEAN."</p>
+  <p class="tag" data-i18n="hero_tag">Công Ty Cổ Phần Anima Care Global · Thức Tỉnh Năng Lượng Nguyên Sơ</p>
+  <h1 class="st2"><span data-i18n="hero_title_1">Phục Hưng Sự Sống Bên Trong</span><br><span data-i18n="hero_title_2">Qua</span> <span class="gt" data-i18n="hero_title_3">Đông Dược Lên Men</span><br><span data-i18n="hero_title_4">& Trí Tuệ Nhân Tạo</span></h1>
+  <p class="ss" data-i18n="hero_desc">"Chúng tôi kiến tạo một nền văn minh chăm sóc sức khỏe mới — nơi 5.000 năm trí tuệ Đông Y gặp gỡ Trí Tuệ Nhân Tạo để chữa lành và phục hưng sức sống nguyên sơ cho người Việt và toàn cõi ASEAN."</p>
   <div class="stats">
-    <div class="stat"><div class="sn gt">32</div><div class="sl">Thảo dược quý</div></div>
-    <div class="stat"><div class="sn gt">119</div><div class="sl">Hoạt chất sinh học</div></div>
-    <div class="stat"><div class="sn gt">34</div><div class="sl">Tỉnh thành</div></div>
-    <div class="stat"><div class="sn gd">2031</div><div class="sl">IPO SGX</div></div>
+    <div class="stat"><div class="sn gt">32</div><div class="sl" data-i18n="stat_herbs">Thảo dược quý</div></div>
+    <div class="stat"><div class="sn gt">119</div><div class="sl" data-i18n="stat_active">Hoạt chất sinh học</div></div>
+    <div class="stat"><div class="sn gt">34</div><div class="sl" data-i18n="stat_prov">Tỉnh thành</div></div>
+    <div class="stat"><div class="sn gd">2031</div><div class="sl" data-i18n="stat_ipo">IPO SGX</div></div>
   </div>
   <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
-    <a href="https://app.animacare.global" target="_blank" class="btn">Mở App ANIMA Care ↗</a>
-    <a href="#eco" class="btn btn2">Khám phá ↓</a>
+    <a href="https://app.animacare.global" target="_blank" class="btn" data-i18n="btn_openapp">Mở App ANIMA Care ↗</a>
+    <a href="#eco" class="btn btn2" data-i18n="btn_explore">Khám phá ↓</a>
   </div>
 </div>
 
+<script src="site-features.js" defer></script>
+
 <!-- ========== ECOSYSTEM ========== -->
 <div class="s" id="eco">
-  <p class="tag">Bốn Trụ Cột</p>
-  <h2 class="st2">Hệ Sinh Thái <span class="gt">ANIMA</span></h2>
-  <p class="ss">Mỗi trụ cột là một mắt xích — kết nối thành vòng lặp flywheel tự tăng trưởng.</p>
+  <p class="tag" data-i18n="sec_eco_tag">Bốn Trụ Cột</p>
+  <h2 class="st2"><span data-i18n="sec_eco_title_1">Hệ Sinh Thái</span> <span class="gt">ANIMA</span></h2>
+  <p class="ss" data-i18n="sec_eco_desc">Mỗi trụ cột là một mắt xích — kết nối thành vòng lặp flywheel tự tăng trưởng.</p>
   <div class="g4">
     <div class="c">
       <div class="ci" style="background:rgba(99,102,241,.12)">🧬</div>
-      <h3>Anima 119</h3>
-      <p>Đông dược lên men 3 tầng — Thực thể phân tử sống. 32 thảo dược quý, 119 hoạt chất sinh học.</p>
+      <h3 data-i18n="eco_119_title">Anima 119</h3>
+      <p data-i18n="eco_119_desc">Đông dược lên men 3 tầng — Thực thể phân tử sống. 32 thảo dược quý, 119 hoạt chất sinh học.</p>
     </div>
     <div class="c">
       <div class="ci" style="background:rgba(16,185,129,.12)">🏥</div>
-      <h3>Anima Care</h3>
-      <p>Chuỗi trung tâm chữa lành vật lý — 34 tỉnh thành. Khai vấn, thảo mộc nhiệt, đả thông kinh lạc.</p>
+      <h3 data-i18n="eco_care_title">Anima Care</h3>
+      <p data-i18n="eco_care_desc">Chuỗi trung tâm chữa lành vật lý — 34 tỉnh thành. Khai vấn, thảo mộc nhiệt, đả thông kinh lạc.</p>
     </div>
     <div class="c">
       <div class="ci" style="background:rgba(20,184,166,.12)">⚡</div>
-      <h3>Anima Tech</h3>
-      <p>Nền tảng O2O — App đặt lịch, marketplace, affiliate. Kết nối khách hàng — KTV — Center.</p>
+      <h3 data-i18n="eco_tech_title">Anima Tech</h3>
+      <p data-i18n="eco_tech_desc">Nền tảng O2O — App đặt lịch, marketplace, affiliate. Kết nối khách hàng — KTV — Center.</p>
     </div>
     <div class="c">
       <div class="ci" style="background:rgba(139,92,246,.12)">🤖</div>
-      <h3>Anima AI</h3>
-      <p>AI Engine khai vấn sự sống — Tầm soát da, thiệt chẩn, mống mắt. Cá nhân hóa liệu trình.</p>
+      <h3 data-i18n="eco_ai_title">Anima AI</h3>
+      <p data-i18n="eco_ai_desc">AI Engine khai vấn sự sống — Tầm soát da, thiệt chẩn, mống mắt. Cá nhân hóa liệu trình.</p>
     </div>
   </div>
 </div>
