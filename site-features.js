@@ -268,10 +268,8 @@
     injectControls();
     injectChatbot();
     applyLang(getLang());
-
-    // Also apply i18n when new DOM mounted (observer)
-    const obs = new MutationObserver(() => applyLang(getLang()));
-    obs.observe(document.body, { childList: true, subtree: true });
+    // NOTE: MutationObserver đã bị xoá (v2 — gây freeze UI).
+    // applyLang chạy 1 lần khi init + mỗi lần đổi ngôn ngữ là đủ.
   }
 
   if (document.readyState === 'loading') {
