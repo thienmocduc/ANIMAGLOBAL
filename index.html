@@ -1,372 +1,126 @@
 <!DOCTYPE html>
-<html lang="vi" class="dark">
+<html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0a0a20">
-<title>Anima Care Global — Thức Tỉnh Năng Lượng Nguyên Sơ</title>
-<meta name="description" content="Hệ sinh thái chăm sóc sức khỏe & phục hồi năng lượng toàn diện ASEAN. Anima 119 đông dược lên men, chuỗi trung tâm Anima Care, AI Engine.">
-<meta property="og:title" content="Anima Care Global — Thức Tỉnh Năng Lượng Nguyên Sơ">
-<meta property="og:description" content="Hệ sinh thái chăm sóc sức khỏe & phục hồi năng lượng ASEAN. 5.000 năm Đông Y + Trí Tuệ Nhân Tạo.">
-<meta property="og:image" content="https://animacare.global/images/anima119-hero.jpg">
-<meta property="og:url" content="https://animacare.global">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="icons/icon-192.png">
-<link rel="canonical" href="https://animacare.global/">
-<link rel="manifest" href="manifest.json">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site-features.css">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ANIMA Care Global — Coming Soon</title>
+<meta name="description" content="ANIMA Care Global · Trang chủ đang được cập nhật. Vui lòng quay lại sau.">
+<link rel="icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--c4:#6366f1;--c5:#10b981;--c6:#14b8a6;--c7:#8b5cf6;--dk:#0a0a20;--gold:#C8A84E}
-body{font-family:'Montserrat',sans-serif;background:var(--dk);color:#e2e8f0;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}
-img{max-width:100%}
-
-/* === COSMIC BG === */
-.cosmic{position:fixed;inset:0;pointer-events:none;z-index:0}
-.orb{position:absolute;border-radius:50%;filter:blur(90px);animation:chakra 20s ease-in-out infinite}
-/* Chakra 4-7 moving back and forth — representing energy flow */
-@keyframes chakra4{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(120px,40px) scale(1.15)}50%{transform:translate(200px,-30px) scale(.95)}75%{transform:translate(60px,-60px) scale(1.1)}}
-@keyframes chakra5{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-140px,30px) scale(1.1)}50%{transform:translate(-220px,-40px) scale(.92)}75%{transform:translate(-80px,50px) scale(1.08)}}
-@keyframes chakra6{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(100px,-50px) scale(1.12)}50%{transform:translate(-50px,-120px) scale(.88)}75%{transform:translate(-120px,30px) scale(1.05)}}
-@keyframes chakra7{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-80px,80px) scale(.95)}50%{transform:translate(70px,150px) scale(1.18)}75%{transform:translate(130px,40px) scale(1.02)}}
-@keyframes tw{0%,100%{opacity:.15;transform:scale(.8)}50%{opacity:.9;transform:scale(1.3)}}
-/* Sao tinh tai cho (khong sao bang — da xoa theo yeu cau Chairman 2026-04-21) */
-.st{position:absolute;width:2px;height:2px;border-radius:50%;animation:tw 3s ease-in-out infinite}
-
-/* === NAV === */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:72px;background:rgba(10,10,32,.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.06)}
-.nav-left{display:flex;align-items:center;gap:36px}
-.nl{display:flex;align-items:center;gap:12px;font-weight:800;font-size:20px}
-.nl img{width:auto;height:52px;border-radius:0;background:transparent;filter:drop-shadow(0 0 18px rgba(16,185,129,.4)) drop-shadow(0 0 8px rgba(99,102,241,.25))}
-.nm{display:flex;gap:4px;align-items:center}
-.nm-item{position:relative}
-.nm-item > a{display:flex;align-items:center;gap:5px;padding:10px 14px;border-radius:10px;font-size:14px;font-weight:600;opacity:.75;transition:.2s;letter-spacing:.2px;cursor:pointer}
-.nm-item:hover > a{opacity:1;background:rgba(255,255,255,.05);color:var(--c5)}
-.nm-item > a svg{transition:.2s}
-.nm-item:hover > a svg{transform:rotate(180deg);color:var(--c5)}
-.dropdown{position:absolute;top:calc(100% + 8px);left:0;min-width:300px;background:rgba(12,14,38,.98);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:10px;opacity:0;visibility:hidden;transform:translateY(-10px);transition:.25s cubic-bezier(.4,0,.2,1);box-shadow:0 24px 64px rgba(0,0,0,.6),0 0 40px rgba(16,185,129,.05);pointer-events:none}
-.nm-item:hover .dropdown{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
-.dropdown::before{content:"";position:absolute;top:-8px;left:0;right:0;height:8px}
-.dropdown a{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;font-size:13px;border-radius:10px;transition:.18s;opacity:.85;font-weight:500;color:#e2e8f0}
-.dropdown a:hover{background:rgba(16,185,129,.1);color:var(--c5);opacity:1;transform:translateX(2px)}
-.dropdown a .di{flex-shrink:0;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;background:rgba(255,255,255,.05)}
-.dropdown a .dt{display:flex;flex-direction:column;gap:2px}
-.dropdown a .dt strong{font-size:13px;font-weight:700}
-.dropdown a .dt span{font-size:11px;opacity:.55;font-weight:400;line-height:1.4}
-.nav-right{display:flex;align-items:center;gap:10px}
-.nb{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--c5),var(--c6));padding:10px 22px;border-radius:22px;font-size:13px;font-weight:700;color:#fff;letter-spacing:.3px;transition:.2s;white-space:nowrap;box-shadow:0 4px 16px rgba(16,185,129,.25)}
-.nb:hover{opacity:.95;transform:scale(1.03)}
-.menu-btn{display:none;background:none;border:none;color:#fff;cursor:pointer;padding:6px}
-
-/* === SECTIONS === */
-.s{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:80px 24px;text-align:center}
-/* Hero full viewport — khong lan noi dung duoi */
-#intro{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding-top:72px;padding-bottom:40px;max-width:1100px}
-#intro > *{width:100%}
-.st2{font-family:'Times New Roman',Times,serif;font-size:clamp(30px,4.6vw,54px);font-weight:700;line-height:1.18;margin:0 auto 22px;letter-spacing:0;text-shadow:0 0 60px rgba(139,92,246,.18);max-width:960px;text-wrap:balance}
-.ss{font-size:15px;opacity:.7;max-width:680px;line-height:1.85;margin-bottom:40px;margin-left:auto;margin-right:auto}
-.gt{background:linear-gradient(135deg,var(--c4),var(--c5),var(--c6),var(--c7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gtShift 8s ease-in-out infinite}
-@keyframes gtShift{0%,100%{filter:hue-rotate(0deg) brightness(1.1)}50%{filter:hue-rotate(30deg) brightness(1.3)}}
-.gd{color:var(--gold)}
-.tag{font-size:11px;opacity:.5;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;color:var(--c7)}
-
-/* === GRID & CARDS === */
-.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.c{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:24px;transition:.3s}
-.c:hover{border-color:rgba(16,185,129,.25);transform:translateY(-3px)}
-.ci{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:22px}
-.c h3{font-size:16px;font-weight:700;margin-bottom:6px;text-align:left}
-.c p{font-size:13px;opacity:.55;line-height:1.7;text-align:left}
-
-/* === STEPS === */
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;counter-reset:stp}
-.sp{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:20px;counter-increment:stp;position:relative;overflow:hidden}
-.sp::before{content:counter(stp);position:absolute;top:8px;right:12px;font-size:40px;font-weight:800;opacity:.06}
-.sp h4{font-size:14px;font-weight:700;margin-bottom:4px;color:var(--c5);text-align:left}
-.sp p{font-size:12px;opacity:.45;line-height:1.5;text-align:left}
-
-/* === STATS === */
-.stats{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;margin:32px 0}
-.stat{text-align:center;min-width:100px}
-.sn{font-size:32px;font-weight:800}
-.sl{font-size:11px;opacity:.4;margin-top:2px}
-
-/* === CTA === */
-.cta{background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(16,185,129,.08));border:1px solid rgba(16,185,129,.15);border-radius:20px;padding:44px 32px;text-align:center;margin:36px 0}
-.btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--c4),var(--c5),var(--c6));padding:13px 28px;border-radius:14px;font-size:14px;font-weight:700;color:#fff;transition:.2s;box-shadow:0 6px 24px rgba(16,185,129,.25)}
-.btn:hover{transform:scale(1.03);opacity:.95}
-.btn2{background:rgba(255,255,255,.04);box-shadow:none;border:1px solid rgba(255,255,255,.1)}
-
-/* === FOOTER === */
-footer{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.05);padding:36px 24px;text-align:center}
-footer p{font-size:11px;opacity:.25;line-height:1.8}
-.fl{display:flex;justify-content:center;gap:20px;margin-bottom:14px;flex-wrap:wrap}
-.fl a{font-size:12px;opacity:.45;transition:.2s}
-.fl a:hover{opacity:1;color:var(--c5)}
-
-/* === MOBILE === */
-@media(max-width:900px){
-  .nm{display:none}
-  .menu-btn{display:block}
-  .s{padding:60px 16px}
-  #intro{padding-top:80px;min-height:100vh}
-  .nl img{height:40px}
-  .g4,.steps{grid-template-columns:1fr 1fr}
-  .stats{gap:16px}
-  .sn{font-size:26px}
-  .cta{padding:32px 20px}
-  nav{padding:0 16px;height:60px}
-  .nav-left{gap:0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Times New Roman',Times,serif;
+  background:#03060F;
+  color:#F0EEE8;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  overflow-x:hidden;
 }
-@media(max-width:480px){
-  .g4,.steps{grid-template-columns:1fr}
-  .g2{grid-template-columns:1fr}
-}
+.orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+.o1{width:500px;height:500px;background:rgba(34,197,94,.15);top:-10%;left:-10%}
+.o2{width:400px;height:400px;background:rgba(168,85,247,.18);top:50%;right:-10%}
+.o3{width:450px;height:450px;background:rgba(6,182,212,.12);bottom:-10%;left:30%}
 
-/* Mobile menu */
-.mob-menu{display:none;position:fixed;inset:0;z-index:99;background:rgba(10,10,32,.95);backdrop-filter:blur(20px);padding:80px 24px 24px;flex-direction:column;gap:4px}
-.mob-menu.open{display:flex}
-.mob-menu a{padding:14px 0;font-size:15px;font-weight:600;border-bottom:1px solid rgba(255,255,255,.05);opacity:.7}
-.mob-menu a:hover{opacity:1;color:var(--c5)}
+.wrap{
+  position:relative;
+  z-index:1;
+  text-align:center;
+  max-width:720px;
+}
+.logo{
+  width:80px;
+  height:80px;
+  margin:0 auto 32px;
+  border-radius:20px;
+  background:linear-gradient(135deg,#22c55e,#06b6d4,#a855f7);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Montserrat',sans-serif;
+  font-size:38px;
+  font-weight:800;
+  color:#03060F;
+  box-shadow:0 20px 60px rgba(201,168,76,.25);
+}
+.tag{
+  display:inline-block;
+  font-family:'Montserrat',sans-serif;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:#E8C96A;
+  background:rgba(201,168,76,.1);
+  border:1px solid rgba(201,168,76,.3);
+  border-radius:100px;
+  padding:8px 18px;
+  margin-bottom:28px;
+}
+h1{
+  font-size:clamp(36px,6vw,72px);
+  font-weight:700;
+  line-height:1.15;
+  margin-bottom:20px;
+  color:#F0EEE8;
+}
+h1 em{
+  color:#E8C96A;
+  font-style:italic;
+  font-weight:400;
+}
+p{
+  font-family:'Montserrat',sans-serif;
+  font-size:15px;
+  line-height:1.8;
+  color:rgba(240,238,232,.7);
+  max-width:520px;
+  margin:0 auto 36px;
+}
+.footer{
+  font-family:'Montserrat',sans-serif;
+  font-size:12px;
+  color:rgba(240,238,232,.35);
+  margin-top:48px;
+}
+.footer a{color:#E8C96A;text-decoration:none;margin:0 6px}
+.footer a:hover{text-decoration:underline}
+
+.dot{
+  display:inline-block;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#22c55e;
+  margin-right:6px;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.5;transform:scale(1.3)}
+}
 </style>
 </head>
 <body>
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+<div class="orb o3"></div>
 
-<!-- Cosmic Background — Luan xa 4,5,6,7 di chuyen qua lai -->
-<div class="cosmic">
-  <!-- Luan xa 4 (Tim — Green c5) -->
-  <div class="orb" style="width:420px;height:420px;top:30%;left:15%;background:radial-gradient(circle,rgba(16,185,129,.22),transparent 70%);animation:chakra4 18s ease-in-out infinite"></div>
-  <!-- Luan xa 5 (Co hong — Blue c4) -->
-  <div class="orb" style="width:380px;height:380px;top:20%;right:10%;background:radial-gradient(circle,rgba(99,102,241,.2),transparent 70%);animation:chakra5 22s ease-in-out infinite;animation-delay:-4s"></div>
-  <!-- Luan xa 6 (Tran — Teal c6) -->
-  <div class="orb" style="width:340px;height:340px;bottom:15%;left:35%;background:radial-gradient(circle,rgba(20,184,166,.18),transparent 70%);animation:chakra6 20s ease-in-out infinite;animation-delay:-8s"></div>
-  <!-- Luan xa 7 (Dinh dau — Violet c7) -->
-  <div class="orb" style="width:460px;height:460px;top:10%;left:40%;background:radial-gradient(circle,rgba(139,92,246,.16),transparent 70%);animation:chakra7 24s ease-in-out infinite;animation-delay:-12s"></div>
-</div>
-<!-- v3 fix perf: Xoa inline script tao 32 sao + 6 shooting stars (duplicate voi cosmic-bg.js). Shooting stars animate infinite gay CPU/GPU lag lam trang don. -->
-
-<!-- Nav — Menu dich sang canh logo, co dropdown kieu GitHub -->
-<nav>
-  <div class="nav-left">
-    <a href="#top" class="nl">
-      <img src="images/logo-transparent.png" alt="ANIMA Care Global" onerror="this.onerror=null;this.src='images/img-52d87bf94f.png'">
-    </a>
-    <div class="nm">
-      <!-- Hệ Sinh Thái -->
-      <div class="nm-item">
-        <a><span data-i18n="nav_eco">Hệ Sinh Thái</span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
-        <div class="dropdown">
-          <a href="#eco"><div class="di" style="background:rgba(99,102,241,.15)">🧬</div><div class="dt"><strong>Anima 119</strong><span>Đông dược lên men 3 tầng — 32 thảo dược quý</span></div></a>
-          <a href="#eco"><div class="di" style="background:rgba(16,185,129,.15)">🏥</div><div class="dt"><strong>Anima Care</strong><span>Chuỗi trung tâm chữa lành — 34 tỉnh thành</span></div></a>
-          <a href="#eco"><div class="di" style="background:rgba(20,184,166,.15)">⚡</div><div class="dt"><strong>Anima Tech</strong><span>Nền tảng O2O — App đặt lịch & marketplace</span></div></a>
-          <a href="#eco"><div class="di" style="background:rgba(139,92,246,.15)">🤖</div><div class="dt"><strong>Anima AI</strong><span>AI Engine — Tầm soát da, thiệt chẩn, mống mắt</span></div></a>
-        </div>
-      </div>
-      <!-- Anima 119 -->
-      <div class="nm-item">
-        <a><span data-i18n="nav_119">Anima 119</span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
-        <div class="dropdown">
-          <a href="anima119.html"><div class="di" style="background:rgba(201,168,78,.18)">🎬</div><div class="dt"><strong>ANIMA 119 — Xem slide chi tiết</strong><span>9 slide · Công nghệ · Kết quả · Pricing</span></div></a>
-          <a href="anima119.html#slide-4"><div class="di" style="background:rgba(16,185,129,.15)">🧪</div><div class="dt"><strong>Công nghệ Lên Men 3 Tầng</strong><span>Vi sinh · Enzyme · Năng lượng</span></div></a>
-          <a href="anima119.html#slide-6"><div class="di" style="background:rgba(200,168,78,.15)">✨</div><div class="dt"><strong>8 Công dụng chính</strong><span>Hấp thu · Thải độc · Trẻ hóa · Cân bằng</span></div></a>
-          <a href="https://app.animacare.global/app/marketplace" target="_blank"><div class="di" style="background:rgba(99,102,241,.15)">🛒</div><div class="dt"><strong>Mua ngay</strong><span>1.868.000đ · Gói 3 tháng tiết kiệm 10%</span></div></a>
-        </div>
-      </div>
-      <!-- Dịch Vụ -->
-      <div class="nm-item">
-        <a><span data-i18n="nav_svc">Dịch Vụ</span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
-        <div class="dropdown">
-          <a href="#svc"><div class="di" style="background:rgba(16,185,129,.15)">🧘</div><div class="dt"><strong>8 Bước Phục Hưng Sự Sống</strong><span>Khai vấn → Tái sinh năng lượng nguyên sơ</span></div></a>
-          <a href="https://app.animacare.global/app/booking" target="_blank"><div class="di" style="background:rgba(99,102,241,.15)">📅</div><div class="dt"><strong>Đặt lịch ngay</strong><span>Mở App ANIMA để đặt dịch vụ</span></div></a>
-        </div>
-      </div>
-      <!-- Chuỗi Trạm -->
-      <div class="nm-item">
-        <a><span data-i18n="nav_chain">Chuỗi Trạm</span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
-        <div class="dropdown">
-          <a href="chain.html"><div class="di" style="background:rgba(16,185,129,.15)">🗺️</div><div class="dt"><strong>34 Tỉnh thành</strong><span>Bản đồ chuỗi trung tâm toàn quốc</span></div></a>
-          <a href="chain.html#franchise"><div class="di" style="background:rgba(200,168,78,.15)">🏢</div><div class="dt"><strong>Nhượng quyền Lite & Full</strong><span>Royalty 5% — Đào tạo KTV chuyên nghiệp</span></div></a>
-          <a href="dai-ly.html"><div class="di" style="background:rgba(99,102,241,.15)">🤝</div><div class="dt"><strong>Đăng ký đại lý</strong><span>Trở thành đối tác phân phối ANIMA</span></div></a>
-        </div>
-      </div>
-      <!-- Nhà Đầu Tư -->
-      <div class="nm-item">
-        <a><span data-i18n="nav_inv">Nhà Đầu Tư</span> <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
-        <div class="dropdown">
-          <a href="#inv"><div class="di" style="background:rgba(200,168,78,.15)">📈</div><div class="dt"><strong>Lộ trình IPO SGX 2031</strong><span>Seed · Series A · Series B · Pre-IPO</span></div></a>
-          <a href="https://ios.animacare.global" target="_blank"><div class="di" style="background:rgba(139,92,246,.15)">🔐</div><div class="dt"><strong>IOS Portal</strong><span>Pitch deck · Cap table · Data room</span></div></a>
-        </div>
-      </div>
-    </div>
+<main class="wrap">
+  <div class="logo">A</div>
+  <div class="tag"><span class="dot"></span> Coming Soon · Đang Cập Nhật</div>
+  <h1>ANIMA Care <em>Global</em></h1>
+  <p>Trang chủ của chúng tôi đang được thiết kế lại hoàn toàn để mang đến trải nghiệm tốt hơn. Vui lòng quay lại trong thời gian sớm nhất.</p>
+  <div class="footer">
+    Công ty Cổ phần ANIMA Care Global · 286 Nguyễn Xiển, Hà Nội<br>
+    <a href="mailto:contact@animacare.global">contact@animacare.global</a> ·
+    <a href="tel:+84913156676">+84 913 156 676</a>
   </div>
-  <div class="nav-right">
-    <a href="https://app.animacare.global/app/login" target="_blank" class="nb" data-i18n="nav_login">Đăng nhập ↗</a>
-    <button class="menu-btn" onclick="document.getElementById('mob').classList.toggle('open')" aria-label="Menu">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-    </button>
-  </div>
-</nav>
-
-<!-- Mobile menu -->
-<div class="mob-menu" id="mob">
-  <a href="#eco" onclick="document.getElementById('mob').classList.remove('open')">Hệ Sinh Thái</a>
-  <a href="#product" onclick="document.getElementById('mob').classList.remove('open')">Anima 119</a>
-  <a href="#svc" onclick="document.getElementById('mob').classList.remove('open')">Dịch Vụ</a>
-  <a href="chain.html" onclick="document.getElementById('mob').classList.remove('open')">Chuỗi Trạm</a>
-  <a href="#inv" onclick="document.getElementById('mob').classList.remove('open')">Nhà Đầu Tư</a>
-  <a href="https://ios.animacare.global" target="_blank">IOS Portal</a>
-  <a href="https://app.animacare.global/app/login" target="_blank" style="color:var(--c5)">Đăng nhập App ↗</a>
-</div>
-
-<!-- ========== INTRO ========== -->
-<div class="s" id="intro">
-  <p class="tag" data-i18n="hero_tag">Công Ty Cổ Phần Anima Care Global · Thức Tỉnh Năng Lượng Nguyên Sơ</p>
-  <h1 class="st2"><span data-i18n="hero_title_1">Phục Hưng Sự Sống Bên Trong</span><br><span data-i18n="hero_title_2">Qua</span> <span class="gt" data-i18n="hero_title_3">Đông Dược Lên Men</span><br><span data-i18n="hero_title_4">& Trí Tuệ Nhân Tạo</span></h1>
-  <p class="ss" data-i18n="hero_desc">"Chúng tôi kiến tạo một nền văn minh chăm sóc sức khỏe mới — nơi 5.000 năm trí tuệ Đông Y gặp gỡ Trí Tuệ Nhân Tạo để chữa lành và phục hưng sức sống nguyên sơ cho người Việt và toàn cõi ASEAN."</p>
-  <div class="stats">
-    <div class="stat"><div class="sn gt">32</div><div class="sl" data-i18n="stat_herbs">Thảo dược quý</div></div>
-    <div class="stat"><div class="sn gt">119</div><div class="sl" data-i18n="stat_active">Hoạt chất sinh học</div></div>
-    <div class="stat"><div class="sn gt">34</div><div class="sl" data-i18n="stat_prov">Tỉnh thành</div></div>
-    <div class="stat"><div class="sn gd">2031</div><div class="sl" data-i18n="stat_ipo">IPO SGX</div></div>
-  </div>
-  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
-    <a href="https://app.animacare.global" target="_blank" class="btn" data-i18n="btn_openapp">Mở App ANIMA Care ↗</a>
-    <a href="#eco" class="btn btn2" data-i18n="btn_explore">Khám phá ↓</a>
-  </div>
-</div>
-
-<script src="site-features.js" defer></script>
-
-<!-- ========== ECOSYSTEM ========== -->
-<div class="s" id="eco">
-  <p class="tag" data-i18n="sec_eco_tag">Bốn Trụ Cột</p>
-  <h2 class="st2"><span data-i18n="sec_eco_title_1">Hệ Sinh Thái</span> <span class="gt">ANIMA</span></h2>
-  <p class="ss" data-i18n="sec_eco_desc">Mỗi trụ cột là một mắt xích — kết nối thành vòng lặp flywheel tự tăng trưởng.</p>
-  <div class="g4">
-    <div class="c">
-      <div class="ci" style="background:rgba(99,102,241,.12)">🧬</div>
-      <h3 data-i18n="eco_119_title">Anima 119</h3>
-      <p data-i18n="eco_119_desc">Đông dược lên men 3 tầng — Thực thể phân tử sống. 32 thảo dược quý, 119 hoạt chất sinh học.</p>
-    </div>
-    <div class="c">
-      <div class="ci" style="background:rgba(16,185,129,.12)">🏥</div>
-      <h3 data-i18n="eco_care_title">Anima Care</h3>
-      <p data-i18n="eco_care_desc">Chuỗi trung tâm chữa lành vật lý — 34 tỉnh thành. Khai vấn, thảo mộc nhiệt, đả thông kinh lạc.</p>
-    </div>
-    <div class="c">
-      <div class="ci" style="background:rgba(20,184,166,.12)">⚡</div>
-      <h3 data-i18n="eco_tech_title">Anima Tech</h3>
-      <p data-i18n="eco_tech_desc">Nền tảng O2O — App đặt lịch, marketplace, affiliate. Kết nối khách hàng — KTV — Center.</p>
-    </div>
-    <div class="c">
-      <div class="ci" style="background:rgba(139,92,246,.12)">🤖</div>
-      <h3 data-i18n="eco_ai_title">Anima AI</h3>
-      <p data-i18n="eco_ai_desc">AI Engine khai vấn sự sống — Tầm soát da, thiệt chẩn, mống mắt. Cá nhân hóa liệu trình.</p>
-    </div>
-  </div>
-</div>
-
-<!-- ========== ANIMA 119 ========== -->
-<div class="s" id="product">
-  <p class="tag">Sản Phẩm Cốt Lõi</p>
-  <h2 class="st2">ANIMA 119 — <span class="gt">Thực Thể Phân Tử Sống</span></h2>
-  <p class="ss">Hội tụ 32 loại thảo dược quý mang linh khí cực cao. Công nghệ lên men 3 tầng giải phóng 119 hoạt chất sinh học.</p>
-  <div class="g2">
-    <div class="c">
-      <h3 style="color:var(--c5)">Công nghệ Lên Men 3 Tầng</h3>
-      <p><strong style="color:var(--c6)">Tầng 1 — Vi Sinh:</strong> Phân giải phân tử thảo dược thành dạng nano sinh học<br><br>
-      <strong style="color:var(--c5)">Tầng 2 — Enzyme:</strong> Kích hoạt 119 hoạt chất, tăng hấp thu 300%<br><br>
-      <strong style="color:var(--c7)">Tầng 3 — Năng Lượng:</strong> Cộng hưởng tần số chữa lành tế bào</p>
-    </div>
-    <div class="c">
-      <h3 class="gd">8 Công Dụng Chính</h3>
-      <p style="line-height:2.2">
-        ✦ Hấp thu tối đa · ✦ Tầm soát sức khỏe<br>
-        ✦ Cải thiện sinh lý · ✦ Làm sạch mạch máu<br>
-        ✦ Trẻ hóa tế bào · ✦ Thải độc tầng sâu<br>
-        ✦ Hỗ trợ thần kinh · ✦ Cân bằng miễn dịch</p>
-    </div>
-  </div>
-</div>
-
-<!-- ========== 8 STEPS ========== -->
-<div class="s" id="svc">
-  <p class="tag">Dịch Vụ & Công Nghệ</p>
-  <h2 class="st2">8 Bước <span class="gt">Phục Hưng Sự Sống</span></h2>
-  <p class="ss">Mỗi bước là một nghi thức — từ tầm soát bằng AI, khai thông kinh lạc tắc nghẽn, đến tái thiết nguồn năng lượng nguyên sơ.</p>
-  <div class="steps">
-    <div class="sp"><h4>Khai Vấn</h4><p>Tầm soát AI — da, thiệt chẩn, thể trạng</p></div>
-    <div class="sp"><h4>Anima 119</h4><p>Đông dược lên men — tái tạo tế bào</p></div>
-    <div class="sp"><h4>Thảo Mộc Nhiệt</h4><p>Khai mạch — xông hơi thảo dược</p></div>
-    <div class="sp"><h4>Đả Thông</h4><p>Kinh lạc — giải phóng khí huyết</p></div>
-    <div class="sp"><h4>Xương Khớp</h4><p>Phục hồi cơ xương khớp</p></div>
-    <div class="sp"><h4>Cứu Mạch</h4><p>Tái tạo hệ mạch máu</p></div>
-    <div class="sp"><h4>Tĩnh Tâm</h4><p>Thiền định — cân bằng tâm trí</p></div>
-    <div class="sp"><h4>Tái Sinh</h4><p>Đánh thức năng lượng nguyên sơ</p></div>
-  </div>
-</div>
-
-<!-- ========== FRANCHISE ========== -->
-<div class="s" id="chain">
-  <p class="tag">Nhượng Quyền</p>
-  <h2 class="st2">Chuỗi Trạm <span class="gt">Toàn Quốc</span></h2>
-  <p class="ss">34 center cấp tỉnh — mỗi tỉnh 1 giấy phép độc quyền. Mô hình nhượng quyền Lite & Full.</p>
-  <div class="g4">
-    <div class="c" style="text-align:center"><div class="sn gt">34</div><p>Tỉnh thành</p></div>
-    <div class="c" style="text-align:center"><div class="sn" style="color:var(--c6)">5%</div><p>Royalty hàng tháng</p></div>
-    <div class="c" style="text-align:center"><div class="sn" style="color:var(--c4)">Lite</div><p>Nhượng quyền cơ bản</p></div>
-    <div class="c" style="text-align:center"><div class="sn" style="color:var(--c7)">Full</div><p>Nhượng quyền toàn diện</p></div>
-  </div>
-  <div class="cta" style="margin-top:32px">
-    <h3 style="font-size:18px;margin-bottom:6px">Đào Tạo & Chứng Chỉ</h3>
-    <p style="opacity:.5;font-size:13px;margin-bottom:16px">Chương trình đào tạo KTV chuyên nghiệp — Chứng chỉ Anima Care được công nhận toàn quốc</p>
-    <a href="chain.html" class="btn">Xem Chuỗi Trạm →</a>
-  </div>
-</div>
-
-<!-- ========== INVESTOR ========== -->
-<div class="s" id="inv">
-  <p class="tag">Nhà Đầu Tư</p>
-  <h2 class="st2">Lộ Trình <span class="gd">IPO SGX 2031</span></h2>
-  <p class="ss">Anima Care Global được xây dựng với chuẩn mực quản trị của công ty niêm yết ngay từ ngày đầu thành lập.</p>
-  <div class="g4">
-    <div class="c"><h3 class="gd">2024–2025</h3><p>Thành lập · R&D · Seed Round · MVP</p></div>
-    <div class="c"><h3 class="gd">2026–2027</h3><p>Series A · 34 Center · 100K Users</p></div>
-    <div class="c"><h3 class="gd">2028–2029</h3><p>Series B · ASEAN Expansion · 1M Users</p></div>
-    <div class="c"><h3 class="gd">2030–2031</h3><p>Pre-IPO · SGX Mainboard Listing</p></div>
-  </div>
-  <div class="cta" style="margin-top:32px">
-    <h3 style="font-size:18px;margin-bottom:6px">Nhà đầu tư & Đối tác</h3>
-    <p style="opacity:.5;font-size:13px;margin-bottom:16px">Truy cập IOS Portal để xem tài liệu nội bộ, cap table, pitch deck</p>
-    <a href="https://ios.animacare.global" target="_blank" class="btn" style="background:linear-gradient(135deg,var(--gold),#E8D48E);color:#000;box-shadow:0 6px 24px rgba(200,168,78,.2)">IOS Portal ↗</a>
-  </div>
-</div>
-
-<!-- ========== FINAL CTA ========== -->
-<div class="s" style="text-align:center;padding-bottom:40px">
-  <div class="cta">
-    <h3 style="font-size:22px;margin-bottom:6px">Trải Nghiệm Ngay</h3>
-    <p style="opacity:.5;font-size:13px;margin-bottom:20px">Đặt lịch, mua sản phẩm, tham gia affiliate — tất cả trên 1 nền tảng</p>
-    <a href="https://app.animacare.global/app/login" target="_blank" class="btn">Đăng nhập App ANIMA Care ↗</a>
-  </div>
-</div>
-
-<!-- Footer -->
-<footer>
-  <div class="fl">
-    <a href="https://app.animacare.global" target="_blank">App</a>
-    <a href="https://ios.animacare.global" target="_blank">IOS Portal</a>
-    <a href="privacy.html">Chính sách</a>
-    <a href="mailto:contact@animacare.global">Liên hệ</a>
-  </div>
-  <p>© 2024–2026 Anima Care Global JSC · 286 Nguyễn Xiển, Thanh Liệt, Hà Nội</p>
-  <p>Hotline: 0913-156-676 · contact@animacare.global</p>
-</footer>
-
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Anima Care Global JSC","url":"https://animacare.global","description":"Hệ sinh thái chăm sóc sức khỏe & phục hồi năng lượng toàn diện ASEAN","contactPoint":{"@type":"ContactPoint","telephone":"+84-913-156-676","contactType":"customer service"},"address":{"@type":"PostalAddress","streetAddress":"286 Nguyễn Xiển, Thanh Liệt","addressLocality":"Hà Nội","addressCountry":"VN"}}</script>
+</main>
 </body>
 </html>
