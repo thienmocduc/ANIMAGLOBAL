@@ -233,17 +233,17 @@ body{background:var(--void);color:var(--tx);font-family:var(--fb);overflow-x:hid
 /* Deep space gradient — constant cosmic field */
 .cosmos-bg{position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 1400px 900px at 15% 20%, rgba(0,216,160,.18), transparent 60%),
-    radial-gradient(ellipse 1200px 800px at 85% 40%, rgba(14,165,233,.16), transparent 60%),
-    radial-gradient(ellipse 1100px 900px at 30% 85%, rgba(124,58,237,.18), transparent 60%),
-    radial-gradient(ellipse 900px 700px at 75% 75%, rgba(201,162,39,.12), transparent 60%),
-    linear-gradient(135deg,#010308 0%,#040918 30%,#0A142A 60%,#040918 100%);
+    radial-gradient(ellipse 1400px 900px at 15% 20%, rgba(0,216,160,.09), transparent 60%),
+    radial-gradient(ellipse 1200px 800px at 85% 40%, rgba(14,165,233,.08), transparent 60%),
+    radial-gradient(ellipse 1100px 900px at 30% 85%, rgba(124,58,237,.09), transparent 60%),
+    radial-gradient(ellipse 900px 700px at 75% 75%, rgba(201,162,39,.06), transparent 60%),
+    linear-gradient(135deg,#010306 0%,#020510 30%,#050B1A 60%,#020510 100%);
   background-size:200% 200%, 200% 200%, 200% 200%, 200% 200%, 100% 100%;
   animation:chakraFlow 40s ease infinite;
 }
 
 /* Floating orbs — main energy flow */
-.orbs{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
+.orbs{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;opacity:.55;}
 .orb{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;}
 .orb-1{width:620px;height:620px;top:-80px;left:-120px;
   background:radial-gradient(circle,var(--c4a),transparent 70%);
@@ -368,7 +368,7 @@ html[dir="rtl"] .lang-menu{left:0;right:auto;}
 
 /* ── HERO ────────────────────────────────────────────────────── */
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;padding:140px 48px 80px;text-align:center;position:relative;}
+  justify-content:center;padding:90px 48px 70px;text-align:center;position:relative;}
 
 /* Central energy ring in hero */
 .hero-ring{position:absolute;top:12%;left:50%;transform:translateX(-50%);
@@ -377,10 +377,10 @@ html[dir="rtl"] .lang-menu{left:0;right:auto;}
   background:conic-gradient(
     var(--c4a) 0deg,var(--c5a) 90deg,
     var(--c6a) 180deg,var(--c7a) 270deg,var(--c4a) 360deg);
-  filter:blur(100px);opacity:.5;
+  filter:blur(100px);opacity:.25;
   animation:chakraRotate 70s linear infinite;}
 .hero-ring::after{content:'';position:absolute;inset:20%;border-radius:50%;
-  background:radial-gradient(circle,rgba(0,216,160,.3),transparent 70%);
+  background:radial-gradient(circle,rgba(0,216,160,.15),transparent 70%);
   animation:cosmosPulse 6s ease-in-out infinite;}
 
 .hero-eye{font-family:var(--fm);font-size:10.5px;letter-spacing:5px;text-transform:uppercase;
@@ -388,7 +388,7 @@ html[dir="rtl"] .lang-menu{left:0;right:auto;}
 .hero-eye span{color:var(--c7b);}
 
 .hero-title{font-family:var(--ft);font-size:clamp(48px,7.8vw,116px);font-weight:700;line-height:1.02;
-  color:var(--tx);margin-bottom:28px;max-width:1200px;animation:fadeUp 1.3s .6s both;position:relative;z-index:2;letter-spacing:-1.5px;}
+  color:var(--tx);margin-bottom:22px;max-width:1200px;animation:fadeUp 1.3s .6s both;position:relative;z-index:2;letter-spacing:-1.5px;}
 .hero-title em{font-style:italic;display:inline-block;}
 /* When em has giao-thoa class, that wins; default fallback for em without giao-thoa */
 .hero-title em:not([class*="giao-thoa"]){
@@ -398,9 +398,9 @@ html[dir="rtl"] .lang-menu{left:0;right:auto;}
   filter:drop-shadow(0 0 30px rgba(0,216,160,.3));}
 
 .hero-sub{font-size:clamp(16px,1.9vw,20px);font-weight:300;line-height:1.85;color:var(--tx2);
-  max-width:780px;margin:0 auto 48px;animation:fadeUp 1.3s .85s both;position:relative;z-index:2;}
+  max-width:780px;margin:0 auto 36px;animation:fadeUp 1.3s .85s both;position:relative;z-index:2;}
 
-.hero-pillars{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:52px;
+.hero-pillars{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:38px;
   animation:fadeUp 1.3s 1.1s both;position:relative;z-index:2;}
 .hero-pill{padding:9px 20px;border-radius:100px;font-size:11px;font-weight:600;letter-spacing:1.5px;
   text-transform:uppercase;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
@@ -752,10 +752,6 @@ footer{padding:64px 48px;border-top:1px solid rgba(0,216,160,.08);
 <!-- HERO -->
 <div id="top" class="hero">
   <div class="hero-ring"></div>
-  <div class="hero-eye" data-vi="TẬP ĐOÀN CHĂM SÓC SỰ SỐNG TOÀN CẦU · <span>HÀ NỘI 2026</span>"
-       data-en="GLOBAL LIFE CARE ECOSYSTEM · <span>HANOI 2026</span>">
-    TẬP ĐOÀN CHĂM SÓC SỰ SỐNG TOÀN CẦU · <span>HÀ NỘI 2026</span>
-  </div>
   <h1 class="hero-title"
       data-vi="<span class='giao-thoa-descend'>Phục Hưng Sự Sống</span><br/><em class='giao-thoa-ascend'>Lập Đức Viên Mãn</em>"
       data-en="<span class='giao-thoa-descend'>Life Restoration</span><br/><em class='giao-thoa-ascend'>Virtue Fulfilled</em>">
