@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ANIMA Care Global — Tập Đoàn Chăm Sóc Sự Sống Toàn Cầu</title>
+<meta name="description" content="ANIMA Care Global · Phục Hưng Sự Sống · Lập Đức Viên Mãn. Hệ sinh thái 13 tầng chăm sóc sự sống toàn cầu — từ Y Sinh Đông Dược Lên Men đến hành trình biến đổi."/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Be+Vietnam+Pro:wght@200;300;400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ════════════════════════════════════════════════════════════════
+   ANIMA CARE GLOBAL · COSMIC CHAKRA ENERGY SYSTEM
+   Chakra 4 Heart · 5 Throat · 6 Third Eye · 7 Crown
+   ════════════════════════════════════════════════════════════════ */
+:root{
+  /* Chakra palette — stronger, more cosmic */
+  /* Luân Xa 1 Muladhara — Root — Đỏ / sức sống gốc */
+  --c1a:#DC2626; --c1b:#B91C1C; --c1c:#EF4444;
+  /* Luân Xa 2 Svadhisthana — Sacral — Cam / sinh lực sáng tạo */
+  --c2a:#EA580C; --c2b:#C2410C; --c2c:#FB923C;
+  /* Luân Xa 3 Manipura — Solar Plexus — Vàng / ý chí */
+  --c3a:#F59E0B; --c3b:#D97706; --c3c:#FBBF24;
+  /* Luân Xa 4 Anahata — Heart — Xanh lục / từ bi (TRUNG TÂM GIAO THOA) */
+  --c4a:#00D8A0; --c4b:#00B380; --c4c:#10F5B4;
+  /* Luân Xa 5 Vishuddha — Throat — Xanh biển / tiếng nói chân thật */
+  --c5a:#00B8D4; --c5b:#0EA5E9; --c5c:#22D3EE;
+  /* Luân Xa 6 Ajna — Third Eye — Tím chàm / nhìn thấu */
+  --c6a:#7C3AED; --c6b:#6366F1; --c6c:#A78BFA;
+  /* Luân Xa 7 Sahasrara — Crown — Tím ánh vàng / kết nối Đạo */
+  --c7a:#D4A020; --c7b:#C9A227; --c7c:#F0CC50;
+  /* Cosmic foundation */
+  --void:#010308; --deep:#040918; --dark:#0A142A;
+  --tx:#F0FFF8; --tx2:#C0E8D8; --mu:rgba(192,232,216,.62); --dim:rgba(120,180,160,.4);
+  /* Glass blur surfaces */
+  --glass:rgba(10,30,40,.18); --glass2:rgba(15,45,60,.28); --glass3:rgba(20,60,80,.4);
+  --fd:'Cormorant Garamond',serif;
+  --ft:'Times New Roman',Times,serif;  /* Title font — classical, used for all main headings */
+  --fb:'Be Vietnam Pro',sans-serif;
+  --fm:'DM Mono',monospace;
+}
+
+/* ── KEYFRAMES ───────────────────────────────────────────────── */
+@keyframes chakraFlow{
+  0%,100%{background-position:0% 0%, 50% 50%, 100% 100%, 20% 80%;}
+  25%    {background-position:60% 30%, 20% 70%, 80% 10%, 100% 50%;}
+  50%    {background-position:100% 60%, 80% 20%, 30% 90%, 0% 0%;}
+  75%    {background-position:40% 100%, 100% 0%, 0% 40%, 80% 30%;}
+}
+@keyframes orbPulse{
+  0%,100%{transform:translate(0,0) scale(1);opacity:.4;}
+  50%{transform:translate(30px,-40px) scale(1.2);opacity:.65;}
+}
+@keyframes orbPulse2{
+  0%,100%{transform:translate(0,0) scale(1);opacity:.3;}
+  50%{transform:translate(-40px,30px) scale(1.15);opacity:.55;}
+}
+@keyframes orbPulse3{
+  0%,100%{transform:translate(0,0) scale(1) rotate(0);opacity:.25;}
+  50%{transform:translate(20px,25px) scale(1.1) rotate(15deg);opacity:.5;}
+}
+@keyframes starTwinkle{
+  0%,100%{opacity:.3;transform:scale(1);}
+  50%{opacity:1;transform:scale(1.5);}
+}
+@keyframes starTwinkle2{
+  0%,100%{opacity:.6;}
+  50%{opacity:.15;}
+}
+@keyframes driftSlow{
+  from{transform:translateY(0);}
+  to{transform:translateY(-30px);}
+}
+@keyframes shimmer{
+  0%,100%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+}
+/* GIAO THOA — Phục Hưng chảy xuống (right→left), Lập Đức chảy lên (left→right)
+   Hai dòng gặp nhau tại điểm giữa như âm dương giao thoa ở trái tim (luân xa 4) */
+@keyframes descend{
+  0%,100%{background-position:100% 50%;}
+  50%{background-position:0% 50%;}
+}
+@keyframes ascend{
+  0%,100%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(40px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes borderGlow{
+  0%,100%{border-color:rgba(0,216,160,.22);box-shadow:0 0 28px rgba(0,216,160,.08);}
+  33%{border-color:rgba(14,165,233,.3);box-shadow:0 0 36px rgba(14,165,233,.12);}
+  66%{border-color:rgba(124,58,237,.26);box-shadow:0 0 32px rgba(124,58,237,.10);}
+}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+@keyframes chakraRotate{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+@keyframes ringExpand{
+  0%{transform:scale(.8);opacity:.6;}
+  100%{transform:scale(1.4);opacity:0;}
+}
+@keyframes cosmosPulse{
+  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5;}
+  50%{transform:translate(-50%,-50%) scale(1.25);opacity:.85;}
+}
+@keyframes orbit1{
+  from{transform:rotate(0) translateX(var(--r,80px)) rotate(0);}
+  to{transform:rotate(360deg) translateX(var(--r,80px)) rotate(-360deg);}
+}
+@keyframes orbit2{
+  from{transform:rotate(0) translateX(var(--r,80px)) rotate(0);}
+  to{transform:rotate(-360deg) translateX(var(--r,80px)) rotate(360deg);}
+}
+@keyframes nebulaSpin{
+  from{transform:rotate(0);}to{transform:rotate(360deg);}
+}
+@keyframes lineGlow{
+  0%,100%{opacity:.4;}
+  50%{opacity:1;}
+}
+
+/* ── TITLE SHIMMER — logo-style animated gradient ──────────── */
+.title-shimmer{
+  background:linear-gradient(90deg,var(--c4a) 0%,var(--c5b) 25%,var(--c6a) 50%,var(--c7b) 75%,var(--c4a) 100%);
+  background-size:300%;
+  animation:shimmer 8s ease infinite;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 18px rgba(0,216,160,.25));
+}
+
+/* ── GIAO THOA — 1-2-3-4 ⇄ 4-5-6-7 ─────────────────────────────
+   Phục Hưng Sự Sống (descend):  7 → 6 → 5 → 4 (từ trí tuệ về trái tim)
+   Lập Đức Viên Mãn (ascend):    1 → 2 → 3 → 4 (từ bản thể lên trái tim)
+   Gradient đối xứng — 2 đầu là 2 tam giác 1-2-3 và 5-6-7,
+   TRUNG TÂM là LUÂN XA 4 (xanh lục C4) — trái tim, điểm GẶP của cả 2 dòng.
+   Khi 2 animation chạy ngược nhau, cả 2 chữ luôn gặp nhau ở màu xanh lục = TỪ BI. */
+.giao-thoa-descend{
+  background:linear-gradient(90deg,
+    var(--c7b) 0%,   /* Luân Xa 7 — Crown — Vàng tím */
+    var(--c6a) 15%,  /* Luân Xa 6 — Ajna — Tím chàm */
+    var(--c5b) 30%,  /* Luân Xa 5 — Throat — Xanh biển */
+    var(--c4a) 50%,  /* Luân Xa 4 — HEART — Xanh lục (TRUNG TÂM) */
+    var(--c3a) 70%,  /* Luân Xa 3 — Solar — Vàng cam */
+    var(--c2a) 85%,  /* Luân Xa 2 — Sacral — Cam */
+    var(--c1a) 100%);/* Luân Xa 1 — Root — Đỏ */
+  background-size:200% 100%;
+  animation:descend 9s ease-in-out infinite;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 24px rgba(0,216,160,.35));}
+.giao-thoa-ascend{
+  background:linear-gradient(90deg,
+    var(--c1a) 0%,   /* Luân Xa 1 — Root — Đỏ */
+    var(--c2a) 15%,  /* Luân Xa 2 — Sacral — Cam */
+    var(--c3a) 30%,  /* Luân Xa 3 — Solar — Vàng cam */
+    var(--c4a) 50%,  /* Luân Xa 4 — HEART — Xanh lục (TRUNG TÂM) */
+    var(--c5b) 70%,  /* Luân Xa 5 — Throat — Xanh biển */
+    var(--c6a) 85%,  /* Luân Xa 6 — Ajna — Tím chàm */
+    var(--c7b) 100%);/* Luân Xa 7 — Crown — Vàng tím */
+  background-size:200% 100%;
+  animation:ascend 9s ease-in-out infinite;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 24px rgba(0,216,160,.35));}
+
+/* ── NAV DROPDOWN — hover/click menu for ecosystem navigation ─ */
+.nav-item{position:relative;}
+.nav-item > a{font-size:11.5px;font-weight:500;color:var(--mu);text-decoration:none;
+  letter-spacing:1.5px;text-transform:uppercase;transition:color .2s;cursor:pointer;
+  display:flex;align-items:center;gap:6px;padding:8px 2px;}
+.nav-item > a:hover,.nav-item.open > a{color:var(--c4a);}
+.nav-item > a::after{content:'▾';font-size:9px;opacity:.6;transition:transform .2s;display:none;}
+.nav-item.has-menu > a::after{display:inline;}
+.nav-item.open > a::after{transform:rotate(180deg);}
+
+.nav-menu{position:absolute;top:calc(100% + 10px);left:-20px;min-width:320px;
+  background:rgba(1,3,8,.96);backdrop-filter:blur(28px) saturate(140%);
+  -webkit-backdrop-filter:blur(28px) saturate(140%);
+  border:1px solid rgba(0,216,160,.22);border-radius:14px;
+  padding:18px 0;opacity:0;visibility:hidden;transform:translateY(-8px);
+  transition:opacity .15s, transform .15s, visibility .15s;
+  box-shadow:0 20px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(0,216,160,.08);
+  z-index:200;}
+.nav-item.open .nav-menu{opacity:1;visibility:visible;transform:translateY(0);}
+
+/* Wide menu — for ecosystem with 3 rings */
+.nav-menu.wide{min-width:860px;left:-280px;display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:20px 0;}
+.nav-menu-col{padding:0 20px;border-right:1px solid rgba(255,255,255,.05);}
+.nav-menu-col:last-child{border-right:none;}
+
+.nav-menu-group{margin-bottom:14px;}
+.nav-menu-group:last-child{margin-bottom:0;}
+.nav-menu-header{font-family:var(--fm);font-size:11.5px;font-weight:700;letter-spacing:1.8px;
+  text-transform:uppercase;padding:6px 14px 8px;display:flex;align-items:center;gap:8px;
+  margin-bottom:4px;white-space:nowrap;}
+.nav-menu-header.outer{color:var(--c4a);}
+.nav-menu-header.middle{color:var(--c5b);}
+.nav-menu-header.inner{color:var(--c6c);}
+.nav-menu-header.nav-xbar{color:var(--c7b);}
+.nav-menu-dot{width:6px;height:6px;border-radius:50%;}
+.nav-menu-dot.outer{background:var(--c4a);box-shadow:0 0 6px var(--c4a);}
+.nav-menu-dot.middle{background:var(--c5b);box-shadow:0 0 6px var(--c5b);}
+.nav-menu-dot.inner{background:var(--c6c);box-shadow:0 0 6px var(--c6c);}
+.nav-menu-dot.nav-xbar{background:var(--c7b);box-shadow:0 0 6px var(--c7b);}
+
+.nav-menu a{display:flex;align-items:center;gap:10px;padding:8px 14px;
+  font-family:var(--fb);font-size:12.5px;font-weight:500;color:var(--tx2);
+  text-decoration:none;border-radius:6px;margin:0 4px;
+  letter-spacing:0;text-transform:none;transition:all .12s;}
+.nav-menu a:hover{background:rgba(0,216,160,.08);color:var(--tx);}
+.nav-menu a .nav-num{font-family:var(--fm);font-size:10.5px;font-weight:600;color:var(--dim);
+  min-width:22px;letter-spacing:.5px;}
+.nav-menu a:hover .nav-num{color:var(--c4a);}
+
+/* Mobile dropdown positioning */
+@media(max-width:1024px){
+  .nav-menu.wide{min-width:auto;width:90vw;left:auto;right:-20px;
+    grid-template-columns:1fr;max-height:70vh;overflow-y:auto;}
+  .nav-menu-col{border-right:none;border-bottom:1px solid rgba(255,255,255,.05);padding-bottom:8px;margin-bottom:8px;}
+  .nav-menu-col:last-child{border-bottom:none;}
+}
+
+/* ── BASE ────────────────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:auto;}
+body{background:var(--void);color:var(--tx);font-family:var(--fb);overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--void);}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--c4a),var(--c6a));border-radius:2px;}
+
+/* ════════════════════════════════════════════════════════════════
+   COSMIC BACKGROUND — Layered Universe
+   ════════════════════════════════════════════════════════════════ */
+
+/* Deep space gradient — constant cosmic field */
+.cosmos-bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 1400px 900px at 15% 20%, rgba(0,216,160,.18), transparent 60%),
+    radial-gradient(ellipse 1200px 800px at 85% 40%, rgba(14,165,233,.16), transparent 60%),
+    radial-gradient(ellipse 1100px 900px at 30% 85%, rgba(124,58,237,.18), transparent 60%),
+    radial-gradient(ellipse 900px 700px at 75% 75%, rgba(201,162,39,.12), transparent 60%),
+    linear-gradient(135deg,#010308 0%,#040918 30%,#0A142A 60%,#040918 100%);
+  background-size:200% 200%, 200% 200%, 200% 200%, 200% 200%, 100% 100%;
+  animation:chakraFlow 40s ease infinite;
+}
+
+/* Floating orbs — main energy flow */
+.orbs{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;}
+.orb-1{width:620px;height:620px;top:-80px;left:-120px;
+  background:radial-gradient(circle,var(--c4a),transparent 70%);
+  animation:orbPulse 14s ease-in-out infinite;}
+.orb-2{width:540px;height:540px;top:35%;right:-140px;
+  background:radial-gradient(circle,var(--c5b),transparent 70%);
+  animation:orbPulse2 16s ease-in-out infinite;}
+.orb-3{width:700px;height:700px;bottom:-180px;left:25%;
+  background:radial-gradient(circle,var(--c6a),transparent 70%);
+  animation:orbPulse3 18s ease-in-out infinite;}
+.orb-4{width:480px;height:480px;top:15%;left:55%;
+  background:radial-gradient(circle,var(--c7a),transparent 70%);
+  animation:orbPulse 20s ease-in-out infinite 3s;}
+.orb-5{width:400px;height:400px;bottom:20%;right:15%;
+  background:radial-gradient(circle,var(--c4c),transparent 70%);
+  animation:orbPulse2 12s ease-in-out infinite 5s;}
+
+/* Nebula — slow-spinning swirl */
+.nebula{position:fixed;inset:-20%;z-index:0;pointer-events:none;
+  background:conic-gradient(from 0deg at 50% 50%,
+    transparent 0deg,
+    rgba(0,216,160,.06) 30deg,
+    transparent 60deg,
+    rgba(14,165,233,.08) 120deg,
+    transparent 150deg,
+    rgba(124,58,237,.07) 210deg,
+    transparent 240deg,
+    rgba(201,162,39,.05) 300deg,
+    transparent 330deg);
+  filter:blur(40px);
+  animation:nebulaSpin 90s linear infinite;
+}
+
+/* Star field — thousands of points of light */
+.stars{position:fixed;inset:0;z-index:2;pointer-events:none;}
+.star{position:absolute;background:#fff;border-radius:50%;}
+.star.tiny{width:1px;height:1px;opacity:.4;}
+.star.small{width:1.5px;height:1.5px;opacity:.5;box-shadow:0 0 2px #fff;}
+.star.med{width:2px;height:2px;opacity:.7;box-shadow:0 0 4px #fff;
+  animation:starTwinkle 4s ease-in-out infinite;}
+.star.bright{width:2.5px;height:2.5px;opacity:.85;box-shadow:0 0 6px #fff, 0 0 12px rgba(255,255,255,.4);
+  animation:starTwinkle 5s ease-in-out infinite;}
+.star.huge{width:3.5px;height:3.5px;opacity:.95;box-shadow:0 0 10px #fff, 0 0 20px rgba(255,255,255,.6);
+  animation:starTwinkle2 6s ease-in-out infinite;}
+.star.color-c4{background:var(--c4c);box-shadow:0 0 8px var(--c4a), 0 0 16px var(--c4a);}
+.star.color-c5{background:var(--c5c);box-shadow:0 0 8px var(--c5b), 0 0 16px var(--c5b);}
+.star.color-c6{background:var(--c6c);box-shadow:0 0 8px var(--c6a), 0 0 16px var(--c6a);}
+.star.color-c7{background:var(--c7c);box-shadow:0 0 8px var(--c7b), 0 0 16px var(--c7b);}
+
+.wrap{position:relative;z-index:10;}
+
+/* ── GLASS MORPHISM — signature blur look ─────────────────── */
+.glass{background:var(--glass);backdrop-filter:blur(24px) saturate(140%);
+  -webkit-backdrop-filter:blur(24px) saturate(140%);
+  border:1px solid rgba(0,216,160,.18);border-radius:18px;
+  animation:borderGlow 14s ease infinite;}
+.glass2{background:var(--glass2);backdrop-filter:blur(20px) saturate(130%);
+  -webkit-backdrop-filter:blur(20px) saturate(130%);
+  border:1px solid rgba(14,165,233,.22);border-radius:16px;}
+.glass3{background:var(--glass3);backdrop-filter:blur(28px) saturate(150%);
+  -webkit-backdrop-filter:blur(28px) saturate(150%);
+  border:1px solid rgba(124,58,237,.22);border-radius:20px;}
+
+/* ── NAV ─────────────────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:72px;padding:0 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(1,3,8,.65);backdrop-filter:blur(28px) saturate(140%);
+  -webkit-backdrop-filter:blur(28px) saturate(140%);
+  border-bottom:1px solid rgba(0,216,160,.08);transition:background .3s;}
+.nav-brand{display:flex;align-items:center;gap:14px;text-decoration:none;}
+.nav-logo{font-family:var(--ft);font-size:28px;font-weight:700;letter-spacing:.5px;
+  background:linear-gradient(90deg,var(--c4a),var(--c5b),var(--c6a),var(--c7b),var(--c4a));
+  background-size:300%;animation:shimmer 7s ease infinite;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nav-sub{font-family:var(--fm);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--mu);}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-links a{font-size:11.5px;font-weight:500;color:var(--mu);text-decoration:none;
+  letter-spacing:1.5px;text-transform:uppercase;transition:color .25s;}
+.nav-links a:hover{color:var(--c4a);}
+.nav-right{display:flex;align-items:center;gap:16px;}
+.lang-select{position:relative;}
+.lang-current{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;
+  background:rgba(0,216,160,.08);border:1px solid rgba(0,216,160,.22);color:var(--tx);
+  font-family:var(--fm);font-size:11px;font-weight:700;letter-spacing:1.2px;cursor:pointer;
+  transition:all .15s;}
+.lang-current:hover{background:rgba(0,216,160,.14);border-color:rgba(0,216,160,.4);}
+.lang-flag{font-size:15px;line-height:1;}
+.lang-arrow{font-size:9px;opacity:.6;transition:transform .2s;}
+.lang-select.open .lang-arrow{transform:rotate(180deg);}
+.lang-menu{position:absolute;top:calc(100% + 10px);right:0;min-width:210px;
+  background:rgba(1,3,8,.96);backdrop-filter:blur(28px) saturate(140%);
+  -webkit-backdrop-filter:blur(28px) saturate(140%);
+  border:1px solid rgba(0,216,160,.22);border-radius:12px;
+  padding:8px;opacity:0;visibility:hidden;transform:translateY(-8px);
+  transition:opacity .15s, transform .15s, visibility .15s;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);z-index:300;
+  max-height:80vh;overflow-y:auto;}
+.lang-select.open .lang-menu{opacity:1;visibility:visible;transform:translateY(0);}
+.lang-option{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;
+  background:none;border:none;color:var(--tx2);font-family:var(--fb);font-size:13px;
+  font-weight:500;text-align:left;cursor:pointer;border-radius:6px;transition:all .12s;}
+.lang-option span:first-child{font-size:16px;line-height:1;}
+.lang-option:hover{background:rgba(0,216,160,.08);color:var(--tx);}
+.lang-option.active{background:rgba(0,216,160,.12);color:var(--c4a);font-weight:600;}
+
+/* RTL for Arabic */
+html[dir="rtl"] body{direction:rtl;}
+html[dir="rtl"] .nav-menu{left:auto;right:-20px;}
+html[dir="rtl"] .nav-menu.wide{left:auto;right:-280px;}
+html[dir="rtl"] .lang-menu{left:0;right:auto;}
+.nav-login{padding:9px 18px;border-radius:8px;font-size:11.5px;font-weight:600;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--tx2);cursor:pointer;
+  border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.02);
+  backdrop-filter:blur(10px);transition:all .25s;font-family:var(--fb);text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.nav-login:hover{border-color:var(--c4a);color:var(--c4a);background:rgba(0,216,160,.06);transform:translateY(-1px);}
+.nav-login-ic{font-size:13px;}
+.nav-cta{padding:10px 22px;border-radius:8px;font-size:11.5px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;
+  background:linear-gradient(135deg,var(--c4a),var(--c5b));color:#fff;
+  transition:all .25s;box-shadow:0 4px 20px rgba(0,216,160,.3);}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(0,216,160,.45);}
+
+/* ── HERO ────────────────────────────────────────────────────── */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:140px 48px 80px;text-align:center;position:relative;}
+
+/* Central energy ring in hero */
+.hero-ring{position:absolute;top:12%;left:50%;transform:translateX(-50%);
+  width:580px;height:580px;pointer-events:none;z-index:-1;}
+.hero-ring::before{content:'';position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(
+    var(--c4a) 0deg,var(--c5a) 90deg,
+    var(--c6a) 180deg,var(--c7a) 270deg,var(--c4a) 360deg);
+  filter:blur(100px);opacity:.5;
+  animation:chakraRotate 70s linear infinite;}
+.hero-ring::after{content:'';position:absolute;inset:20%;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,216,160,.3),transparent 70%);
+  animation:cosmosPulse 6s ease-in-out infinite;}
+
+.hero-eye{font-family:var(--fm);font-size:10.5px;letter-spacing:5px;text-transform:uppercase;
+  color:var(--c4a);margin-bottom:32px;animation:fadeIn 1.3s .4s both;position:relative;z-index:2;}
+.hero-eye span{color:var(--c7b);}
+
+.hero-title{font-family:var(--ft);font-size:clamp(48px,7.8vw,116px);font-weight:700;line-height:1.02;
+  color:var(--tx);margin-bottom:28px;max-width:1200px;animation:fadeUp 1.3s .6s both;position:relative;z-index:2;letter-spacing:-1.5px;}
+.hero-title em{font-style:italic;display:inline-block;}
+/* When em has giao-thoa class, that wins; default fallback for em without giao-thoa */
+.hero-title em:not([class*="giao-thoa"]){
+  background:linear-gradient(135deg,var(--c4a) 0%,var(--c5b) 30%,var(--c6a) 60%,var(--c7b) 100%);
+  background-size:300%;animation:shimmer 7s ease infinite;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 30px rgba(0,216,160,.3));}
+
+.hero-sub{font-size:clamp(16px,1.9vw,20px);font-weight:300;line-height:1.85;color:var(--tx2);
+  max-width:780px;margin:0 auto 48px;animation:fadeUp 1.3s .85s both;position:relative;z-index:2;}
+
+.hero-pillars{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:52px;
+  animation:fadeUp 1.3s 1.1s both;position:relative;z-index:2;}
+.hero-pill{padding:9px 20px;border-radius:100px;font-size:11px;font-weight:600;letter-spacing:1.5px;
+  text-transform:uppercase;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
+.hero-pill.c4{background:rgba(0,216,160,.08);border:1px solid rgba(0,216,160,.3);color:var(--c4a);}
+.hero-pill.c5{background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.3);color:var(--c5b);}
+.hero-pill.c6{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.3);color:var(--c6c);}
+.hero-pill.c7{background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.3);color:var(--c7b);}
+
+.hero-acts{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
+  animation:fadeUp 1.3s 1.3s both;position:relative;z-index:2;}
+.btn-p{padding:17px 44px;border-radius:10px;font-size:12.5px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;text-decoration:none;color:#fff;cursor:pointer;border:none;
+  background:linear-gradient(135deg,var(--c4a) 0%,var(--c5b) 50%,var(--c6a) 100%);
+  background-size:200%;animation:shimmer 6s ease infinite;transition:all .3s;
+  box-shadow:0 8px 36px rgba(0,216,160,.35);}
+.btn-p:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(14,165,233,.45);}
+.btn-g{padding:17px 44px;border-radius:10px;font-size:12.5px;font-weight:600;letter-spacing:2px;
+  text-transform:uppercase;text-decoration:none;color:var(--tx2);cursor:pointer;
+  border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.02);
+  backdrop-filter:blur(10px);transition:all .3s;}
+.btn-g:hover{border-color:var(--c4a);color:var(--c4a);background:rgba(0,216,160,.05);}
+
+.scroll-ind{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  color:var(--dim);font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  animation:fadeIn 2s 2.4s both;}
+.scroll-line{width:1px;height:44px;background:linear-gradient(to bottom,var(--c4a),transparent);
+  animation:lineGlow 3s ease infinite;}
+
+/* ── SECTION ─────────────────────────────────────────────────── */
+section{padding:130px 48px;max-width:1380px;margin:0 auto;position:relative;z-index:10;}
+.eye{font-family:var(--fm);font-size:10.5px;font-weight:400;letter-spacing:4px;
+  text-transform:uppercase;color:var(--c4a);margin-bottom:18px;}
+.eye span{color:var(--c7b);}
+.sec-title{font-family:var(--ft);font-size:clamp(36px,4.8vw,68px);font-weight:700;line-height:1.05;
+  color:var(--tx);margin-bottom:22px;letter-spacing:-.6px;}
+.sec-title em{font-style:italic;
+  background:linear-gradient(135deg,var(--c4a),var(--c5b),var(--c6a));
+  background-size:200%;animation:shimmer 6s ease infinite;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 24px rgba(0,216,160,.2));}
+.sec-sub{font-size:16px;font-weight:300;line-height:1.9;color:var(--tx2);max-width:780px;}
+
+/* ── MANIFESTO ───────────────────────────────────────────────── */
+#manifesto{text-align:center;}
+.mani-container{padding:64px 56px;border-radius:24px;max-width:1100px;margin:0 auto;}
+.mani-quote{font-family:var(--fd);font-size:clamp(26px,3.4vw,46px);font-weight:600;
+  font-style:italic;line-height:1.35;color:var(--tx);}
+.mani-quote em{
+  background:linear-gradient(135deg,var(--c4a),var(--c5b),var(--c7b));
+  background-size:200%;animation:shimmer 5s ease infinite;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:italic;}
+.mani-attr{font-family:var(--fm);font-size:11px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--c4a);margin-top:36px;}
+
+/* ── PILLAR SECTION (Tinh Khí Thần for ecosystem) ────────────── */
+.pillars-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:60px;}
+.pillar{padding:44px 32px;border-radius:20px;position:relative;overflow:hidden;transition:all .4s;}
+.pillar.p1{background:linear-gradient(165deg,rgba(0,216,160,.10),rgba(0,216,160,.01));
+  border:1px solid rgba(0,216,160,.25);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
+.pillar.p2{background:linear-gradient(165deg,rgba(14,165,233,.10),rgba(14,165,233,.01));
+  border:1px solid rgba(14,165,233,.25);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
+.pillar.p3{background:linear-gradient(165deg,rgba(124,58,237,.10),rgba(124,58,237,.01));
+  border:1px solid rgba(124,58,237,.25);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
+.pillar:hover{transform:translateY(-6px);box-shadow:0 24px 48px rgba(0,0,0,.4);}
+.pillar-kanji{position:absolute;top:24px;right:28px;font-family:var(--fd);font-size:88px;
+  font-weight:400;line-height:1;opacity:.14;}
+.p1 .pillar-kanji{color:var(--c4a);}
+.p2 .pillar-kanji{color:var(--c5b);}
+.p3 .pillar-kanji{color:var(--c6c);}
+.pillar-ring{width:48px;height:48px;border-radius:50%;margin-bottom:22px;
+  display:flex;align-items:center;justify-content:center;}
+.p1 .pillar-ring{background:rgba(0,216,160,.18);box-shadow:0 0 20px rgba(0,216,160,.3);}
+.p2 .pillar-ring{background:rgba(14,165,233,.18);box-shadow:0 0 20px rgba(14,165,233,.3);}
+.p3 .pillar-ring{background:rgba(124,58,237,.18);box-shadow:0 0 20px rgba(124,58,237,.3);}
+.pillar-ring-dot{width:16px;height:16px;border-radius:50%;}
+.p1 .pillar-ring-dot{background:var(--c4a);box-shadow:0 0 12px var(--c4a);}
+.p2 .pillar-ring-dot{background:var(--c5b);box-shadow:0 0 12px var(--c5b);}
+.p3 .pillar-ring-dot{background:var(--c6c);box-shadow:0 0 12px var(--c6c);}
+.pillar-label{font-family:var(--fm);font-size:10px;letter-spacing:3px;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+.p1 .pillar-label{color:var(--c4a);}
+.p2 .pillar-label{color:var(--c5b);}
+.p3 .pillar-label{color:var(--c6c);}
+.pillar-name{font-family:var(--ft);font-size:32px;font-weight:700;color:var(--tx);margin-bottom:18px;letter-spacing:-.3px;}
+.pillar-desc{font-size:14px;font-weight:300;line-height:1.8;color:var(--tx2);}
+
+/* ── 13 LAYERS GRID ──────────────────────────────────────────── */
+.layers-wrap{margin-top:72px;}
+.layers-ring-label{text-align:center;margin-bottom:32px;margin-top:60px;}
+.layers-ring-label:first-child{margin-top:0;}
+.layers-ring-eye{font-family:var(--fm);font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--mu);margin-bottom:8px;}
+.layers-ring-title{font-family:var(--ft);font-size:28px;font-weight:600;font-style:italic;}
+.layers-ring-title.outer{color:var(--c4a);}
+.layers-ring-title.middle{color:var(--c5b);}
+.layers-ring-title.inner{color:var(--c6c);}
+
+.layers-grid{display:grid;gap:20px;}
+.layers-grid.five{grid-template-columns:repeat(5,1fr);}
+.layers-grid.three{grid-template-columns:repeat(3,1fr);}
+.layers-grid.four{grid-template-columns:repeat(4,1fr);}
+
+.layer{padding:32px 24px;border-radius:16px;position:relative;overflow:hidden;
+  backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);
+  transition:all .35s;cursor:default;display:flex;flex-direction:column;min-height:240px;}
+.layer.outer{background:linear-gradient(165deg,rgba(0,216,160,.08),rgba(0,216,160,.02));
+  border:1px solid rgba(0,216,160,.22);}
+.layer.middle{background:linear-gradient(165deg,rgba(14,165,233,.08),rgba(14,165,233,.02));
+  border:1px solid rgba(14,165,233,.22);}
+.layer.inner{background:linear-gradient(165deg,rgba(124,58,237,.08),rgba(124,58,237,.02));
+  border:1px solid rgba(124,58,237,.22);}
+.layer:hover{transform:translateY(-6px);box-shadow:0 20px 44px rgba(0,0,0,.4);}
+.layer.outer:hover{border-color:rgba(0,216,160,.4);}
+.layer.middle:hover{border-color:rgba(14,165,233,.4);}
+.layer.inner:hover{border-color:rgba(124,58,237,.4);}
+.layer-num{font-family:var(--ft);font-size:56px;font-weight:700;line-height:1;
+  position:absolute;top:18px;right:22px;opacity:1;
+  background:linear-gradient(90deg,var(--c4a) 0%,var(--c5b) 25%,var(--c6a) 50%,var(--c7b) 75%,var(--c4a) 100%);
+  background-size:300%;
+  animation:shimmer 8s ease infinite;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 12px rgba(0,216,160,.35));
+  letter-spacing:-2px;}
+/* Remove per-ring color overrides since we use shimmer now */
+.layer.outer .layer-num,
+.layer.middle .layer-num,
+.layer.inner .layer-num{color:transparent;}
+.layer-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  margin-bottom:16px;font-family:var(--fd);font-size:22px;font-weight:700;color:#fff;
+  box-shadow:0 4px 16px rgba(0,0,0,.3);}
+.layer.outer .layer-icon{background:linear-gradient(135deg,var(--c4a),var(--c4b));}
+.layer.middle .layer-icon{background:linear-gradient(135deg,var(--c5a),var(--c5b));}
+.layer.inner .layer-icon{background:linear-gradient(135deg,var(--c6a),var(--c6b));}
+.layer-name{font-family:var(--ft);font-size:22px;font-weight:700;color:var(--tx);margin-bottom:6px;line-height:1.2;letter-spacing:-.3px;}
+.layer-tag{font-family:var(--fm);font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08);}
+.layer.outer .layer-tag{color:var(--c4a);}
+.layer.middle .layer-tag{color:var(--c5b);}
+.layer.inner .layer-tag{color:var(--c6c);}
+.layer-desc{font-size:12.5px;font-weight:300;line-height:1.65;color:var(--tx2);}
+
+/* Zeni Digital — cross infrastructure highlight */
+.crossbar{margin-top:64px;padding:36px 40px;border-radius:20px;
+  background:linear-gradient(135deg,rgba(201,162,39,.10),rgba(124,58,237,.06));
+  border:1px solid rgba(201,162,39,.28);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  display:flex;gap:28px;align-items:center;flex-wrap:wrap;}
+.crossbar-icon{flex-shrink:0;width:64px;height:64px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fd);font-size:28px;font-weight:700;color:var(--c7b);
+  background:rgba(201,162,39,.15);border:1px solid rgba(201,162,39,.4);
+  box-shadow:0 0 24px rgba(201,162,39,.3);animation:pulse 4s ease infinite;}
+.crossbar-body{flex:1 1 360px;min-width:0;}
+.crossbar-title{font-family:var(--ft);font-size:24px;font-weight:700;color:var(--tx);margin-bottom:6px;line-height:1.2;}
+.crossbar-sub{font-family:var(--fm);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--c7b);margin-bottom:10px;line-height:1.6;}
+.crossbar-desc{font-size:13.5px;font-weight:300;line-height:1.7;color:var(--tx2);max-width:680px;}
+.crossbar-tags{flex-shrink:0;display:flex;gap:6px;flex-wrap:wrap;max-width:220px;}
+.crossbar-tag{padding:5px 11px;border-radius:100px;font-family:var(--fm);font-size:9px;letter-spacing:1px;
+  color:var(--c7b);background:rgba(201,162,39,.1);border:1px solid rgba(201,162,39,.25);}
+
+/* ── PHILOSOPHY ──────────────────────────────────────────────── */
+#philosophy{text-align:center;padding:160px 48px;}
+.phil-title{font-family:var(--ft);font-size:clamp(40px,5.5vw,84px);font-weight:700;
+  line-height:1.05;margin-bottom:28px;color:var(--tx);}
+.phil-accent{
+  font-style:italic;display:block;margin-top:10px;}
+.phil-accent:not([class*="giao-thoa"]){
+  background:linear-gradient(135deg,var(--c4a),var(--c5b) 30%,var(--c6a) 60%,var(--c7b) 100%);
+  background-size:200%;animation:shimmer 6s ease infinite;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 30px rgba(0,216,160,.3));}
+.phil-body{font-size:17px;font-weight:300;line-height:2;color:var(--tx2);max-width:840px;margin:0 auto 56px;}
+
+.phil-sig{margin-top:64px;display:flex;flex-direction:column;align-items:center;gap:24px;}
+.phil-name-row{display:grid;grid-template-columns:repeat(3,minmax(140px,200px));gap:clamp(32px,5vw,80px);align-items:start;}
+.phil-name-col{display:flex;flex-direction:column;align-items:center;gap:12px;}
+.phil-name-viet{font-family:var(--ft);font-size:clamp(32px,3.8vw,48px);font-weight:700;color:var(--tx);line-height:1;letter-spacing:-.5px;}
+.phil-name-han{font-family:var(--fd);font-size:clamp(40px,4.4vw,56px);font-weight:400;
+  background:linear-gradient(135deg,var(--c7b) 0%,#F0CC50 60%,var(--c7c) 100%);
+  background-size:200%;animation:shimmer 6s ease infinite;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;filter:drop-shadow(0 0 16px rgba(201,162,39,.35));}
+.phil-name-meaning{font-family:var(--fd);font-size:clamp(13px,1.3vw,16px);font-style:italic;
+  letter-spacing:.5px;color:var(--c7c);margin-top:6px;text-align:center;line-height:1.3;
+  white-space:nowrap;opacity:.85;}
+.phil-sig-divider{width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--c7b),transparent);margin:8px 0;}
+.phil-sig-role{font-family:var(--fm);font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--mu);}
+
+/* ── CTA ─────────────────────────────────────────────────────── */
+#cta{text-align:center;padding:140px 48px;position:relative;overflow:hidden;max-width:100%;width:100%;margin:0;}
+.cta-container{max-width:1040px;margin:0 auto;padding:64px 48px;border-radius:28px;
+  background:var(--glass);backdrop-filter:blur(28px) saturate(140%);-webkit-backdrop-filter:blur(28px) saturate(140%);
+  border:1px solid rgba(0,216,160,.2);animation:borderGlow 14s ease infinite;}
+.cta-title{font-family:var(--ft);font-size:clamp(32px,4.4vw,60px);font-weight:700;line-height:1.15;color:var(--tx);margin-bottom:24px;letter-spacing:-.6px;white-space:normal;}
+.cta-title em{font-style:italic;
+  background:linear-gradient(135deg,var(--c4a),var(--c5b),var(--c6a),var(--c7b));
+  background-size:200%;animation:shimmer 6s ease infinite;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.cta-sub{font-size:15.5px;font-weight:300;line-height:1.9;color:var(--tx2);max-width:680px;margin:0 auto 44px;}
+.cta-options{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:44px;}
+.cta-opt{padding:22px 28px;border-radius:14px;text-decoration:none;min-width:180px;
+  background:rgba(0,216,160,.04);backdrop-filter:blur(12px);border:1px solid rgba(0,216,160,.18);
+  transition:all .3s;display:flex;flex-direction:column;gap:8px;align-items:center;}
+.cta-opt:hover{background:rgba(0,216,160,.1);border-color:rgba(0,216,160,.4);transform:translateY(-3px);}
+.cta-opt-icon{font-family:var(--fd);font-size:28px;font-weight:700;
+  background:linear-gradient(135deg,var(--c4a),var(--c6a));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.cta-opt-label{font-family:var(--fm);font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx);}
+.cta-opt-sub{font-size:11px;color:var(--mu);text-align:center;}
+
+/* ── FOOTER ──────────────────────────────────────────────────── */
+footer{padding:64px 48px;border-top:1px solid rgba(0,216,160,.08);
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;max-width:1380px;margin:0 auto;position:relative;z-index:10;}
+.ft-brand{font-family:var(--ft);font-size:30px;font-weight:700;margin-bottom:14px;letter-spacing:-.3px;
+  background:linear-gradient(90deg,var(--c4a),var(--c5b),var(--c6a),var(--c7b));
+  background-size:200%;animation:shimmer 6s ease infinite;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ft-mis{font-size:13px;font-weight:300;color:var(--tx2);line-height:1.9;max-width:420px;}
+.ft-copy{font-size:10.5px;color:var(--dim);margin-top:20px;letter-spacing:.5px;}
+.ft-col h4{font-family:var(--fm);font-size:10px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--c4a);margin-bottom:16px;}
+.ft-col a{display:block;font-size:12.5px;font-weight:300;color:var(--tx2);text-decoration:none;margin-bottom:10px;transition:color .2s;}
+.ft-col a:hover{color:var(--c4a);}
+
+/* ── REVEAL ──────────────────────────────────────────────────── */
+.sr{opacity:0;transform:translateY(36px);transition:opacity .9s ease,transform .9s ease;}
+.sr.v{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.1s;}.d2{transition-delay:.2s;}.d3{transition-delay:.3s;}
+.d4{transition-delay:.4s;}.d5{transition-delay:.5s;}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────── */
+@media(max-width:1200px){
+  .layers-grid.five{grid-template-columns:repeat(3,1fr);}
+}
+@media(max-width:1024px){
+  .pillars-3{grid-template-columns:1fr;}
+  .layers-grid.five,.layers-grid.three,.layers-grid.four{grid-template-columns:repeat(2,1fr);}
+  .crossbar{flex-direction:column;text-align:center;align-items:center;}
+  .crossbar-tags{justify-content:center;max-width:none;}
+  .crossbar-desc{margin:0 auto;}
+  .nav-links{display:none;}
+}
+@media(max-width:640px){
+  nav{padding:0 20px;}
+  section{padding:80px 22px;}
+  .hero{padding:100px 22px 60px;}
+  .layers-grid.five,.layers-grid.three,.layers-grid.four{grid-template-columns:1fr;}
+  footer{grid-template-columns:1fr 1fr;padding:48px 22px;}
+  .hero-ring{width:320px;height:320px;}
+  .mani-container{padding:36px 24px;}
+  .cta-container{padding:44px 24px;}
+  .phil-name-row{grid-template-columns:repeat(3,minmax(100px,1fr));gap:14px;}
+  .phil-name-meaning{white-space:normal;font-size:11px;}
+}
+</style>
+</head>
+<body>
+
+<!-- COSMIC BACKGROUND LAYERS -->
+<div class="cosmos-bg"></div>
+<div class="nebula"></div>
+<div class="orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+  <div class="orb orb-5"></div>
+</div>
+<div class="stars" id="stars"></div>
+
+<div class="wrap">
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#top" class="nav-brand">
+    <div>
+      <div class="nav-logo">ANIMA</div>
+      <div class="nav-sub">CARE GLOBAL</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <div class="nav-item">
+      <a href="#philosophy" data-vi="Triết Đạo" data-en="Philosophy">Triết Đạo</a>
+    </div>
+    <div class="nav-item has-menu" data-menu="ecosystem">
+      <a data-vi="Hệ Sinh Thái" data-en="Ecosystem">Hệ Sinh Thái</a>
+      <div class="nav-menu wide">
+        <div class="nav-menu-col">
+          <div class="nav-menu-group">
+            <div class="nav-menu-header outer"><span class="nav-menu-dot outer"></span><span data-vi="Vòng Ngoài · Hiện Thân" data-en="Outer · Manifest">Vòng Ngoài · Hiện Thân</span></div>
+            <a href="#layer-01"><span class="nav-num">01</span><span>ANIMA 119</span></a>
+            <a href="#layer-02"><span class="nav-num">02</span><span>ANIMA Care Chain</span></a>
+            <a href="#layer-03"><span class="nav-num">03</span><span>AnimaTea.bio</span></a>
+            <a href="#layer-04"><span class="nav-num">04</span><span>BioTea84</span></a>
+            <a href="#layer-05"><span class="nav-num">05</span><span>ANIMA Odyssey</span></a>
+          </div>
+        </div>
+        <div class="nav-menu-col">
+          <div class="nav-menu-group">
+            <div class="nav-menu-header middle"><span class="nav-menu-dot middle"></span><span data-vi="Vòng Giữa · Sức Mạnh" data-en="Middle · Strength">Vòng Giữa · Sức Mạnh</span></div>
+            <a href="#layer-06"><span class="nav-num">06</span><span>ANIMA Labs</span></a>
+            <a href="#layer-07"><span class="nav-num">07</span><span>ANIMA Capital</span></a>
+            <a href="#layer-08"><span class="nav-num">08</span><span>ANIMA Land</span></a>
+          </div>
+          <div class="nav-menu-group">
+            <div class="nav-menu-header nav-xbar"><span class="nav-menu-dot nav-xbar"></span><span data-vi="Hạ Tầng Chéo" data-en="Cross Infrastructure">Hạ Tầng Chéo</span></div>
+            <a href="#layer-13"><span class="nav-num">13</span><span>Zeni Digital</span></a>
+          </div>
+        </div>
+        <div class="nav-menu-col">
+          <div class="nav-menu-group">
+            <div class="nav-menu-header inner"><span class="nav-menu-dot inner"></span><span data-vi="Vòng Trong · Linh Hồn" data-en="Inner · Soul">Vòng Trong · Linh Hồn</span></div>
+            <a href="#layer-09"><span class="nav-num">09</span><span>ANIMA Academy</span></a>
+            <a href="#layer-10"><span class="nav-num">10</span><span>ANIMA Foundation</span></a>
+            <a href="#layer-11"><span class="nav-num">11</span><span>ANIMA Media</span></a>
+            <a href="#layer-12"><span class="nav-num">12</span><span>ANIMA Trust</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a href="#cta" data-vi="Đồng Hành" data-en="Join">Đồng Hành</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <div class="lang-select" id="langSelect">
+      <button class="lang-current" id="langCurrent">
+        <span class="lang-flag">🇻🇳</span>
+        <span class="lang-code">VI</span>
+        <span class="lang-arrow">▾</span>
+      </button>
+      <div class="lang-menu" id="langMenu">
+        <button class="lang-option active" data-lang="vi"><span>🇻🇳</span> Tiếng Việt</button>
+        <button class="lang-option" data-lang="en"><span>🇬🇧</span> English</button>
+        <button class="lang-option" data-lang="zh"><span>🇨🇳</span> 中文</button>
+        <button class="lang-option" data-lang="ja"><span>🇯🇵</span> 日本語</button>
+        <button class="lang-option" data-lang="ko"><span>🇰🇷</span> 한국어</button>
+        <button class="lang-option" data-lang="th"><span>🇹🇭</span> ไทย</button>
+        <button class="lang-option" data-lang="hi"><span>🇮🇳</span> हिन्दी</button>
+        <button class="lang-option" data-lang="fr"><span>🇫🇷</span> Français</button>
+        <button class="lang-option" data-lang="de"><span>🇩🇪</span> Deutsch</button>
+        <button class="lang-option" data-lang="es"><span>🇪🇸</span> Español</button>
+        <button class="lang-option" data-lang="pt"><span>🇵🇹</span> Português</button>
+        <button class="lang-option" data-lang="ar"><span>🇸🇦</span> العربية</button>
+      </div>
+    </div>
+    <a href="https://app.animacare.global/login" class="nav-login" data-vi="Đăng Nhập" data-en="Log In" id="navLoginBtn"><span class="nav-login-ic">◎</span>Đăng Nhập</a>
+    <a href="https://app.animacare.global/register" class="nav-cta" data-vi="Đồng Hành →" data-en="Join →">Đồng Hành →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div id="top" class="hero">
+  <div class="hero-ring"></div>
+  <div class="hero-eye" data-vi="TẬP ĐOÀN CHĂM SÓC SỰ SỐNG TOÀN CẦU · <span>HÀ NỘI 2026</span>"
+       data-en="GLOBAL LIFE CARE ECOSYSTEM · <span>HANOI 2026</span>">
+    TẬP ĐOÀN CHĂM SÓC SỰ SỐNG TOÀN CẦU · <span>HÀ NỘI 2026</span>
+  </div>
+  <h1 class="hero-title"
+      data-vi="<span class='giao-thoa-descend'>Phục Hưng Sự Sống</span><br/><em class='giao-thoa-ascend'>Lập Đức Viên Mãn</em>"
+      data-en="<span class='giao-thoa-descend'>Life Restoration</span><br/><em class='giao-thoa-ascend'>Virtue Fulfilled</em>">
+    <span class="giao-thoa-descend">Phục Hưng Sự Sống</span><br/>
+    <em class="giao-thoa-ascend">Lập Đức Viên Mãn</em>
+  </h1>
+  <p class="hero-sub"
+     data-vi="ANIMA Care Global là tập đoàn chăm sóc sự sống toàn cầu — được kiến tạo từ minh triết Phục Hưng Sự Sống · Lập Đức Viên Mãn. Một hệ sinh thái mười ba tầng, ba vòng: Hiện Thân, Sức Mạnh, Linh Hồn — hội tụ lại thành một lời hứa giản dị: trao về con người hơi thở đầu tiên mà họ đã quên mình đang có."
+     data-en="ANIMA Care Global is a global life care ecosystem — built from the minh triết of Life Restoration · Virtue Fulfilled. A thirteen-layer system in three concentric rings: Manifest, Strength, and Soul — converging into one simple promise: to return to each human the first breath they have forgotten they already carry.">
+    ANIMA Care Global là tập đoàn chăm sóc sự sống toàn cầu — được kiến tạo từ minh triết Phục Hưng Sự Sống · Lập Đức Viên Mãn. Một hệ sinh thái mười ba tầng, ba vòng: Hiện Thân, Sức Mạnh, Linh Hồn — hội tụ lại thành một lời hứa giản dị: trao về con người hơi thở đầu tiên mà họ đã quên mình đang có.
+  </p>
+  <div class="hero-pillars">
+    <div class="hero-pill c4" data-vi="Y Sinh Đông Dược Lên Men" data-en="Fermented Herbal Bioscience">Y Sinh Đông Dược Lên Men</div>
+    <div class="hero-pill c5" data-vi="13 Tầng · Ba Vòng Sự Sống" data-en="13 Layers · Three Rings of Life">13 Tầng · Ba Vòng Sự Sống</div>
+    <div class="hero-pill c6" data-vi="185 Quốc Gia · PCT Patent" data-en="185 Nations · PCT Patent">185 Quốc Gia · PCT Patent</div>
+    <div class="hero-pill c7" data-vi="SGX IPO 2031" data-en="SGX IPO 2031">SGX IPO 2031</div>
+  </div>
+  <div class="hero-acts">
+    <a href="https://app.animacare.global/" class="btn-p" data-vi="Mở Ứng Dụng →" data-en="Open App →" id="heroAppBtn">Mở Ứng Dụng →</a>
+    <a href="#ecosystem" class="btn-g" data-vi="Khám Phá Hệ Sinh Thái" data-en="Explore Ecosystem">Khám Phá Hệ Sinh Thái</a>
+    <a href="#philosophy" class="btn-g" data-vi="Triết Đạo" data-en="Philosophy">Triết Đạo</a>
+  </div>
+  <div class="scroll-ind">
+    <div class="scroll-line"></div>
+    <span data-vi="Cuộn Xuống" data-en="Scroll">Cuộn Xuống</span>
+  </div>
+</div>
+
+<!-- MANIFESTO -->
+<section id="manifesto">
+  <div class="eye sr" data-vi="Tuyên Ngôn · <span>Manifesto</span>" data-en="Manifesto · <span>2026</span>">Tuyên Ngôn · <span>Manifesto</span></div>
+  <h2 class="sec-title sr" style="margin-bottom:60px;"
+      data-vi="Chúng Tôi Không Bán<br/><em>Sức Khỏe</em>"
+      data-en="We Do Not Sell<br/><em>Health</em>">
+    Chúng Tôi Không Bán<br/><em>Sức Khỏe</em>
+  </h2>
+  <div class="glass mani-container sr d1">
+    <p class="mani-quote"
+       data-vi="Chúng tôi trao về con người <em>hơi thở đầu tiên</em> mà họ đã quên mình đang có. <br/><br/>Sức khỏe là điều đến sau — khi một sinh linh được sống đúng với chính nó."
+       data-en="We return to humans <em>the first breath</em> they have forgotten they carry. <br/><br/>Health is what follows — when a living being is allowed to live as itself.">
+      Chúng tôi trao về con người <em>hơi thở đầu tiên</em> mà họ đã quên mình đang có. <br/><br/>Sức khỏe là điều đến sau — khi một sinh linh được sống đúng với chính nó.
+    </p>
+    <div class="mani-attr" data-vi="— ANIMA Care Global · Phục Hưng Sự Sống" data-en="— ANIMA Care Global · Life Restoration">— ANIMA Care Global · Phục Hưng Sự Sống</div>
+  </div>
+</section>
+
+<!-- 3 PILLARS — Thiên Địa Nhân / Hiện Thân · Sức Mạnh · Linh Hồn -->
+<section id="pillars">
+  <div class="eye sr" data-vi="Ba Vòng · <span>Bảy Luân Xa</span>" data-en="Three Rings · <span>Seven Chakras</span>">Ba Vòng · <span>Bảy Luân Xa</span></div>
+  <h2 class="sec-title sr" data-vi="Hai Dòng Năng Lượng<br/><em>Gặp Nhau Tại Trái Tim</em>" data-en="Two Energy Streams<br/><em>Meeting At The Heart</em>">Hai Dòng Năng Lượng<br/><em>Gặp Nhau Tại Trái Tim</em></h2>
+  <p class="sec-sub sr d1"
+     data-vi="Hệ sinh thái được kiến tạo theo đúng bản đồ bảy luân xa của thân người. Ba luân xa dưới (1–2–3) là sức mạnh bản thể. Luân xa bốn là trái tim — điểm giao thoa của Đạo trời và Đạo đất. Ba luân xa trên (5–6–7) là trí tuệ tâm linh. Phục Hưng Sự Sống chảy từ trên xuống, Lập Đức Viên Mãn vươn từ dưới lên — hai dòng năng lượng gặp nhau tại trái tim, rồi lan tỏa thành mười ba tầng của hệ sinh thái."
+     data-en="The ecosystem is built according to the map of the seven chakras of the human body. The three lower chakras (1–2–3) are the power of essence. The fourth is the heart — where the Dao of heaven and the Dao of earth intersect. The three upper chakras (5–6–7) are spiritual wisdom. Life Restoration flows downward, Virtue Fulfilled rises upward — two energy streams meeting at the heart, then radiating into the ecosystem's thirteen layers.">
+    Hệ sinh thái được kiến tạo theo đúng bản đồ bảy luân xa của thân người. Ba luân xa dưới (1–2–3) là sức mạnh bản thể. Luân xa bốn là trái tim — điểm giao thoa của Đạo trời và Đạo đất. Ba luân xa trên (5–6–7) là trí tuệ tâm linh. Phục Hưng Sự Sống chảy từ trên xuống, Lập Đức Viên Mãn vươn từ dưới lên — hai dòng năng lượng gặp nhau tại trái tim, rồi lan tỏa thành mười ba tầng của hệ sinh thái.
+  </p>
+
+  <div class="pillars-3">
+    <div class="pillar p1 sr">
+      <span class="pillar-kanji">現</span>
+      <div class="pillar-ring"><div class="pillar-ring-dot"></div></div>
+      <div class="pillar-label" data-vi="Luân Xa 1–2–3 · Sức Mạnh Bản Thể" data-en="Chakra 1–2–3 · Essence Power">Luân Xa 1–2–3 · Sức Mạnh Bản Thể</div>
+      <h3 class="pillar-name" data-vi="Hiện Thân" data-en="Manifest">Hiện Thân</h3>
+      <p class="pillar-desc"
+         data-vi="Tại tầng năng lượng này — nơi cơ thể cần được nuôi, tiêu hóa cần được sửa, sinh lực cần được đánh thức.<br/>ANIMA Care Global có năm đôi tay chạm trực tiếp:<br/><br/><strong style='color:var(--tx);'>ANIMA 119</strong> phục hồi synbiotic cho thân.<br/><strong style='color:var(--tx);'>Care Chain</strong> chăm sóc sức khỏe toàn diện.<br/><strong style='color:var(--tx);'>AnimaTea.bio · ZEN·BEER</strong> nuôi dưỡng mỗi ngày.<br/><strong style='color:var(--tx);'>BioTea84</strong> trả trà cổ thụ về tay người Việt.<br/><strong style='color:var(--tx);'>ANIMA Odyssey</strong> đưa khách vào rừng trà tự tay tạo chai của mình.<br/><br/>Đây là tầng mà bàn tay chạm được, cơ thể cảm được, hiệu quả đo đếm được."
+         data-en="At this energetic ground — where the body needs nourishing, digestion needs mending, vitality needs awakening.<br/>ANIMA Care Global has five hands that touch directly:<br/><br/><strong style='color:var(--tx);'>ANIMA 119</strong> restores synbiotic for the body.<br/><strong style='color:var(--tx);'>Care Chain</strong> delivers integrated wellness care.<br/><strong style='color:var(--tx);'>AnimaTea.bio · ZEN·BEER</strong> nourishes daily.<br/><strong style='color:var(--tx);'>BioTea84</strong> returns ancient tea to Vietnamese hands.<br/><strong style='color:var(--tx);'>ANIMA Odyssey</strong> takes guests into tea forests to craft their own bottle.<br/><br/>This is the layer hands can touch, bodies can feel, results can be measured.">
+        Tại tầng năng lượng này — nơi cơ thể cần được nuôi, tiêu hóa cần được sửa, sinh lực cần được đánh thức.<br/>ANIMA Care Global có năm đôi tay chạm trực tiếp:<br/><br/><strong style="color:var(--tx);">ANIMA 119</strong> phục hồi synbiotic cho thân.<br/><strong style="color:var(--tx);">Care Chain</strong> chăm sóc sức khỏe toàn diện.<br/><strong style="color:var(--tx);">AnimaTea.bio · ZEN·BEER</strong> nuôi dưỡng mỗi ngày.<br/><strong style="color:var(--tx);">BioTea84</strong> trả trà cổ thụ về tay người Việt.<br/><strong style="color:var(--tx);">ANIMA Odyssey</strong> đưa khách vào rừng trà tự tay tạo chai của mình.<br/><br/>Đây là tầng mà bàn tay chạm được, cơ thể cảm được, hiệu quả đo đếm được.
+      </p>
+    </div>
+    <div class="pillar p2 sr d1">
+      <span class="pillar-kanji">心</span>
+      <div class="pillar-ring"><div class="pillar-ring-dot"></div></div>
+      <div class="pillar-label" data-vi="Luân Xa 4 · Điểm Giao Thoa Yêu Thương" data-en="Chakra 4 · The Heart Crossing">Luân Xa 4 · Điểm Giao Thoa Yêu Thương</div>
+      <h3 class="pillar-name" data-vi="Sức Mạnh" data-en="Strength">Sức Mạnh</h3>
+      <p class="pillar-desc"
+         data-vi="Trái tim là nơi yêu thương chính mình gặp yêu thương muôn loài.<br/>Cũng là nơi ba tầng Sức Mạnh của hệ sinh thái được kiến tạo.<br/><br/><strong style='color:var(--tx);'>ANIMA Labs</strong> nghiên cứu không phải để kiếm patent, mà để chữa lành bệnh tật cho cộng đồng.<br/><strong style='color:var(--tx);'>ANIMA Capital</strong> gieo vốn trực tiếp cho bà con nông dân vùng trà, không qua bất kỳ trung gian bóc lột nào.<br/><strong style='color:var(--tx);'>ANIMA Land</strong> giữ rừng trà cổ thụ 300–500 năm di sản cần được bảo tồn.<br/><br/>Có nó, hệ sinh thái trở thành sự sống."
+         data-en="The heart is where self-love meets love for all beings.<br/>And where the ecosystem's three Strength layers are built.<br/><br/><strong style='color:var(--tx);'>ANIMA Labs</strong> researches not for patents, but to heal communities.<br/><strong style='color:var(--tx);'>ANIMA Capital</strong> seeds capital directly to tea farmers, bypassing exploitative middlemen.<br/><strong style='color:var(--tx);'>ANIMA Land</strong> safeguards ancient tea forests 300–500 years old as heritage to be preserved.<br/><br/>With it, the ecosystem becomes living.">
+        Trái tim là nơi yêu thương chính mình gặp yêu thương muôn loài.<br/>Cũng là nơi ba tầng Sức Mạnh của hệ sinh thái được kiến tạo.<br/><br/><strong style="color:var(--tx);">ANIMA Labs</strong> nghiên cứu không phải để kiếm patent, mà để chữa lành bệnh tật cho cộng đồng.<br/><strong style="color:var(--tx);">ANIMA Capital</strong> gieo vốn trực tiếp cho bà con nông dân vùng trà, không qua bất kỳ trung gian bóc lột nào.<br/><strong style="color:var(--tx);">ANIMA Land</strong> giữ rừng trà cổ thụ 300–500 năm di sản cần được bảo tồn.<br/><br/>Có nó, hệ sinh thái trở thành sự sống.
+      </p>
+    </div>
+    <div class="pillar p3 sr d2">
+      <span class="pillar-kanji">魂</span>
+      <div class="pillar-ring"><div class="pillar-ring-dot"></div></div>
+      <div class="pillar-label" data-vi="Luân Xa 5–6–7 · Trí Tuệ Tâm Linh" data-en="Chakra 5–6–7 · Transcendent Wisdom">Luân Xa 5–6–7 · Trí Tuệ Tâm Linh</div>
+      <h3 class="pillar-name" data-vi="Linh Hồn" data-en="Soul">Linh Hồn</h3>
+      <p class="pillar-desc"
+         data-vi="Ở tầng năng lượng cao nhất — tiếng nói chân thật, cái nhìn thấu suốt, sự kết nối với Đạo.<br/>Bốn tầng Linh Hồn của hệ sinh thái đảm nhiệm bốn việc riêng biệt.<br/><br/><strong style='color:var(--tx);'>ANIMA Academy</strong> truyền triết đạo Phục Hưng Sự Sống cho thế hệ sau.<br/><strong style='color:var(--tx);'>ANIMA Foundation</strong> thực thi chăm sóc cộng đồng phi lợi nhuận — phần lợi nhuận từ các tầng dưới chảy ngược về đây.<br/><strong style='color:var(--tx);'>ANIMA Media</strong> kể câu chuyện thật của nông dân, khách hàng, nhà khoa học — không để báo chí bên ngoài định nghĩa chúng tôi.<br/><strong style='color:var(--tx);'>ANIMA Trust</strong> giữ di sản qua nhiều thế hệ với hội đồng triết đạo có quyền veto."
+         data-en="At the highest energetic level — true speech, clear vision, connection with the Dao.<br/>The ecosystem's four Soul layers take on four distinct responsibilities.<br/><br/><strong style='color:var(--tx);'>ANIMA Academy</strong> transmits the Life Restoration philosophy to future generations.<br/><strong style='color:var(--tx);'>ANIMA Foundation</strong> runs nonprofit community care — profits from lower layers flow back here.<br/><strong style='color:var(--tx);'>ANIMA Media</strong> tells the true stories of farmers, customers, scientists — we do not let outside press define us.<br/><strong style='color:var(--tx);'>ANIMA Trust</strong> preserves legacy across generations with a philosophy council holding veto power.">
+        Ở tầng năng lượng cao nhất — tiếng nói chân thật, cái nhìn thấu suốt, sự kết nối với Đạo.<br/>Bốn tầng Linh Hồn của hệ sinh thái đảm nhiệm bốn việc riêng biệt.<br/><br/><strong style="color:var(--tx);">ANIMA Academy</strong> truyền triết đạo Phục Hưng Sự Sống cho thế hệ sau.<br/><strong style="color:var(--tx);">ANIMA Foundation</strong> thực thi chăm sóc cộng đồng phi lợi nhuận — phần lợi nhuận từ các tầng dưới chảy ngược về đây.<br/><strong style="color:var(--tx);">ANIMA Media</strong> kể câu chuyện thật của nông dân, khách hàng, nhà khoa học — không để báo chí bên ngoài định nghĩa chúng tôi.<br/><strong style="color:var(--tx);">ANIMA Trust</strong> giữ di sản qua nhiều thế hệ với hội đồng triết đạo có quyền veto.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 13 LAYERS — THE FULL ECOSYSTEM -->
+<section id="ecosystem">
+  <div class="eye sr" data-vi="Hệ Sinh Thái · <span>Thirteen Layers</span>" data-en="Ecosystem · <span>Thirteen Layers</span>">Hệ Sinh Thái · <span>Thirteen Layers</span></div>
+  <h2 class="sec-title sr" data-vi="Mười Ba Tầng<br/><em>Chăm Sóc Sự Sống</em>" data-en="Thirteen Layers<br/><em>Caring For Life</em>">Mười Ba Tầng<br/><em>Chăm Sóc Sự Sống</em></h2>
+  <p class="sec-sub sr d1"
+     data-vi="Mỗi tầng mang một sứ mệnh riêng, không trùng lặp. Cộng lại, chúng tạo thành hệ sinh thái chăm sóc sự sống toàn diện nhất Việt Nam — được kiến tạo để vận hành qua nhiều thế hệ."
+     data-en="Each layer carries a distinct mission. Together, they form the most comprehensive life care ecosystem in Vietnam — designed to operate across generations.">
+    Mỗi tầng mang một sứ mệnh riêng, không trùng lặp. Cộng lại, chúng tạo thành hệ sinh thái chăm sóc sự sống toàn diện nhất Việt Nam — được kiến tạo để vận hành qua nhiều thế hệ.
+  </p>
+
+  <div class="layers-wrap">
+
+    <!-- OUTER RING — HIỆN THÂN -->
+    <div id="outer" class="layers-ring-label sr">
+      <div class="layers-ring-eye" data-vi="VÒNG NGOÀI · 5 TẦNG HIỆN THÂN" data-en="OUTER RING · 5 LAYERS OF MANIFEST">VÒNG NGOÀI · 5 TẦNG HIỆN THÂN</div>
+      <div class="layers-ring-title outer" data-vi="Nơi Triết Đạo Trở Thành Sản Phẩm Sống" data-en="Where Philosophy Becomes A Living Product">Nơi Triết Đạo Trở Thành Sản Phẩm Sống</div>
+    </div>
+
+    <div class="layers-grid five">
+      <div id="layer-01" class="layer outer sr">
+        <span class="layer-num">01</span>
+        <div class="layer-icon">119</div>
+        <div class="layer-name" data-vi="ANIMA 119" data-en="ANIMA 119">ANIMA 119</div>
+        <div class="layer-tag" data-vi="Sản Phẩm Cốt Lõi" data-en="Core Product">Sản Phẩm Cốt Lõi</div>
+        <p class="layer-desc"
+           data-vi="Chế phẩm synbiotic 32 thảo dược lên men — 119 vi chất sinh học hoạt tính cao. Biểu hiện trực tiếp nhất của tâm nguyện phục hưng sức sống con người."
+           data-en="32-herb synbiotic formulation — 119 bioactive compounds. The most direct expression of the vow to restore human vitality.">
+          Chế phẩm synbiotic 32 thảo dược lên men — 119 vi chất sinh học hoạt tính cao.
+        </p>
+      </div>
+      <div id="layer-02" class="layer outer sr d1">
+        <span class="layer-num">02</span>
+        <div class="layer-icon">&hearts;</div>
+        <div class="layer-name" data-vi="ANIMA Care Chain" data-en="ANIMA Care Chain">ANIMA Care Chain</div>
+        <div class="layer-tag" data-vi="Chuỗi Chăm Sóc Sức Khỏe" data-en="Health Care Network">Chuỗi Chăm Sóc Sức Khỏe</div>
+        <p class="layer-desc"
+           data-vi="Mạng lưới trung tâm chăm sóc sức khỏe toàn diện. Mỗi điểm chạm là một cánh cửa dẫn vào hành trình phục hưng sự sống — không chỉ điều trị triệu chứng."
+           data-en="Comprehensive wellness center network. Each touchpoint opens a door into the life restoration journey — beyond mere symptom treatment.">
+          Mạng lưới trung tâm chăm sóc sức khỏe toàn diện. Mỗi điểm chạm là một cánh cửa dẫn vào hành trình phục hưng.
+        </p>
+      </div>
+      <div id="layer-03" class="layer outer sr d2">
+        <span class="layer-num">03</span>
+        <div class="layer-icon">茶</div>
+        <div class="layer-name" data-vi="AnimaTea.bio" data-en="AnimaTea.bio">AnimaTea.bio</div>
+        <div class="layer-tag" data-vi="Thức Uống Nuôi Dưỡng Hàng Ngày · ZEN·BEER" data-en="Daily Nourishing Beverage · ZEN·BEER">Thức Uống Nuôi Dưỡng Hàng Ngày · ZEN·BEER</div>
+        <p class="layer-desc"
+           data-vi="Sinh Khí · Trà · Sinh Học. Nơi Anima gặp trà cổ thụ qua sinh học thật — ra đời ZEN·BEER, bia trà lên men không cồn đầu tiên thế giới."
+           data-en="Anima · Tea · Bio. Where life-force meets ancient tea through living science — birthing ZEN·BEER, the world's first non-alcoholic fermented tea beer.">
+          Sinh Khí · Trà · Sinh Học. Nơi Anima gặp trà cổ thụ qua sinh học thật — ra đời ZEN·BEER.
+        </p>
+      </div>
+      <div id="layer-04" class="layer outer sr d3">
+        <span class="layer-num">04</span>
+        <div class="layer-icon">84</div>
+        <div class="layer-name" data-vi="BioTea84" data-en="BioTea84">BioTea84</div>
+        <div class="layer-tag" data-vi="Trà Sự Sống · Web3 Marketplace" data-en="Living Tea · Web3 Marketplace">Trà Sự Sống · Web3 Marketplace</div>
+        <p class="layer-desc"
+           data-vi="Các thương hiệu trà cổ thụ lên men tự sản xuất + nền tảng công nghệ Web3 + marketplace đưa ngành trà Việt Nam ra thế giới. Kết nối văn hóa trà với sự sống và ý thức."
+           data-en="In-house fermented ancient tea brands + Web3 technology platform + marketplace bringing Vietnamese tea to the world. Connecting tea culture with life and consciousness.">
+          Các thương hiệu trà cổ thụ lên men tự sản xuất + nền tảng Web3 + marketplace đưa ngành trà Việt ra thế giới.
+        </p>
+      </div>
+      <div id="layer-05" class="layer outer sr d4">
+        <span class="layer-num">05</span>
+        <div class="layer-icon">&#10022;</div>
+        <div class="layer-name" data-vi="ANIMA Odyssey" data-en="ANIMA Odyssey">ANIMA Odyssey</div>
+        <div class="layer-tag" data-vi="Farmstay · Hành Trình Biến Đổi 4-7 Ngày" data-en="Farmstay · 4-7 Day Transformational Journey">Farmstay · Hành Trình Biến Đổi 4-7 Ngày</div>
+        <p class="layer-desc"
+           data-vi="Du lịch nghỉ dưỡng + tự tay làm trà + lên men sản phẩm ZEN·BEER mang thương hiệu cá nhân hóa. Khách tham gia toàn bộ quy trình — trở thành đồng tác giả của sản phẩm."
+           data-en="Retreat + hands-on tea making + personalized-brand ZEN·BEER fermentation. Guests participate in the entire process — becoming co-creators of the product.">
+          Du lịch + tự tay làm trà + lên men chai ZEN·BEER mang thương hiệu cá nhân. Hành trình 4-7 ngày biến đổi.
+        </p>
+      </div>
+    </div>
+
+    <!-- MIDDLE RING — SỨC MẠNH -->
+    <div id="middle" class="layers-ring-label sr">
+      <div class="layers-ring-eye" data-vi="VÒNG GIỮA · 3 TẦNG SỨC MẠNH" data-en="MIDDLE RING · 3 LAYERS OF STRENGTH">VÒNG GIỮA · 3 TẦNG SỨC MẠNH</div>
+      <div class="layers-ring-title middle" data-vi="Hạ Tầng Cho Sự Sống Bền Vững" data-en="Infrastructure For Sustainable Life">Hạ Tầng Cho Sự Sống Bền Vững</div>
+    </div>
+
+    <div class="layers-grid three">
+      <div id="layer-06" class="layer middle sr">
+        <span class="layer-num">06</span>
+        <div class="layer-icon">⬡</div>
+        <div class="layer-name" data-vi="ANIMA Labs" data-en="ANIMA Labs">ANIMA Labs</div>
+        <div class="layer-tag" data-vi="Nghiên Cứu Y Sinh Đông Dược · IP Toàn Cầu" data-en="Herbal Bioscience Research · Global IP">Nghiên Cứu Y Sinh Đông Dược · IP Toàn Cầu</div>
+        <p class="layer-desc"
+           data-vi="Trung tâm nghiên cứu sự sống duy nhất trên thế giới tích hợp Đông Y 5,000 năm với synbiotic hiện đại. Sở hữu các IP bản quyền đưa dược liệu Việt Nam lên tầm quốc tế — mang lại hiệu quả đời sống cho nông dân và nhà khoa học."
+           data-en="The only research center in the world integrating 5,000 years of Eastern medicine with modern synbiotics. Owner of proprietary IP elevating Vietnamese herbal medicine globally — creating real impact for farmers and scientists.">
+          Trung tâm nghiên cứu duy nhất thế giới tích hợp Đông Y 5,000 năm với synbiotic hiện đại. Sở hữu IP bản quyền toàn cầu.
+        </p>
+      </div>
+      <div id="layer-07" class="layer middle sr d1">
+        <span class="layer-num">07</span>
+        <div class="layer-icon">$</div>
+        <div class="layer-name" data-vi="ANIMA Capital" data-en="ANIMA Capital">ANIMA Capital</div>
+        <div class="layer-tag" data-vi="Đầu Tư Gieo Vốn · Cộng Đồng" data-en="Seed Investment · Community">Đầu Tư Gieo Vốn · Cộng Đồng</div>
+        <p class="layer-desc"
+           data-vi="Quỹ đầu tư cho toàn hệ sinh thái + hỗ trợ khởi nghiệp cho bà con làm trà và vùng nguyên liệu. Không đầu tư theo logic VC — đầu tư theo triết đạo Phục Hưng Sự Sống."
+           data-en="Ecosystem-wide investment fund + seed support for tea farmers and source communities. Not investing by VC logic — investing by the Life Restoration philosophy.">
+          Đầu tư toàn hệ sinh thái + hỗ trợ khởi nghiệp bà con làm trà. Không theo logic VC — theo triết đạo Phục Hưng.
+        </p>
+      </div>
+      <div id="layer-08" class="layer middle sr d2">
+        <span class="layer-num">08</span>
+        <div class="layer-icon">&#9961;</div>
+        <div class="layer-name" data-vi="ANIMA Land" data-en="ANIMA Land">ANIMA Land</div>
+        <div class="layer-tag" data-vi="Đất Đai · Vùng Trồng Dược Liệu" data-en="Land · Medicinal Cultivation Zones">Đất Đai · Vùng Trồng Dược Liệu</div>
+        <p class="layer-desc"
+           data-vi="Bất động sản chuỗi chăm sóc + vùng trồng dược liệu + đất xây ANIMA Odyssey. Bảo tồn rừng trà cổ thụ 300–500 năm tuổi như tài sản chiến lược không thể thay thế."
+           data-en="Care chain real estate + medicinal cultivation zones + ANIMA Odyssey farm land. Preserving 300–500 year old wild tea forests as irreplaceable strategic assets.">
+          Bất động sản chăm sóc + vùng trồng dược liệu + đất Odyssey. Bảo tồn rừng trà cổ thụ 300–500 năm tuổi.
+        </p>
+      </div>
+    </div>
+
+    <!-- INNER RING — LINH HỒN -->
+    <div id="inner" class="layers-ring-label sr">
+      <div class="layers-ring-eye" data-vi="VÒNG TRONG · 4 TẦNG LINH HỒN" data-en="INNER RING · 4 LAYERS OF SOUL">VÒNG TRONG · 4 TẦNG LINH HỒN</div>
+      <div class="layers-ring-title inner" data-vi="Không Bao Giờ Thương Mại Hóa" data-en="Never To Be Commercialized">Không Bao Giờ Thương Mại Hóa</div>
+    </div>
+
+    <div class="layers-grid four">
+      <div id="layer-09" class="layer inner sr">
+        <span class="layer-num">09</span>
+        <div class="layer-icon">學</div>
+        <div class="layer-name" data-vi="ANIMA Academy" data-en="ANIMA Academy">ANIMA Academy</div>
+        <div class="layer-tag" data-vi="Truyền Triết Đạo" data-en="Transmitting Philosophy">Truyền Triết Đạo</div>
+        <p class="layer-desc"
+           data-vi="Đào tạo triết đạo Phục Hưng Sự Sống cho mọi cấp bậc — từ nông dân đến C-level. Cấp chứng chỉ Practitioner, tổ chức chương trình kế thừa triết đạo cho thế hệ sau."
+           data-en="Teaching the Life Restoration philosophy at all levels — from farmers to C-level. Grants Practitioner certifications, runs legacy programs for future generations.">
+          Đào tạo triết đạo Phục Hưng Sự Sống cho mọi cấp bậc — từ nông dân đến C-level.
+        </p>
+      </div>
+      <div id="layer-10" class="layer inner sr d1">
+        <span class="layer-num">10</span>
+        <div class="layer-icon">願</div>
+        <div class="layer-name" data-vi="ANIMA Foundation" data-en="ANIMA Foundation">ANIMA Foundation</div>
+        <div class="layer-tag" data-vi="Tổ Chức Phi Lợi Nhuận" data-en="Nonprofit Organization">Tổ Chức Phi Lợi Nhuận</div>
+        <p class="layer-desc"
+           data-vi="Bảo tồn rừng trà cổ thụ, khám sức khỏe miễn phí vùng cao, nghiên cứu dược liệu bản địa nguy cơ tuyệt chủng. Một phần lợi nhuận hệ sinh thái chảy về đây — cam kết kiểm chứng được."
+           data-en="Preserving wild tea forests, free healthcare for highland communities, researching endangered native herbs. A portion of ecosystem profits flows here — an auditable commitment.">
+          Bảo tồn rừng trà cổ thụ · khám sức khỏe miễn phí vùng cao · dược liệu bản địa nguy cơ tuyệt chủng.
+        </p>
+      </div>
+      <div id="layer-11" class="layer inner sr d2">
+        <span class="layer-num">11</span>
+        <div class="layer-icon">言</div>
+        <div class="layer-name" data-vi="ANIMA Media" data-en="ANIMA Media">ANIMA Media</div>
+        <div class="layer-tag" data-vi="Kể Câu Chuyện" data-en="Narrative Platform">Kể Câu Chuyện</div>
+        <p class="layer-desc"
+           data-vi="Podcast, video, sách, tài liệu về triết đạo Phục Hưng Sự Sống. Hệ sinh thái tự kiểm soát câu chuyện của mình — không để báo chí bên ngoài giảm triết đạo thành 'wellness trend'."
+           data-en="Podcasts, videos, books, and writings on Life Restoration philosophy. The ecosystem owns its own narrative — preventing outside media from reducing the philosophy into a 'wellness trend'.">
+          Podcast · video · sách · tài liệu về Phục Hưng Sự Sống. Tự kiểm soát câu chuyện của mình.
+        </p>
+      </div>
+      <div id="layer-12" class="layer inner sr d3">
+        <span class="layer-num">12</span>
+        <div class="layer-icon">永</div>
+        <div class="layer-name" data-vi="ANIMA Trust" data-en="ANIMA Trust">ANIMA Trust</div>
+        <div class="layer-tag" data-vi="Bảo Vệ Di Sản Qua Thế Hệ" data-en="Cross-Generation Legacy">Bảo Vệ Di Sản Qua Thế Hệ</div>
+        <p class="layer-desc"
+           data-vi="Quản lý IP và tài sản trí tuệ qua các thế hệ. Hội đồng bảo vệ triết đạo có quyền veto các quyết định kinh doanh phản triết đạo — ngay cả khi đã IPO. Một tập đoàn không mất gốc rễ."
+           data-en="Managing IP and intellectual assets across generations. Philosophy Protection Council holds veto power over decisions that betray the philosophy — even post-IPO. A corporation that does not lose its roots.">
+          Quản lý IP qua thế hệ · Hội đồng triết đạo có quyền veto. Một tập đoàn không mất gốc rễ.
+        </p>
+      </div>
+    </div>
+
+    <!-- CROSSBAR — ZENI DIGITAL infrastructure -->
+    <div id="layer-13" class="crossbar sr">
+      <div class="crossbar-icon">Z</div>
+      <div class="crossbar-body">
+        <div class="crossbar-sub" data-vi="HẠ TẦNG CHÉO · SERVICE LAYER TỪ ZENI HOLDINGS" data-en="CROSS INFRASTRUCTURE · SERVICE LAYER FROM ZENI HOLDINGS">HẠ TẦNG CHÉO · SERVICE LAYER TỪ ZENI HOLDINGS</div>
+        <div class="crossbar-title" data-vi="Zeni Digital" data-en="Zeni Digital">Zeni Digital</div>
+        <p class="crossbar-desc"
+           data-vi="Hệ điều hành công nghệ lõi cho toàn Zeni Holdings — không thuộc riêng ANIMA Care Global, nhưng vận hành toàn bộ mười ba tầng: CRM, ERP, Web3 Payment, AI Agents. Dữ liệu tập trung — không phân mảnh."
+           data-en="Core tech OS for all of Zeni Holdings — not exclusive to ANIMA Care Global, but powering all thirteen layers: CRM, ERP, Web3 Payment, AI Agents. Centralized data — never fragmented.">
+          Hệ điều hành công nghệ lõi cho toàn Zeni Holdings — vận hành toàn bộ mười ba tầng. Dữ liệu tập trung, không phân mảnh.
+        </p>
+      </div>
+      <div class="crossbar-tags">
+        <div class="crossbar-tag">ZeniOS</div>
+        <div class="crossbar-tag">ZeniERP</div>
+        <div class="crossbar-tag">ZeniPay</div>
+        <div class="crossbar-tag">ZeniStudio</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section id="philosophy">
+  <div class="eye sr" data-vi="Triết Đạo · <span>Life Restoration</span>" data-en="Philosophy · <span>Life Restoration</span>">Triết Đạo · <span>Life Restoration</span></div>
+  <h1 class="phil-title sr" data-vi="<span class='giao-thoa-descend'>Phục Hưng Sự Sống</span>" data-en="<span class='giao-thoa-descend'>Life Restoration</span>">
+    <span class="giao-thoa-descend">Phục Hưng Sự Sống</span>
+    <span class="phil-accent giao-thoa-ascend" data-vi="Lập Đức Viên Mãn" data-en="Virtue Fulfilled">Lập Đức Viên Mãn</span>
+  </h1>
+  <p class="phil-body sr d1"
+     data-vi="Bản thể không thuộc về ai, không phải của một truyền thống nào, không phải tài sản của người ngộ ra nó trước. Bản thể là điều mà mỗi sinh linh đều mang theo từ lúc chào đời — chỉ đợi được nhớ lại. Tâm nguyện của hành trình Phục Hưng Sự Sống · Lập Đức Viên Mãn là kiến tạo những điều kiện để sự nhớ lại ấy xảy ra một cách tự nhiên."
+     data-en="The self belongs to no one, to no tradition, to no one who saw it first. It is what every living being carries from birth — simply waiting to be remembered. The vow of the Life Restoration · Virtue Fulfilled path is to build the conditions for that remembering to unfold naturally.">
+    Bản thể không thuộc về ai, không phải của một truyền thống nào, không phải tài sản của người ngộ ra nó trước. Bản thể là điều mà mỗi sinh linh đều mang theo từ lúc chào đời — chỉ đợi được nhớ lại. Tâm nguyện của hành trình Phục Hưng Sự Sống · Lập Đức Viên Mãn là kiến tạo những điều kiện để sự nhớ lại ấy xảy ra một cách tự nhiên.
+  </p>
+  <p class="phil-body sr d2" style="font-style:italic;color:var(--c4a);"
+     data-vi="&ldquo;ANIMA Care Global không phải là một tập đoàn — là một cây sống được trồng để ra hoa cho những thế hệ chưa sinh ra.&rdquo;"
+     data-en="&ldquo;ANIMA Care Global is not a corporation — it is a living tree planted to bloom for generations not yet born.&rdquo;">
+    &ldquo;ANIMA Care Global không phải là một tập đoàn — là một cây sống được trồng để ra hoa cho những thế hệ chưa sinh ra.&rdquo;
+  </p>
+
+  <div class="phil-sig sr d3">
+    <div class="phil-name-row">
+      <div class="phil-name-col">
+        <div class="phil-name-viet">Thiên</div>
+        <div class="phil-name-han">天</div>
+        <div class="phil-name-meaning" data-vi="Thiên Hạ Thái Bình" data-en="Peace Across Heaven">Thiên Hạ Thái Bình</div>
+      </div>
+      <div class="phil-name-col">
+        <div class="phil-name-viet">Mộc</div>
+        <div class="phil-name-han">木</div>
+        <div class="phil-name-meaning" data-vi="Vạn Mộc Đồng Sinh" data-en="Ten Thousand Trees Rising Together">Vạn Mộc Đồng Sinh</div>
+      </div>
+      <div class="phil-name-col">
+        <div class="phil-name-viet">Đức</div>
+        <div class="phil-name-han">德</div>
+        <div class="phil-name-meaning" data-vi="Bách Gia Đức Hạnh" data-en="Virtue Across A Hundred Clans">Bách Gia Đức Hạnh</div>
+      </div>
+    </div>
+    <div class="phil-sig-divider"></div>
+    <div class="phil-sig-role" data-vi="Nhà Sáng Lập · ANIMA Care Global · Hà Nội 2026" data-en="Founder · ANIMA Care Global · Hanoi 2026">Nhà Sáng Lập · ANIMA Care Global · Hà Nội 2026</div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div id="cta">
+  <div class="cta-container sr">
+    <h2 class="cta-title" data-vi="Đồng Hành Cùng Chúng Tôi<br/><em>Trên Hành Trình Phục Hưng Sự Sống</em>" data-en="Journey With Us<br/><em>On The Path Of Life Restoration</em>" style="letter-spacing:-1px;">Đồng Hành Cùng Chúng Tôi<br/><em>Trên Hành Trình Phục Hưng Sự Sống</em></h2>
+    <p class="cta-sub sr d1"
+       data-vi="Là nhà đầu tư, đối tác chiến lược, nhà khoa học, nông dân vùng trà, hay chỉ là một người đi tìm con đường sống đúng với chính mình — ANIMA Care Global có một chỗ cho bạn."
+       data-en="Whether investor, strategic partner, scientist, tea farmer, or simply someone seeking a path aligned with oneself — ANIMA Care Global has a place for you.">
+      Là nhà đầu tư, đối tác chiến lược, nhà khoa học, nông dân vùng trà, hay chỉ là một người đi tìm con đường sống đúng với chính mình — ANIMA Care Global có một chỗ cho bạn.
+    </p>
+    <div class="cta-options sr d2">
+      <a href="mailto:invest@animacare.global" class="cta-opt">
+        <div class="cta-opt-icon">$</div>
+        <div class="cta-opt-label" data-vi="Nhà Đầu Tư" data-en="Investor">Nhà Đầu Tư</div>
+        <div class="cta-opt-sub" data-vi="Seed Q3/2026 · SGX 2031" data-en="Seed Q3/2026 · SGX 2031">Seed Q3/2026 · SGX 2031</div>
+      </a>
+      <a href="mailto:partners@animacare.global" class="cta-opt">
+        <div class="cta-opt-icon">◆</div>
+        <div class="cta-opt-label" data-vi="Đối Tác Chiến Lược" data-en="Strategic Partner">Đối Tác Chiến Lược</div>
+        <div class="cta-opt-sub" data-vi="VN · ASEAN · Global" data-en="VN · ASEAN · Global">VN · ASEAN · Global</div>
+      </a>
+      <a href="mailto:odyssey@animacare.global" class="cta-opt">
+        <div class="cta-opt-icon">✺</div>
+        <div class="cta-opt-label" data-vi="ANIMA Odyssey" data-en="ANIMA Odyssey">ANIMA Odyssey</div>
+        <div class="cta-opt-sub" data-vi="Hành Trình 4–7 Ngày" data-en="4–7 Day Journey">Hành Trình 4–7 Ngày</div>
+      </a>
+      <a href="mailto:research@animacare.global" class="cta-opt">
+        <div class="cta-opt-icon">⬡</div>
+        <div class="cta-opt-label" data-vi="Nghiên Cứu" data-en="Research">Nghiên Cứu</div>
+        <div class="cta-opt-sub" data-vi="ANIMA Labs" data-en="ANIMA Labs">ANIMA Labs</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="ft-brand">ANIMA Care Global</div>
+    <div class="ft-mis"
+         data-vi="Tập đoàn chăm sóc sự sống toàn cầu.<br/><em style='color:var(--c4a);font-style:italic;'>&ldquo;Phục Hưng Sự Sống · Lập Đức Viên Mãn&rdquo;</em><br/>Một hệ sinh thái mười ba tầng<br/>được kiến tạo để vận hành, truyền thừa qua nhiều thế hệ."
+         data-en="Global life care ecosystem.<br/><em style='color:var(--c4a);font-style:italic;'>&ldquo;Life Restoration · Virtue Fulfilled&rdquo;</em><br/>A thirteen-layer ecosystem<br/>built to operate and be inherited across generations.">
+      Tập đoàn chăm sóc sự sống toàn cầu.<br/><em style="color:var(--c4a);font-style:italic;">&ldquo;Phục Hưng Sự Sống · Lập Đức Viên Mãn&rdquo;</em><br/>Một hệ sinh thái mười ba tầng<br/>được kiến tạo để vận hành, truyền thừa qua nhiều thế hệ.
+    </div>
+    <div class="ft-copy">© 2026 ANIMA Care Global · Zeni Holdings · Thiên Mộc Đức · Hà Nội, Việt Nam</div>
+  </div>
+  <div class="ft-col">
+    <h4 data-vi="Vòng Ngoài" data-en="Outer Ring">Vòng Ngoài</h4>
+    <a href="#">ANIMA 119</a>
+    <a href="#">ANIMA Care Chain</a>
+    <a href="#">AnimaTea.bio</a>
+    <a href="#">BioTea84</a>
+    <a href="#">ANIMA Odyssey</a>
+  </div>
+  <div class="ft-col">
+    <h4 data-vi="Vòng Giữa & Trong" data-en="Middle & Inner">Vòng Giữa & Trong</h4>
+    <a href="#">ANIMA Labs</a>
+    <a href="#">ANIMA Capital</a>
+    <a href="#">ANIMA Land</a>
+    <a href="#">ANIMA Academy</a>
+    <a href="#">ANIMA Foundation</a>
+  </div>
+  <div class="ft-col">
+    <h4 data-vi="Liên Hệ" data-en="Contact">Liên Hệ</h4>
+    <a href="mailto:hello@animacare.global">hello@animacare.global</a>
+    <a href="mailto:invest@animacare.global">invest@animacare.global</a>
+    <a href="https://zeni.holdings">zeni.holdings</a>
+    <a href="#">Hà Nội · Singapore · 2026</a>
+  </div>
+</footer>
+
+</div><!-- /.wrap -->
+
+<script>
+// ── GENERATE STAR FIELD ─────────────────────────────────────
+(function generateStars(){
+  const starContainer = document.getElementById('stars');
+  const starTypes = ['tiny','tiny','tiny','small','small','med','bright','huge'];
+  const colorClasses = ['', '', '', '', 'color-c4', 'color-c5', 'color-c6', 'color-c7'];
+  const totalStars = 220;
+  let html = '';
+  for(let i=0;i<totalStars;i++){
+    const type = starTypes[Math.floor(Math.random()*starTypes.length)];
+    const color = colorClasses[Math.floor(Math.random()*colorClasses.length)];
+    const top = Math.random()*100;
+    const left = Math.random()*100;
+    const delay = Math.random()*6;
+    const duration = 3 + Math.random()*5;
+    html += `<div class="star ${type} ${color}" style="top:${top}%;left:${left}%;animation-delay:${delay}s;animation-duration:${duration}s"></div>`;
+  }
+  starContainer.innerHTML = html;
+})();
+
+// ── LANGUAGE SYSTEM — 12 languages ─────────────────────────
+// Translation dictionary keyed by VI source string (VI is canonical).
+// Languages: vi·en·zh·ja·ko·th·hi·fr·de·es·pt·ar
+// Missing keys fall back to EN, then VI.
+const I18N = {
+  // Nav
+  'Triết Đạo':{en:'Philosophy',zh:'哲道',ja:'哲学',ko:'철학',th:'ปรัชญา',hi:'दर्शन',fr:'Philosophie',de:'Philosophie',es:'Filosofía',pt:'Filosofia',ar:'الفلسفة'},
+  'Hệ Sinh Thái':{en:'Ecosystem',zh:'生态系统',ja:'エコシステム',ko:'생태계',th:'ระบบนิเวศ',hi:'पारिस्थितिकी',fr:'Écosystème',de:'Ökosystem',es:'Ecosistema',pt:'Ecossistema',ar:'النظام البيئي'},
+  'Đồng Hành':{en:'Join',zh:'同行',ja:'参加',ko:'함께',th:'ร่วมเดินทาง',hi:'साथ चलें',fr:'Rejoindre',de:'Mitmachen',es:'Únete',pt:'Junte-se',ar:'انضم'},
+  'Đồng Hành →':{en:'Join →',zh:'同行 →',ja:'参加 →',ko:'함께 →',th:'ร่วมเดินทาง →',hi:'साथ चलें →',fr:'Rejoindre →',de:'Mitmachen →',es:'Únete →',pt:'Junte-se →',ar:'انضم ←'},
+
+  // Hero
+  '<span class=\'giao-thoa-descend\'>Phục Hưng Sự Sống</span><br/><em class=\'giao-thoa-ascend\'>Lập Đức Viên Mãn</em>':{
+    en:"<span class='giao-thoa-descend'>Life Restoration</span><br/><em class='giao-thoa-ascend'>Virtue Fulfilled</em>",
+    zh:"<span class='giao-thoa-descend'>复兴生命</span><br/><em class='giao-thoa-ascend'>立德圆满</em>",
+    ja:"<span class='giao-thoa-descend'>生命の復興</span><br/><em class='giao-thoa-ascend'>徳の円満</em>",
+    ko:"<span class='giao-thoa-descend'>생명의 부흥</span><br/><em class='giao-thoa-ascend'>덕의 원만</em>",
+    th:"<span class='giao-thoa-descend'>ฟื้นฟูชีวิต</span><br/><em class='giao-thoa-ascend'>คุณธรรมสมบูรณ์</em>",
+    hi:"<span class='giao-thoa-descend'>जीवन पुनरुत्थान</span><br/><em class='giao-thoa-ascend'>सद्गुण पूर्णता</em>",
+    fr:"<span class='giao-thoa-descend'>Restauration de la Vie</span><br/><em class='giao-thoa-ascend'>Vertu Accomplie</em>",
+    de:"<span class='giao-thoa-descend'>Wiederbelebung des Lebens</span><br/><em class='giao-thoa-ascend'>Erfüllte Tugend</em>",
+    es:"<span class='giao-thoa-descend'>Restauración de la Vida</span><br/><em class='giao-thoa-ascend'>Virtud Plena</em>",
+    pt:"<span class='giao-thoa-descend'>Restauração da Vida</span><br/><em class='giao-thoa-ascend'>Virtude Plena</em>",
+    ar:"<span class='giao-thoa-descend'>إحياء الحياة</span><br/><em class='giao-thoa-ascend'>الفضيلة الكاملة</em>"
+  },
+  'Khám Phá Hệ Sinh Thái':{en:'Explore Ecosystem',zh:'探索生态系统',ja:'エコシステムを探る',ko:'생태계 탐험',th:'สำรวจระบบนิเวศ',hi:'पारिस्थितिकी खोजें',fr:"Explorer l'Écosystème",de:'Ökosystem erkunden',es:'Explorar Ecosistema',pt:'Explorar Ecossistema',ar:'استكشف النظام البيئي'},
+  'Cuộn Xuống':{en:'Scroll',zh:'滚动',ja:'スクロール',ko:'스크롤',th:'เลื่อนลง',hi:'स्क्रॉल',fr:'Défiler',de:'Scrollen',es:'Desplazar',pt:'Rolar',ar:'مرر'},
+
+  // Ring labels
+  'Vòng Ngoài · Hiện Thân':{en:'Outer · Manifest',zh:'外圈 · 显现',ja:'外輪 · 顕現',ko:'외륜 · 현현',th:'วงนอก · การแสดง',hi:'बाह्य वलय · प्रकट',fr:'Anneau Externe · Manifeste',de:'Äußerer Ring · Manifest',es:'Anillo Exterior · Manifiesto',pt:'Anel Externo · Manifesto',ar:'الحلقة الخارجية · التجلي'},
+  'Vòng Giữa · Sức Mạnh':{en:'Middle · Strength',zh:'中圈 · 力量',ja:'中輪 · 力',ko:'중륜 · 힘',th:'วงกลาง · พลัง',hi:'मध्य वलय · शक्ति',fr:'Anneau du Milieu · Force',de:'Mittlerer Ring · Stärke',es:'Anillo Medio · Fuerza',pt:'Anel do Meio · Força',ar:'الحلقة الوسطى · القوة'},
+  'Vòng Trong · Linh Hồn':{en:'Inner · Soul',zh:'内圈 · 灵魂',ja:'内輪 · 魂',ko:'내륜 · 영혼',th:'วงใน · จิตวิญญาณ',hi:'आंतरिक वलय · आत्मा',fr:'Anneau Intérieur · Âme',de:'Innerer Ring · Seele',es:'Anillo Interior · Alma',pt:'Anel Interior · Alma',ar:'الحلقة الداخلية · الروح'},
+  'Hạ Tầng Chéo':{en:'Cross Infrastructure',zh:'交叉基础',ja:'横断基盤',ko:'교차 인프라',th:'โครงสร้างพื้นฐาน',hi:'क्रॉस इन्फ्रा',fr:'Infrastructure Transverse',de:'Querschnittsinfrastruktur',es:'Infraestructura Transversal',pt:'Infraestrutura Cruzada',ar:'البنية التحتية'},
+
+  // 3 Pillars
+  'Hiện Thân':{en:'Manifest',zh:'显现',ja:'顕現',ko:'현현',th:'การแสดงตน',hi:'प्रकट',fr:'Manifeste',de:'Manifest',es:'Manifiesto',pt:'Manifesto',ar:'التجلي'},
+  'Sức Mạnh':{en:'Strength',zh:'力量',ja:'力',ko:'힘',th:'พลัง',hi:'शक्ति',fr:'Force',de:'Stärke',es:'Fuerza',pt:'Força',ar:'القوة'},
+  'Linh Hồn':{en:'Soul',zh:'灵魂',ja:'魂',ko:'영혼',th:'จิตวิญญาณ',hi:'आत्मा',fr:'Âme',de:'Seele',es:'Alma',pt:'Alma',ar:'الروح'},
+
+  // Manifesto section title
+  'Chúng Tôi Không Bán<br/><em>Sức Khỏe</em>':{
+    en:'We Do Not Sell<br/><em>Health</em>',
+    zh:'我们不销售<br/><em>健康</em>',
+    ja:'私たちは売らない<br/><em>健康を</em>',
+    ko:'우리는 팔지 않는다<br/><em>건강을</em>',
+    th:'เราไม่ได้ขาย<br/><em>สุขภาพ</em>',
+    hi:'हम नहीं बेचते<br/><em>स्वास्थ्य</em>',
+    fr:'Nous Ne Vendons Pas<br/><em>La Santé</em>',
+    de:'Wir Verkaufen Keine<br/><em>Gesundheit</em>',
+    es:'No Vendemos<br/><em>Salud</em>',
+    pt:'Não Vendemos<br/><em>Saúde</em>',
+    ar:'نحن لا نبيع<br/><em>الصحة</em>'
+  },
+
+  // Philosophy title
+  'Phục Hưng Sự Sống':{en:'Life Restoration',zh:'复兴生命',ja:'生命の復興',ko:'생명의 부흥',th:'ฟื้นฟูชีวิต',hi:'जीवन पुनरुत्थान',fr:'Restauration de la Vie',de:'Wiederbelebung des Lebens',es:'Restauración de la Vida',pt:'Restauração da Vida',ar:'إحياء الحياة'},
+  'Lập Đức Viên Mãn':{en:'Virtue Fulfilled',zh:'立德圆满',ja:'徳の円満',ko:'덕의 원만',th:'คุณธรรมสมบูรณ์',hi:'सद्गुण पूर्णता',fr:'Vertu Accomplie',de:'Erfüllte Tugend',es:'Virtud Plena',pt:'Virtude Plena',ar:'الفضيلة الكاملة'},
+
+  // CTA
+  'Đồng Hành Cùng Chúng Tôi<br/><em>Trên Hành Trình Phục Hưng Sự Sống</em>':{
+    en:'Journey With Us<br/><em>On The Path Of Life Restoration</em>',
+    zh:'与我们同行<br/><em>在复兴生命之路上</em>',
+    ja:'共に歩もう<br/><em>生命復興の道を</em>',
+    ko:'함께 걸어요<br/><em>생명 부흥의 길을</em>',
+    th:'ร่วมเดินทางกับเรา<br/><em>บนเส้นทางฟื้นฟูชีวิต</em>',
+    hi:'हमारे साथ चलें<br/><em>जीवन पुनरुत्थान के पथ पर</em>',
+    fr:'Voyagez Avec Nous<br/><em>Sur La Voie De La Restauration</em>',
+    de:'Gehen Sie Mit Uns<br/><em>Den Weg Der Wiederbelebung</em>',
+    es:'Camina Con Nosotros<br/><em>En El Camino De La Restauración</em>',
+    pt:'Caminhe Conosco<br/><em>No Caminho da Restauração</em>',
+    ar:'سافر معنا<br/><em>على طريق إحياء الحياة</em>'
+  },
+  'Nhà Đầu Tư':{en:'Investor',zh:'投资者',ja:'投資家',ko:'투자자',th:'นักลงทุน',hi:'निवेशक',fr:'Investisseur',de:'Investor',es:'Inversor',pt:'Investidor',ar:'مستثمر'},
+  'Đối Tác Chiến Lược':{en:'Strategic Partner',zh:'战略伙伴',ja:'戦略パートナー',ko:'전략 파트너',th:'พันธมิตรเชิงกลยุทธ์',hi:'रणनीतिक साझेदार',fr:'Partenaire Stratégique',de:'Strategischer Partner',es:'Socio Estratégico',pt:'Parceiro Estratégico',ar:'شريك استراتيجي'},
+  'Nghiên Cứu':{en:'Research',zh:'研究',ja:'研究',ko:'연구',th:'วิจัย',hi:'अनुसंधान',fr:'Recherche',de:'Forschung',es:'Investigación',pt:'Pesquisa',ar:'بحث'},
+  'Hành Trình 4–7 Ngày':{en:'4–7 Day Journey',zh:'4-7天旅程',ja:'4-7日の旅',ko:'4-7일 여정',th:'การเดินทาง 4-7 วัน',hi:'4-7 दिन की यात्रा',fr:'Voyage de 4 à 7 Jours',de:'4-7 Tage Reise',es:'Viaje de 4-7 Días',pt:'Jornada de 4-7 Dias',ar:'رحلة 4-7 أيام'}
+};
+
+const LANG_META = {
+  vi:{flag:'🇻🇳',code:'VI',rtl:false},en:{flag:'🇬🇧',code:'EN',rtl:false},
+  zh:{flag:'🇨🇳',code:'ZH',rtl:false},ja:{flag:'🇯🇵',code:'JA',rtl:false},
+  ko:{flag:'🇰🇷',code:'KO',rtl:false},th:{flag:'🇹🇭',code:'TH',rtl:false},
+  hi:{flag:'🇮🇳',code:'HI',rtl:false},fr:{flag:'🇫🇷',code:'FR',rtl:false},
+  de:{flag:'🇩🇪',code:'DE',rtl:false},es:{flag:'🇪🇸',code:'ES',rtl:false},
+  pt:{flag:'🇵🇹',code:'PT',rtl:false},ar:{flag:'🇸🇦',code:'AR',rtl:true}
+};
+
+let currentLang = 'vi';
+
+function translate(viText,lang){
+  if(lang==='vi') return viText;
+  const entry = I18N[viText];
+  if(entry && entry[lang]) return entry[lang];
+  if(entry && entry.en) return entry.en;  // fallback to EN
+  return viText;  // final fallback to VI
+}
+
+function applyLang(lang){
+  currentLang = lang;
+  const meta = LANG_META[lang];
+  document.documentElement.lang = lang;
+  document.documentElement.dir = meta.rtl ? 'rtl' : 'ltr';
+
+  // Update button display
+  const cur = document.getElementById('langCurrent');
+  if(cur){
+    cur.querySelector('.lang-flag').textContent = meta.flag;
+    cur.querySelector('.lang-code').textContent = meta.code;
+  }
+
+  // Update active state in menu
+  document.querySelectorAll('.lang-option').forEach(o=>{
+    o.classList.toggle('active', o.dataset.lang===lang);
+  });
+
+  // Translate all elements
+  document.querySelectorAll('[data-vi]').forEach(el=>{
+    const vi = el.dataset.vi;
+    const translated = translate(vi, lang);
+    el.innerHTML = translated;
+  });
+
+  // Close dropdown
+  document.getElementById('langSelect')?.classList.remove('open');
+}
+
+// Dropdown toggle
+const langSelect = document.getElementById('langSelect');
+const langCurrentBtn = document.getElementById('langCurrent');
+if(langCurrentBtn){
+  langCurrentBtn.addEventListener('click',e=>{
+    e.stopPropagation();
+    langSelect.classList.toggle('open');
+  });
+}
+document.querySelectorAll('.lang-option').forEach(opt=>{
+  opt.addEventListener('click',()=>applyLang(opt.dataset.lang));
+});
+document.addEventListener('click',e=>{
+  if(langSelect && !e.target.closest('#langSelect')){
+    langSelect.classList.remove('open');
+  }
+});
+
+// ── SCROLL REVEAL (with fallback) ──────────────────────────
+const obs = new IntersectionObserver(es=>{
+  es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('v'); });
+},{threshold:.08, rootMargin:'0px 0px -20px 0px'});
+document.querySelectorAll('.sr').forEach(el=>obs.observe(el));
+setTimeout(()=>{document.querySelectorAll('.sr').forEach(el=>el.classList.add('v'));}, 700);
+
+// ── NAV SCROLL ─────────────────────────────────────────────
+const nav = document.getElementById('nav');
+window.addEventListener('scroll',()=>{
+  nav.style.background = window.scrollY>60 ? 'rgba(1,3,8,.88)' : 'rgba(1,3,8,.65)';
+});
+
+// ── INSTANT JUMP (no smooth scroll) ────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const id = a.getAttribute('href');
+    if(id && id.length>1){
+      const el = document.querySelector(id);
+      if(el){
+        e.preventDefault();
+        // Get position and jump instantly (no smooth animation)
+        const top = el.getBoundingClientRect().top + window.pageYOffset - 80;
+        window.scrollTo(0, top);  // no behavior option = instant
+      }
+    }
+  });
+});
+
+// ── NAV DROPDOWN TOGGLE ────────────────────────────────────
+const navItems = document.querySelectorAll('.nav-item.has-menu');
+navItems.forEach(item=>{
+  // Trigger is the direct-child <a> (not the <a> inside nav-menu)
+  const trigger = item.querySelector(':scope > a');
+  if(trigger){
+    // Click to toggle
+    trigger.addEventListener('click',e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      // Close other dropdowns first
+      navItems.forEach(other=>{ if(other!==item) other.classList.remove('open'); });
+      item.classList.toggle('open');
+    });
+  }
+  // Hover on desktop — only open on hover, don't close on leave (let click-outside handle)
+  item.addEventListener('mouseenter',()=>{
+    if(window.innerWidth > 1024){
+      navItems.forEach(other=>{ if(other!==item) other.classList.remove('open'); });
+      item.classList.add('open');
+    }
+  });
+  item.addEventListener('mouseleave',()=>{
+    if(window.innerWidth > 1024) item.classList.remove('open');
+  });
+});
+
+// Close dropdown when clicking outside OR clicking any link inside
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.nav-item.has-menu')){
+    navItems.forEach(item=>item.classList.remove('open'));
+  }
+});
+// Close dropdown right after clicking a link inside (for instant jump feedback)
+document.querySelectorAll('.nav-menu a').forEach(a=>{
+  a.addEventListener('click',()=>{
+    setTimeout(()=>navItems.forEach(item=>item.classList.remove('open')),50);
+  });
+});
+</script>
+</body>
+</html>
